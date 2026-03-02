@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
-import { setCachedSession } from "@/services/Api";
 
 type AuthContextType = {
   session: Session | null;
@@ -27,11 +26,9 @@ export function AuthProvider({
     try {
       const newSession = await getSession();
       setSession(newSession);
-      setCachedSession(newSession); // Update cache when session refreshes
     } catch (error) {
       console.error("Failed to refresh session:", error);
       setSession(null);
-      setCachedSession(null); // Clear cache on error
     }
   };
 

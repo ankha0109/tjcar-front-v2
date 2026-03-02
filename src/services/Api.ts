@@ -1,6 +1,5 @@
 import { buildQuery } from "@/utils/buildQuery";
 import { signOut } from "next-auth/react";
-import { Session } from "next-auth";
 
 type RequestOptions = {
   headers?: Record<string, string>;
@@ -10,22 +9,15 @@ type RequestOptions = {
   [key: string]: any;
 };
 
-// Singleton to store session reference
-let cachedSession: Session | null = null;
-
-export const setCachedSession = (session: Session | null) => {
-  cachedSession = session;
-};
-
 const Api = () => {
-  const baseURL = process.env.API_URL || "";
+  const publicBaseURL = process.env.NEXT_PUBLIC_API_URL || "";
+  const proxyBaseURL = "/api/proxy";
   let isSigningOut = false;
 
   const request = async (
     url: string,
     options: RequestOptions = {}
   ): Promise<any> => {
-    const session = cachedSession;
     const {
       useAuth = true,
       body,
@@ -33,15 +25,14 @@ const Api = () => {
       ...restOptions
     } = options;
 
+    // Authenticated calls → proxy (token is added server-side)
+    // Public calls → direct API URL
+    const baseURL = useAuth ? proxyBaseURL : publicBaseURL;
+
     const headers: Record<string, string> = {
       Accept: "application/json",
       ...customHeaders,
     };
-
-    if (session && useAuth) {
-      // @ts-ignore
-      headers["Authorization"] = `Bearer ${session.token}`;
-    }
 
     let finalBody = body;
 

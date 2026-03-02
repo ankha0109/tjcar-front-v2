@@ -1,102 +1,87 @@
 "use client";
 
-import { App, Button, Form, Input, Typography } from "antd";
 import { useState } from "react";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/providers/AuthProvider";
+import { useRouter } from "next/navigation";
+import { Button, Form, Input, App } from "antd";
 
-const { Title } = Typography;
-
-interface LoginFormValues {
-  email: string;
+type LoginFormValues = {
+  phone: string;
   password: string;
-}
+};
 
 const LoginFormContent = () => {
-  const { modal } = App.useApp();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { refreshSession } = useAuth();
-
-  const [form] = Form.useForm<LoginFormValues>();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { message } = App.useApp();
 
-  const handleLogin = async (values: LoginFormValues) => {
+  const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
-
     try {
       const result = await signIn("credentials", {
-        email: values.email,
+        phone: values.phone,
         password: values.password,
         redirect: false,
-        callbackUrl: searchParams.get("callbackUrl") || "/",
       });
-      console.log("result", result);
 
       if (result?.error) {
-        modal.warning({
-          title: "Уучлаарай",
-          content: "И-мэйл хаяг эсвэл нууц үг буруу байна",
-          okText: "Хаах",
-          centered: true,
-        });
-        return;
-      }
-
-      if (result?.ok) {
-        // Refresh session to update the cached session in AuthProvider
-        await refreshSession();
-        router.push(result.url || "/");
-        router.refresh();
+        message.error("Утасны дугаар эсвэл нууц үг буруу байна.");
+      } else {
+        router.push("/");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      modal.error({
-        title: "Алдаа гарлаа",
-        content: "Нэвтрэх явцад алдаа гарлаа. Дахин оролдоно уу.",
-        okText: "Хаах",
-        centered: true,
-      });
+      console.log("Login error:", error);
+      message.error("Нэвтрэх үед алдаа гарлаа. Дахин оролдоно уу.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex-auto w-96 mx-auto h-full flex flex-col justify-center">
-      <Title level={3} className="mb-10">
-        Тавтай морил
-      </Title>
-      <Form layout="vertical" onFinish={handleLogin} size="large" form={form}>
-        <Form.Item
-          name="email"
-          label="И-мэйл хаяг"
-          rules={[
-            { required: true, message: "И-мэйл хаяг оруулна уу" },
-            { type: "email", message: "И-мэйл хаяг зөв оруулна уу" },
-          ]}
-        >
-          <Input placeholder="И-мэйл хаяг" />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          label="Нууц үг"
-          labelCol={{ span: 24 }}
-          rules={[{ required: true, message: "Нууц үг оруулна уу" }]}
-        >
-          <Input.Password placeholder="Нууц үг" />
-        </Form.Item>
-        <div className="text-right">
-          <Link href="/auth/forgot-password">Нууц үгээ мартсан уу?</Link>
+    <div className="flex flex-1 items-center justify-center">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold">Нэвтрэх</h1>
+          <p className="text-gray-500 mt-1">
+            Системд нэвтрэхийн тулд мэдээллээ оруулна уу
+          </p>
         </div>
-        <Form.Item label=" ">
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Нэвтрэх
-          </Button>
-        </Form.Item>
-      </Form>
+
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+          requiredMark={false}
+        >
+          <Form.Item
+            label="Утасны дугаар"
+            name="phone"
+            rules={[{ required: true, message: "Утасны дугаар оруулна уу" }]}
+          >
+            <Input size="large" placeholder="Утасны дугаар оруулна уу" />
+          </Form.Item>
+
+          <Form.Item
+            label="Нууц үг"
+            name="password"
+            rules={[{ required: true, message: "Нууц үг оруулна уу" }]}
+          >
+            <Input.Password size="large" placeholder="Нууц үгээ оруулна уу" />
+          </Form.Item>
+
+          <Form.Item className="mt-2">
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+            >
+              Нэвтрэх
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };

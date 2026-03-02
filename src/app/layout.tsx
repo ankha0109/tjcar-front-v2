@@ -4,6 +4,7 @@ import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import AntdProvider from "@/providers/AntdProvider";
 import { auth } from "@/auth";
+import Header from "@/components/layout/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,10 +36,15 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={`${inter.className} antialiased`}
-        suppressHydrationWarning
+        // suppressHydrationWarning
       >
         <AntdRegistry>
-          <AntdProvider session={session}>{children}</AntdProvider>
+          <AntdProvider session={session}>
+            <div className="flex flex-col h-screen bg-white">
+              <Header />
+              <main className="flex-1 overflow-hidden">{children}</main>
+            </div>
+          </AntdProvider>
         </AntdRegistry>
       </body>
     </html>
