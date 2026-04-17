@@ -21,6 +21,7 @@ export default function MapAnimation() {
         animationData={animationData}
         loop={!reduceMotion}
         autoplay={!reduceMotion}
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );
