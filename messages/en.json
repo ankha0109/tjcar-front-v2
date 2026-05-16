@@ -14,5 +14,30 @@
       "template": "%s | TJ Car"
     },
     "description": "TJ Car - Japanese car auction service"
+  },
+  "header": {
+    "nav": {
+      "japan": "Japan cars",
+      "korea": "Korea cars",
+      "ready": "In-stock cars",
+      "report": "Accident report"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Mon–Sat · 09:00–18:00",
+    "regionsBadge": { "japan": "Japan", "korea": "Korea", "mongolia": "Mongolia" },
+    "menu": {
+      "balanceLabel": "Balance",
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "bids": "My bids",
+      "signout": "Sign out",
+      "open": "User menu",
+      "homeAria": "TJ Car home",
+      "openMenu": "Open menu"
+    },
+    "auth": {
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    }
   }
 }

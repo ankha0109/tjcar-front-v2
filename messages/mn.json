@@ -14,5 +14,30 @@
       "template": "%s | TJ Car"
     },
     "description": "TJ Car - Японы машин дуудлага худалдаа"
+  },
+  "header": {
+    "nav": {
+      "japan": "Япон машин",
+      "korea": "Солонгос машин",
+      "ready": "Бэлэн машин",
+      "report": "Осол аваар шалгах"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Даваа–Бямба · 09:00–18:00",
+    "regionsBadge": { "japan": "Япон", "korea": "Солонгос", "mongolia": "Монгол" },
+    "menu": {
+      "balanceLabel": "Үлдэгдэл",
+      "dashboard": "Хувийн самбар",
+      "profile": "Профайл",
+      "bids": "Миний саналууд",
+      "signout": "Гарах",
+      "open": "Хэрэглэгчийн цэс",
+      "homeAria": "TJ Car нүүр хуудас",
+      "openMenu": "Цэс нээх"
+    },
+    "auth": {
+      "signIn": "Нэвтрэх",
+      "signUp": "Бүртгүүлэх"
+    }
   }
 }

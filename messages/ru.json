@@ -14,5 +14,30 @@
       "template": "%s | TJ Car"
     },
     "description": "TJ Car - Японские автомобильные аукционы"
+  },
+  "header": {
+    "nav": {
+      "japan": "Авто из Японии",
+      "korea": "Авто из Кореи",
+      "ready": "В наличии",
+      "report": "Проверка ДТП"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Пн–Сб · 09:00–18:00",
+    "regionsBadge": { "japan": "Япония", "korea": "Корея", "mongolia": "Монголия" },
+    "menu": {
+      "balanceLabel": "Баланс",
+      "dashboard": "Личный кабинет",
+      "profile": "Профиль",
+      "bids": "Мои ставки",
+      "signout": "Выйти",
+      "open": "Меню пользователя",
+      "homeAria": "TJ Car главная",
+      "openMenu": "Открыть меню"
+    },
+    "auth": {
+      "signIn": "Войти",
+      "signUp": "Регистрация"
+    }
   }
 }
