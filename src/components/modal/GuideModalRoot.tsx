@@ -26,7 +26,7 @@ export default function GuideModalRoot() {
             {options.description}
           </div>
         ),
-        okText: options.okText ?? "Хаах",
+        okText: options.okText,
         onOk: options.onOk,
         afterClose: options.afterClose,
         maskClosable: true,
