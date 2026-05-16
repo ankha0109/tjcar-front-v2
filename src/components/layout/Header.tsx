@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 type CustomerUser = {
   firstname: string;
@@ -144,6 +145,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <LanguageSwitcher />
             {session && user ? (
               <>
                 <div className="hidden lg:flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white py-1.5 pl-3 pr-3.5 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
