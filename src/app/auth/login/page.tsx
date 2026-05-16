@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginFormContent from "@/components/pages/LoginForm";
 
 export const metadata = {
@@ -6,7 +7,11 @@ export const metadata = {
 };
 
 const Login = () => {
-  return <LoginFormContent />;
+  return (
+    <Suspense fallback={null}>
+      <LoginFormContent />
+    </Suspense>
+  );
 };
 
 export default Login;
