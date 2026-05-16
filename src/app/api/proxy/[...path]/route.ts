@@ -27,6 +27,10 @@ async function handler(
     "Content-Type": "application/json",
     Accept: "application/json",
   };
+  const acceptLanguage = request.headers.get("accept-language");
+  if (acceptLanguage) {
+    headers["Accept-Language"] = acceptLanguage;
+  }
   if (token?.accessToken) {
     headers.Authorization = `Bearer ${token.accessToken}`;
   }

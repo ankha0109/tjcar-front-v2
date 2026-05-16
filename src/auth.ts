@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        phone: { label: "Утасны дугаар", type: "phone" },
+        phone: { label: "Phone", type: "phone" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {

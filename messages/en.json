@@ -1,0 +1,267 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "language": {
+      "label": "Language",
+      "mn": "Монгол",
+      "en": "English",
+      "ru": "Русский"
+    }
+  },
+  "metadata": {
+    "title": {
+      "default": "Home",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Japanese car auction service"
+  },
+  "header": {
+    "nav": {
+      "japan": "Japan cars",
+      "korea": "Korea cars",
+      "ready": "In-stock cars",
+      "report": "Accident report"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Mon–Sat · 09:00–18:00",
+    "regionsBadge": { "japan": "Japan", "korea": "Korea", "mongolia": "Mongolia" },
+    "menu": {
+      "balanceLabel": "Balance",
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "bids": "My bids",
+      "signout": "Sign out",
+      "open": "User menu",
+      "homeAria": "TJ Car home",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "auth": {
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "badge": "Newsletter",
+      "heading": "Get fresh auctions in your inbox",
+      "blurb": "Curated picks from Japan and Korea, delivered daily. Unsubscribe anytime."
+    },
+    "about": "A reliable service for ordering and importing cars from Japan and Korea. We stand by you from order to delivery.",
+    "followLabel": "Follow us",
+    "cars": {
+      "heading": "Cars",
+      "japan": "Japan cars",
+      "korea": "Korea cars",
+      "ready": "In-stock cars",
+      "report": "Accident report"
+    },
+    "services": {
+      "heading": "Services",
+      "dashboard": "Dashboard",
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    },
+    "contact": {
+      "heading": "Contact",
+      "phone": "+976 7000 0000",
+      "address": "Ulaanbaatar, Mongolia",
+      "hours": "Mon–Sat: 09:00 – 18:00"
+    },
+    "bottom": {
+      "rights": "All rights reserved.",
+      "terms": "Terms of service",
+      "privacy": "Privacy policy",
+      "systemOk": "Systems operational"
+    }
+  },
+  "newsletter": {
+    "submit": "Subscribe",
+    "success": "✓ Subscribed. New auctions will arrive in your inbox.",
+    "error": "Something went wrong. Please try again."
+  },
+  "mobileNav": {
+    "japan": "Japan",
+    "korea": "Korea",
+    "ready": "In-stock",
+    "check": "Check",
+    "aria": "Bottom navigation",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your details to access the platform",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
+      "phoneRequired": "Please enter your phone number",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "passwordRequired": "Please enter your password",
+      "submit": "Sign in",
+      "errorInvalid": "Phone number or password is incorrect.",
+      "errorGeneric": "Sign-in failed. Please try again.",
+      "metaDescription": "Sign-in page"
+    }
+  },
+  "featured": {
+    "card": {
+      "noImage": "No image",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "daysLeft": "{days} days",
+      "specs": {
+        "year": "Year",
+        "mileage": "Mileage",
+        "engine": "Engine",
+        "transmission": "Transmission",
+        "color": "Color",
+        "rate": "Grade"
+      },
+      "transmission": {
+        "auto": "Automatic",
+        "manual": "Manual"
+      },
+      "startPriceLabel": "Start price",
+      "mntPriceLabel": "MNT estimate",
+      "mileageUnit": "km"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Make: {value}",
+        "model": "Model: {value}",
+        "body": "Body: {value}",
+        "rate": "Grade: {value}",
+        "year": "Year: {from}–{to}",
+        "mileage": "Mileage: {from} – {to}",
+        "location": "Location: {value}"
+      },
+      "placeholders": {
+        "marka": "Make",
+        "model": "Model",
+        "body": "Body",
+        "rate": "Grade"
+      },
+      "more": "More filters",
+      "clear": "Clear",
+      "active": "Active",
+      "done": "Done",
+      "year": {
+        "label": "Production year",
+        "hint": "Range of production years",
+        "fromPlaceholder": "From",
+        "toPlaceholder": "To"
+      },
+      "mileage": {
+        "label": "Mileage",
+        "hint": "Kilometer range",
+        "minPlaceholder": "Min",
+        "maxPlaceholder": "Max"
+      },
+      "location": {
+        "label": "Auction location",
+        "hint": "Marketplace location",
+        "placeholder": "Select location"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Tomorrow",
+      "dayAfter": "Day after tomorrow",
+      "title": "Featured cars",
+      "subtitleDefault": "Auctions in the next 7 days",
+      "updating": "Updating",
+      "totalCars": "{count} cars total",
+      "all": "All",
+      "carsUnit": "cars",
+      "empty": "Empty",
+      "noResultsTitle": "No matching cars",
+      "noResultsDescription": "Try adjusting your filters"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Dashboard",
+      "menuHeading": "Menu",
+      "overview": "Overview",
+      "profile": "Profile",
+      "bids": "My bids",
+      "reports": "My reports",
+      "tracking": "Tracked cars"
+    },
+    "home": {
+      "guestName": "Guest",
+      "greeting": "Hi, {name}",
+      "subtitle": "Your auction activity in one place.",
+      "quickActions": {
+        "newBid": { "title": "New bid", "description": "Join an auction" },
+        "track": { "title": "Track a car", "description": "Add to watchlist" },
+        "report": { "title": "Check accident", "description": "Get a VIN report" }
+      },
+      "stats": {
+        "bidsLabel": "Bids sent",
+        "bidsHint": "{count} pending",
+        "reportsLabel": "My reports",
+        "reportsHint": "total created",
+        "trackingLabel": "Tracked cars",
+        "trackingHintEnding": "{count} ending today",
+        "trackingHintActive": "in watchlist"
+      },
+      "recent": {
+        "title": "Recent activity",
+        "description": "Your latest actions will appear here.",
+        "emptyTitle": "No activity yet",
+        "emptyDescription": "Pick a car from an auction and submit your first bid.",
+        "emptyCta": "Find cars"
+      },
+      "quick": {
+        "title": "Quick actions",
+        "description": "Most-used actions."
+      }
+    },
+    "bids": {
+      "title": "My bids",
+      "description": "Track and manage your bids.",
+      "activeHeading": "Active bids",
+      "activeEmptyTitle": "No active bids",
+      "activeEmptyDescription": "Pick a car from an auction and submit a bid to get started.",
+      "activeEmptyCta": "Browse auctions",
+      "historyHeading": "History",
+      "historySubheading": "Bids you've sent before.",
+      "historyEmptyTitle": "No past bids",
+      "historyEmptyDescription": "Every bid you send will be archived here."
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Personal info and preferences.",
+      "basicHeading": "Basics",
+      "name": "Name",
+      "email": "Email",
+      "userId": "User ID",
+      "createdAt": "Created",
+      "settingsHeading": "Settings",
+      "settingsSubheading": "Notifications, currency, language preferences.",
+      "settingsComingTitle": "Settings are coming soon",
+      "settingsComingDescription": "Available in an upcoming release."
+    },
+    "tracking": {
+      "title": "Tracked cars",
+      "description": "Manage your watchlist.",
+      "listHeading": "Watchlist",
+      "listEmptyTitle": "Watchlist is empty",
+      "listEmptyDescription": "Add cars you're interested in from active auctions.",
+      "listEmptyCta": "Find cars",
+      "endingHeading": "Ending soon",
+      "endingSubheading": "Auctions ending in the next 24 hours.",
+      "endingEmptyTitle": "Nothing ending soon",
+      "endingEmptyDescription": "Items you add will appear here."
+    },
+    "reports": {
+      "title": "My reports",
+      "description": "Accident and history reports by VIN.",
+      "listHeading": "Created reports",
+      "emptyTitle": "No reports yet",
+      "emptyDescription": "Enter a VIN to run an accident and history check.",
+      "emptyCta": "New report"
+    }
+  }
+}

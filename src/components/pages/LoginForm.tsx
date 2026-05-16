@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Button, Form, Input, App } from "antd";
 
 type LoginFormValues = {
@@ -11,6 +13,7 @@ type LoginFormValues = {
 };
 
 const LoginFormContent = () => {
+  const t = useTranslations("auth.login");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,14 +29,14 @@ const LoginFormContent = () => {
       });
 
       if (result?.error) {
-        message.error("Утасны дугаар эсвэл нууц үг буруу байна.");
+        message.error(t("errorInvalid"));
       } else {
         const callbackUrl = searchParams.get("callbackUrl") || "/";
         router.push(callbackUrl);
       }
     } catch (error) {
       console.log("Login error:", error);
-      message.error("Нэвтрэх үед алдаа гарлаа. Дахин оролдоно уу.");
+      message.error(t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -43,9 +46,9 @@ const LoginFormContent = () => {
     <div className="flex flex-1 items-center justify-center">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold">Нэвтрэх</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-gray-500 mt-1">
-            Системд нэвтрэхийн тулд мэдээллээ оруулна уу
+            {t("subtitle")}
           </p>
         </div>
 
@@ -56,19 +59,19 @@ const LoginFormContent = () => {
           requiredMark={false}
         >
           <Form.Item
-            label="Утасны дугаар"
+            label={t("phoneLabel")}
             name="phone"
-            rules={[{ required: true, message: "Утасны дугаар оруулна уу" }]}
+            rules={[{ required: true, message: t("phoneRequired") }]}
           >
-            <Input size="large" placeholder="Утасны дугаар оруулна уу" />
+            <Input size="large" placeholder={t("phonePlaceholder")} />
           </Form.Item>
 
           <Form.Item
-            label="Нууц үг"
+            label={t("passwordLabel")}
             name="password"
-            rules={[{ required: true, message: "Нууц үг оруулна уу" }]}
+            rules={[{ required: true, message: t("passwordRequired") }]}
           >
-            <Input.Password size="large" placeholder="Нууц үгээ оруулна уу" />
+            <Input.Password size="large" placeholder={t("passwordPlaceholder")} />
           </Form.Item>
 
           <Form.Item className="mt-2">
@@ -79,7 +82,7 @@ const LoginFormContent = () => {
               block
               loading={loading}
             >
-              Нэвтрэх
+              {t("submit")}
             </Button>
           </Form.Item>
         </Form>

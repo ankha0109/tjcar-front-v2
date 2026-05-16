@@ -1,37 +1,46 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { auth } from "@/auth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import EmptyState from "@/components/dashboard/EmptyState";
 import SectionMast from "@/components/dashboard/SectionMast";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("dashboard.profile");
+
   const session = await auth();
   const user = session?.user;
 
   return (
     <>
       <DashboardHeader
-        title="Профайл"
-        description="Хувийн мэдээлэл болон тохиргоо."
+        title={t("title")}
+        description={t("description")}
       />
 
       <section className="space-y-4">
-        <SectionMast title="Үндсэн мэдээлэл" />
+        <SectionMast title={t("basicHeading")} />
         <div className="rounded-lg border border-neutral-200 bg-white">
-          <Field label="Нэр" value={user?.name || "—"} />
-          <Field label="И-мэйл" value={user?.email || "—"} mono />
-          <Field label="Хэрэглэгчийн ID" value={user?.id || "—"} mono />
-          <Field label="Үүсгэгдсэн" value="—" last />
+          <Field label={t("name")} value={user?.name || "—"} />
+          <Field label={t("email")} value={user?.email || "—"} mono />
+          <Field label={t("userId")} value={user?.id || "—"} mono />
+          <Field label={t("createdAt")} value="—" last />
         </div>
       </section>
 
       <section className="space-y-4">
         <SectionMast
-          title="Тохиргоо"
-          description="Мэдэгдэл, валют, хэлний тохиргоо."
+          title={t("settingsHeading")}
+          description={t("settingsSubheading")}
         />
         <EmptyState
-          title="Тохиргооны хэсэг бэлэн болж байна"
-          description="Удахгүй хэрэглэгдэх боломжтой болно."
+          title={t("settingsComingTitle")}
+          description={t("settingsComingDescription")}
         />
       </section>
     </>

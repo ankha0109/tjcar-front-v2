@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 
-const NAV = [
+const NAV_HREFS = [
   {
     href: "/dashboard",
-    label: "Тойм",
+    key: "overview",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="7" height="9" x="3" y="3" rx="1" />
@@ -18,7 +18,7 @@ const NAV = [
   },
   {
     href: "/dashboard/profile",
-    label: "Профайл",
+    key: "profile",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -28,7 +28,7 @@ const NAV = [
   },
   {
     href: "/dashboard/bids",
-    label: "Миний саналууд",
+    key: "bids",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8" />
@@ -41,7 +41,7 @@ const NAV = [
   },
   {
     href: "/dashboard/reports",
-    label: "Миний репортууд",
+    key: "reports",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
@@ -53,7 +53,7 @@ const NAV = [
   },
   {
     href: "/dashboard/tracking",
-    label: "Захиалсан машин",
+    key: "tracking",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
@@ -64,6 +64,12 @@ const NAV = [
 
 export default function Sidebar() {
   const path = usePathname();
+  const t = useTranslations("dashboard.sidebar");
+
+  const NAV = NAV_HREFS.map((item) => ({
+    ...item,
+    label: t(item.key as "overview" | "profile" | "bids" | "reports" | "tracking"),
+  }));
 
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white h-full">
@@ -74,14 +80,14 @@ export default function Sidebar() {
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-sm font-semibold text-neutral-900">TJCAR</span>
-            <span className="text-[11px] text-neutral-500">Хувийн самбар</span>
+            <span className="text-[11px] text-neutral-500">{t("title")}</span>
           </div>
         </Link>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-2">
         <p className="px-2 py-2 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
-          Цэс
+          {t("menuHeading")}
         </p>
         <ul className="space-y-0.5">
           {NAV.map((item) => {

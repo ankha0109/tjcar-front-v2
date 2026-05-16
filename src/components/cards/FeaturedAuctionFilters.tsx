@@ -2,6 +2,7 @@
 
 import { Button, Drawer, Input, Select, Space, Tag } from "antd";
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   EMPTY_FILTERS,
   FilterOptions,
@@ -21,7 +22,7 @@ type Props = {
 };
 
 const formatKm = (n: number) =>
-  `${new Intl.NumberFormat("en-US").format(n)} км`;
+  new Intl.NumberFormat("en-US").format(n);
 
 function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -62,6 +63,7 @@ export default function FeaturedAuctionFilters({
   options,
   optionsLoading,
 }: Props) {
+  const t = useTranslations("featured.filters");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const set = <K extends keyof FilterValues>(key: K, v: FilterValues[K]) => {
@@ -143,25 +145,25 @@ export default function FeaturedAuctionFilters({
   if (value.marka)
     chips.push({
       key: "marka",
-      label: `Үйлдвэрлэгч: ${value.marka}`,
+      label: t("chips.marka", { value: value.marka }),
       onRemove: () => setMarka(null),
     });
   if (value.model)
     chips.push({
       key: "model",
-      label: `Модел: ${value.model}`,
+      label: t("chips.model", { value: value.model }),
       onRemove: () => set("model", null),
     });
   if (value.body)
     chips.push({
       key: "body",
-      label: `Арал: ${value.body}`,
+      label: t("chips.body", { value: value.body }),
       onRemove: () => set("body", null),
     });
   if (value.rate)
     chips.push({
       key: "rate",
-      label: `Үнэлгээ: ${value.rate}`,
+      label: t("chips.rate", { value: value.rate }),
       onRemove: () => set("rate", null),
     });
   if (value.lot)
@@ -173,21 +175,24 @@ export default function FeaturedAuctionFilters({
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({
       key: "year",
-      label: `Он: ${value.yearFrom ?? "…"}–${value.yearTo ?? "…"}`,
+      label: t("chips.year", { from: value.yearFrom ?? "…", to: value.yearTo ?? "…" }),
       onRemove: () =>
         onChange({ ...value, yearFrom: null, yearTo: null }),
     });
   if (value.mileageFrom != null || value.mileageTo != null)
     chips.push({
       key: "mileage",
-      label: `Гүйлт: ${value.mileageFrom != null ? formatKm(value.mileageFrom) : "…"} – ${value.mileageTo != null ? formatKm(value.mileageTo) : "…"}`,
+      label: t("chips.mileage", {
+        from: value.mileageFrom != null ? formatKm(value.mileageFrom) : "…",
+        to: value.mileageTo != null ? formatKm(value.mileageTo) : "…",
+      }),
       onRemove: () =>
         onChange({ ...value, mileageFrom: null, mileageTo: null }),
     });
   if (value.location)
     chips.push({
       key: "location",
-      label: `Байршил: ${value.location}`,
+      label: t("chips.location", { value: value.location }),
       onRemove: () => set("location", null),
     });
 
@@ -209,7 +214,7 @@ export default function FeaturedAuctionFilters({
       <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-min flex-nowrap items-center gap-2">
           <Select
-            placeholder="Үйлдвэрлэгч"
+            placeholder={t("placeholders.marka")}
             allowClear
             showSearch
             options={markaOptions}
@@ -221,7 +226,7 @@ export default function FeaturedAuctionFilters({
             optionFilterProp="label"
           />
           <Select
-            placeholder="Модел"
+            placeholder={t("placeholders.model")}
             allowClear
             showSearch
             options={modelOptions}
@@ -234,7 +239,7 @@ export default function FeaturedAuctionFilters({
             optionFilterProp="label"
           />
           <Select
-            placeholder="Арал"
+            placeholder={t("placeholders.body")}
             allowClear
             options={bodyOptions}
             value={value.body ?? undefined}
@@ -244,7 +249,7 @@ export default function FeaturedAuctionFilters({
             style={{ minWidth: 124 }}
           />
           <Select
-            placeholder="Үнэлгээ"
+            placeholder={t("placeholders.rate")}
             allowClear
             options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
             value={value.rate ?? undefined}
@@ -266,7 +271,7 @@ export default function FeaturedAuctionFilters({
             icon={<FilterIcon className="h-3.5 w-3.5" />}
             className="relative !h-8 !shrink-0"
           >
-            Илүү шүүлт
+            {t("more")}
             {advancedCount > 0 && (
               <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
                 {advancedCount}
@@ -279,7 +284,7 @@ export default function FeaturedAuctionFilters({
               onClick={() => onChange(EMPTY_FILTERS)}
               className="!ml-1 !shrink-0 !text-neutral-500"
             >
-              Цэвэрлэх
+              {t("clear")}
             </Button>
           )}
         </div>
@@ -289,7 +294,7 @@ export default function FeaturedAuctionFilters({
       {chips.length > 0 && (
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-400">
-            Идэвхтэй
+            {t("active")}
           </span>
           {chips.map((c) => (
             <Tag
@@ -321,7 +326,7 @@ export default function FeaturedAuctionFilters({
               <FilterIcon className="h-3.5 w-3.5" />
             </span>
             <span className="text-[14px] font-semibold tracking-tight text-neutral-900">
-              Илүү шүүлт
+              {t("more")}
             </span>
           </div>
         }
@@ -338,22 +343,22 @@ export default function FeaturedAuctionFilters({
               disabled={advancedCount === 0}
               className="!text-neutral-500"
             >
-              Цэвэрлэх
+              {t("clear")}
             </Button>
             <Button type="primary" onClick={() => setDrawerOpen(false)}>
-              Болсон
+              {t("done")}
             </Button>
           </div>
         }
       >
         <div className="space-y-6">
           <DrawerSection
-            label="Үйлдвэрлэсэн он"
-            hint="Машины үйлдвэрлэгдсэн оны хязгаар"
+            label={t("year.label")}
+            hint={t("year.hint")}
           >
             <Space.Compact block>
               <Select
-                placeholder="Эхлэх"
+                placeholder={t("year.fromPlaceholder")}
                 allowClear
                 options={yearFromOptions}
                 value={value.yearFrom ?? undefined}
@@ -362,7 +367,7 @@ export default function FeaturedAuctionFilters({
                 style={{ width: "50%" }}
               />
               <Select
-                placeholder="Дуусах"
+                placeholder={t("year.toPlaceholder")}
                 allowClear
                 options={yearToOptions}
                 value={value.yearTo ?? undefined}
@@ -374,12 +379,12 @@ export default function FeaturedAuctionFilters({
           </DrawerSection>
 
           <DrawerSection
-            label="Явсан гүйлт"
-            hint="Километрийн хязгаар"
+            label={t("mileage.label")}
+            hint={t("mileage.hint")}
           >
             <Space.Compact block>
               <Select
-                placeholder="Хамгийн бага"
+                placeholder={t("mileage.minPlaceholder")}
                 allowClear
                 options={mileageFromOptions}
                 value={value.mileageFrom ?? undefined}
@@ -388,7 +393,7 @@ export default function FeaturedAuctionFilters({
                 style={{ width: "50%" }}
               />
               <Select
-                placeholder="Хамгийн их"
+                placeholder={t("mileage.maxPlaceholder")}
                 allowClear
                 options={mileageToOptions}
                 value={value.mileageTo ?? undefined}
@@ -400,11 +405,11 @@ export default function FeaturedAuctionFilters({
           </DrawerSection>
 
           <DrawerSection
-            label="Auction байршил"
-            hint="Дуудлагын зах зээлийн байршил"
+            label={t("location.label")}
+            hint={t("location.hint")}
           >
             <Select
-              placeholder="Байршил сонгох"
+              placeholder={t("location.placeholder")}
               allowClear
               showSearch
               options={locationOptions}

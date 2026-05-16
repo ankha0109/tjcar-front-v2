@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 type CustomerUser = {
   firstname: string;
@@ -14,13 +15,6 @@ type CustomerUser = {
   balance: number;
   currency: string;
 };
-
-const NAV_ITEMS = [
-  { href: "/", label: "Япон машин" },
-  { href: "/korea", label: "Солонгос машин" },
-  { href: "/cars", label: "Бэлэн машин" },
-  { href: "/report", label: "Осол аваар шалгах" },
-] as const;
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -74,12 +68,21 @@ function getInitials(user: CustomerUser) {
 }
 
 export default function Header() {
+  const t = useTranslations("header");
+  const locale = useLocale();
   const { data: session } = useSession();
   const user = session?.user as CustomerUser | undefined;
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+
+  const NAV_ITEMS = [
+    { href: "/", label: t("nav.japan") },
+    { href: "/korea", label: t("nav.korea") },
+    { href: "/cars", label: t("nav.ready") },
+    { href: "/report", label: t("nav.report") },
+  ] as const;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -99,22 +102,22 @@ export default function Header() {
               className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
             >
               <PhoneIcon className="h-3 w-3" />
-              <span className="tabular-nums">+976 7000 0000</span>
+              <span className="tabular-nums">{t("phone")}</span>
             </a>
             <span className="inline-flex items-center gap-2 text-neutral-400">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
-              Даваа–Бямба · 09:00–18:00
+              {t("hours")}
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-neutral-500">
-            <span>Япон</span>
+            <span>{t("regionsBadge.japan")}</span>
             <span className="text-neutral-700">·</span>
-            <span>Солонгос</span>
+            <span>{t("regionsBadge.korea")}</span>
             <span className="text-neutral-700">·</span>
-            <span>Монгол</span>
+            <span>{t("regionsBadge.mongolia")}</span>
           </div>
         </div>
       </div>
@@ -132,7 +135,7 @@ export default function Header() {
           <div className="flex items-center gap-10">
             <Link
               href="/"
-              aria-label="TJ Car нүүр хуудас"
+              aria-label={t("menu.homeAria")}
               className="inline-flex items-center transition-opacity hover:opacity-80"
             >
               <Logo className="h-9 w-auto" />
@@ -145,11 +148,12 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <LanguageSwitcher />
             {session && user ? (
               <>
                 <div className="hidden lg:flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white py-1.5 pl-3 pr-3.5 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
                   <span className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-neutral-400">
-                    Үлдэгдэл
+                    {t("menu.balanceLabel")}
                   </span>
                   <span className="text-[13px] font-semibold tabular-nums tracking-tight text-neutral-900">
                     {formatBalance(user.balance, user.currency)}
@@ -171,7 +175,7 @@ export default function Header() {
                               {user.firstname} {user.lastname}
                             </div>
                             <div className="mt-0.5 text-[11px] tabular-nums text-neutral-500 lg:hidden">
-                              Үлдэгдэл ·{" "}
+                              {t("menu.balanceLabel")} ·{" "}
                               {formatBalance(user.balance, user.currency)}
                             </div>
                           </div>
@@ -180,29 +184,29 @@ export default function Header() {
                       { type: "divider" },
                       {
                         key: "dashboard",
-                        label: <Link href="/dashboard">Хувийн самбар</Link>,
+                        label: <Link href="/dashboard">{t("menu.dashboard")}</Link>,
                       },
                       {
                         key: "profile",
-                        label: <Link href="/dashboard/profile">Профайл</Link>,
+                        label: <Link href="/dashboard/profile">{t("menu.profile")}</Link>,
                       },
                       {
                         key: "bids",
-                        label: <Link href="/dashboard/bids">Миний саналууд</Link>,
+                        label: <Link href="/dashboard/bids">{t("menu.bids")}</Link>,
                       },
                       { type: "divider" },
                       {
                         key: "signout",
-                        label: "Гарах",
+                        label: t("menu.signout"),
                         danger: true,
-                        onClick: () => signOut({ callbackUrl: "/" }),
+                        onClick: () => signOut({ callbackUrl: `/${locale}` }),
                       },
                     ],
                   }}
                 >
                   <button
                     type="button"
-                    aria-label="Хэрэглэгчийн цэс"
+                    aria-label={t("menu.open")}
                     className="inline-flex items-center gap-2 rounded-full border border-transparent py-1 pl-1 pr-2 transition-colors hover:border-neutral-200 hover:bg-white"
                   >
                     <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-neutral-900 text-[12px] font-semibold tracking-wide text-white ring-2 ring-white">
@@ -237,14 +241,14 @@ export default function Header() {
                   href="/auth/login"
                   className="hidden h-9 items-center px-3 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:text-neutral-950 sm:inline-flex"
                 >
-                  Нэвтрэх
+                  {t("auth.signIn")}
                 </Link>
                 <Link href="/auth/register">
                   <Button
                     type="primary"
                     className="!h-9 !rounded-full !px-4 !text-[13px] !font-medium !tracking-tight !shadow-none"
                   >
-                    Бүртгүүлэх
+                    {t("auth.signUp")}
                   </Button>
                 </Link>
               </>
@@ -254,7 +258,7 @@ export default function Header() {
               type="button"
               onClick={() => setMobileOpen(true)}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100 md:hidden"
-              aria-label="Цэс нээх"
+              aria-label={t("menu.openMenu")}
             >
               <svg
                 width="18"
@@ -293,7 +297,7 @@ export default function Header() {
               type="button"
               onClick={() => setMobileOpen(false)}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-neutral-100"
-              aria-label="Хаах"
+              aria-label={t("menu.closeMenu")}
             >
               <svg
                 width="16"
@@ -324,7 +328,7 @@ export default function Header() {
                     {user.firstname} {user.lastname}
                   </div>
                   <div className="text-[11.5px] uppercase tracking-[0.12em] text-neutral-400">
-                    Үлдэгдэл
+                    {t("menu.balanceLabel")}
                   </div>
                   <div className="text-[13px] font-semibold tabular-nums tracking-tight text-neutral-900">
                     {formatBalance(user.balance, user.currency)}
@@ -368,17 +372,17 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-[13px] font-medium tracking-tight text-white transition-colors hover:bg-neutral-800"
                 >
-                  Хувийн самбар
+                  {t("menu.dashboard")}
                 </Link>
                 <button
                   type="button"
                   onClick={() => {
                     setMobileOpen(false);
-                    signOut({ callbackUrl: "/" });
+                    signOut({ callbackUrl: `/${locale}` });
                   }}
                   className="w-full rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:bg-neutral-50"
                 >
-                  Гарах
+                  {t("menu.signout")}
                 </button>
               </>
             ) : (
@@ -388,14 +392,14 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="flex w-full items-center justify-center rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:bg-neutral-50"
                 >
-                  Нэвтрэх
+                  {t("auth.signIn")}
                 </Link>
                 <Link
                   href="/auth/register"
                   onClick={() => setMobileOpen(false)}
                   className="flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-[13px] font-medium tracking-tight text-white transition-colors hover:opacity-90"
                 >
-                  Бүртгүүлэх
+                  {t("auth.signUp")}
                 </Link>
               </>
             )}
@@ -405,7 +409,7 @@ export default function Header() {
               className="mt-3 flex items-center justify-center gap-1.5 pt-2 text-[12.5px] text-neutral-500 transition-colors hover:text-neutral-900"
             >
               <PhoneIcon className="h-3 w-3" />
-              <span className="tabular-nums">+976 7000 0000</span>
+              <span className="tabular-nums">{t("phone")}</span>
             </a>
           </div>
         </div>

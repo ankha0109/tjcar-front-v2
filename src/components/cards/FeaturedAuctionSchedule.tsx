@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
-import "dayjs/locale/mn";
 import FeaturedCard from "@/components/cards/FeaturedCard";
 import FeaturedAuctionFilters from "@/components/cards/FeaturedAuctionFilters";
 import {
@@ -14,17 +14,10 @@ import {
 import { FeaturedCar } from "@/types/featured";
 import { cn } from "@/utils";
 
-dayjs.locale("mn");
-
 type Props = {
   initialCars: FeaturedCar[];
   initialFilters: FilterValues;
   filterOptions?: FilterOptions;
-};
-
-const RELATIVE_LABELS: Record<number, string> = {
-  1: "Маргааш",
-  2: "Нөгөөдөр",
 };
 
 const DAYS_AHEAD = 7;
@@ -43,11 +36,17 @@ export default function FeaturedAuctionSchedule({
   initialFilters,
   filterOptions,
 }: Props) {
+  const t = useTranslations("featured.schedule");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selected, setSelected] = useState<string>("all");
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const lastPushedRef = useRef<string>(serializeFilters(initialFilters));
+
+  const RELATIVE_LABELS: Record<number, string> = {
+    1: t("tomorrow"),
+    2: t("dayAfter"),
+  };
 
   useEffect(() => {
     const next = serializeFilters(filters);
@@ -76,6 +75,7 @@ export default function FeaturedAuctionSchedule({
         full: d.format("YYYY-MM-DD"),
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const countsByDate = useMemo(() => {
@@ -106,12 +106,12 @@ export default function FeaturedAuctionSchedule({
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-[22px] font-semibold tracking-tight text-neutral-900">
-            Онцлох машинууд
+            {t("title")}
           </h2>
           <p className="mt-1 text-[13px] text-neutral-500">
             {activeDayLabel
               ? activeDayLabel
-              : "Ойрын 7 хоногийн дуудлагын хуваарь"}
+              : t("subtitleDefault")}
           </p>
         </div>
         <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium uppercase tracking-[0.16em] text-neutral-400">
@@ -123,7 +123,7 @@ export default function FeaturedAuctionSchedule({
           ) : (
             <span className="h-1 w-1 rounded-full bg-neutral-400" />
           )}
-          {isFetching ? "Шинэчилж байна" : `Нийт ${filteredCars.length} машин`}
+          {isFetching ? t("updating") : t("totalCars", { count: filteredCars.length })}
         </span>
       </div>
 
@@ -138,9 +138,9 @@ export default function FeaturedAuctionSchedule({
           <TabButton
             isActive={selected === "all"}
             onClick={() => setSelected("all")}
-            topLabel="Бүгд"
+            topLabel={t("all")}
             middle={String(cars.length)}
-            bottom="машин"
+            bottom={t("carsUnit")}
           />
           <div className="mx-1 self-stretch border-l border-neutral-200" />
           {days.map((day) => {
@@ -152,7 +152,7 @@ export default function FeaturedAuctionSchedule({
                 onClick={() => setSelected(day.key)}
                 topLabel={day.topLabel}
                 middle={day.middle}
-                bottom={count > 0 ? `${count} машин` : "Хоосон"}
+                bottom={count > 0 ? `${count} ${t("carsUnit")}` : t("empty")}
                 dim={count === 0}
               />
             );
@@ -172,7 +172,10 @@ export default function FeaturedAuctionSchedule({
           ))}
         </div>
       ) : (
-        <EmptyState />
+        <EmptyState
+          title={t("noResultsTitle")}
+          description={t("noResultsDescription")}
+        />
       )}
     </section>
   );
@@ -239,7 +242,13 @@ function TabButton({
   );
 }
 
-function EmptyState() {
+function EmptyState({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
     <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/40 py-16">
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-200">
@@ -259,10 +268,10 @@ function EmptyState() {
         </svg>
       </div>
       <p className="mt-3 text-[14px] font-medium tracking-tight text-neutral-700">
-        Тохирох машин олдсонгүй
+        {title}
       </p>
       <p className="mt-1 text-[12.5px] text-neutral-500">
-        Шүүлтийн нөхцлөө өөрчилж үзнэ үү
+        {description}
       </p>
     </div>
   );

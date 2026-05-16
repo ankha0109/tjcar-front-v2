@@ -2,6 +2,7 @@ import "server-only";
 import { buildQuery, type QueryParams } from "@/utils/buildQuery";
 import { getAccessToken } from "@/lib/serverAuth";
 import { ServerApiError } from "@/services/errors";
+import { getLocale } from "next-intl/server";
 
 export { ServerApiError };
 
@@ -20,8 +21,10 @@ const request = async <T = unknown>(
   const { body, headers: customHeaders, ...restOptions } = options;
   const fullUrl = `${baseURL}${url}`;
 
+  const locale = await getLocale();
   const headers: Record<string, string> = {
     Accept: "application/json",
+    "Accept-Language": locale,
     ...customHeaders,
   };
 

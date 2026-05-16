@@ -1,0 +1,267 @@
+{
+  "common": {
+    "loading": "Уншиж байна...",
+    "language": {
+      "label": "Хэл",
+      "mn": "Монгол",
+      "en": "English",
+      "ru": "Русский"
+    }
+  },
+  "metadata": {
+    "title": {
+      "default": "Эхлэл",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Японы машин дуудлага худалдаа"
+  },
+  "header": {
+    "nav": {
+      "japan": "Япон машин",
+      "korea": "Солонгос машин",
+      "ready": "Бэлэн машин",
+      "report": "Осол аваар шалгах"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Даваа–Бямба · 09:00–18:00",
+    "regionsBadge": { "japan": "Япон", "korea": "Солонгос", "mongolia": "Монгол" },
+    "menu": {
+      "balanceLabel": "Үлдэгдэл",
+      "dashboard": "Хувийн самбар",
+      "profile": "Профайл",
+      "bids": "Миний саналууд",
+      "signout": "Гарах",
+      "open": "Хэрэглэгчийн цэс",
+      "homeAria": "TJ Car нүүр хуудас",
+      "openMenu": "Цэс нээх",
+      "closeMenu": "Цэс хаах"
+    },
+    "auth": {
+      "signIn": "Нэвтрэх",
+      "signUp": "Бүртгүүлэх"
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "badge": "Шинэ мэдээ",
+      "heading": "Шинэ дуудлагуудыг и-мэйлээр аваарай",
+      "blurb": "Япон, Солонгосын онцлох машинуудыг өдөр бүр шүүж танд хүргэнэ. Хэдийд ч бүртгэлээ цуцалж болно."
+    },
+    "about": "Япон, Солонгосоос машин захиалах, оруулах найдвартай үйлчилгээ. Захиалгаас хүлээн авах хүртэл бид таны хажууд.",
+    "followLabel": "Биднийг дагах",
+    "cars": {
+      "heading": "Машинууд",
+      "japan": "Япон машин",
+      "korea": "Солонгос машин",
+      "ready": "Бэлэн машин",
+      "report": "Осол аваар шалгах"
+    },
+    "services": {
+      "heading": "Үйлчилгээ",
+      "dashboard": "Хувийн кабинет",
+      "signIn": "Нэвтрэх",
+      "signUp": "Бүртгүүлэх"
+    },
+    "contact": {
+      "heading": "Холбоо барих",
+      "phone": "+976 7000 0000",
+      "address": "Улаанбаатар хот, Монгол улс",
+      "hours": "Даваа–Бямба: 09:00 – 18:00"
+    },
+    "bottom": {
+      "rights": "Бүх эрх хуулиар хамгаалагдсан.",
+      "terms": "Үйлчилгээний нөхцөл",
+      "privacy": "Нууцлалын бодлого",
+      "systemOk": "Систем хэвийн"
+    }
+  },
+  "newsletter": {
+    "submit": "Бүртгүүлэх",
+    "success": "✓ Амжилттай бүртгэгдлээ. Танай и-мэйл рүү шинэ дуудлага илгээгдэнэ.",
+    "error": "Алдаа гарлаа. Дахин оролдоно уу."
+  },
+  "mobileNav": {
+    "japan": "Япон",
+    "korea": "Солонгос",
+    "ready": "Бэлэн",
+    "check": "Шалгах",
+    "aria": "Доод цэс",
+    "profile": "Хувийн"
+  },
+  "auth": {
+    "login": {
+      "title": "Нэвтрэх",
+      "subtitle": "Системд нэвтрэхийн тулд мэдээллээ оруулна уу",
+      "phoneLabel": "Утасны дугаар",
+      "phonePlaceholder": "Утасны дугаар оруулна уу",
+      "phoneRequired": "Утасны дугаар оруулна уу",
+      "passwordLabel": "Нууц үг",
+      "passwordPlaceholder": "Нууц үгээ оруулна уу",
+      "passwordRequired": "Нууц үг оруулна уу",
+      "submit": "Нэвтрэх",
+      "errorInvalid": "Утасны дугаар эсвэл нууц үг буруу байна.",
+      "errorGeneric": "Нэвтрэх үед алдаа гарлаа. Дахин оролдоно уу.",
+      "metaDescription": "Нэвтрэх хуудас"
+    }
+  },
+  "featured": {
+    "card": {
+      "noImage": "Зураг байхгүй",
+      "today": "Өнөөдөр",
+      "tomorrow": "Маргааш",
+      "daysLeft": "{days} хоног",
+      "specs": {
+        "year": "Он",
+        "mileage": "Явсан",
+        "engine": "Мотор",
+        "transmission": "Хурд",
+        "color": "Өнгө",
+        "rate": "Үнэлгээ"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механик"
+      },
+      "startPriceLabel": "Эхлэх үнэ",
+      "mntPriceLabel": "MNT тооцоо",
+      "mileageUnit": "км"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Үйлдвэрлэгч: {value}",
+        "model": "Модел: {value}",
+        "body": "Арал: {value}",
+        "rate": "Үнэлгээ: {value}",
+        "year": "Он: {from}–{to}",
+        "mileage": "Гүйлт: {from} – {to}",
+        "location": "Байршил: {value}"
+      },
+      "placeholders": {
+        "marka": "Үйлдвэрлэгч",
+        "model": "Модел",
+        "body": "Арал",
+        "rate": "Үнэлгээ"
+      },
+      "more": "Илүү шүүлт",
+      "clear": "Цэвэрлэх",
+      "active": "Идэвхтэй",
+      "done": "Болсон",
+      "year": {
+        "label": "Үйлдвэрлэсэн он",
+        "hint": "Машины үйлдвэрлэгдсэн оны хязгаар",
+        "fromPlaceholder": "Эхлэх",
+        "toPlaceholder": "Дуусах"
+      },
+      "mileage": {
+        "label": "Явсан гүйлт",
+        "hint": "Километрийн хязгаар",
+        "minPlaceholder": "Хамгийн бага",
+        "maxPlaceholder": "Хамгийн их"
+      },
+      "location": {
+        "label": "Auction байршил",
+        "hint": "Дуудлагын зах зээлийн байршил",
+        "placeholder": "Байршил сонгох"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Маргааш",
+      "dayAfter": "Нөгөөдөр",
+      "title": "Онцлох машинууд",
+      "subtitleDefault": "Ойрын 7 хоногийн дуудлагын хуваарь",
+      "updating": "Шинэчилж байна",
+      "totalCars": "Нийт {count} машин",
+      "all": "Бүгд",
+      "carsUnit": "машин",
+      "empty": "Хоосон",
+      "noResultsTitle": "Тохирох машин олдсонгүй",
+      "noResultsDescription": "Шүүлтийн нөхцлөө өөрчилж үзнэ үү"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Хувийн самбар",
+      "menuHeading": "Цэс",
+      "overview": "Тойм",
+      "profile": "Профайл",
+      "bids": "Миний саналууд",
+      "reports": "Миний репортууд",
+      "tracking": "Захиалсан машин"
+    },
+    "home": {
+      "guestName": "Зочин",
+      "greeting": "Сайн уу, {name}",
+      "subtitle": "Таны дуудлагын идэвх нэг дороос.",
+      "quickActions": {
+        "newBid": { "title": "Шинэ санал", "description": "Дуудлагад оролцох" },
+        "track": { "title": "Машин хянах", "description": "Захиалгад нэмэх" },
+        "report": { "title": "Осол шалгах", "description": "VIN-ээр репорт авах" }
+      },
+      "stats": {
+        "bidsLabel": "Илгээсэн саналууд",
+        "bidsHint": "{count} хүлээгдэж байна",
+        "reportsLabel": "Миний репортууд",
+        "reportsHint": "нийт үүсгэсэн",
+        "trackingLabel": "Захиалсан машин",
+        "trackingHintEnding": "{count} өнөөдөр дуусна",
+        "trackingHintActive": "хяналтад буй"
+      },
+      "recent": {
+        "title": "Сүүлийн идэвх",
+        "description": "Таны хамгийн сүүлийн үйлдлүүд энд харагдана.",
+        "emptyTitle": "Идэвх алга",
+        "emptyDescription": "Дуудлагаас машин сонгож, эхний саналаа илгээгээрэй.",
+        "emptyCta": "Машин хайх"
+      },
+      "quick": {
+        "title": "Шуурхай үйлдэл",
+        "description": "Хамгийн их хэрэглэгддэг үйлдлүүд."
+      }
+    },
+    "bids": {
+      "title": "Миний саналууд",
+      "description": "Илгээсэн саналуудыг хянах, удирдах.",
+      "activeHeading": "Идэвхтэй саналууд",
+      "activeEmptyTitle": "Идэвхтэй санал алга",
+      "activeEmptyDescription": "Дуудлагаас машин сонгож саналаа илгээж эхлээрэй.",
+      "activeEmptyCta": "Дуудлага үзэх",
+      "historyHeading": "Түүх",
+      "historySubheading": "Өмнө илгээсэн саналууд.",
+      "historyEmptyTitle": "Түүхэн санал алга",
+      "historyEmptyDescription": "Илгээсэн санал бүр энд хадгалагдана."
+    },
+    "profile": {
+      "title": "Профайл",
+      "description": "Хувийн мэдээлэл болон тохиргоо.",
+      "basicHeading": "Үндсэн мэдээлэл",
+      "name": "Нэр",
+      "email": "И-мэйл",
+      "userId": "Хэрэглэгчийн ID",
+      "createdAt": "Үүсгэгдсэн",
+      "settingsHeading": "Тохиргоо",
+      "settingsSubheading": "Мэдэгдэл, валют, хэлний тохиргоо.",
+      "settingsComingTitle": "Тохиргооны хэсэг бэлэн болж байна",
+      "settingsComingDescription": "Удахгүй хэрэглэгдэх боломжтой болно."
+    },
+    "tracking": {
+      "title": "Захиалсан машин",
+      "description": "Хяналтад нэмсэн машинуудаа удирдах.",
+      "listHeading": "Хяналтад буй машинууд",
+      "listEmptyTitle": "Захиалга алга",
+      "listEmptyDescription": "Дуудлагаас сонирхсон машинаа хяналтад нэмээрэй.",
+      "listEmptyCta": "Машин хайх",
+      "endingHeading": "Удахгүй дуусах",
+      "endingSubheading": "24 цагийн дотор дуусах гэж буй захиалгууд.",
+      "endingEmptyTitle": "Дуусах гэж буй захиалга алга",
+      "endingEmptyDescription": "Хяналт нэмсний дараа энд харагдана."
+    },
+    "reports": {
+      "title": "Миний репортууд",
+      "description": "VIN-ээр авсан осол, түүхийн репортууд.",
+      "listHeading": "Үүсгэсэн репортууд",
+      "emptyTitle": "Репорт үүсгээгүй байна",
+      "emptyDescription": "VIN дугаар оруулж осол, түүхийн шалгалт хийнэ үү.",
+      "emptyCta": "Шинэ репорт"
+    }
+  }
+}

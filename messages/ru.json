@@ -1,0 +1,267 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "language": {
+      "label": "Язык",
+      "mn": "Монгол",
+      "en": "English",
+      "ru": "Русский"
+    }
+  },
+  "metadata": {
+    "title": {
+      "default": "Главная",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Японские автомобильные аукционы"
+  },
+  "header": {
+    "nav": {
+      "japan": "Авто из Японии",
+      "korea": "Авто из Кореи",
+      "ready": "В наличии",
+      "report": "Проверка ДТП"
+    },
+    "phone": "+976 7000 0000",
+    "hours": "Пн–Сб · 09:00–18:00",
+    "regionsBadge": { "japan": "Япония", "korea": "Корея", "mongolia": "Монголия" },
+    "menu": {
+      "balanceLabel": "Баланс",
+      "dashboard": "Личный кабинет",
+      "profile": "Профиль",
+      "bids": "Мои ставки",
+      "signout": "Выйти",
+      "open": "Меню пользователя",
+      "homeAria": "TJ Car главная",
+      "openMenu": "Открыть меню",
+      "closeMenu": "Закрыть меню"
+    },
+    "auth": {
+      "signIn": "Войти",
+      "signUp": "Регистрация"
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "badge": "Рассылка",
+      "heading": "Свежие аукционы — на ваш e-mail",
+      "blurb": "Лучшие предложения из Японии и Кореи каждый день. Отписаться можно в любой момент."
+    },
+    "about": "Надёжный сервис заказа и доставки автомобилей из Японии и Кореи. С вами от заказа до приёмки.",
+    "followLabel": "Следите за нами",
+    "cars": {
+      "heading": "Автомобили",
+      "japan": "Авто из Японии",
+      "korea": "Авто из Кореи",
+      "ready": "В наличии",
+      "report": "Проверка ДТП"
+    },
+    "services": {
+      "heading": "Услуги",
+      "dashboard": "Личный кабинет",
+      "signIn": "Войти",
+      "signUp": "Регистрация"
+    },
+    "contact": {
+      "heading": "Контакты",
+      "phone": "+976 7000 0000",
+      "address": "Улан-Батор, Монголия",
+      "hours": "Пн–Сб: 09:00 – 18:00"
+    },
+    "bottom": {
+      "rights": "Все права защищены.",
+      "terms": "Условия пользования",
+      "privacy": "Политика конфиденциальности",
+      "systemOk": "Система работает"
+    }
+  },
+  "newsletter": {
+    "submit": "Подписаться",
+    "success": "✓ Вы подписались. Новые аукционы будут приходить на ваш e-mail.",
+    "error": "Произошла ошибка. Попробуйте ещё раз."
+  },
+  "mobileNav": {
+    "japan": "Япония",
+    "korea": "Корея",
+    "ready": "В наличии",
+    "check": "Проверка",
+    "aria": "Нижняя навигация",
+    "profile": "Профиль"
+  },
+  "auth": {
+    "login": {
+      "title": "Войти",
+      "subtitle": "Введите данные для входа в систему",
+      "phoneLabel": "Номер телефона",
+      "phonePlaceholder": "Введите номер телефона",
+      "phoneRequired": "Введите номер телефона",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Введите пароль",
+      "passwordRequired": "Введите пароль",
+      "submit": "Войти",
+      "errorInvalid": "Неверный номер телефона или пароль.",
+      "errorGeneric": "Не удалось войти. Попробуйте ещё раз.",
+      "metaDescription": "Страница входа"
+    }
+  },
+  "featured": {
+    "card": {
+      "noImage": "Нет изображения",
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "daysLeft": "{days} дн.",
+      "specs": {
+        "year": "Год",
+        "mileage": "Пробег",
+        "engine": "Двигатель",
+        "transmission": "КПП",
+        "color": "Цвет",
+        "rate": "Оценка"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механика"
+      },
+      "startPriceLabel": "Стартовая цена",
+      "mntPriceLabel": "Оценка MNT",
+      "mileageUnit": "км"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Марка: {value}",
+        "model": "Модель: {value}",
+        "body": "Кузов: {value}",
+        "rate": "Оценка: {value}",
+        "year": "Год: {from}–{to}",
+        "mileage": "Пробег: {from} – {to}",
+        "location": "Площадка: {value}"
+      },
+      "placeholders": {
+        "marka": "Марка",
+        "model": "Модель",
+        "body": "Кузов",
+        "rate": "Оценка"
+      },
+      "more": "Ещё фильтры",
+      "clear": "Очистить",
+      "active": "Активный",
+      "done": "Готово",
+      "year": {
+        "label": "Год выпуска",
+        "hint": "Диапазон лет выпуска",
+        "fromPlaceholder": "От",
+        "toPlaceholder": "До"
+      },
+      "mileage": {
+        "label": "Пробег",
+        "hint": "Диапазон в километрах",
+        "minPlaceholder": "Мин",
+        "maxPlaceholder": "Макс"
+      },
+      "location": {
+        "label": "Площадка аукциона",
+        "hint": "Место проведения аукциона",
+        "placeholder": "Выберите площадку"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Завтра",
+      "dayAfter": "Послезавтра",
+      "title": "Избранные автомобили",
+      "subtitleDefault": "Аукционы на ближайшие 7 дней",
+      "updating": "Обновление",
+      "totalCars": "Всего {count} авто",
+      "all": "Все",
+      "carsUnit": "авто",
+      "empty": "Пусто",
+      "noResultsTitle": "Подходящих авто не найдено",
+      "noResultsDescription": "Измените параметры фильтра"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Личный кабинет",
+      "menuHeading": "Меню",
+      "overview": "Обзор",
+      "profile": "Профиль",
+      "bids": "Мои ставки",
+      "reports": "Мои отчёты",
+      "tracking": "Отслеживаемые авто"
+    },
+    "home": {
+      "guestName": "Гость",
+      "greeting": "Привет, {name}",
+      "subtitle": "Ваша активность на аукционах — в одном месте.",
+      "quickActions": {
+        "newBid": { "title": "Новая ставка", "description": "Принять участие в аукционе" },
+        "track": { "title": "Отслеживать авто", "description": "Добавить в список" },
+        "report": { "title": "Проверка ДТП", "description": "Отчёт по VIN" }
+      },
+      "stats": {
+        "bidsLabel": "Отправленные ставки",
+        "bidsHint": "{count} в ожидании",
+        "reportsLabel": "Мои отчёты",
+        "reportsHint": "всего создано",
+        "trackingLabel": "Отслеживаемые авто",
+        "trackingHintEnding": "{count} заканчиваются сегодня",
+        "trackingHintActive": "в отслеживании"
+      },
+      "recent": {
+        "title": "Последняя активность",
+        "description": "Здесь появятся ваши последние действия.",
+        "emptyTitle": "Активности пока нет",
+        "emptyDescription": "Выберите авто на аукционе и отправьте первую ставку.",
+        "emptyCta": "Найти авто"
+      },
+      "quick": {
+        "title": "Быстрые действия",
+        "description": "Самые используемые действия."
+      }
+    },
+    "bids": {
+      "title": "Мои ставки",
+      "description": "Отслеживайте и управляйте своими ставками.",
+      "activeHeading": "Активные ставки",
+      "activeEmptyTitle": "Активных ставок нет",
+      "activeEmptyDescription": "Выберите авто на аукционе и сделайте первую ставку.",
+      "activeEmptyCta": "Открыть аукционы",
+      "historyHeading": "История",
+      "historySubheading": "Ранее отправленные ставки.",
+      "historyEmptyTitle": "Истории ставок нет",
+      "historyEmptyDescription": "Каждая отправленная ставка будет сохранена здесь."
+    },
+    "profile": {
+      "title": "Профиль",
+      "description": "Личные данные и настройки.",
+      "basicHeading": "Основное",
+      "name": "Имя",
+      "email": "E-mail",
+      "userId": "ID пользователя",
+      "createdAt": "Создан",
+      "settingsHeading": "Настройки",
+      "settingsSubheading": "Уведомления, валюта, язык.",
+      "settingsComingTitle": "Раздел настроек скоро будет готов",
+      "settingsComingDescription": "Будет доступен в одном из ближайших обновлений."
+    },
+    "tracking": {
+      "title": "Отслеживаемые авто",
+      "description": "Управляйте списком наблюдения.",
+      "listHeading": "Список наблюдения",
+      "listEmptyTitle": "Список пуст",
+      "listEmptyDescription": "Добавляйте интересующие авто из активных аукционов.",
+      "listEmptyCta": "Найти авто",
+      "endingHeading": "Заканчиваются скоро",
+      "endingSubheading": "Аукционы, которые закончатся в течение 24 часов.",
+      "endingEmptyTitle": "Ничего не заканчивается",
+      "endingEmptyDescription": "Добавленные элементы появятся здесь."
+    },
+    "reports": {
+      "title": "Мои отчёты",
+      "description": "Отчёты по ДТП и истории по VIN.",
+      "listHeading": "Созданные отчёты",
+      "emptyTitle": "Отчётов пока нет",
+      "emptyDescription": "Введите VIN, чтобы получить отчёт о ДТП и истории.",
+      "emptyCta": "Новый отчёт"
+    }
+  }
+}
