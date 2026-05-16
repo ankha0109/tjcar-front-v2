@@ -3,7 +3,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import EmptyState from "@/components/dashboard/EmptyState";
 import SectionMast from "@/components/dashboard/SectionMast";
 import StatCard from "@/components/dashboard/StatCard";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const QUICK_ACTIONS = [
   {

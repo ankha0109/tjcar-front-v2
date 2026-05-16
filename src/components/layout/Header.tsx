@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
 

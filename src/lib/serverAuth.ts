@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { getToken } from "next-auth/jwt";
 import { SESSION_TOKEN_COOKIE } from "@/lib/authCookies";
 import { ServerApiError } from "@/services/errors";
@@ -42,10 +42,9 @@ export async function redirectIfUnauthorized(err: unknown): Promise<void> {
   if (err instanceof ServerApiError && err.status === 401) {
     const reqHeaders = await headers();
     const callbackUrl = reqHeaders.get("x-pathname") ?? "/";
-    redirect(
-      `/api/signout?callbackUrl=${encodeURIComponent(
-        `/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`,
-      )}`,
-    );
+    const target = `/api/signout?callbackUrl=${encodeURIComponent(
+      `/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`,
+    )}`;
+    redirect({ href: target, locale: "mn" });
   }
 }
