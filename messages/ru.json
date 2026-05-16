@@ -168,7 +168,6 @@
       "tomorrow": "Завтра",
       "dayAfter": "Послезавтра",
       "title": "Избранные автомобили",
-      "subtitleFilter": "{count} авто соответствуют фильтру",
       "subtitleDefault": "Аукционы на ближайшие 7 дней",
       "updating": "Обновление",
       "totalCars": "Всего {count} авто",

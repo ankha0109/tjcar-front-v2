@@ -168,7 +168,6 @@
       "tomorrow": "Маргааш",
       "dayAfter": "Нөгөөдөр",
       "title": "Онцлох машинууд",
-      "subtitleFilter": "Шүүлтэд тохирох {count} машин",
       "subtitleDefault": "Ойрын 7 хоногийн дуудлагын хуваарь",
       "updating": "Шинэчилж байна",
       "totalCars": "Нийт {count} машин",

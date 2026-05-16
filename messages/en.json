@@ -168,7 +168,6 @@
       "tomorrow": "Tomorrow",
       "dayAfter": "Day after tomorrow",
       "title": "Featured cars",
-      "subtitleFilter": "{count} cars match your filter",
       "subtitleDefault": "Auctions in the next 7 days",
       "updating": "Updating",
       "totalCars": "{count} cars total",
