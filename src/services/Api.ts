@@ -1,5 +1,11 @@
 import { buildQuery, type QueryParams } from "@/utils/buildQuery";
 
+function readLocaleFromCookie(): string {
+  if (typeof document === "undefined") return "mn";
+  const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]+)/);
+  return match?.[1] ?? "mn";
+}
+
 type RequestOptions = Omit<RequestInit, "body" | "headers" | "method"> & {
   headers?: Record<string, string>;
   body?: unknown;
@@ -28,6 +34,7 @@ const Api = () => {
 
     const headers: Record<string, string> = {
       Accept: "application/json",
+      "Accept-Language": readLocaleFromCookie(),
       ...customHeaders,
     };
 
