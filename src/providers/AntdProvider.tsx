@@ -1,17 +1,18 @@
 "use client";
 
 import { App, ConfigProvider, message } from "antd";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import GuideModalRoot from "@/components/modal/GuideModalRoot";
 import mn_MN from "antd/locale/mn_MN";
+import en_US from "antd/locale/en_US";
+import ru_RU from "antd/locale/ru_RU";
 import "dayjs/locale/mn";
+import "dayjs/locale/en";
+import "dayjs/locale/ru";
 import { SessionProvider } from "next-auth/react";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 import { StyleProvider } from "@ant-design/cssinjs";
-
-dayjs.locale("mn");
 
 type AntdProviderProps = {
   children?: React.ReactNode;
@@ -19,18 +20,27 @@ type AntdProviderProps = {
   locale?: string;
 };
 
-const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale: _locale }) => {
+const ANTD_LOCALES: Record<string, typeof mn_MN> = {
+  mn: mn_MN,
+  en: en_US,
+  ru: ru_RU,
+};
+
+const DAYJS_LOCALES: Record<string, string> = {
+  mn: "mn",
+  en: "en",
+  ru: "ru",
+};
+
+const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale = "mn" }) => {
   const [, contextHolder] = message.useMessage();
+
+  dayjs.locale(DAYJS_LOCALES[locale] ?? "en");
 
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-      mutations: {
-        retry: false,
-      },
+      queries: { retry: false, refetchOnWindowFocus: false },
+      mutations: { retry: false },
     },
   });
 
@@ -39,7 +49,7 @@ const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale: 
       <QueryClientProvider client={queryClient}>
         <StyleProvider layer>
           <ConfigProvider
-            locale={mn_MN}
+            locale={ANTD_LOCALES[locale] ?? en_US}
             theme={{
               token: {
                 fontFamily: "Inter, sans-serif",
