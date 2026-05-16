@@ -87,5 +87,21 @@
     "check": "Шалгах",
     "aria": "Доод цэс",
     "profile": "Хувийн"
+  },
+  "auth": {
+    "login": {
+      "title": "Нэвтрэх",
+      "subtitle": "Системд нэвтрэхийн тулд мэдээллээ оруулна уу",
+      "phoneLabel": "Утасны дугаар",
+      "phonePlaceholder": "Утасны дугаар оруулна уу",
+      "phoneRequired": "Утасны дугаар оруулна уу",
+      "passwordLabel": "Нууц үг",
+      "passwordPlaceholder": "Нууц үгээ оруулна уу",
+      "passwordRequired": "Нууц үг оруулна уу",
+      "submit": "Нэвтрэх",
+      "errorInvalid": "Утасны дугаар эсвэл нууц үг буруу байна.",
+      "errorGeneric": "Нэвтрэх үед алдаа гарлаа. Дахин оролдоно уу.",
+      "metaDescription": "Нэвтрэх хуудас"
+    }
   }
 }

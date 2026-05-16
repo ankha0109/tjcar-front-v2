@@ -87,5 +87,21 @@
     "check": "Проверка",
     "aria": "Нижняя навигация",
     "profile": "Профиль"
+  },
+  "auth": {
+    "login": {
+      "title": "Войти",
+      "subtitle": "Введите данные для входа в систему",
+      "phoneLabel": "Номер телефона",
+      "phonePlaceholder": "Введите номер телефона",
+      "phoneRequired": "Введите номер телефона",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Введите пароль",
+      "passwordRequired": "Введите пароль",
+      "submit": "Войти",
+      "errorInvalid": "Неверный номер телефона или пароль.",
+      "errorGeneric": "Не удалось войти. Попробуйте ещё раз.",
+      "metaDescription": "Страница входа"
+    }
   }
 }

@@ -87,5 +87,21 @@
     "check": "Check",
     "aria": "Bottom navigation",
     "profile": "Profile"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your details to access the platform",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
+      "phoneRequired": "Please enter your phone number",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "passwordRequired": "Please enter your password",
+      "submit": "Sign in",
+      "errorInvalid": "Phone number or password is incorrect.",
+      "errorGeneric": "Sign-in failed. Please try again.",
+      "metaDescription": "Sign-in page"
+    }
   }
 }
