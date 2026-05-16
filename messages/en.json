@@ -33,7 +33,8 @@
       "signout": "Sign out",
       "open": "User menu",
       "homeAria": "TJ Car home",
-      "openMenu": "Open menu"
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
     },
     "auth": {
       "signIn": "Sign in",

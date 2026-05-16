@@ -33,7 +33,8 @@
       "signout": "Выйти",
       "open": "Меню пользователя",
       "homeAria": "TJ Car главная",
-      "openMenu": "Открыть меню"
+      "openMenu": "Открыть меню",
+      "closeMenu": "Закрыть меню"
     },
     "auth": {
       "signIn": "Войти",

@@ -296,7 +296,7 @@ export default function Header() {
               type="button"
               onClick={() => setMobileOpen(false)}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-neutral-100"
-              aria-label={t("menu.openMenu")}
+              aria-label={t("menu.closeMenu")}
             >
               <svg
                 width="16"
