@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
-import "dayjs/locale/mn";
 import FeaturedCard from "@/components/cards/FeaturedCard";
 import FeaturedAuctionFilters from "@/components/cards/FeaturedAuctionFilters";
 import {
@@ -14,8 +13,6 @@ import {
 } from "@/types/filters";
 import { FeaturedCar } from "@/types/featured";
 import { cn } from "@/utils";
-
-dayjs.locale("mn");
 
 type Props = {
   initialCars: FeaturedCar[];

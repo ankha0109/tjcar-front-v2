@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
@@ -69,6 +69,7 @@ function getInitials(user: CustomerUser) {
 
 export default function Header() {
   const t = useTranslations("header");
+  const locale = useLocale();
   const { data: session } = useSession();
   const user = session?.user as CustomerUser | undefined;
 
@@ -198,7 +199,7 @@ export default function Header() {
                         key: "signout",
                         label: t("menu.signout"),
                         danger: true,
-                        onClick: () => signOut({ callbackUrl: "/" }),
+                        onClick: () => signOut({ callbackUrl: `/${locale}` }),
                       },
                     ],
                   }}
@@ -377,7 +378,7 @@ export default function Header() {
                   type="button"
                   onClick={() => {
                     setMobileOpen(false);
-                    signOut({ callbackUrl: "/" });
+                    signOut({ callbackUrl: `/${locale}` });
                   }}
                   className="w-full rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:bg-neutral-50"
                 >

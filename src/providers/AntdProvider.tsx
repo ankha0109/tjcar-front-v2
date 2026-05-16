@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { App, ConfigProvider, message } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -37,12 +38,15 @@ const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale =
 
   dayjs.locale(DAYJS_LOCALES[locale] ?? "en");
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false, refetchOnWindowFocus: false },
-      mutations: { retry: false },
-    },
-  });
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: { retry: false, refetchOnWindowFocus: false },
+          mutations: { retry: false },
+        },
+      }),
+  );
 
   return (
     <SessionProvider session={session} refetchOnWindowFocus={false}>
