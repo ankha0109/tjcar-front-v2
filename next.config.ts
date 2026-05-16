@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
     CDN_URL: "https://storage.googleapis.com",
   },
   reactStrictMode: false,
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
 };
 
 export default nextConfig;

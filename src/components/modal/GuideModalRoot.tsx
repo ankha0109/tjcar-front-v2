@@ -10,9 +10,8 @@ export default function GuideModalRoot() {
 
   React.useEffect(() => {
     const handler = (e: Event) => {
-      const { options } =
-        (e as CustomEvent<{ options: GuideOptions }>).detail ||
-        ({ options: {} } as any);
+      const { options } = (e as CustomEvent<{ options: GuideOptions }>)
+        .detail ?? { options: {} as GuideOptions };
 
       modal.confirm({
         icon: null,

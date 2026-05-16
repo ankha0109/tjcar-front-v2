@@ -21,6 +21,6 @@ export function openGuide(options: GuideOptions) {
   window.dispatchEvent(
     new CustomEvent<GuideEventDetail>(GUIDE_CHANNEL, {
       detail: { options },
-    } as any)
+    })
   );
 }

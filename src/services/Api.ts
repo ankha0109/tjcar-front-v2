@@ -1,48 +1,46 @@
-import { buildQuery } from "@/utils/buildQuery";
-import { signOut } from "next-auth/react";
+import { buildQuery, type QueryParams } from "@/utils/buildQuery";
 
-type RequestOptions = {
+type RequestOptions = Omit<RequestInit, "body" | "headers" | "method"> & {
   headers?: Record<string, string>;
-  useAuth?: boolean;
-  body?: any;
+  body?: unknown;
   method?: string;
-  [key: string]: any;
 };
 
+export class ApiError extends Error {
+  status: number;
+  details: unknown;
+  constructor(status: number, message: string, details?: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.details = details;
+  }
+}
+
 const Api = () => {
-  const publicBaseURL = process.env.NEXT_PUBLIC_API_URL || "";
-  const proxyBaseURL = "/api/proxy";
-  let isSigningOut = false;
+  const baseURL = "/api/proxy";
 
-  const request = async (
+  const request = async <T = unknown>(
     url: string,
-    options: RequestOptions = {}
-  ): Promise<any> => {
-    const {
-      useAuth = true,
-      body,
-      headers: customHeaders,
-      ...restOptions
-    } = options;
-
-    // Authenticated calls → proxy (token is added server-side)
-    // Public calls → direct API URL
-    const baseURL = useAuth ? proxyBaseURL : publicBaseURL;
+    options: RequestOptions = {},
+  ): Promise<T> => {
+    const { body, headers: customHeaders, ...restOptions } = options;
 
     const headers: Record<string, string> = {
       Accept: "application/json",
       ...customHeaders,
     };
 
-    let finalBody = body;
+    let finalBody: BodyInit | undefined;
 
-    if (body) {
+    if (body !== undefined && body !== null) {
       if (typeof FormData !== "undefined" && body instanceof FormData) {
-        // FormData used: Allow browser to set Content-Type header with boundary
-        // Do not set Content-Type manually
+        finalBody = body;
       } else if (typeof body === "object") {
         headers["Content-Type"] = "application/json";
         finalBody = JSON.stringify(body);
+      } else {
+        finalBody = body as BodyInit;
       }
     }
 
@@ -53,39 +51,38 @@ const Api = () => {
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        if (!isSigningOut) {
-          isSigningOut = true;
-          window.dispatchEvent(new Event("token_expired"));
-        }
-      }
       const errorData = await response.json().catch(() => ({}));
-      const error = {
-        status: response.status,
-        message: errorData.message || response.statusText || "Unknown error",
-        details: errorData,
-      };
-      throw error;
+      throw new ApiError(
+        response.status,
+        errorData.message || response.statusText || "Unknown error",
+        errorData,
+      );
     }
 
-    return response.json();
+    return response.json() as Promise<T>;
   };
 
   return {
-    get: (
+    get: <T = unknown>(
       url: string,
-      params: Record<string, any> = {},
-      options: RequestOptions = {}
+      params: QueryParams = {},
+      options: RequestOptions = {},
     ) => {
       const queryString = buildQuery(url, params);
-      return request(queryString, { ...options, method: "GET" });
+      return request<T>(queryString, { ...options, method: "GET" });
     },
-    post: (url: string, body: any, options: RequestOptions = {}) =>
-      request(url, { ...options, method: "POST", body }),
-    put: (url: string, body: any, options: RequestOptions = {}) =>
-      request(url, { ...options, method: "PUT", body }),
-    delete: (url: string, options: RequestOptions = {}) =>
-      request(url, { ...options, method: "DELETE" }),
+    post: <T = unknown>(
+      url: string,
+      body: unknown,
+      options: RequestOptions = {},
+    ) => request<T>(url, { ...options, method: "POST", body }),
+    put: <T = unknown>(
+      url: string,
+      body: unknown,
+      options: RequestOptions = {},
+    ) => request<T>(url, { ...options, method: "PUT", body }),
+    delete: <T = unknown>(url: string, options: RequestOptions = {}) =>
+      request<T>(url, { ...options, method: "DELETE" }),
   };
 };
 

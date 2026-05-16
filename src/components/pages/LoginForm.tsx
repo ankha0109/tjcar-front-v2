@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Form, Input, App } from "antd";
 
 type LoginFormValues = {
@@ -13,6 +13,7 @@ type LoginFormValues = {
 const LoginFormContent = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { message } = App.useApp();
 
   const onFinish = async (values: LoginFormValues) => {
@@ -27,7 +28,8 @@ const LoginFormContent = () => {
       if (result?.error) {
         message.error("Утасны дугаар эсвэл нууц үг буруу байна.");
       } else {
-        router.push("/");
+        const callbackUrl = searchParams.get("callbackUrl") || "/";
+        router.push(callbackUrl);
       }
     } catch (error) {
       console.log("Login error:", error);

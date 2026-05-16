@@ -1,16 +1,15 @@
 "use client";
 
 import { App, ConfigProvider, message } from "antd";
-import { useEffect } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import GuideModalRoot from "@/components/modal/GuideModalRoot";
 import mn_MN from "antd/locale/mn_MN";
 import "dayjs/locale/mn";
-import { SessionProvider, signOut } from "next-auth/react";
-import { AuthProvider } from "@/providers/AuthProvider";
+import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
+import { StyleProvider } from "@ant-design/cssinjs";
 
 dayjs.locale("mn");
 
@@ -21,7 +20,6 @@ type AntdProviderProps = {
 
 const AntdProvider: React.FC<AntdProviderProps> = ({ children, session }) => {
   const [, contextHolder] = message.useMessage();
-
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -35,31 +33,29 @@ const AntdProvider: React.FC<AntdProviderProps> = ({ children, session }) => {
     },
   });
 
-  useEffect(() => {
-    const handleTokenExpired = () => {
-      signOut();
-    };
-
-    window.addEventListener("token_expired", handleTokenExpired);
-
-    return () => {
-      window.removeEventListener("token_expired", handleTokenExpired);
-    };
-  }, []);
-
   return (
     <SessionProvider session={session} refetchOnWindowFocus={false}>
-      <AuthProvider initialSession={session}>
-        <QueryClientProvider client={queryClient}>
-          <ConfigProvider locale={mn_MN}>
-              <App className="w-full mx-auto min-h-screen flex flex-col">
-                {contextHolder}
-                {children}
-                <GuideModalRoot />
-              </App>
-            </ConfigProvider>
-        </QueryClientProvider>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <StyleProvider layer>
+          <ConfigProvider
+            locale={mn_MN}
+            theme={{
+              token: {
+                fontFamily: "Inter, sans-serif",
+                colorPrimary: "#F1472C",
+                colorLink: "#222",
+                colorLinkHover: "#000",
+              },
+            }}
+          >
+            <App className="w-full mx-auto min-h-screen flex flex-col">
+              {contextHolder}
+              {children}
+              <GuideModalRoot />
+            </App>
+          </ConfigProvider>
+        </StyleProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 };

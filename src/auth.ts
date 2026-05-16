@@ -1,5 +1,11 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import {
+  CALLBACK_URL_COOKIE,
+  COMMON_COOKIE_OPTIONS,
+  CSRF_TOKEN_COOKIE,
+  SESSION_TOKEN_COOKIE,
+} from "@/lib/authCookies";
 
 class InvalidCredentials extends CredentialsSignin {
   code = "invalid_credentials";
@@ -21,8 +27,8 @@ interface LoginResponse {
     type: number;
     status: number;
   };
-  accessToken: string;
-  expires: string;
+  token?: string;
+  accessToken?: string;
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -36,14 +42,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         phone: { label: "Утасны дугаар", type: "phone" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, request) {
+      async authorize(credentials) {
         if (!credentials?.phone || !credentials?.password) {
           throw new InvalidCredentials();
         }
 
         let response: Response;
+        const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+        console.log("API_URL:", apiUrl);
         try {
-          response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+          response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -68,8 +76,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const data: LoginResponse = await response.json();
+        const accessToken = data.token ?? data.accessToken;
 
-        if (!data.accessToken || !data.user?.id) {
+        if (!accessToken || !data.user?.id) {
           throw new ServerError();
         }
 
@@ -77,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: String(data.user.id),
           email: data.user.email,
           name: `${data.user.firstname} ${data.user.lastname}`,
-          accessToken: data.accessToken,
+          accessToken,
           user: {
             ...data.user,
             id: String(data.user.id),
@@ -98,14 +107,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.user) {
         session.user = token.user;
       }
-      if (token?.accessToken) {
-        session.accessToken = token.accessToken;
-      }
       return session;
     },
   },
   session: {
     strategy: "jwt",
-    maxAge: 10 * 60 * 60, // 10 hours
+    maxAge: 4 * 60 * 60, // 4 hours, matches Sanctum token TTL
+  },
+  cookies: {
+    sessionToken: {
+      name: SESSION_TOKEN_COOKIE,
+      options: COMMON_COOKIE_OPTIONS,
+    },
+    callbackUrl: {
+      name: CALLBACK_URL_COOKIE,
+      options: COMMON_COOKIE_OPTIONS,
+    },
+    csrfToken: {
+      name: CSRF_TOKEN_COOKIE,
+      options: COMMON_COOKIE_OPTIONS,
+    },
   },
 });

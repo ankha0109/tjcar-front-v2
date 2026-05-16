@@ -1,9 +1,8 @@
 @layer theme, base, antd, components, utilities;
-@import "antd/dist/antd.css" layer(antd);
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #005fee;
+  --color-primary: #f1472c;
   --color-secondary: #6a6a6a;
   --color-link-water: #e6effd;
   --color-comet: #606884;
@@ -25,4 +24,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   /* -moz-osx-font-smoothing: grayscale; */
+  --ant-color-primary: #f1472c;
+}
+
+a {
+  /* background-color: inherit; */
 }

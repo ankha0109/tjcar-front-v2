@@ -1,17 +1,19 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_TOKEN_COOKIE } from "@/lib/authCookies";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
 
 async function handler(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
 ) {
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET });
-
-  if (!token?.accessToken) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production",
+    cookieName: SESSION_TOKEN_COOKIE,
+  });
 
   const { path } = await params;
   const url = `${API_URL}/${path.join("/")}${request.nextUrl.search}`;
@@ -21,13 +23,17 @@ async function handler(
       ? await request.text()
       : undefined;
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+  if (token?.accessToken) {
+    headers.Authorization = `Bearer ${token.accessToken}`;
+  }
+
   const response = await fetch(url, {
     method: request.method,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token.accessToken}`,
-    },
+    headers,
     body,
   });
 

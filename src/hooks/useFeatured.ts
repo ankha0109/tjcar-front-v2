@@ -5,6 +5,6 @@ import { FeaturedCar } from "@/types/featured";
 export const useFeatured = () => {
   return useQuery<FeaturedCar[]>({
     queryKey: ["featured"],
-    queryFn: () => Api.get("/featured", {}, { useAuth: true }),
+    queryFn: () => Api.get("/featured"),
   });
 };
