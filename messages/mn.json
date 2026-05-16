@@ -104,6 +104,81 @@
       "metaDescription": "Нэвтрэх хуудас"
     }
   },
+  "featured": {
+    "card": {
+      "noImage": "Зураг байхгүй",
+      "today": "Өнөөдөр",
+      "tomorrow": "Маргааш",
+      "daysLeft": "{days} хоног",
+      "specs": {
+        "year": "Он",
+        "mileage": "Явсан",
+        "engine": "Мотор",
+        "transmission": "Хурд",
+        "color": "Өнгө",
+        "rate": "Үнэлгээ"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механик"
+      },
+      "startPriceLabel": "Эхлэх үнэ",
+      "mntPriceLabel": "MNT тооцоо",
+      "mileageUnit": "км"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Үйлдвэрлэгч: {value}",
+        "model": "Модел: {value}",
+        "body": "Арал: {value}",
+        "rate": "Үнэлгээ: {value}",
+        "year": "Он: {from}–{to}",
+        "mileage": "Гүйлт: {from} – {to}",
+        "location": "Байршил: {value}"
+      },
+      "placeholders": {
+        "marka": "Үйлдвэрлэгч",
+        "model": "Модел",
+        "body": "Арал",
+        "rate": "Үнэлгээ"
+      },
+      "more": "Илүү шүүлт",
+      "clear": "Цэвэрлэх",
+      "active": "Идэвхтэй",
+      "done": "Болсон",
+      "year": {
+        "label": "Үйлдвэрлэсэн он",
+        "hint": "Машины үйлдвэрлэгдсэн оны хязгаар",
+        "fromPlaceholder": "Эхлэх",
+        "toPlaceholder": "Дуусах"
+      },
+      "mileage": {
+        "label": "Явсан гүйлт",
+        "hint": "Километрийн хязгаар",
+        "minPlaceholder": "Хамгийн бага",
+        "maxPlaceholder": "Хамгийн их"
+      },
+      "location": {
+        "label": "Auction байршил",
+        "hint": "Дуудлагын зах зээлийн байршил",
+        "placeholder": "Байршил сонгох"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Маргааш",
+      "dayAfter": "Нөгөөдөр",
+      "title": "Онцлох машинууд",
+      "subtitleFilter": "Шүүлтэд тохирох {count} машин",
+      "subtitleDefault": "Ойрын 7 хоногийн дуудлагын хуваарь",
+      "updating": "Шинэчилж байна",
+      "totalCars": "Нийт {count} машин",
+      "all": "Бүгд",
+      "carsUnit": "машин",
+      "empty": "Хоосон",
+      "noResultsTitle": "Тохирох машин олдсонгүй",
+      "noResultsDescription": "Шүүлтийн нөхцлөө өөрчилж үзнэ үү"
+    }
+  },
   "dashboard": {
     "sidebar": {
       "title": "Хувийн самбар",

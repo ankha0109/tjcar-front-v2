@@ -104,6 +104,81 @@
       "metaDescription": "Sign-in page"
     }
   },
+  "featured": {
+    "card": {
+      "noImage": "No image",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "daysLeft": "{days} days",
+      "specs": {
+        "year": "Year",
+        "mileage": "Mileage",
+        "engine": "Engine",
+        "transmission": "Transmission",
+        "color": "Color",
+        "rate": "Grade"
+      },
+      "transmission": {
+        "auto": "Automatic",
+        "manual": "Manual"
+      },
+      "startPriceLabel": "Start price",
+      "mntPriceLabel": "MNT estimate",
+      "mileageUnit": "km"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Make: {value}",
+        "model": "Model: {value}",
+        "body": "Body: {value}",
+        "rate": "Grade: {value}",
+        "year": "Year: {from}–{to}",
+        "mileage": "Mileage: {from} – {to}",
+        "location": "Location: {value}"
+      },
+      "placeholders": {
+        "marka": "Make",
+        "model": "Model",
+        "body": "Body",
+        "rate": "Grade"
+      },
+      "more": "More filters",
+      "clear": "Clear",
+      "active": "Active",
+      "done": "Done",
+      "year": {
+        "label": "Production year",
+        "hint": "Range of production years",
+        "fromPlaceholder": "From",
+        "toPlaceholder": "To"
+      },
+      "mileage": {
+        "label": "Mileage",
+        "hint": "Kilometer range",
+        "minPlaceholder": "Min",
+        "maxPlaceholder": "Max"
+      },
+      "location": {
+        "label": "Auction location",
+        "hint": "Marketplace location",
+        "placeholder": "Select location"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Tomorrow",
+      "dayAfter": "Day after tomorrow",
+      "title": "Featured cars",
+      "subtitleFilter": "{count} cars match your filter",
+      "subtitleDefault": "Auctions in the next 7 days",
+      "updating": "Updating",
+      "totalCars": "{count} cars total",
+      "all": "All",
+      "carsUnit": "cars",
+      "empty": "Empty",
+      "noResultsTitle": "No matching cars",
+      "noResultsDescription": "Try adjusting your filters"
+    }
+  },
   "dashboard": {
     "sidebar": {
       "title": "Dashboard",

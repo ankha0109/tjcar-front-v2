@@ -104,6 +104,81 @@
       "metaDescription": "Страница входа"
     }
   },
+  "featured": {
+    "card": {
+      "noImage": "Нет изображения",
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "daysLeft": "{days} дн.",
+      "specs": {
+        "year": "Год",
+        "mileage": "Пробег",
+        "engine": "Двигатель",
+        "transmission": "КПП",
+        "color": "Цвет",
+        "rate": "Оценка"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механика"
+      },
+      "startPriceLabel": "Стартовая цена",
+      "mntPriceLabel": "Оценка MNT",
+      "mileageUnit": "км"
+    },
+    "filters": {
+      "chips": {
+        "marka": "Марка: {value}",
+        "model": "Модель: {value}",
+        "body": "Кузов: {value}",
+        "rate": "Оценка: {value}",
+        "year": "Год: {from}–{to}",
+        "mileage": "Пробег: {from} – {to}",
+        "location": "Площадка: {value}"
+      },
+      "placeholders": {
+        "marka": "Марка",
+        "model": "Модель",
+        "body": "Кузов",
+        "rate": "Оценка"
+      },
+      "more": "Ещё фильтры",
+      "clear": "Очистить",
+      "active": "Активный",
+      "done": "Готово",
+      "year": {
+        "label": "Год выпуска",
+        "hint": "Диапазон лет выпуска",
+        "fromPlaceholder": "От",
+        "toPlaceholder": "До"
+      },
+      "mileage": {
+        "label": "Пробег",
+        "hint": "Диапазон в километрах",
+        "minPlaceholder": "Мин",
+        "maxPlaceholder": "Макс"
+      },
+      "location": {
+        "label": "Площадка аукциона",
+        "hint": "Место проведения аукциона",
+        "placeholder": "Выберите площадку"
+      }
+    },
+    "schedule": {
+      "tomorrow": "Завтра",
+      "dayAfter": "Послезавтра",
+      "title": "Избранные автомобили",
+      "subtitleFilter": "{count} авто соответствуют фильтру",
+      "subtitleDefault": "Аукционы на ближайшие 7 дней",
+      "updating": "Обновление",
+      "totalCars": "Всего {count} авто",
+      "all": "Все",
+      "carsUnit": "авто",
+      "empty": "Пусто",
+      "noResultsTitle": "Подходящих авто не найдено",
+      "noResultsDescription": "Измените параметры фильтра"
+    }
+  },
   "dashboard": {
     "sidebar": {
       "title": "Личный кабинет",

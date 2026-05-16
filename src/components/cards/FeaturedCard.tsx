@@ -3,19 +3,13 @@
 import { Rate } from "antd";
 import Image from "next/image";
 import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
 import { FeaturedCar } from "@/types/featured";
 import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { cn } from "@/utils";
 
 type Props = {
   car: FeaturedCar;
-};
-
-const KPP_LABELS: Record<string, string> = {
-  AT: "Автомат",
-  FAT: "Автомат",
-  IAT: "Автомат",
-  MT: "Механик",
 };
 
 const COLOR_SWATCH: Record<string, { bg: string; ring?: boolean }> = {
@@ -59,34 +53,48 @@ function getColorSwatch(name: string) {
   return COLOR_SWATCH[key] ?? { bg: "#9ca3af" };
 }
 
-function getCountdown(dateStr: string): {
-  label: string;
-  urgent: boolean;
-  passed: boolean;
-} | null {
+type CountdownResult =
+  | { kind: "today"; urgent: true; passed: false }
+  | { kind: "tomorrow"; urgent: true; passed: false }
+  | { kind: "days"; days: number; urgent: boolean; passed: false }
+  | { kind: "date"; label: string; urgent: false; passed: true }
+  | null;
+
+function getCountdown(dateStr: string): CountdownResult {
   if (!dateStr) return null;
   const d = dayjs(dateStr);
   if (!d.isValid()) return null;
   const days = d.startOf("day").diff(dayjs().startOf("day"), "day");
-  if (days < 0) return { label: d.format("YYYY/MM/DD"), urgent: false, passed: true };
-  if (days === 0) return { label: "Өнөөдөр", urgent: true, passed: false };
-  if (days === 1) return { label: "Маргааш", urgent: true, passed: false };
-  if (days <= 3) return { label: `${days} хоног`, urgent: true, passed: false };
-  return { label: `${days} хоног`, urgent: false, passed: false };
+  if (days < 0) return { kind: "date", label: d.format("YYYY/MM/DD"), urgent: false, passed: true };
+  if (days === 0) return { kind: "today", urgent: true, passed: false };
+  if (days === 1) return { kind: "tomorrow", urgent: true, passed: false };
+  if (days <= 3) return { kind: "days", days, urgent: true, passed: false };
+  return { kind: "days", days, urgent: false, passed: false };
 }
 
 export default function FeaturedCard({ car }: Props) {
+  const t = useTranslations("featured.card");
+
   const images = car.IMAGES?.split("#").filter(Boolean) ?? [];
   const firstImage = images[0];
   const photoCount = images.length;
 
   const startPrice = Number(car.START || 0).toLocaleString();
   const mntPrice = (car.PRICE_MNT ?? 0).toLocaleString();
-  const transmission = KPP_LABELS[car.KPP] ?? car.KPP;
+  const transmission =
+    car.KPP === "MT" ? t("transmission.manual") :
+    car.KPP && ["AT", "FAT", "IAT"].includes(car.KPP) ? t("transmission.auto") :
+    car.KPP;
   const mileageKm = Number(car.MILEAGE || 0).toLocaleString();
   const engine = car.ENG_V ? `${(Number(car.ENG_V) / 100).toFixed(1)}L` : "—";
   const rate = Number(car.RATE) || 0;
   const countdown = getCountdown(car.AUCTION_DATE);
+  const countdownLabel = countdown && (
+    countdown.kind === "today" ? t("today") :
+    countdown.kind === "tomorrow" ? t("tomorrow") :
+    countdown.kind === "days" ? t("daysLeft", { days: countdown.days }) :
+    countdown.label
+  );
   const colorSwatch = getColorSwatch(car.COLOR);
 
   return (
@@ -104,7 +112,7 @@ export default function FeaturedCard({ car }: Props) {
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-neutral-400">
-            Зураг байхгүй
+            {t("noImage")}
           </div>
         )}
 
@@ -149,7 +157,7 @@ export default function FeaturedCard({ car }: Props) {
                 />
               </span>
             )}
-            {countdown.label}
+            {countdownLabel}
           </div>
         )}
 
@@ -208,12 +216,12 @@ export default function FeaturedCard({ car }: Props) {
 
         {/* Spec grid */}
         <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-neutral-50/70 px-3 py-2.5 ring-1 ring-neutral-100">
-          <Spec label="Он" value={car.YEAR} />
-          <Spec label="Явсан" value={`${mileageKm} км`} />
-          <Spec label="Мотор" value={engine} />
-          <Spec label="Хурд" value={transmission} />
+          <Spec label={t("specs.year")} value={car.YEAR} />
+          <Spec label={t("specs.mileage")} value={`${mileageKm} ${t("mileageUnit")}`} />
+          <Spec label={t("specs.engine")} value={engine} />
+          <Spec label={t("specs.transmission")} value={transmission} />
           <Spec
-            label="Өнгө"
+            label={t("specs.color")}
             value={
               <span className="inline-flex items-center gap-1.5 capitalize">
                 <span
@@ -228,7 +236,7 @@ export default function FeaturedCard({ car }: Props) {
             }
           />
           <Spec
-            label="Үнэлгээ"
+            label={t("specs.rate")}
             value={rate > 0 ? `${rate.toFixed(1)} / 5` : "—"}
           />
         </div>
@@ -237,7 +245,7 @@ export default function FeaturedCard({ car }: Props) {
         <div className="mt-auto flex items-end justify-between gap-2 border-t border-dashed border-neutral-200 pt-3">
           <div className="min-w-0">
             <p className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-neutral-400">
-              Эхлэх үнэ
+              {t("startPriceLabel")}
             </p>
             <p className="text-[12.5px] font-semibold tabular-nums text-neutral-600">
               ¥{startPrice}
@@ -245,7 +253,7 @@ export default function FeaturedCard({ car }: Props) {
           </div>
           <div className="text-right">
             <p className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-neutral-400">
-              MNT тооцоо
+              {t("mntPriceLabel")}
             </p>
             <div className="flex items-center justify-end gap-0.5">
               <TugrigIcon size={14} className="text-neutral-900" />
