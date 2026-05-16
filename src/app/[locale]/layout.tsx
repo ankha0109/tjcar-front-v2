@@ -44,6 +44,9 @@ async function safeAuth() {
   try {
     return await auth();
   } catch {
+    // JWT decryption failed (stale cookie / rotated secret). Render as guest;
+    // proxy middleware uses getToken() which silently returns null on bad JWTs
+    // and already routes protected paths through /auth/login.
     return null;
   }
 }
