@@ -1,0 +1,11 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "language": {
+      "label": "Language",
+      "mn": "Монгол",
+      "en": "English",
+      "ru": "Русский"
+    }
+  }
+}
