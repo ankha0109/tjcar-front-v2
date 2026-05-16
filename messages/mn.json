@@ -7,5 +7,12 @@
       "en": "English",
       "ru": "Русский"
     }
+  },
+  "metadata": {
+    "title": {
+      "default": "Эхлэл",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Японы машин дуудлага худалдаа"
   }
 }

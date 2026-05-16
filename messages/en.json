@@ -7,5 +7,12 @@
       "en": "English",
       "ru": "Русский"
     }
+  },
+  "metadata": {
+    "title": {
+      "default": "Home",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Japanese car auction service"
   }
 }

@@ -7,5 +7,12 @@
       "en": "English",
       "ru": "Русский"
     }
+  },
+  "metadata": {
+    "title": {
+      "default": "Главная",
+      "template": "%s | TJ Car"
+    },
+    "description": "TJ Car - Японские автомобильные аукционы"
   }
 }

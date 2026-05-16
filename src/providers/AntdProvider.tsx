@@ -16,9 +16,10 @@ dayjs.locale("mn");
 type AntdProviderProps = {
   children?: React.ReactNode;
   session?: Session | null;
+  locale?: string;
 };
 
-const AntdProvider: React.FC<AntdProviderProps> = ({ children, session }) => {
+const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale: _locale }) => {
   const [, contextHolder] = message.useMessage();
 
   const queryClient = new QueryClient({
