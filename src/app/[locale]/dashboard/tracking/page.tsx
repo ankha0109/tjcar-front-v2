@@ -1,32 +1,41 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import EmptyState from "@/components/dashboard/EmptyState";
 import SectionMast from "@/components/dashboard/SectionMast";
 
-export default function TrackingPage() {
+export default async function TrackingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("dashboard.tracking");
+
   return (
     <>
       <DashboardHeader
-        title="Захиалсан машин"
-        description="Хяналтад нэмсэн машинуудаа удирдах."
+        title={t("title")}
+        description={t("description")}
       />
 
       <section className="space-y-4">
-        <SectionMast title="Хяналтад буй машинууд" />
+        <SectionMast title={t("listHeading")} />
         <EmptyState
-          title="Захиалга алга"
-          description="Дуудлагаас сонирхсон машинаа хяналтад нэмээрэй."
-          cta={{ label: "Машин хайх", href: "/cars" }}
+          title={t("listEmptyTitle")}
+          description={t("listEmptyDescription")}
+          cta={{ label: t("listEmptyCta"), href: "/cars" }}
         />
       </section>
 
       <section className="space-y-4">
         <SectionMast
-          title="Удахгүй дуусах"
-          description="24 цагийн дотор дуусах гэж буй захиалгууд."
+          title={t("endingHeading")}
+          description={t("endingSubheading")}
         />
         <EmptyState
-          title="Дуусах гэж буй захиалга алга"
-          description="Хяналт нэмсний дараа энд харагдана."
+          title={t("endingEmptyTitle")}
+          description={t("endingEmptyDescription")}
         />
       </section>
     </>

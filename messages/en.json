@@ -103,5 +103,91 @@
       "errorGeneric": "Sign-in failed. Please try again.",
       "metaDescription": "Sign-in page"
     }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Dashboard",
+      "menuHeading": "Menu",
+      "overview": "Overview",
+      "profile": "Profile",
+      "bids": "My bids",
+      "reports": "My reports",
+      "tracking": "Tracked cars"
+    },
+    "home": {
+      "guestName": "Guest",
+      "greeting": "Hi, {name}",
+      "subtitle": "Your auction activity in one place.",
+      "quickActions": {
+        "newBid": { "title": "New bid", "description": "Join an auction" },
+        "track": { "title": "Track a car", "description": "Add to watchlist" },
+        "report": { "title": "Check accident", "description": "Get a VIN report" }
+      },
+      "stats": {
+        "bidsLabel": "Bids sent",
+        "bidsHint": "{count} pending",
+        "reportsLabel": "My reports",
+        "reportsHint": "total created",
+        "trackingLabel": "Tracked cars",
+        "trackingHintEnding": "{count} ending today",
+        "trackingHintActive": "in watchlist"
+      },
+      "recent": {
+        "title": "Recent activity",
+        "description": "Your latest actions will appear here.",
+        "emptyTitle": "No activity yet",
+        "emptyDescription": "Pick a car from an auction and submit your first bid.",
+        "emptyCta": "Find cars"
+      },
+      "quick": {
+        "title": "Quick actions",
+        "description": "Most-used actions."
+      }
+    },
+    "bids": {
+      "title": "My bids",
+      "description": "Track and manage your bids.",
+      "activeHeading": "Active bids",
+      "activeEmptyTitle": "No active bids",
+      "activeEmptyDescription": "Pick a car from an auction and submit a bid to get started.",
+      "activeEmptyCta": "Browse auctions",
+      "historyHeading": "History",
+      "historySubheading": "Bids you've sent before.",
+      "historyEmptyTitle": "No past bids",
+      "historyEmptyDescription": "Every bid you send will be archived here."
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Personal info and preferences.",
+      "basicHeading": "Basics",
+      "name": "Name",
+      "email": "Email",
+      "userId": "User ID",
+      "createdAt": "Created",
+      "settingsHeading": "Settings",
+      "settingsSubheading": "Notifications, currency, language preferences.",
+      "settingsComingTitle": "Settings are coming soon",
+      "settingsComingDescription": "Available in an upcoming release."
+    },
+    "tracking": {
+      "title": "Tracked cars",
+      "description": "Manage your watchlist.",
+      "listHeading": "Watchlist",
+      "listEmptyTitle": "Watchlist is empty",
+      "listEmptyDescription": "Add cars you're interested in from active auctions.",
+      "listEmptyCta": "Find cars",
+      "endingHeading": "Ending soon",
+      "endingSubheading": "Auctions ending in the next 24 hours.",
+      "endingEmptyTitle": "Nothing ending soon",
+      "endingEmptyDescription": "Items you add will appear here."
+    },
+    "reports": {
+      "title": "My reports",
+      "description": "Accident and history reports by VIN.",
+      "listHeading": "Created reports",
+      "emptyTitle": "No reports yet",
+      "emptyDescription": "Enter a VIN to run an accident and history check.",
+      "emptyCta": "New report"
+    }
   }
 }

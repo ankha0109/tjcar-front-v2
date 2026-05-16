@@ -103,5 +103,91 @@
       "errorGeneric": "Не удалось войти. Попробуйте ещё раз.",
       "metaDescription": "Страница входа"
     }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Личный кабинет",
+      "menuHeading": "Меню",
+      "overview": "Обзор",
+      "profile": "Профиль",
+      "bids": "Мои ставки",
+      "reports": "Мои отчёты",
+      "tracking": "Отслеживаемые авто"
+    },
+    "home": {
+      "guestName": "Гость",
+      "greeting": "Привет, {name}",
+      "subtitle": "Ваша активность на аукционах — в одном месте.",
+      "quickActions": {
+        "newBid": { "title": "Новая ставка", "description": "Принять участие в аукционе" },
+        "track": { "title": "Отслеживать авто", "description": "Добавить в список" },
+        "report": { "title": "Проверка ДТП", "description": "Отчёт по VIN" }
+      },
+      "stats": {
+        "bidsLabel": "Отправленные ставки",
+        "bidsHint": "{count} в ожидании",
+        "reportsLabel": "Мои отчёты",
+        "reportsHint": "всего создано",
+        "trackingLabel": "Отслеживаемые авто",
+        "trackingHintEnding": "{count} заканчиваются сегодня",
+        "trackingHintActive": "в отслеживании"
+      },
+      "recent": {
+        "title": "Последняя активность",
+        "description": "Здесь появятся ваши последние действия.",
+        "emptyTitle": "Активности пока нет",
+        "emptyDescription": "Выберите авто на аукционе и отправьте первую ставку.",
+        "emptyCta": "Найти авто"
+      },
+      "quick": {
+        "title": "Быстрые действия",
+        "description": "Самые используемые действия."
+      }
+    },
+    "bids": {
+      "title": "Мои ставки",
+      "description": "Отслеживайте и управляйте своими ставками.",
+      "activeHeading": "Активные ставки",
+      "activeEmptyTitle": "Активных ставок нет",
+      "activeEmptyDescription": "Выберите авто на аукционе и сделайте первую ставку.",
+      "activeEmptyCta": "Открыть аукционы",
+      "historyHeading": "История",
+      "historySubheading": "Ранее отправленные ставки.",
+      "historyEmptyTitle": "Истории ставок нет",
+      "historyEmptyDescription": "Каждая отправленная ставка будет сохранена здесь."
+    },
+    "profile": {
+      "title": "Профиль",
+      "description": "Личные данные и настройки.",
+      "basicHeading": "Основное",
+      "name": "Имя",
+      "email": "E-mail",
+      "userId": "ID пользователя",
+      "createdAt": "Создан",
+      "settingsHeading": "Настройки",
+      "settingsSubheading": "Уведомления, валюта, язык.",
+      "settingsComingTitle": "Раздел настроек скоро будет готов",
+      "settingsComingDescription": "Будет доступен в одном из ближайших обновлений."
+    },
+    "tracking": {
+      "title": "Отслеживаемые авто",
+      "description": "Управляйте списком наблюдения.",
+      "listHeading": "Список наблюдения",
+      "listEmptyTitle": "Список пуст",
+      "listEmptyDescription": "Добавляйте интересующие авто из активных аукционов.",
+      "listEmptyCta": "Найти авто",
+      "endingHeading": "Заканчиваются скоро",
+      "endingSubheading": "Аукционы, которые закончатся в течение 24 часов.",
+      "endingEmptyTitle": "Ничего не заканчивается",
+      "endingEmptyDescription": "Добавленные элементы появятся здесь."
+    },
+    "reports": {
+      "title": "Мои отчёты",
+      "description": "Отчёты по ДТП и истории по VIN.",
+      "listHeading": "Созданные отчёты",
+      "emptyTitle": "Отчётов пока нет",
+      "emptyDescription": "Введите VIN, чтобы получить отчёт о ДТП и истории.",
+      "emptyCta": "Новый отчёт"
+    }
   }
 }

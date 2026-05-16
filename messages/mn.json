@@ -103,5 +103,91 @@
       "errorGeneric": "Нэвтрэх үед алдаа гарлаа. Дахин оролдоно уу.",
       "metaDescription": "Нэвтрэх хуудас"
     }
+  },
+  "dashboard": {
+    "sidebar": {
+      "title": "Хувийн самбар",
+      "menuHeading": "Цэс",
+      "overview": "Тойм",
+      "profile": "Профайл",
+      "bids": "Миний саналууд",
+      "reports": "Миний репортууд",
+      "tracking": "Захиалсан машин"
+    },
+    "home": {
+      "guestName": "Зочин",
+      "greeting": "Сайн уу, {name}",
+      "subtitle": "Таны дуудлагын идэвх нэг дороос.",
+      "quickActions": {
+        "newBid": { "title": "Шинэ санал", "description": "Дуудлагад оролцох" },
+        "track": { "title": "Машин хянах", "description": "Захиалгад нэмэх" },
+        "report": { "title": "Осол шалгах", "description": "VIN-ээр репорт авах" }
+      },
+      "stats": {
+        "bidsLabel": "Илгээсэн саналууд",
+        "bidsHint": "{count} хүлээгдэж байна",
+        "reportsLabel": "Миний репортууд",
+        "reportsHint": "нийт үүсгэсэн",
+        "trackingLabel": "Захиалсан машин",
+        "trackingHintEnding": "{count} өнөөдөр дуусна",
+        "trackingHintActive": "хяналтад буй"
+      },
+      "recent": {
+        "title": "Сүүлийн идэвх",
+        "description": "Таны хамгийн сүүлийн үйлдлүүд энд харагдана.",
+        "emptyTitle": "Идэвх алга",
+        "emptyDescription": "Дуудлагаас машин сонгож, эхний саналаа илгээгээрэй.",
+        "emptyCta": "Машин хайх"
+      },
+      "quick": {
+        "title": "Шуурхай үйлдэл",
+        "description": "Хамгийн их хэрэглэгддэг үйлдлүүд."
+      }
+    },
+    "bids": {
+      "title": "Миний саналууд",
+      "description": "Илгээсэн саналуудыг хянах, удирдах.",
+      "activeHeading": "Идэвхтэй саналууд",
+      "activeEmptyTitle": "Идэвхтэй санал алга",
+      "activeEmptyDescription": "Дуудлагаас машин сонгож саналаа илгээж эхлээрэй.",
+      "activeEmptyCta": "Дуудлага үзэх",
+      "historyHeading": "Түүх",
+      "historySubheading": "Өмнө илгээсэн саналууд.",
+      "historyEmptyTitle": "Түүхэн санал алга",
+      "historyEmptyDescription": "Илгээсэн санал бүр энд хадгалагдана."
+    },
+    "profile": {
+      "title": "Профайл",
+      "description": "Хувийн мэдээлэл болон тохиргоо.",
+      "basicHeading": "Үндсэн мэдээлэл",
+      "name": "Нэр",
+      "email": "И-мэйл",
+      "userId": "Хэрэглэгчийн ID",
+      "createdAt": "Үүсгэгдсэн",
+      "settingsHeading": "Тохиргоо",
+      "settingsSubheading": "Мэдэгдэл, валют, хэлний тохиргоо.",
+      "settingsComingTitle": "Тохиргооны хэсэг бэлэн болж байна",
+      "settingsComingDescription": "Удахгүй хэрэглэгдэх боломжтой болно."
+    },
+    "tracking": {
+      "title": "Захиалсан машин",
+      "description": "Хяналтад нэмсэн машинуудаа удирдах.",
+      "listHeading": "Хяналтад буй машинууд",
+      "listEmptyTitle": "Захиалга алга",
+      "listEmptyDescription": "Дуудлагаас сонирхсон машинаа хяналтад нэмээрэй.",
+      "listEmptyCta": "Машин хайх",
+      "endingHeading": "Удахгүй дуусах",
+      "endingSubheading": "24 цагийн дотор дуусах гэж буй захиалгууд.",
+      "endingEmptyTitle": "Дуусах гэж буй захиалга алга",
+      "endingEmptyDescription": "Хяналт нэмсний дараа энд харагдана."
+    },
+    "reports": {
+      "title": "Миний репортууд",
+      "description": "VIN-ээр авсан осол, түүхийн репортууд.",
+      "listHeading": "Үүсгэсэн репортууд",
+      "emptyTitle": "Репорт үүсгээгүй байна",
+      "emptyDescription": "VIN дугаар оруулж осол, түүхийн шалгалт хийнэ үү.",
+      "emptyCta": "Шинэ репорт"
+    }
   }
 }

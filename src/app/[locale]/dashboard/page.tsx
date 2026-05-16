@@ -1,3 +1,4 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { auth } from "@/auth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import EmptyState from "@/components/dashboard/EmptyState";
@@ -5,27 +6,17 @@ import SectionMast from "@/components/dashboard/SectionMast";
 import StatCard from "@/components/dashboard/StatCard";
 import { Link } from "@/i18n/navigation";
 
-const QUICK_ACTIONS = [
-  {
-    title: "Шинэ санал",
-    description: "Дуудлагад оролцох",
-    href: "/cars",
-  },
-  {
-    title: "Машин хянах",
-    description: "Захиалгад нэмэх",
-    href: "/cars",
-  },
-  {
-    title: "Осол шалгах",
-    description: "VIN-ээр репорт авах",
-    href: "/reports/check",
-  },
-];
+export default async function DashboardIndex({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("dashboard.home");
 
-export default async function DashboardIndex() {
   const session = await auth();
-  const firstName = session?.user?.name?.trim().split(" ")[0] || "Зочин";
+  const firstName = session?.user?.name?.trim().split(" ")[0] || t("guestName");
 
   // TODO: wire APIs for personal counts (bids/reports/tracking)
   const stats = {
@@ -34,33 +25,51 @@ export default async function DashboardIndex() {
     tracking: { count: 0, endingToday: 0 },
   };
 
+  const QUICK_ACTIONS = [
+    {
+      title: t("quickActions.newBid.title"),
+      description: t("quickActions.newBid.description"),
+      href: "/cars",
+    },
+    {
+      title: t("quickActions.track.title"),
+      description: t("quickActions.track.description"),
+      href: "/cars",
+    },
+    {
+      title: t("quickActions.report.title"),
+      description: t("quickActions.report.description"),
+      href: "/reports/check",
+    },
+  ];
+
   return (
     <>
       <DashboardHeader
-        title={`Сайн уу, ${firstName}`}
-        description="Таны дуудлагын идэвх нэг дороос."
+        title={t("greeting", { name: firstName })}
+        description={t("subtitle")}
       />
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
-            label="Илгээсэн саналууд"
+            label={t("stats.bidsLabel")}
             value={stats.bids.count}
-            hint={`${stats.bids.pending} хүлээгдэж байна`}
+            hint={t("stats.bidsHint", { count: stats.bids.pending })}
             href="/dashboard/bids"
           />
           <StatCard
-            label="Миний репортууд"
+            label={t("stats.reportsLabel")}
             value={stats.reports.count}
-            hint="нийт үүсгэсэн"
+            hint={t("stats.reportsHint")}
             href="/dashboard/reports"
           />
           <StatCard
-            label="Захиалсан машин"
+            label={t("stats.trackingLabel")}
             value={stats.tracking.count}
             hint={
               stats.tracking.endingToday > 0
-                ? `${stats.tracking.endingToday} өнөөдөр дуусна`
-                : "хяналтад буй"
+                ? t("stats.trackingHintEnding", { count: stats.tracking.endingToday })
+                : t("stats.trackingHintActive")
             }
             href="/dashboard/tracking"
           />
@@ -68,13 +77,13 @@ export default async function DashboardIndex() {
 
         <section className="space-y-4">
           <SectionMast
-            title="Сүүлийн идэвх"
-            description="Таны хамгийн сүүлийн үйлдлүүд энд харагдана."
+            title={t("recent.title")}
+            description={t("recent.description")}
           />
           <EmptyState
-            title="Идэвх алга"
-            description="Дуудлагаас машин сонгож, эхний саналаа илгээгээрэй."
-            cta={{ label: "Машин хайх", href: "/cars" }}
+            title={t("recent.emptyTitle")}
+            description={t("recent.emptyDescription")}
+            cta={{ label: t("recent.emptyCta"), href: "/cars" }}
             icon={
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
@@ -86,8 +95,8 @@ export default async function DashboardIndex() {
 
         <section className="space-y-4">
           <SectionMast
-            title="Шуурхай үйлдэл"
-            description="Хамгийн их хэрэглэгддэг үйлдлүүд."
+            title={t("quick.title")}
+            description={t("quick.description")}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {QUICK_ACTIONS.map((action) => (
