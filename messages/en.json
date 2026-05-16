@@ -40,5 +40,52 @@
       "signIn": "Sign in",
       "signUp": "Sign up"
     }
+  },
+  "footer": {
+    "newsletter": {
+      "badge": "Newsletter",
+      "heading": "Get fresh auctions in your inbox",
+      "blurb": "Curated picks from Japan and Korea, delivered daily. Unsubscribe anytime."
+    },
+    "about": "A reliable service for ordering and importing cars from Japan and Korea. We stand by you from order to delivery.",
+    "followLabel": "Follow us",
+    "cars": {
+      "heading": "Cars",
+      "japan": "Japan cars",
+      "korea": "Korea cars",
+      "ready": "In-stock cars",
+      "report": "Accident report"
+    },
+    "services": {
+      "heading": "Services",
+      "dashboard": "Dashboard",
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    },
+    "contact": {
+      "heading": "Contact",
+      "phone": "+976 7000 0000",
+      "address": "Ulaanbaatar, Mongolia",
+      "hours": "Mon–Sat: 09:00 – 18:00"
+    },
+    "bottom": {
+      "rights": "All rights reserved.",
+      "terms": "Terms of service",
+      "privacy": "Privacy policy",
+      "systemOk": "Systems operational"
+    }
+  },
+  "newsletter": {
+    "submit": "Subscribe",
+    "success": "✓ Subscribed. New auctions will arrive in your inbox.",
+    "error": "Something went wrong. Please try again."
+  },
+  "mobileNav": {
+    "japan": "Japan",
+    "korea": "Korea",
+    "ready": "In-stock",
+    "check": "Check",
+    "aria": "Bottom navigation",
+    "profile": "Profile"
   }
 }

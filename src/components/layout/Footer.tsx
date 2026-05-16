@@ -1,6 +1,9 @@
+"use client";
+
 import { Link } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import NewsletterForm from "@/components/layout/NewsletterForm";
+import { useTranslations } from "next-intl";
 
 const SOCIAL_LINKS = [
   {
@@ -106,6 +109,8 @@ const ContactIcon = ({
 };
 
 export default function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="mt-12 hidden border-t border-neutral-200 bg-white md:block">
       {/* Newsletter strip */}
@@ -118,14 +123,13 @@ export default function Footer() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
                 </span>
-                Шинэ мэдээ
+                {t("newsletter.badge")}
               </span>
               <h3 className="mt-3 text-[20px] font-semibold tracking-tight text-neutral-900 sm:text-[22px]">
-                Шинэ дуудлагуудыг и-мэйлээр аваарай
+                {t("newsletter.heading")}
               </h3>
               <p className="mt-1.5 max-w-xl text-[13px] text-neutral-500">
-                Япон, Солонгосын онцлох машинуудыг өдөр бүр шүүж танд хүргэнэ.
-                Хэдийд ч бүртгэлээ цуцалж болно.
+                {t("newsletter.blurb")}
               </p>
             </div>
             <div className="lg:justify-self-end lg:w-full lg:max-w-md">
@@ -143,13 +147,12 @@ export default function Footer() {
               <Logo className="h-10 w-auto" />
             </Link>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-neutral-500">
-              Япон, Солонгосоос машин захиалах, оруулах найдвартай үйлчилгээ.
-              Захиалгаас хүлээн авах хүртэл бид таны хажууд.
+              {t("about")}
             </p>
 
             <div className="mt-5">
               <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-400">
-                Биднийг дагах
+                {t("followLabel")}
               </p>
               <ul className="flex items-center gap-2">
                 {SOCIAL_LINKS.map((s) => (
@@ -171,30 +174,30 @@ export default function Footer() {
 
           <div className="md:col-span-1 lg:col-span-2">
             <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
-              Машинууд
+              {t("cars.heading")}
             </h4>
             <ul className="space-y-2">
-              <FooterLink href="/">Япон машин</FooterLink>
-              <FooterLink href="/korea">Солонгос машин</FooterLink>
-              <FooterLink href="/cars">Бэлэн машин</FooterLink>
-              <FooterLink href="/report">Осол аваар шалгах</FooterLink>
+              <FooterLink href="/">{t("cars.japan")}</FooterLink>
+              <FooterLink href="/korea">{t("cars.korea")}</FooterLink>
+              <FooterLink href="/cars">{t("cars.ready")}</FooterLink>
+              <FooterLink href="/report">{t("cars.report")}</FooterLink>
             </ul>
           </div>
 
           <div className="md:col-span-1 lg:col-span-2">
             <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
-              Үйлчилгээ
+              {t("services.heading")}
             </h4>
             <ul className="space-y-2">
-              <FooterLink href="/dashboard">Хувийн кабинет</FooterLink>
-              <FooterLink href="/auth/login">Нэвтрэх</FooterLink>
-              <FooterLink href="/auth/register">Бүртгүүлэх</FooterLink>
+              <FooterLink href="/dashboard">{t("services.dashboard")}</FooterLink>
+              <FooterLink href="/auth/login">{t("services.signIn")}</FooterLink>
+              <FooterLink href="/auth/register">{t("services.signUp")}</FooterLink>
             </ul>
           </div>
 
           <div className="col-span-2 md:col-span-2 lg:col-span-4">
             <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
-              Холбоо барих
+              {t("contact.heading")}
             </h4>
             <ul className="space-y-2.5 text-sm text-neutral-500">
               <li>
@@ -203,7 +206,7 @@ export default function Footer() {
                   className="inline-flex items-center gap-2 transition-colors hover:text-neutral-900"
                 >
                   <ContactIcon type="phone" />
-                  <span className="tabular-nums">+976 7000 0000</span>
+                  <span className="tabular-nums">{t("contact.phone")}</span>
                 </a>
               </li>
               <li>
@@ -217,11 +220,11 @@ export default function Footer() {
               </li>
               <li className="inline-flex items-start gap-2">
                 <ContactIcon type="pin" />
-                <span>Улаанбаатар хот, Монгол улс</span>
+                <span>{t("contact.address")}</span>
               </li>
               <li className="inline-flex items-start gap-2">
                 <ContactIcon type="clock" />
-                <span>Даваа–Бямба: 09:00 – 18:00</span>
+                <span>{t("contact.hours")}</span>
               </li>
             </ul>
           </div>
@@ -232,27 +235,26 @@ export default function Footer() {
       <div className="border-t border-neutral-100">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-4 py-5 sm:flex-row sm:items-center sm:px-6 lg:px-8">
           <p className="text-[12px] text-neutral-500">
-            &copy; {new Date().getFullYear()} TJ Car. Бүх эрх хуулиар
-            хамгаалагдсан.
+            &copy; {new Date().getFullYear()} TJ Car. {t("bottom.rights")}
           </p>
           <div className="flex items-center gap-3 text-[12px] text-neutral-500">
             <Link
               href="#"
               className="transition-colors hover:text-neutral-900"
             >
-              Үйлчилгээний нөхцөл
+              {t("bottom.terms")}
             </Link>
             <span className="text-neutral-300">·</span>
             <Link
               href="#"
               className="transition-colors hover:text-neutral-900"
             >
-              Нууцлалын бодлого
+              {t("bottom.privacy")}
             </Link>
             <span className="text-neutral-300">·</span>
             <span className="inline-flex items-center gap-1">
               <span className="h-1 w-1 rounded-full bg-emerald-500" />
-              Систем хэвийн
+              {t("bottom.systemOk")}
             </span>
           </div>
         </div>

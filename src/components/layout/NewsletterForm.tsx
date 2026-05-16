@@ -2,6 +2,7 @@
 
 import { Button, Input } from "antd";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/utils";
 
 type Status = "idle" | "loading" | "done" | "error";
@@ -24,6 +25,7 @@ function MailIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function NewsletterForm() {
+  const t = useTranslations("newsletter");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -60,7 +62,7 @@ export default function NewsletterForm() {
           loading={status === "loading"}
           className="!h-10 !rounded-lg !px-5 !font-medium"
         >
-          Бүртгүүлэх
+          {t("submit")}
         </Button>
       </div>
       <p
@@ -74,9 +76,9 @@ export default function NewsletterForm() {
         )}
       >
         {status === "done"
-          ? "✓ Амжилттай бүртгэгдлээ. Танай и-мэйл рүү шинэ дуудлага илгээгдэнэ."
+          ? t("success")
           : status === "error"
-            ? "Алдаа гарлаа. Дахин оролдоно уу."
+            ? t("error")
             : " "}
       </p>
     </form>
