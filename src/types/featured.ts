@@ -30,4 +30,6 @@ export type FeaturedCar = {
   MODEL_NAME: string;
   AUCTION_DATE: string;
   AUCTION_TYPE: string;
+  SERIAL?: string;
+  INFO?: string;
 };

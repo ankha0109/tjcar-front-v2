@@ -57,6 +57,22 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function ChevronIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
 export default function FeaturedAuctionFilters({
   value,
   onChange,
@@ -64,14 +80,13 @@ export default function FeaturedAuctionFilters({
   optionsLoading,
 }: Props) {
   const t = useTranslations("featured.filters");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const set = <K extends keyof FilterValues>(key: K, v: FilterValues[K]) => {
     onChange({ ...value, [key]: v });
   };
 
   const setMarka = (marka: string | null) => {
-    // Reset dependent fields when manufacturer changes
     onChange({ ...value, marka, model: null });
   };
 
@@ -97,16 +112,6 @@ export default function FeaturedAuctionFilters({
     () => (options?.locations ?? []).map((v) => ({ value: v, label: v })),
     [options?.locations],
   );
-
-  const advancedCount = useMemo(() => {
-    let n = 0;
-    if (value.yearFrom != null) n++;
-    if (value.yearTo != null) n++;
-    if (value.mileageFrom != null) n++;
-    if (value.mileageTo != null) n++;
-    if (value.location) n++;
-    return n;
-  }, [value]);
 
   const yearFromOptions = useMemo(
     () =>
@@ -140,13 +145,290 @@ export default function FeaturedAuctionFilters({
     [value.mileageFrom],
   );
 
+  const vehicleCount =
+    (value.marka ? 1 : 0) + (value.model ? 1 : 0) + (value.body ? 1 : 0);
+  const auctionCount = (value.rate ? 1 : 0) + (value.lot ? 1 : 0);
+  const advancedCount =
+    (value.yearFrom != null ? 1 : 0) +
+    (value.yearTo != null ? 1 : 0) +
+    (value.mileageFrom != null ? 1 : 0) +
+    (value.mileageTo != null ? 1 : 0) +
+    (value.location ? 1 : 0);
+  const totalCount = vehicleCount + auctionCount + advancedCount;
+  const hasFilters = !isFiltersEmpty(value);
+
+  const body = (
+    <div className="divide-y divide-neutral-100">
+      <Section
+        title={t("sections.vehicle")}
+        defaultOpen
+        activeCount={vehicleCount}
+      >
+        <Field label={t("placeholders.marka")}>
+          <Select
+            placeholder={t("placeholders.marka")}
+            allowClear
+            showSearch
+            options={markaOptions}
+            value={value.marka ?? undefined}
+            onChange={(v) => setMarka(v ?? null)}
+            variant="filled"
+            loading={optionsLoading}
+            style={{ width: "100%" }}
+            optionFilterProp="label"
+          />
+        </Field>
+        <Field label={t("placeholders.model")}>
+          <Select
+            placeholder={t("placeholders.model")}
+            allowClear
+            showSearch
+            options={modelOptions}
+            value={value.model ?? undefined}
+            onChange={(v) => set("model", v ?? null)}
+            disabled={!value.marka}
+            variant="filled"
+            loading={optionsLoading}
+            style={{ width: "100%" }}
+            optionFilterProp="label"
+          />
+        </Field>
+        <Field label={t("placeholders.body")}>
+          <Select
+            placeholder={t("placeholders.body")}
+            allowClear
+            options={bodyOptions}
+            value={value.body ?? undefined}
+            onChange={(v) => set("body", v ?? null)}
+            variant="filled"
+            loading={optionsLoading}
+            style={{ width: "100%" }}
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title={t("sections.auction")}
+        defaultOpen
+        activeCount={auctionCount}
+      >
+        <Field label={t("placeholders.rate")}>
+          <Select
+            placeholder={t("placeholders.rate")}
+            allowClear
+            options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
+            value={value.rate ?? undefined}
+            onChange={(v) => set("rate", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+        </Field>
+        <Field label="LOT №">
+          <Input
+            placeholder="LOT №"
+            allowClear
+            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+            value={value.lot}
+            onChange={(e) => set("lot", e.target.value)}
+            variant="filled"
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title={t("sections.advanced")}
+        defaultOpen={advancedCount > 0}
+        activeCount={advancedCount}
+      >
+        <Field label={t("year.label")}>
+          <Space.Compact block>
+            <Select
+              placeholder={t("year.fromPlaceholder")}
+              allowClear
+              options={yearFromOptions}
+              value={value.yearFrom ?? undefined}
+              onChange={(v) => set("yearFrom", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+            <Select
+              placeholder={t("year.toPlaceholder")}
+              allowClear
+              options={yearToOptions}
+              value={value.yearTo ?? undefined}
+              onChange={(v) => set("yearTo", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+          </Space.Compact>
+        </Field>
+        <Field label={t("mileage.label")}>
+          <Space.Compact block>
+            <Select
+              placeholder={t("mileage.minPlaceholder")}
+              allowClear
+              options={mileageFromOptions}
+              value={value.mileageFrom ?? undefined}
+              onChange={(v) => set("mileageFrom", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+            <Select
+              placeholder={t("mileage.maxPlaceholder")}
+              allowClear
+              options={mileageToOptions}
+              value={value.mileageTo ?? undefined}
+              onChange={(v) => set("mileageTo", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+          </Space.Compact>
+        </Field>
+        <Field label={t("location.label")}>
+          <Select
+            placeholder={t("location.placeholder")}
+            allowClear
+            showSearch
+            options={locationOptions}
+            value={value.location ?? undefined}
+            onChange={(v) => set("location", v ?? null)}
+            variant="filled"
+            loading={optionsLoading}
+            style={{ width: "100%" }}
+            optionFilterProp="label"
+          />
+        </Field>
+      </Section>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile trigger bar — visible below lg */}
+      <div className="mb-3 flex items-center gap-2 lg:hidden">
+        <Button
+          onClick={() => setMobileOpen(true)}
+          icon={<FilterIcon className="h-3.5 w-3.5" />}
+          className="!h-9 !shrink-0"
+        >
+          {t("title")}
+          {totalCount > 0 && (
+            <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
+              {totalCount}
+            </span>
+          )}
+        </Button>
+        {hasFilters && (
+          <Button
+            type="text"
+            onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
+            className="!text-neutral-500"
+          >
+            {t("clear")}
+          </Button>
+        )}
+      </div>
+
+      {/* Desktop sidebar — visible at lg+ */}
+      <aside className="hidden lg:sticky lg:top-4 lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
+        <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
+                <FilterIcon className="h-3.5 w-3.5" />
+              </span>
+              <span className="text-[13px] font-semibold text-neutral-900">
+                {t("title")}
+              </span>
+              {totalCount > 0 && (
+                <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
+                  {totalCount}
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
+              disabled={!hasFilters}
+              className="text-[11px] font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300"
+            >
+              {t("clear")}
+            </button>
+          </div>
+          <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-4">
+            {body}
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile drawer */}
+      <Drawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        placement="left"
+        width={320}
+        title={
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
+              <FilterIcon className="h-3.5 w-3.5" />
+            </span>
+            <span className="text-[14px] font-semibold text-neutral-900">
+              {t("title")}
+            </span>
+            {totalCount > 0 && (
+              <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
+                {totalCount}
+              </span>
+            )}
+          </div>
+        }
+        styles={{
+          header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
+          body: { padding: "4px 20px" },
+          footer: { padding: 16 },
+        }}
+        footer={
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              type="text"
+              onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
+              disabled={!hasFilters}
+              className="!text-neutral-500"
+            >
+              {t("clear")}
+            </Button>
+            <Button type="primary" onClick={() => setMobileOpen(false)}>
+              {t("done")}
+            </Button>
+          </div>
+        }
+      >
+        {body}
+      </Drawer>
+    </>
+  );
+}
+
+export function FeaturedAuctionFilterChips({
+  value,
+  onChange,
+}: {
+  value: FilterValues;
+  onChange: (next: FilterValues) => void;
+}) {
+  const t = useTranslations("featured.filters");
+
+  const set = <K extends keyof FilterValues>(key: K, v: FilterValues[K]) => {
+    onChange({ ...value, [key]: v });
+  };
+
   type Chip = { key: string; label: string; onRemove: () => void };
   const chips: Chip[] = [];
   if (value.marka)
     chips.push({
       key: "marka",
       label: t("chips.marka", { value: value.marka }),
-      onRemove: () => setMarka(null),
+      onRemove: () => onChange({ ...value, marka: null, model: null }),
     });
   if (value.model)
     chips.push({
@@ -175,9 +457,11 @@ export default function FeaturedAuctionFilters({
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({
       key: "year",
-      label: t("chips.year", { from: value.yearFrom ?? "…", to: value.yearTo ?? "…" }),
-      onRemove: () =>
-        onChange({ ...value, yearFrom: null, yearTo: null }),
+      label: t("chips.year", {
+        from: value.yearFrom ?? "…",
+        to: value.yearTo ?? "…",
+      }),
+      onRemove: () => onChange({ ...value, yearFrom: null, yearTo: null }),
     });
   if (value.mileageFrom != null || value.mileageTo != null)
     chips.push({
@@ -196,255 +480,85 @@ export default function FeaturedAuctionFilters({
       onRemove: () => set("location", null),
     });
 
-  const hasFilters = !isFiltersEmpty(value);
-
-  const resetAdvanced = () =>
-    onChange({
-      ...value,
-      yearFrom: null,
-      yearTo: null,
-      mileageFrom: null,
-      mileageTo: null,
-      location: null,
-    });
+  if (chips.length === 0) return null;
 
   return (
-    <div className="mb-4">
-      {/* Toolbar */}
-      <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-min flex-nowrap items-center gap-2">
-          <Select
-            placeholder={t("placeholders.marka")}
-            allowClear
-            showSearch
-            options={markaOptions}
-            value={value.marka ?? undefined}
-            onChange={(v) => setMarka(v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ minWidth: 156 }}
-            optionFilterProp="label"
-          />
-          <Select
-            placeholder={t("placeholders.model")}
-            allowClear
-            showSearch
-            options={modelOptions}
-            value={value.model ?? undefined}
-            onChange={(v) => set("model", v ?? null)}
-            disabled={!value.marka}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ minWidth: 156 }}
-            optionFilterProp="label"
-          />
-          <Select
-            placeholder={t("placeholders.body")}
-            allowClear
-            options={bodyOptions}
-            value={value.body ?? undefined}
-            onChange={(v) => set("body", v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ minWidth: 124 }}
-          />
-          <Select
-            placeholder={t("placeholders.rate")}
-            allowClear
-            options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
-            value={value.rate ?? undefined}
-            onChange={(v) => set("rate", v ?? null)}
-            variant="filled"
-            style={{ minWidth: 110 }}
-          />
-          <Input
-            placeholder="LOT №"
-            allowClear
-            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
-            value={value.lot}
-            onChange={(e) => set("lot", e.target.value)}
-            variant="filled"
-            style={{ width: 140 }}
-          />
-          <Button
-            onClick={() => setDrawerOpen(true)}
-            icon={<FilterIcon className="h-3.5 w-3.5" />}
-            className="relative !h-8 !shrink-0"
-          >
-            {t("more")}
-            {advancedCount > 0 && (
-              <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
-                {advancedCount}
-              </span>
-            )}
-          </Button>
-          {hasFilters && (
-            <Button
-              type="text"
-              onClick={() => onChange(EMPTY_FILTERS)}
-              className="!ml-1 !shrink-0 !text-neutral-500"
-            >
-              {t("clear")}
-            </Button>
+    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+      <span className="text-[11px] font-medium uppercase text-neutral-400">
+        {t("active")}
+      </span>
+      {chips.map((c) => (
+        <Tag
+          key={c.key}
+          closable
+          onClose={(e) => {
+            e.preventDefault();
+            c.onRemove();
+          }}
+          className={cn(
+            "!m-0 !rounded-full !border-neutral-200 !bg-white !px-2.5 !py-0.5 !text-[12px] !text-neutral-700",
+            "dark:border-neutral-700! dark:bg-neutral-800! dark:text-neutral-200!",
           )}
-        </div>
-      </div>
-
-      {/* Active chips */}
-      {chips.length > 0 && (
-        <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-400">
-            {t("active")}
-          </span>
-          {chips.map((c) => (
-            <Tag
-              key={c.key}
-              closable
-              onClose={(e) => {
-                e.preventDefault();
-                c.onRemove();
-              }}
-              className={cn(
-                "!m-0 !rounded-full !border-neutral-200 !bg-white !px-2.5 !py-0.5 !text-[12px] !text-neutral-700",
-              )}
-            >
-              {c.label}
-            </Tag>
-          ))}
-        </div>
-      )}
-
-      {/* Advanced drawer */}
-      <Drawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        placement="right"
-        size={400}
-        title={
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
-              <FilterIcon className="h-3.5 w-3.5" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight text-neutral-900">
-              {t("more")}
-            </span>
-          </div>
-        }
-        styles={{
-          header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
-          body: { padding: 20 },
-          footer: { padding: 16 },
-        }}
-        footer={
-          <div className="flex items-center justify-between gap-2">
-            <Button
-              type="text"
-              onClick={resetAdvanced}
-              disabled={advancedCount === 0}
-              className="!text-neutral-500"
-            >
-              {t("clear")}
-            </Button>
-            <Button type="primary" onClick={() => setDrawerOpen(false)}>
-              {t("done")}
-            </Button>
-          </div>
-        }
-      >
-        <div className="space-y-6">
-          <DrawerSection
-            label={t("year.label")}
-            hint={t("year.hint")}
-          >
-            <Space.Compact block>
-              <Select
-                placeholder={t("year.fromPlaceholder")}
-                allowClear
-                options={yearFromOptions}
-                value={value.yearFrom ?? undefined}
-                onChange={(v) => set("yearFrom", v ?? null)}
-                variant="filled"
-                style={{ width: "50%" }}
-              />
-              <Select
-                placeholder={t("year.toPlaceholder")}
-                allowClear
-                options={yearToOptions}
-                value={value.yearTo ?? undefined}
-                onChange={(v) => set("yearTo", v ?? null)}
-                variant="filled"
-                style={{ width: "50%" }}
-              />
-            </Space.Compact>
-          </DrawerSection>
-
-          <DrawerSection
-            label={t("mileage.label")}
-            hint={t("mileage.hint")}
-          >
-            <Space.Compact block>
-              <Select
-                placeholder={t("mileage.minPlaceholder")}
-                allowClear
-                options={mileageFromOptions}
-                value={value.mileageFrom ?? undefined}
-                onChange={(v) => set("mileageFrom", v ?? null)}
-                variant="filled"
-                style={{ width: "50%" }}
-              />
-              <Select
-                placeholder={t("mileage.maxPlaceholder")}
-                allowClear
-                options={mileageToOptions}
-                value={value.mileageTo ?? undefined}
-                onChange={(v) => set("mileageTo", v ?? null)}
-                variant="filled"
-                style={{ width: "50%" }}
-              />
-            </Space.Compact>
-          </DrawerSection>
-
-          <DrawerSection
-            label={t("location.label")}
-            hint={t("location.hint")}
-          >
-            <Select
-              placeholder={t("location.placeholder")}
-              allowClear
-              showSearch
-              options={locationOptions}
-              value={value.location ?? undefined}
-              onChange={(v) => set("location", v ?? null)}
-              variant="filled"
-              loading={optionsLoading}
-              style={{ width: "100%" }}
-              optionFilterProp="label"
-            />
-          </DrawerSection>
-        </div>
-      </Drawer>
+        >
+          {c.label}
+        </Tag>
+      ))}
     </div>
   );
 }
 
-function DrawerSection({
+function Section({
+  title,
+  defaultOpen,
+  activeCount,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  activeCount?: number;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return (
+    <div className="py-1">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between py-3 text-left"
+      >
+        <span className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase text-neutral-700">
+            {title}
+          </span>
+          {!!activeCount && activeCount > 0 && (
+            <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-neutral-900 px-1 text-[10px] font-semibold text-white">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <ChevronIcon
+          className={cn(
+            "h-3.5 w-3.5 text-neutral-400 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+      {open && <div className="space-y-3 pb-3">{children}</div>}
+    </div>
+  );
+}
+
+function Field({
   label,
-  hint,
   children,
 }: {
   label: string;
-  hint?: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <div className="mb-2 flex items-baseline justify-between">
-        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-700">
-          {label}
-        </span>
-        {hint && (
-          <span className="text-[11px] text-neutral-400">{hint}</span>
-        )}
+      <div className="mb-1 text-[10.5px] font-medium uppercase text-neutral-500">
+        {label}
       </div>
       {children}
     </div>

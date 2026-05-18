@@ -24,7 +24,11 @@
     },
     "phone": "+976 7000 0000",
     "hours": "Mon–Sat · 09:00–18:00",
-    "regionsBadge": { "japan": "Japan", "korea": "Korea", "mongolia": "Mongolia" },
+    "regionsBadge": {
+      "japan": "Japan",
+      "korea": "Korea",
+      "mongolia": "Mongolia"
+    },
     "menu": {
       "balanceLabel": "Balance",
       "dashboard": "Dashboard",
@@ -39,6 +43,10 @@
     "auth": {
       "signIn": "Sign in",
       "signUp": "Sign up"
+    },
+    "theme": {
+      "switchToDark": "Switch to dark mode",
+      "switchToLight": "Switch to light mode"
     }
   },
   "footer": {
@@ -105,27 +113,6 @@
     }
   },
   "featured": {
-    "card": {
-      "noImage": "No image",
-      "today": "Today",
-      "tomorrow": "Tomorrow",
-      "daysLeft": "{days} days",
-      "specs": {
-        "year": "Year",
-        "mileage": "Mileage",
-        "engine": "Engine",
-        "transmission": "Transmission",
-        "color": "Color",
-        "rate": "Grade"
-      },
-      "transmission": {
-        "auto": "Automatic",
-        "manual": "Manual"
-      },
-      "startPriceLabel": "Start price",
-      "mntPriceLabel": "MNT estimate",
-      "mileageUnit": "km"
-    },
     "filters": {
       "chips": {
         "marka": "Make: {value}",
@@ -142,7 +129,12 @@
         "body": "Body",
         "rate": "Grade"
       },
-      "more": "More filters",
+      "title": "Filters",
+      "sections": {
+        "vehicle": "Vehicle",
+        "auction": "Auction",
+        "advanced": "Advanced"
+      },
       "clear": "Clear",
       "active": "Active",
       "done": "Done",
@@ -175,7 +167,24 @@
       "carsUnit": "cars",
       "empty": "Empty",
       "noResultsTitle": "No matching cars",
-      "noResultsDescription": "Try adjusting your filters"
+      "noResultsDescription": "Try adjusting your filters",
+      "view": {
+        "grid": "Grid view",
+        "list": "List view",
+        "table": "Table view",
+        "col": {
+          "car": "Car",
+          "year": "Year",
+          "mileage": "Mileage",
+          "engine": "Engine",
+          "transmission": "Trans.",
+          "color": "Color",
+          "grade": "Grade",
+          "lot": "Lot",
+          "time": "Time",
+          "price": "Price"
+        }
+      }
     }
   },
   "dashboard": {
@@ -193,9 +202,18 @@
       "greeting": "Hi, {name}",
       "subtitle": "Your auction activity in one place.",
       "quickActions": {
-        "newBid": { "title": "New bid", "description": "Join an auction" },
-        "track": { "title": "Track a car", "description": "Add to watchlist" },
-        "report": { "title": "Check accident", "description": "Get a VIN report" }
+        "newBid": {
+          "title": "New bid",
+          "description": "Join an auction"
+        },
+        "track": {
+          "title": "Track a car",
+          "description": "Add to watchlist"
+        },
+        "report": {
+          "title": "Check accident",
+          "description": "Get a VIN report"
+        }
       },
       "stats": {
         "bidsLabel": "Bids sent",
@@ -262,6 +280,64 @@
       "emptyTitle": "No reports yet",
       "emptyDescription": "Enter a VIN to run an accident and history check.",
       "emptyCta": "New report"
+    }
+  },
+  "car": {
+    "card": {
+      "noImage": "No image",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "daysLeft": "{days} days",
+      "specs": {
+        "year": "Year",
+        "mileage": "Mileage",
+        "engine": "Engine",
+        "transmission": "Transmission",
+        "color": "Color",
+        "drive": "Drive"
+      },
+      "transmission": {
+        "auto": "Automatic",
+        "manual": "Manual"
+      },
+      "drive": {
+        "lhd": "Left-hand",
+        "rhd": "Right-hand"
+      },
+      "startPriceLabel": "Start price",
+      "mntPriceLabel": "MNT estimate",
+      "avgPriceLabel": "Average price",
+      "lotLabel": "Lot",
+      "wishlist": "Save",
+      "compare": "Compare",
+      "premium": "Premium",
+      "mileageUnit": "km",
+      "source": {
+        "japan": "JP",
+        "korea": "KR",
+        "china": "CN"
+      },
+      "grade": {
+        "label": "Auction grade",
+        "tier": {
+          "pristine": "Pristine",
+          "good": "Good",
+          "average": "Average",
+          "poor": "Poor",
+          "repaired": "Repaired",
+          "damaged": "Damaged",
+          "unknown": "Unknown"
+        },
+        "description": {
+          "pristine": "Like new — minimal wear, exceptional condition (S, 6, 5).",
+          "good": "Very good condition with light wear (4.5, 4).",
+          "average": "Average wear, some cosmetic repairs needed (3.5, 3).",
+          "poor": "Heavy wear or significant defects (2, 1).",
+          "repaired": "Has repair or accident history (R, RA, A).",
+          "damaged": "Severely damaged or parts only (XX).",
+          "unknown": "Grade not specified."
+        }
+      }
     }
   }
 }

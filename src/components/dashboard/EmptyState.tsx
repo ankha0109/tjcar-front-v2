@@ -10,20 +10,20 @@ type Props = {
 
 export default function EmptyState({ title, description, cta, icon }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-white px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-white px-6 py-14 text-center dark:border-neutral-700 dark:bg-neutral-900">
       {icon && (
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-500">
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
           {icon}
         </div>
       )}
-      <p className="text-sm font-medium text-neutral-900">{title}</p>
+      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{title}</p>
       {description && (
-        <p className="mt-1 max-w-md text-sm text-neutral-500">{description}</p>
+        <p className="mt-1 max-w-md text-sm text-neutral-500 dark:text-neutral-400">{description}</p>
       )}
       {cta && (
         <Link
           href={cta.href}
-          className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
         >
           {cta.label}
           <svg

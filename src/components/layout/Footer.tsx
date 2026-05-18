@@ -112,23 +112,23 @@ export default function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="mt-12 hidden border-t border-neutral-200 bg-white md:block">
+    <footer className="mt-12 hidden border-t border-neutral-200 bg-white md:block dark:border-neutral-800 dark:bg-neutral-950">
       {/* Newsletter strip */}
-      <div className="border-b border-neutral-100 bg-neutral-50/60">
+      <div className="border-b border-neutral-100 bg-neutral-50/60 dark:border-neutral-800 dark:bg-neutral-900/40">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
           <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-10">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-600 shadow-sm ring-1 ring-black/5">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-semibold uppercase text-neutral-600 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:text-neutral-300 dark:ring-white/10">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
                 </span>
                 {t("newsletter.badge")}
               </span>
-              <h3 className="mt-3 text-[20px] font-semibold tracking-tight text-neutral-900 sm:text-[22px]">
+              <h3 className="mt-3 text-[20px] font-semibold text-neutral-900 sm:text-[22px] dark:text-neutral-100">
                 {t("newsletter.heading")}
               </h3>
-              <p className="mt-1.5 max-w-xl text-[13px] text-neutral-500">
+              <p className="mt-1.5 max-w-xl text-[13px] text-neutral-500 dark:text-neutral-400">
                 {t("newsletter.blurb")}
               </p>
             </div>
@@ -146,12 +146,12 @@ export default function Footer() {
             <Link href="/" className="inline-flex" aria-label="TJ Car">
               <Logo className="h-10 w-auto" />
             </Link>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-neutral-500">
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
               {t("about")}
             </p>
 
             <div className="mt-5">
-              <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-400">
+              <p className="mb-2 text-[10.5px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
                 {t("followLabel")}
               </p>
               <ul className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export default function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={s.label}
-                      className="group flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-500 transition-all hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-900 hover:text-white"
+                      className="group flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-500 transition-all hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-900 hover:text-white dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:bg-white dark:hover:text-neutral-900"
                     >
                       {s.icon}
                     </a>
@@ -173,7 +173,7 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-1 lg:col-span-2">
-            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase text-neutral-900 dark:text-neutral-100">
               {t("cars.heading")}
             </h4>
             <ul className="space-y-2">
@@ -185,7 +185,7 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-1 lg:col-span-2">
-            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase text-neutral-900 dark:text-neutral-100">
               {t("services.heading")}
             </h4>
             <ul className="space-y-2">
@@ -196,14 +196,14 @@ export default function Footer() {
           </div>
 
           <div className="col-span-2 md:col-span-2 lg:col-span-4">
-            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-900">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase text-neutral-900 dark:text-neutral-100">
               {t("contact.heading")}
             </h4>
-            <ul className="space-y-2.5 text-sm text-neutral-500">
+            <ul className="space-y-2.5 text-sm text-neutral-500 dark:text-neutral-400">
               <li>
                 <a
                   href="tel:+97670000000"
-                  className="inline-flex items-center gap-2 transition-colors hover:text-neutral-900"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
                 >
                   <ContactIcon type="phone" />
                   <span className="tabular-nums">{t("contact.phone")}</span>
@@ -212,7 +212,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:info@tjcar.mn"
-                  className="inline-flex items-center gap-2 transition-colors hover:text-neutral-900"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
                 >
                   <ContactIcon type="mail" />
                   info@tjcar.mn
@@ -232,26 +232,26 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-neutral-100">
+      <div className="border-t border-neutral-100 dark:border-neutral-800">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-4 py-5 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-          <p className="text-[12px] text-neutral-500">
+          <p className="text-[12px] text-neutral-500 dark:text-neutral-400">
             &copy; {new Date().getFullYear()} TJ Car. {t("bottom.rights")}
           </p>
-          <div className="flex items-center gap-3 text-[12px] text-neutral-500">
+          <div className="flex items-center gap-3 text-[12px] text-neutral-500 dark:text-neutral-400">
             <Link
               href="#"
-              className="transition-colors hover:text-neutral-900"
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
             >
               {t("bottom.terms")}
             </Link>
-            <span className="text-neutral-300">·</span>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
               href="#"
-              className="transition-colors hover:text-neutral-900"
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
             >
               {t("bottom.privacy")}
             </Link>
-            <span className="text-neutral-300">·</span>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <span className="inline-flex items-center gap-1">
               <span className="h-1 w-1 rounded-full bg-emerald-500" />
               {t("bottom.systemOk")}
@@ -274,7 +274,7 @@ function FooterLink({
     <li>
       <Link
         href={href}
-        className="group inline-flex items-center text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+        className="group inline-flex items-center text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
       >
         <span className="mr-0 w-0 overflow-hidden text-primary opacity-0 transition-all duration-200 group-hover:mr-1 group-hover:w-2.5 group-hover:opacity-100">
           →

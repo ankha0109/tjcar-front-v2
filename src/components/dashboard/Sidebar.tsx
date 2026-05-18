@@ -72,21 +72,21 @@ export default function Sidebar() {
   }));
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white h-full">
-      <div className="px-4 py-5 border-b border-neutral-200">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white h-full dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="px-4 py-5 border-b border-neutral-200 dark:border-neutral-800">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-neutral-900 text-white flex items-center justify-center text-xs font-bold">
+          <div className="w-7 h-7 rounded-md bg-neutral-900 text-white flex items-center justify-center text-xs font-bold dark:bg-neutral-100 dark:text-neutral-900">
             T
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold text-neutral-900">TJCAR</span>
-            <span className="text-[11px] text-neutral-500">{t("title")}</span>
+            <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">TJCAR</span>
+            <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{t("title")}</span>
           </div>
         </Link>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-2">
-        <p className="px-2 py-2 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
+        <p className="px-2 py-2 text-[11px] font-medium uppercaser text-neutral-500 dark:text-neutral-400">
           {t("menuHeading")}
         </p>
         <ul className="space-y-0.5">
@@ -101,13 +101,15 @@ export default function Sidebar() {
                   href={item.href}
                   className={`flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors ${
                     active
-                      ? "bg-neutral-100 text-neutral-900 font-medium"
-                      : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                      ? "bg-neutral-100 text-neutral-900 font-medium dark:bg-neutral-800 dark:text-neutral-100"
+                      : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
                   }`}
                 >
                   <span
                     className={
-                      active ? "text-neutral-900" : "text-neutral-400"
+                      active
+                        ? "text-neutral-900 dark:text-neutral-100"
+                        : "text-neutral-400 dark:text-neutral-500"
                     }
                   >
                     {item.icon}
@@ -120,8 +122,8 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      <div className="border-t border-neutral-200 p-3">
-        <p className="text-[11px] text-neutral-500">TJCAR · v0.2</p>
+      <div className="border-t border-neutral-200 p-3 dark:border-neutral-800">
+        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">TJCAR · v0.2</p>
       </div>
     </aside>
   );

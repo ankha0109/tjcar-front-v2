@@ -103,17 +103,17 @@ export default async function DashboardIndex({
               <Link
                 key={action.title}
                 href={action.href}
-                className="group flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-5 transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+                className="group flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-5 transition-colors hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 dark:hover:bg-neutral-800"
               >
                 <div>
-                  <p className="text-sm font-semibold text-neutral-900">
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                     {action.title}
                   </p>
-                  <p className="mt-0.5 text-xs text-neutral-500">
+                  <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                     {action.description}
                   </p>
                 </div>
-                <span className="text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-900">
+                <span className="text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-900 dark:text-neutral-500 dark:group-hover:text-neutral-100">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14" />
                     <path d="m12 5 7 7-7 7" />

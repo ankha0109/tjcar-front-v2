@@ -9,6 +9,7 @@ export type FilterValues = {
   mileageFrom: number | null;
   mileageTo: number | null;
   location: string | null;
+  date: string | null;
 };
 
 export const EMPTY_FILTERS: FilterValues = {
@@ -22,8 +23,10 @@ export const EMPTY_FILTERS: FilterValues = {
   mileageFrom: null,
   mileageTo: null,
   location: null,
+  date: null,
 };
 
+// `date` is intentionally excluded — it's primary day-tab navigation, not a chip-style filter.
 export function isFiltersEmpty(f: FilterValues): boolean {
   return (
     !f.marka &&
@@ -53,6 +56,7 @@ export function filtersToQuery(
   if (f.mileageFrom != null) q.mileageFrom = f.mileageFrom;
   if (f.mileageTo != null) q.mileageTo = f.mileageTo;
   if (f.location) q.location = f.location;
+  if (f.date) q.date = f.date;
   return q;
 }
 
@@ -71,6 +75,13 @@ function pickInt(p: SearchParamRecord, key: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+function pickDate(p: SearchParamRecord, key: string): string | null {
+  const s = pickString(p, key);
+  return s && DATE_RE.test(s) ? s : null;
+}
+
 export function queryToFilters(p: SearchParamRecord): FilterValues {
   return {
     marka: pickString(p, "marka"),
@@ -83,6 +94,7 @@ export function queryToFilters(p: SearchParamRecord): FilterValues {
     mileageFrom: pickInt(p, "mileageFrom"),
     mileageTo: pickInt(p, "mileageTo"),
     location: pickString(p, "location"),
+    date: pickDate(p, "date"),
   };
 }
 

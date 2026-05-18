@@ -1,6 +1,8 @@
 @layer theme, base, antd, components, utilities;
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   --color-primary: #f1472c;
   --color-secondary: #6a6a6a;
@@ -16,6 +18,13 @@
 
 :root {
   --background: #ffffff;
+  --foreground: #1a1a1a;
+}
+
+:root[data-theme="dark"] {
+  --background: #0b0b0c;
+  --foreground: #e8e8ea;
+  color-scheme: dark;
 }
 
 body {
@@ -23,10 +32,23 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* -moz-osx-font-smoothing: grayscale; */
   --ant-color-primary: #f1472c;
 }
 
 a {
   /* background-color: inherit; */
+}
+
+/* Premium USS auction row highlight in CarTableView */
+.featured-car-row-premium > td {
+  background-color: rgb(254 243 199 / 0.35);
+}
+.featured-car-row-premium:hover > td {
+  background-color: rgb(254 243 199 / 0.55) !important;
+}
+:root[data-theme="dark"] .featured-car-row-premium > td {
+  background-color: rgb(120 53 15 / 0.18);
+}
+:root[data-theme="dark"] .featured-car-row-premium:hover > td {
+  background-color: rgb(120 53 15 / 0.28) !important;
 }

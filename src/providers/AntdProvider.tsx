@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { App, ConfigProvider, message } from "antd";
+import { App, ConfigProvider, message, theme as antdTheme } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import GuideModalRoot from "@/components/modal/GuideModalRoot";
@@ -14,11 +14,13 @@ import "dayjs/locale/ru";
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 import { StyleProvider } from "@ant-design/cssinjs";
+import type { Theme } from "@/lib/theme";
 
 type AntdProviderProps = {
   children?: React.ReactNode;
   session?: Session | null;
   locale?: string;
+  theme?: Theme;
 };
 
 const ANTD_LOCALES: Record<string, typeof mn_MN> = {
@@ -33,7 +35,12 @@ const DAYJS_LOCALES: Record<string, string> = {
   ru: "ru",
 };
 
-const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale = "mn" }) => {
+const AntdProvider: React.FC<AntdProviderProps> = ({
+  children,
+  session,
+  locale = "mn",
+  theme = "light",
+}) => {
   const [, contextHolder] = message.useMessage();
 
   dayjs.locale(DAYJS_LOCALES[locale] ?? "en");
@@ -48,6 +55,8 @@ const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale =
       }),
   );
 
+  const isDark = theme === "dark";
+
   return (
     <SessionProvider session={session} refetchOnWindowFocus={false}>
       <QueryClientProvider client={queryClient}>
@@ -55,11 +64,12 @@ const AntdProvider: React.FC<AntdProviderProps> = ({ children, session, locale =
           <ConfigProvider
             locale={ANTD_LOCALES[locale] ?? en_US}
             theme={{
+              algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
               token: {
                 fontFamily: "Inter, sans-serif",
                 colorPrimary: "#F1472C",
-                colorLink: "#222",
-                colorLinkHover: "#000",
+                colorLink: isDark ? "#e8e8ea" : "#222",
+                colorLinkHover: isDark ? "#ffffff" : "#000",
               },
             }}
           >

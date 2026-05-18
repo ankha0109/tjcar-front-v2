@@ -8,6 +8,8 @@ import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import ThemeToggle from "@/components/theme/ThemeToggle";
+import type { Theme } from "@/lib/theme";
 
 type CustomerUser = {
   firstname: string;
@@ -37,10 +39,10 @@ function NavLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       className={cn(
-        "group relative inline-flex items-center px-1 py-5 text-[13.5px] font-medium tracking-tight transition-colors",
+        "group relative inline-flex items-center px-1 py-5 text-[13.5px] font-medium transition-colors",
         active
-          ? "text-neutral-900"
-          : "text-neutral-500 hover:text-neutral-900",
+          ? "text-neutral-900 dark:text-neutral-100"
+          : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100",
       )}
     >
       <span>{label}</span>
@@ -67,7 +69,7 @@ function getInitials(user: CustomerUser) {
   return `${f}${l}`.toUpperCase() || "U";
 }
 
-export default function Header() {
+export default function Header({ theme }: { theme: Theme }) {
   const t = useTranslations("header");
   const locale = useLocale();
   const { data: session } = useSession();
@@ -94,7 +96,7 @@ export default function Header() {
   return (
     <>
       {/* Utility strip */}
-      <div className="hidden md:block bg-neutral-950 text-neutral-300">
+      <div className="hidden md:block bg-neutral-950 text-neutral-300 dark:bg-black dark:text-neutral-400">
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-[12px]">
           <div className="flex items-center gap-6">
             <a
@@ -112,7 +114,7 @@ export default function Header() {
               {t("hours")}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-neutral-500">
+          <div className="flex items-center gap-1.5 text-[11px] uppercase text-neutral-500">
             <span>{t("regionsBadge.japan")}</span>
             <span className="text-neutral-700">·</span>
             <span>{t("regionsBadge.korea")}</span>
@@ -127,8 +129,8 @@ export default function Header() {
         className={cn(
           "sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-200",
           scrolled
-            ? "border-neutral-200 bg-white/85 shadow-[0_1px_0_rgba(0,0,0,0.02),0_10px_30px_-18px_rgba(15,15,15,0.18)]"
-            : "border-transparent bg-white/70",
+            ? "border-neutral-200 bg-white/85 shadow-[0_1px_0_rgba(0,0,0,0.02),0_10px_30px_-18px_rgba(15,15,15,0.18)] dark:border-neutral-800 dark:bg-neutral-950/85"
+            : "border-transparent bg-white/70 dark:bg-neutral-950/70",
         )}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
@@ -148,14 +150,15 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <ThemeToggle theme={theme} />
             <LanguageSwitcher />
             {session && user ? (
               <>
-                <div className="hidden lg:flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white py-1.5 pl-3 pr-3.5 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
-                  <span className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-neutral-400">
+                <div className="hidden lg:flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white py-1.5 pl-3 pr-3.5 shadow-[0_1px_0_rgba(0,0,0,0.02)] dark:border-neutral-800 dark:bg-neutral-900">
+                  <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                     {t("menu.balanceLabel")}
                   </span>
-                  <span className="text-[13px] font-semibold tabular-nums tracking-tight text-neutral-900">
+                  <span className="text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
                     {formatBalance(user.balance, user.currency)}
                   </span>
                 </div>
@@ -207,13 +210,13 @@ export default function Header() {
                   <button
                     type="button"
                     aria-label={t("menu.open")}
-                    className="inline-flex items-center gap-2 rounded-full border border-transparent py-1 pl-1 pr-2 transition-colors hover:border-neutral-200 hover:bg-white"
+                    className="inline-flex items-center gap-2 rounded-full border border-transparent py-1 pl-1 pr-2 transition-colors hover:border-neutral-200 hover:bg-white dark:hover:border-neutral-800 dark:hover:bg-neutral-900"
                   >
-                    <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-neutral-900 text-[12px] font-semibold tracking-wide text-white ring-2 ring-white">
+                    <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-neutral-900 text-[12px] font-semibold text-white ring-2 ring-white dark:bg-neutral-100 dark:text-neutral-900 dark:ring-neutral-950">
                       {getInitials(user)}
-                      <span className="absolute -bottom-px -right-px h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+                      <span className="absolute -bottom-px -right-px h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-neutral-950" />
                     </span>
-                    <span className="hidden text-[13px] font-medium tracking-tight text-neutral-800 sm:inline">
+                    <span className="hidden text-[13px] font-medium text-neutral-800 sm:inline dark:text-neutral-200">
                       {user.firstname}
                     </span>
                     <svg
@@ -239,14 +242,14 @@ export default function Header() {
               <>
                 <Link
                   href="/auth/login"
-                  className="hidden h-9 items-center px-3 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:text-neutral-950 sm:inline-flex"
+                  className="hidden h-9 items-center px-3 text-[13px] font-medium text-neutral-700 transition-colors hover:text-neutral-950 sm:inline-flex dark:text-neutral-300 dark:hover:text-white"
                 >
                   {t("auth.signIn")}
                 </Link>
                 <Link href="/auth/register">
                   <Button
                     type="primary"
-                    className="!h-9 !rounded-full !px-4 !text-[13px] !font-medium !tracking-tight !shadow-none"
+                    className="!h-9 !rounded-full !px-4 !text-[13px] !font-medium !shadow-none"
                   >
                     {t("auth.signUp")}
                   </Button>
@@ -257,7 +260,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100 md:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100 md:hidden dark:text-neutral-300 dark:hover:bg-neutral-800"
               aria-label={t("menu.openMenu")}
             >
               <svg
@@ -324,13 +327,13 @@ export default function Header() {
                   {getInitials(user)}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-[14px] font-semibold tracking-tight text-neutral-900">
+                  <div className="truncate text-[14px] font-semibold text-neutral-900">
                     {user.firstname} {user.lastname}
                   </div>
-                  <div className="text-[11.5px] uppercase tracking-[0.12em] text-neutral-400">
+                  <div className="text-[11.5px] uppercase text-neutral-400">
                     {t("menu.balanceLabel")}
                   </div>
-                  <div className="text-[13px] font-semibold tabular-nums tracking-tight text-neutral-900">
+                  <div className="text-[13px] font-semibold tabular-nums text-neutral-900">
                     {formatBalance(user.balance, user.currency)}
                   </div>
                 </div>
@@ -344,7 +347,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between rounded-lg px-3 py-3 text-[14.5px] font-medium tracking-tight text-neutral-900 transition-colors hover:bg-neutral-50"
+                className="flex items-center justify-between rounded-lg px-3 py-3 text-[14.5px] font-medium text-neutral-900 transition-colors hover:bg-neutral-50"
               >
                 {item.label}
                 <svg
@@ -370,7 +373,7 @@ export default function Header() {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-[13px] font-medium tracking-tight text-white transition-colors hover:bg-neutral-800"
+                  className="flex w-full items-center justify-center rounded-full bg-neutral-900 px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-neutral-800"
                 >
                   {t("menu.dashboard")}
                 </Link>
@@ -380,7 +383,7 @@ export default function Header() {
                     setMobileOpen(false);
                     signOut({ callbackUrl: `/${locale}` });
                   }}
-                  className="w-full rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:bg-neutral-50"
+                  className="w-full rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
                 >
                   {t("menu.signout")}
                 </button>
@@ -390,14 +393,14 @@ export default function Header() {
                 <Link
                   href="/auth/login"
                   onClick={() => setMobileOpen(false)}
-                  className="flex w-full items-center justify-center rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium tracking-tight text-neutral-700 transition-colors hover:bg-neutral-50"
+                  className="flex w-full items-center justify-center rounded-full border border-neutral-200 px-4 py-2.5 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
                 >
                   {t("auth.signIn")}
                 </Link>
                 <Link
                   href="/auth/register"
                   onClick={() => setMobileOpen(false)}
-                  className="flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-[13px] font-medium tracking-tight text-white transition-colors hover:opacity-90"
+                  className="flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:opacity-90"
                 >
                   {t("auth.signUp")}
                 </Link>

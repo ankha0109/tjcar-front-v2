@@ -1,4 +1,10 @@
+import { cookies } from "next/headers";
 import FeaturedAuctionSchedule from "@/components/cards/FeaturedAuctionSchedule";
+import {
+  VIEW_MODE_COOKIE,
+  isViewMode,
+  type ViewMode,
+} from "@/components/cards/views/viewMode";
 import ServerApi from "@/services/ServerApi";
 import { FeaturedCar } from "@/types/featured";
 import {
@@ -14,6 +20,10 @@ type PageProps = {
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
   const filters = queryToFilters(params);
+
+  const cookieStore = await cookies();
+  const storedMode = cookieStore.get(VIEW_MODE_COOKIE)?.value;
+  const initialViewMode: ViewMode = isViewMode(storedMode) ? storedMode : "grid";
 
   // Home page is public/mixed — fall back to empty data on any failure
   // (including 401 from an expired backend token) instead of signing the
@@ -49,6 +59,7 @@ export default async function Home({ searchParams }: PageProps) {
       initialCars={cars}
       initialFilters={filters}
       filterOptions={filterOptions}
+      initialViewMode={initialViewMode}
     />
   );
 }

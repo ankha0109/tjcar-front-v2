@@ -8,7 +8,7 @@ export default function DashboardHeader({ title, description, action }: Props) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+        <h1 className="text-2xl font-semibold text-neutral-900">
           {title}
         </h1>
         {description && (

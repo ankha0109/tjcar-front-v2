@@ -24,7 +24,11 @@
     },
     "phone": "+976 7000 0000",
     "hours": "Даваа–Бямба · 09:00–18:00",
-    "regionsBadge": { "japan": "Япон", "korea": "Солонгос", "mongolia": "Монгол" },
+    "regionsBadge": {
+      "japan": "Япон",
+      "korea": "Солонгос",
+      "mongolia": "Монгол"
+    },
     "menu": {
       "balanceLabel": "Үлдэгдэл",
       "dashboard": "Хувийн самбар",
@@ -39,6 +43,10 @@
     "auth": {
       "signIn": "Нэвтрэх",
       "signUp": "Бүртгүүлэх"
+    },
+    "theme": {
+      "switchToDark": "Бараан горим руу шилжих",
+      "switchToLight": "Гэрэлтэй горим руу шилжих"
     }
   },
   "footer": {
@@ -105,27 +113,6 @@
     }
   },
   "featured": {
-    "card": {
-      "noImage": "Зураг байхгүй",
-      "today": "Өнөөдөр",
-      "tomorrow": "Маргааш",
-      "daysLeft": "{days} хоног",
-      "specs": {
-        "year": "Он",
-        "mileage": "Явсан",
-        "engine": "Мотор",
-        "transmission": "Хурд",
-        "color": "Өнгө",
-        "rate": "Үнэлгээ"
-      },
-      "transmission": {
-        "auto": "Автомат",
-        "manual": "Механик"
-      },
-      "startPriceLabel": "Эхлэх үнэ",
-      "mntPriceLabel": "MNT тооцоо",
-      "mileageUnit": "км"
-    },
     "filters": {
       "chips": {
         "marka": "Үйлдвэрлэгч: {value}",
@@ -142,7 +129,12 @@
         "body": "Арал",
         "rate": "Үнэлгээ"
       },
-      "more": "Илүү шүүлт",
+      "title": "Шүүлтүүр",
+      "sections": {
+        "vehicle": "Машин",
+        "auction": "Дуудлага",
+        "advanced": "Нэмэлт"
+      },
       "clear": "Цэвэрлэх",
       "active": "Идэвхтэй",
       "done": "Болсон",
@@ -175,7 +167,24 @@
       "carsUnit": "машин",
       "empty": "Хоосон",
       "noResultsTitle": "Тохирох машин олдсонгүй",
-      "noResultsDescription": "Шүүлтийн нөхцлөө өөрчилж үзнэ үү"
+      "noResultsDescription": "Шүүлтийн нөхцлөө өөрчилж үзнэ үү",
+      "view": {
+        "grid": "Карт",
+        "list": "Жагсаалт",
+        "table": "Хүснэгт",
+        "col": {
+          "car": "Машин",
+          "year": "Он",
+          "mileage": "Гүйлт",
+          "engine": "Хүчин",
+          "transmission": "Хайрцаг",
+          "color": "Өнгө",
+          "grade": "Үнэлгээ",
+          "lot": "Лот",
+          "time": "Цаг",
+          "price": "Үнэ"
+        }
+      }
     }
   },
   "dashboard": {
@@ -193,9 +202,18 @@
       "greeting": "Сайн уу, {name}",
       "subtitle": "Таны дуудлагын идэвх нэг дороос.",
       "quickActions": {
-        "newBid": { "title": "Шинэ санал", "description": "Дуудлагад оролцох" },
-        "track": { "title": "Машин хянах", "description": "Захиалгад нэмэх" },
-        "report": { "title": "Осол шалгах", "description": "VIN-ээр репорт авах" }
+        "newBid": {
+          "title": "Шинэ санал",
+          "description": "Дуудлагад оролцох"
+        },
+        "track": {
+          "title": "Машин хянах",
+          "description": "Захиалгад нэмэх"
+        },
+        "report": {
+          "title": "Осол шалгах",
+          "description": "VIN-ээр репорт авах"
+        }
       },
       "stats": {
         "bidsLabel": "Илгээсэн саналууд",
@@ -262,6 +280,64 @@
       "emptyTitle": "Репорт үүсгээгүй байна",
       "emptyDescription": "VIN дугаар оруулж осол, түүхийн шалгалт хийнэ үү.",
       "emptyCta": "Шинэ репорт"
+    }
+  },
+  "car": {
+    "card": {
+      "noImage": "Зураг байхгүй",
+      "today": "Өнөөдөр",
+      "tomorrow": "Маргааш",
+      "daysLeft": "{days} хоног",
+      "specs": {
+        "year": "Он",
+        "mileage": "Явсан",
+        "engine": "Мотор",
+        "transmission": "Хурд",
+        "color": "Өнгө",
+        "drive": "Жолоо"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механик"
+      },
+      "drive": {
+        "lhd": "Зүүн",
+        "rhd": "Баруун"
+      },
+      "startPriceLabel": "Эхлэх үнэ",
+      "mntPriceLabel": "MNT тооцоо",
+      "avgPriceLabel": "Дундаж үнэ",
+      "lotLabel": "Лот",
+      "wishlist": "Хадгалах",
+      "compare": "Харьцуулах",
+      "premium": "Premium",
+      "mileageUnit": "км",
+      "source": {
+        "japan": "JP",
+        "korea": "KR",
+        "china": "CN"
+      },
+      "grade": {
+        "label": "Дуудлагын үнэлгээ",
+        "tier": {
+          "pristine": "Шинэхэн",
+          "good": "Сайн",
+          "average": "Дунд",
+          "poor": "Муу",
+          "repaired": "Засвартай",
+          "damaged": "Гэмтэлтэй",
+          "unknown": "Тодорхойгүй"
+        },
+        "description": {
+          "pristine": "Шинэ шахам — өчүүхэн элэгдэлтэй, маш сайн төлөв (S, 6, 5).",
+          "good": "Сайн төлөв, бага зэрэг элэгдэлтэй (4.5, 4).",
+          "average": "Дундаж элэгдэл, гадна засвар шаардлагатай (3.5, 3).",
+          "poor": "Хүнд элэгдэл, томоохон гэмтэлтэй (2, 1).",
+          "repaired": "Засвар, ослын түүхтэй (R, RA, A).",
+          "damaged": "Хүнд гэмтэлтэй, зөвхөн сэлбэгийн зориулалттай (XX).",
+          "unknown": "Үнэлгээ тодорхойгүй."
+        }
+      }
     }
   }
 }

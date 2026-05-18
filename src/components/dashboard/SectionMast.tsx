@@ -10,7 +10,7 @@ export default function SectionMast({ title, description, action }: Props) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h2 className="text-base font-semibold tracking-tight text-neutral-900">
+        <h2 className="text-base font-semibold text-neutral-900">
           {title}
         </h2>
         {description && (

@@ -24,7 +24,11 @@
     },
     "phone": "+976 7000 0000",
     "hours": "Пн–Сб · 09:00–18:00",
-    "regionsBadge": { "japan": "Япония", "korea": "Корея", "mongolia": "Монголия" },
+    "regionsBadge": {
+      "japan": "Япония",
+      "korea": "Корея",
+      "mongolia": "Монголия"
+    },
     "menu": {
       "balanceLabel": "Баланс",
       "dashboard": "Личный кабинет",
@@ -39,6 +43,10 @@
     "auth": {
       "signIn": "Войти",
       "signUp": "Регистрация"
+    },
+    "theme": {
+      "switchToDark": "Переключить на тёмную тему",
+      "switchToLight": "Переключить на светлую тему"
     }
   },
   "footer": {
@@ -105,27 +113,6 @@
     }
   },
   "featured": {
-    "card": {
-      "noImage": "Нет изображения",
-      "today": "Сегодня",
-      "tomorrow": "Завтра",
-      "daysLeft": "{days} дн.",
-      "specs": {
-        "year": "Год",
-        "mileage": "Пробег",
-        "engine": "Двигатель",
-        "transmission": "КПП",
-        "color": "Цвет",
-        "rate": "Оценка"
-      },
-      "transmission": {
-        "auto": "Автомат",
-        "manual": "Механика"
-      },
-      "startPriceLabel": "Стартовая цена",
-      "mntPriceLabel": "Оценка MNT",
-      "mileageUnit": "км"
-    },
     "filters": {
       "chips": {
         "marka": "Марка: {value}",
@@ -142,7 +129,12 @@
         "body": "Кузов",
         "rate": "Оценка"
       },
-      "more": "Ещё фильтры",
+      "title": "Фильтры",
+      "sections": {
+        "vehicle": "Автомобиль",
+        "auction": "Аукцион",
+        "advanced": "Дополнительно"
+      },
       "clear": "Очистить",
       "active": "Активный",
       "done": "Готово",
@@ -175,7 +167,24 @@
       "carsUnit": "авто",
       "empty": "Пусто",
       "noResultsTitle": "Подходящих авто не найдено",
-      "noResultsDescription": "Измените параметры фильтра"
+      "noResultsDescription": "Измените параметры фильтра",
+      "view": {
+        "grid": "Карточки",
+        "list": "Список",
+        "table": "Таблица",
+        "col": {
+          "car": "Автомобиль",
+          "year": "Год",
+          "mileage": "Пробег",
+          "engine": "Двиг.",
+          "transmission": "КПП",
+          "color": "Цвет",
+          "grade": "Оценка",
+          "lot": "Лот",
+          "time": "Время",
+          "price": "Цена"
+        }
+      }
     }
   },
   "dashboard": {
@@ -193,9 +202,18 @@
       "greeting": "Привет, {name}",
       "subtitle": "Ваша активность на аукционах — в одном месте.",
       "quickActions": {
-        "newBid": { "title": "Новая ставка", "description": "Принять участие в аукционе" },
-        "track": { "title": "Отслеживать авто", "description": "Добавить в список" },
-        "report": { "title": "Проверка ДТП", "description": "Отчёт по VIN" }
+        "newBid": {
+          "title": "Новая ставка",
+          "description": "Принять участие в аукционе"
+        },
+        "track": {
+          "title": "Отслеживать авто",
+          "description": "Добавить в список"
+        },
+        "report": {
+          "title": "Проверка ДТП",
+          "description": "Отчёт по VIN"
+        }
       },
       "stats": {
         "bidsLabel": "Отправленные ставки",
@@ -262,6 +280,64 @@
       "emptyTitle": "Отчётов пока нет",
       "emptyDescription": "Введите VIN, чтобы получить отчёт о ДТП и истории.",
       "emptyCta": "Новый отчёт"
+    }
+  },
+  "car": {
+    "card": {
+      "noImage": "Нет изображения",
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "daysLeft": "{days} дн.",
+      "specs": {
+        "year": "Год",
+        "mileage": "Пробег",
+        "engine": "Двигатель",
+        "transmission": "КПП",
+        "color": "Цвет",
+        "drive": "Руль"
+      },
+      "transmission": {
+        "auto": "Автомат",
+        "manual": "Механика"
+      },
+      "drive": {
+        "lhd": "Левый",
+        "rhd": "Правый"
+      },
+      "startPriceLabel": "Стартовая цена",
+      "mntPriceLabel": "Оценка MNT",
+      "avgPriceLabel": "Средняя цена",
+      "lotLabel": "Лот",
+      "wishlist": "Сохранить",
+      "compare": "Сравнить",
+      "premium": "Premium",
+      "mileageUnit": "км",
+      "source": {
+        "japan": "JP",
+        "korea": "КР",
+        "china": "КН"
+      },
+      "grade": {
+        "label": "Аукционная оценка",
+        "tier": {
+          "pristine": "Идеал",
+          "good": "Хорошее",
+          "average": "Среднее",
+          "poor": "Плохое",
+          "repaired": "С ремонтом",
+          "damaged": "Повреждён",
+          "unknown": "Не указано"
+        },
+        "description": {
+          "pristine": "Как новый — минимальный износ, отличное состояние (S, 6, 5).",
+          "good": "Хорошее состояние, лёгкий износ (4.5, 4).",
+          "average": "Средний износ, требуется косметика (3.5, 3).",
+          "poor": "Сильный износ или серьёзные дефекты (2, 1).",
+          "repaired": "Имеется ремонт или ДТП в истории (R, RA, A).",
+          "damaged": "Сильно повреждён, только на запчасти (XX).",
+          "unknown": "Оценка не указана."
+        }
+      }
     }
   }
 }
