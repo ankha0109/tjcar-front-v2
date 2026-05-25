@@ -16,6 +16,7 @@ interface CustomerUser {
 declare module "next-auth" {
   interface Session {
     user: CustomerUser;
+    accessToken?: string;
   }
   interface User {
     accessToken: string;

@@ -10,11 +10,7 @@ const SOCIAL_LINKS = [
     href: "https://facebook.com",
     label: "Facebook",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="h-4 w-4"
-      >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
         <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
       </svg>
     ),
@@ -42,11 +38,7 @@ const SOCIAL_LINKS = [
     href: "https://youtube.com",
     label: "YouTube",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="h-4 w-4"
-      >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
       </svg>
     ),
@@ -55,11 +47,7 @@ const SOCIAL_LINKS = [
     href: "https://t.me/tjcar",
     label: "Telegram",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="h-4 w-4"
-      >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
       </svg>
     ),
@@ -112,7 +100,7 @@ export default function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="mt-12 hidden border-t border-neutral-200 bg-white md:block dark:border-neutral-800 dark:bg-neutral-950">
+    <footer className="hidden border-t border-neutral-200 bg-white md:block dark:border-neutral-800 dark:bg-neutral-950">
       {/* Newsletter strip */}
       <div className="border-b border-neutral-100 bg-neutral-50/60 dark:border-neutral-800 dark:bg-neutral-900/40">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
@@ -177,7 +165,7 @@ export default function Footer() {
               {t("cars.heading")}
             </h4>
             <ul className="space-y-2">
-              <FooterLink href="/">{t("cars.japan")}</FooterLink>
+              <FooterLink href="/japan">{t("cars.japan")}</FooterLink>
               <FooterLink href="/korea">{t("cars.korea")}</FooterLink>
               <FooterLink href="/cars">{t("cars.ready")}</FooterLink>
               <FooterLink href="/report">{t("cars.report")}</FooterLink>
@@ -189,9 +177,14 @@ export default function Footer() {
               {t("services.heading")}
             </h4>
             <ul className="space-y-2">
-              <FooterLink href="/dashboard">{t("services.dashboard")}</FooterLink>
+              <FooterLink href="/about">{t("services.about")}</FooterLink>
+              <FooterLink href="/dashboard">
+                {t("services.dashboard")}
+              </FooterLink>
               <FooterLink href="/auth/login">{t("services.signIn")}</FooterLink>
-              <FooterLink href="/auth/register">{t("services.signUp")}</FooterLink>
+              <FooterLink href="/auth/register">
+                {t("services.signUp")}
+              </FooterLink>
             </ul>
           </div>
 

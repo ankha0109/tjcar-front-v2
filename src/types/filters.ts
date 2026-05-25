@@ -105,6 +105,15 @@ export type FilterOptions = {
   locations: string[];
 };
 
+export type MarkaStat = { marka: string; count: number };
+
+export type MarkaStatsResponse = {
+  items: MarkaStat[];
+  total: number;
+};
+
+export type MarkaSource = "japan" | "korea" | "ready";
+
 export const RATE_OPTIONS = [
   "S",
   "6",

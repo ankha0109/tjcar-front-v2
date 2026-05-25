@@ -10,6 +10,7 @@ import { auth } from "@/auth";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 
@@ -87,6 +88,7 @@ export default async function LocaleLayout({
                 </main>
                 <Footer />
                 <MobileBottomNav />
+                <AiChatWidget />
               </div>
             </AntdProvider>
           </AntdRegistry>

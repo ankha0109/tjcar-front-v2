@@ -1,65 +1,73 @@
-import { cookies } from "next/headers";
-import FeaturedAuctionSchedule from "@/components/cards/FeaturedAuctionSchedule";
-import {
-  VIEW_MODE_COOKIE,
-  isViewMode,
-  type ViewMode,
-} from "@/components/cards/views/viewMode";
+import { setRequestLocale } from "next-intl/server";
+import CarSearchSection from "@/components/home/CarSearchSection";
 import ServerApi from "@/services/ServerApi";
-import { FeaturedCar } from "@/types/featured";
-import {
-  FilterOptions,
-  filtersToQuery,
-  queryToFilters,
-} from "@/types/filters";
+import type { FilterOptions, MarkaStatsResponse } from "@/types/filters";
 
 type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  params: Promise<{ locale: string }>;
 };
 
-export default async function Home({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const filters = queryToFilters(params);
+export default async function Home({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
-  const cookieStore = await cookies();
-  const storedMode = cookieStore.get(VIEW_MODE_COOKIE)?.value;
-  const initialViewMode: ViewMode = isViewMode(storedMode) ? storedMode : "grid";
-
-  // Home page is public/mixed — fall back to empty data on any failure
-  // (including 401 from an expired backend token) instead of signing the
-  // user out. Auth-required pages should handle 401 explicitly with
-  // redirectIfUnauthorized from @/lib/serverAuth.
-  const [carsResult, optionsResult] = await Promise.allSettled([
-    ServerApi.get<FeaturedCar[]>("/featured", filtersToQuery(filters), {
-      cache: "no-store",
-    }),
+  const [filterRes, japanRes, koreaRes, readyRes] = await Promise.allSettled([
     ServerApi.get<FilterOptions>(
       "/filter-options",
       {},
       { next: { revalidate: 300 } },
     ),
+    ServerApi.get<MarkaStatsResponse>(
+      "/marka-stats",
+      { source: "japan" },
+      { next: { revalidate: 300 } },
+    ),
+    ServerApi.get<MarkaStatsResponse>(
+      "/marka-stats",
+      { source: "korea" },
+      { next: { revalidate: 300 } },
+    ),
+    ServerApi.get<MarkaStatsResponse>(
+      "/marka-stats",
+      { source: "ready" },
+      { next: { revalidate: 300 } },
+    ),
   ]);
 
-  const cars = carsResult.status === "fulfilled" ? carsResult.value : [];
-  if (carsResult.status === "rejected") {
-    console.error("[Home] /featured fetch failed:", carsResult.reason);
+  if (filterRes.status === "rejected") {
+    console.error("[Home] /filter-options fetch failed:", filterRes.reason);
   }
-
-  const filterOptions =
-    optionsResult.status === "fulfilled" ? optionsResult.value : undefined;
-  if (optionsResult.status === "rejected") {
+  if (japanRes.status === "rejected") {
     console.error(
-      "[Home] /filter-options fetch failed:",
-      optionsResult.reason,
+      "[Home] /marka-stats?source=japan fetch failed:",
+      japanRes.reason,
+    );
+  }
+  if (koreaRes.status === "rejected") {
+    console.error(
+      "[Home] /marka-stats?source=korea fetch failed:",
+      koreaRes.reason,
+    );
+  }
+  if (readyRes.status === "rejected") {
+    console.error(
+      "[Home] /marka-stats?source=ready fetch failed:",
+      readyRes.reason,
     );
   }
 
+  const filterOptions =
+    filterRes.status === "fulfilled" ? filterRes.value : undefined;
+  const japan = japanRes.status === "fulfilled" ? japanRes.value : undefined;
+  const korea = koreaRes.status === "fulfilled" ? koreaRes.value : undefined;
+  const ready = readyRes.status === "fulfilled" ? readyRes.value : undefined;
+
   return (
-    <FeaturedAuctionSchedule
-      initialCars={cars}
-      initialFilters={filters}
+    <CarSearchSection
+      japan={japan}
+      korea={korea}
+      ready={ready}
       filterOptions={filterOptions}
-      initialViewMode={initialViewMode}
     />
   );
 }

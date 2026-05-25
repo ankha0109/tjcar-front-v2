@@ -107,6 +107,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.user) {
         session.user = token.user;
       }
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken;
+      }
       return session;
     },
   },

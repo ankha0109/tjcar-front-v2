@@ -8,6 +8,7 @@ import { cn } from "@/utils";
 // Доод цэс гарахгүй замууд. Шинэ замыг энд нэмж/хасаж тохируулна.
 const HIDDEN_PATH_PATTERNS: RegExp[] = [
   /^\/cars\/[^/]+/, // машины дэлгэрэнгүй (Бэлэн)
+  /^\/japan\/[^/]+/, // машины дэлгэрэнгүй (Япон)
   /^\/korea\/[^/]+/, // машины дэлгэрэнгүй (Солонгос)
 ];
 
@@ -45,9 +46,9 @@ export default function MobileBottomNav() {
 
   const NAV_ITEMS: NavItem[] = [
     {
-      href: "/",
+      href: "/japan",
       label: t("japan"),
-      match: (p) => p === "/",
+      match: (p) => p === "/japan" || p.startsWith("/japan/"),
       icon: (active) => (
         <svg
           viewBox="0 0 24 24"

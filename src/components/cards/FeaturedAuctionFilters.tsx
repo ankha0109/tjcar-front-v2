@@ -346,14 +346,14 @@ export default function FeaturedAuctionFilters({
                 </span>
               )}
             </div>
-            <button
-              type="button"
+            <Button
+              type="text"
               onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
               disabled={!hasFilters}
-              className="text-[11px] font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300"
+              className="h-auto! p-0! border-0! bg-transparent! text-[11px]! font-medium! text-neutral-500! hover:text-neutral-900! hover:bg-transparent! disabled:cursor-not-allowed! disabled:text-neutral-300! disabled:hover:text-neutral-300!"
             >
               {t("clear")}
-            </button>
+            </Button>
           </div>
           <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-4">
             {body}
@@ -521,17 +521,18 @@ function Section({
   const [open, setOpen] = useState(!!defaultOpen);
   return (
     <div className="py-1">
-      <button
-        type="button"
+      <Button
+        type="text"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between py-3 text-left"
+        block
+        className="flex! w-full! h-auto! items-center! justify-between! py-3! px-0! text-left! border-0! bg-transparent! hover:bg-transparent!"
       >
         <span className="flex items-center gap-2">
           <span className="text-[11px] font-semibold uppercase text-neutral-700">
             {title}
           </span>
           {!!activeCount && activeCount > 0 && (
-            <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-neutral-900 px-1 text-[10px] font-semibold text-white">
+            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-neutral-900 px-1 text-[10px] font-semibold text-white">
               {activeCount}
             </span>
           )}
@@ -542,7 +543,7 @@ function Section({
             open && "rotate-180",
           )}
         />
-      </button>
+      </Button>
       {open && <div className="space-y-3 pb-3">{children}</div>}
     </div>
   );

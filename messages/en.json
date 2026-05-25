@@ -19,6 +19,7 @@
     "nav": {
       "japan": "Japan cars",
       "korea": "Korea cars",
+      "about": "About us",
       "ready": "In-stock cars",
       "report": "Accident report"
     },
@@ -47,6 +48,52 @@
     "theme": {
       "switchToDark": "Switch to dark mode",
       "switchToLight": "Switch to light mode"
+    },
+    "search": {
+      "placeholder": "Search cars (brand, model, year)..."
+    },
+    "howItWorks": "How it works",
+    "orderCar": "Order a car",
+    "wishlist": "Saved",
+    "tjcarAi": "TJCAR AI",
+    "nav2": {
+      "trending": "Trending",
+      "new": "New",
+      "endingSoon": "Ending soon",
+      "more": "More",
+      "discover": "Discover",
+      "regions": "Regions",
+      "catalog": "Catalog",
+      "howItWorks": "Guide"
+    }
+  },
+  "howItWorks": {
+    "metadata": {
+      "title": "How to place an order",
+      "description": "Step-by-step guide on how to order a car from Japan or Korea with TJ Car and how the auction process works."
+    }
+  },
+  "homeSearch": {
+    "title": "Find a car",
+    "description": "Browse every type of vehicle live from Japanese auctions and order reliably at a lower price.",
+    "filterMode": {
+      "maker": "By make",
+      "advanced": "Advanced search"
+    },
+    "segments": {
+      "japan": "Japan",
+      "korea": "Korea",
+      "ready": "In-stock"
+    },
+    "allMakes": "All makes",
+    "totalInAuction": "{count} cars currently in auction",
+    "viewAll": "View all",
+    "vin": {
+      "title": "Accident & history check",
+      "blurb": "Look up accident and history records by VIN or plate number.",
+      "placeholder": "VIN or plate number",
+      "submit": "Check",
+      "required": "Please enter a VIN or plate number"
     }
   },
   "footer": {
@@ -67,6 +114,7 @@
     "services": {
       "heading": "Services",
       "dashboard": "Dashboard",
+      "about": "About us",
       "signIn": "Sign in",
       "signUp": "Sign up"
     },
@@ -339,5 +387,214 @@
         }
       }
     }
+  },
+  "homeHero": {
+    "eyebrow": "Live now",
+    "eyebrowSub": "Japan · Korea · Mongolia",
+    "headingLine1": "From Japan and Korea —",
+    "headingAccent": "reliably",
+    "headingLine2": "into Mongolia.",
+    "subheading": "We run every step from auction bid to delivery.",
+    "features": {
+      "japan": "Japan auctions · 30+ cities",
+      "korea": "Encar direct · 14 days",
+      "report": "PDF report"
+    },
+    "cta": {
+      "primary": "Browse cars",
+      "secondary": "How it works"
+    },
+    "stats": {
+      "cars": "2,400+",
+      "carsLabel": "cars imported",
+      "years": "8",
+      "yearsLabel": "years of trust"
+    },
+    "route": {
+      "japan": "Japan",
+      "korea": "Korea",
+      "mongolia": "Mongolia"
+    },
+    "visual": {
+      "live": "Live",
+      "auctionHouse": "USS Tokyo · Lane 4",
+      "carName": "Toyota Alphard Hybrid",
+      "carYearKm": "2020 · 48,200 km",
+      "grade": "4.5",
+      "bidLabel": "Current bid",
+      "encarTitle": "Encar direct",
+      "encarCar": "Hyundai Grandeur",
+      "encarStatus": "Delivery · day 8/14",
+      "reportTitle": "Vehicle report",
+      "reportPages": "16 pages · ready"
+    }
+  },
+  "homeFilter": {
+    "title": "Find a car",
+    "tabs": {
+      "japan": "Japan",
+      "korea": "Korea"
+    },
+    "submit": "Search",
+    "ariaTabs": "Choose marketplace"
+  },
+  "homeBento": {
+    "eyebrow": "Services",
+    "heading": "Cars from Japan and Korea — from order to delivery",
+    "subheading": "From auction bidding to delivery in Mongolia, we handle the entire process.",
+    "japan": {
+      "title": "Japanese auctions",
+      "description": "We bid for you across auctions in cities throughout Japan, secure the best price, and handle every step until the car arrives in Mongolia.",
+      "cta": "Browse Japan cars"
+    },
+    "korea": {
+      "title": "Direct from Encar",
+      "description": "Buy directly from Korea's Encar marketplace. Delivered to Mongolia within 14 days, with official authorisation and vehicle details and pricing verified against Encar.",
+      "cta": "Browse Korea cars"
+    },
+    "ready": {
+      "title": "In-stock cars",
+      "description": "Cars ready to enter Mongolia, in transit, or already on the ground — see the full list.",
+      "cta": "View in-stock cars"
+    },
+    "report": {
+      "title": "Vehicle report",
+      "description": "Auction grade, mileage, real photos, accident and flood history — everything we know, prepared as a PDF report.",
+      "cta": "Order a report",
+      "priceBadge": "20,000₮"
+    }
+  },
+  "about": {
+    "metadata": {
+      "title": "About us",
+      "description": "TJ CAR LLC — your trusted broker for cars from Japan and Korea. Auction bidding, in-stock cars, and vehicle reports."
+    },
+    "hero": {
+      "eyebrow": "About us",
+      "title": "The team that brings Japanese & Korean cars to Mongolia, reliably",
+      "subtitle": "Since 2022 we've handled auction bidding, brokerage, shipping and reports end-to-end. With TJcar.mn launched in 2024, customers can browse every Japan auction in their own language.",
+      "cta": {
+        "primary": "Order a car",
+        "secondary": "Contact us"
+      }
+    },
+    "story": {
+      "eyebrow": "Our story",
+      "heading": "A transparent bridge between Japanese and Korean markets",
+      "body": "TJ Car LLC has been importing and brokering cars from Japan and Korea since 2022. In 2024 we launched TJcar.mn, giving Mongolian customers free real-time access to every Japan auction listing in their own language — with bidding, accurate pricing in MNT, and end-to-end order placement.",
+      "milestones": {
+        "y2022": { "label": "2022", "text": "Company founded" },
+        "y2024": { "label": "2024", "text": "TJcar.mn platform launched" },
+        "y2025": { "label": "2025", "text": "7,200+ users · 800+ orders" }
+      },
+      "stats": {
+        "orders": { "value": "800+", "label": "Orders fulfilled" },
+        "users": { "value": "7,200+", "label": "Registered users" },
+        "delivery": { "value": "45–60", "label": "Days to delivery" },
+        "savings": { "value": "10–20%", "label": "Below market price" }
+      }
+    },
+    "services": {
+      "eyebrow": "Services",
+      "heading": "What we do",
+      "subheading": "A single team for every step — from auction to handover.",
+      "items": {
+        "japan": { "title": "Japan orders", "body": "Bid across 30+ auction houses in Japan, secure the best price." },
+        "korea": { "title": "Korea orders", "body": "Direct from Encar to Ulaanbaatar in 14 days." },
+        "auction": { "title": "Auction brokerage", "body": "We bid on your behalf at Japanese and Korean auctions." },
+        "ready": { "title": "In-stock cars", "body": "Cars already in Mongolia or in transit — ready to view." },
+        "report": { "title": "Vehicle report", "body": "Auction history, accidents, mileage, real photos in PDF." },
+        "custom": { "title": "Custom sourcing", "body": "Year, color, mileage, options — sourced exactly to your spec." }
+      }
+    },
+    "process": {
+      "eyebrow": "How an order flows",
+      "heading": "5 steps to your driveway",
+      "durationBadge": "45–60 days",
+      "steps": {
+        "select": { "title": "Select", "body": "Pick a car on TJcar.mn and confirm with your account manager." },
+        "deposit": { "title": "30–50% deposit", "body": "We sign a contract and you pay 30–50% of the total upfront." },
+        "auction": { "title": "Auction / purchase", "body": "Our team bids and secures the car at a fair market price." },
+        "ship": { "title": "Shipping", "body": "Insured shipping from Japan or Korea to Mongolia." },
+        "handover": { "title": "Final payment & handover", "body": "Settle the balance and we hand the car directly to you." }
+      }
+    },
+    "advantages": {
+      "eyebrow": "Why us",
+      "heading": "What makes TJ Car different",
+      "items": {
+        "savings": { "title": "10–20% savings", "body": "Buying below market price thanks to live auction access." },
+        "transparency": { "title": "Transparent pricing", "body": "Every order is contracted; payments go through the company account only." },
+        "endToEnd": { "title": "End-to-end service", "body": "From auction to handover we run every step." },
+        "value": { "title": "Lasting value", "body": "Inspected cars with real grades hold their resale value." }
+      },
+      "callout": {
+        "eyebrow": "Why now",
+        "heading": "Regulation + market shift",
+        "body": "From January 1, 2025, Ulaanbaatar no longer issues plates for cars 10+ years old. Buyers must pick newer vehicles, lifting demand for fresh imports.",
+        "example": "Toyota Prius (2010–2014): 18–20M ₮ in 2024 → 28–32M ₮ from 2025"
+      }
+    },
+    "team": {
+      "eyebrow": "Our team",
+      "heading": "People working for you across three countries",
+      "subheading": "Local representatives manage every step of the chain.",
+      "roles": {
+        "founder": "Founder",
+        "operations": "Head of operations",
+        "japan": "Japan representative",
+        "korea": "Korea representative",
+        "logistics": "Logistics coordinator",
+        "support": "Customer support"
+      },
+      "placeholderName": "Joining soon"
+    },
+    "gallery": {
+      "eyebrow": "Operations",
+      "heading": "How we work",
+      "items": {
+        "auction": "Watching the Japan auction live",
+        "transport": "Japan → Mongolia transport",
+        "office": "TJ CAR LLC office"
+      }
+    },
+    "cta": {
+      "heading": "Get your next car from a team you can trust",
+      "body": "From order to delivery, TJ Car stays with you the whole way.",
+      "primary": "Order a car",
+      "secondary": "Contact us",
+      "comingSoon": {
+        "label": "Coming soon",
+        "ai": "AI suggestions",
+        "loan": "Loan calculator",
+        "app": "Mobile app"
+      }
+    }
+  },
+  "aiChat": {
+    "openButton": "Chat with the AI assistant",
+    "title": "TJCAR AI assistant",
+    "subtitle": "Online",
+    "placeholder": "Ask anything...",
+    "send": "Send",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "close": "Close",
+    "clearHistory": "Clear history",
+    "clearConfirm": "Clear all chat history?",
+    "clearYes": "Yes",
+    "clearNo": "Cancel",
+    "emptyGreeting": "Hi! How can I help you today?",
+    "suggestedQuestions": [
+      "Tell me about the 2020 Toyota Camry",
+      "How do I join an auction?",
+      "What are the shipping costs?",
+      "What is a vehicle inspection report?"
+    ],
+    "typing": "Typing...",
+    "errorMessage": "Sorry, something went wrong.",
+    "errorRateLimit": "Too many requests. Please wait a moment and try again.",
+    "errorAuth": "Authentication required or your session has expired.",
+    "errorRetry": "Try again"
   }
 }

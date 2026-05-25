@@ -15,6 +15,7 @@ import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 import { StyleProvider } from "@ant-design/cssinjs";
 import type { Theme } from "@/lib/theme";
+import { AiChatProvider } from "@/components/ai-chat/AiChatContext";
 
 type AntdProviderProps = {
   children?: React.ReactNode;
@@ -64,18 +65,32 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
           <ConfigProvider
             locale={ANTD_LOCALES[locale] ?? en_US}
             theme={{
-              algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+              algorithm: isDark
+                ? antdTheme.darkAlgorithm
+                : antdTheme.defaultAlgorithm,
               token: {
                 fontFamily: "Inter, sans-serif",
                 colorPrimary: "#F1472C",
-                colorLink: isDark ? "#e8e8ea" : "#222",
-                colorLinkHover: isDark ? "#ffffff" : "#000",
+                // colorLink: isDark ? "#e8e8ea" : "#ffffff",
+                // colorLinkHover: isDark ? "#ffffff" : "#000",
+              },
+              components: {
+                Button: {
+                  // primaryColor: "#0b0b0c",
+                  // colorPrimary: isDark ? "#e8e8ea" : "#222",
+                  // linkHoverBg: "transparent",
+                  // defaultHoverBg: "transparent",
+                  // colorPrimaryHover: "#e8e8ea",
+                  primaryShadow: "none",
+                  defaultShadow: "none",
+                  dangerShadow: "none",
+                },
               },
             }}
           >
             <App className="w-full mx-auto min-h-screen flex flex-col">
               {contextHolder}
-              {children}
+              <AiChatProvider>{children}</AiChatProvider>
               <GuideModalRoot />
             </App>
           </ConfigProvider>

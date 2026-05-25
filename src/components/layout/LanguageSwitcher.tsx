@@ -1,6 +1,6 @@
 "use client";
 
-import { Dropdown } from "antd";
+import { Button, Dropdown } from "antd";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -49,17 +49,17 @@ export default function LanguageSwitcher() {
         selectedKeys: [locale],
       }}
     >
-      <button
-        type="button"
+      <Button
+        type="text"
         aria-label={t("label")}
         className={cn(
-          "inline-flex h-9 items-center gap-1.5 rounded-full border border-transparent px-3 text-[13px] font-medium text-neutral-700 transition-colors dark:text-neutral-300",
-          "hover:border-neutral-200 hover:bg-white dark:hover:border-neutral-800 dark:hover:bg-neutral-900",
+          "rounded-full! text-[13px]! font-medium! text-neutral-700! dark:text-neutral-300!",
+          "hover:bg-neutral-100! dark:hover:bg-neutral-900!",
         )}
       >
         <span aria-hidden>{FLAGS[locale]}</span>
         <span className="uppercase">{locale}</span>
-      </button>
+      </Button>
     </Dropdown>
   );
 }

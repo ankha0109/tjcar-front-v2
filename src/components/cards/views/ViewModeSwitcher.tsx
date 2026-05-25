@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "antd";
 import { cn } from "@/utils";
 import type { ViewMode } from "./viewMode";
 
@@ -50,22 +51,23 @@ function ModeButton({
   icon: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      type="text"
+      shape="circle"
       role="radio"
       aria-checked={active}
       aria-label={label}
       title={label}
       onClick={onClick}
       className={cn(
-        "inline-flex h-8 w-9 items-center justify-center rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+        "rounded-xl! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!",
         active
-          ? "bg-neutral-900 text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.55)]"
-          : "text-neutral-500 hover:bg-white hover:text-neutral-900",
+          ? "bg-neutral-900! text-white! hover:bg-neutral-900!"
+          : "text-neutral-500! hover:bg-white! hover:text-neutral-900!",
       )}
     >
       {icon}
-    </button>
+    </Button>
   );
 }
 

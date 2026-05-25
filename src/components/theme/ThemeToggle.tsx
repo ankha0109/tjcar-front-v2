@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { Button } from "antd";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { setTheme } from "@/app/actions/theme";
@@ -51,17 +52,16 @@ export default function ThemeToggle({ theme }: { theme: Theme }) {
   };
 
   return (
-    <button
-      type="button"
+    <Button
+      type="text"
+      shape="circle"
       onClick={onClick}
       disabled={isPending}
       aria-label={theme === "dark" ? t("switchToLight") : t("switchToDark")}
       title={theme === "dark" ? t("switchToLight") : t("switchToDark")}
       className={cn(
-        "inline-flex h-9 w-9 items-center justify-center rounded-full",
-        "text-neutral-700 transition-colors hover:bg-neutral-100",
-        "dark:text-neutral-200 dark:hover:bg-neutral-800",
-        isPending && "opacity-60",
+        "text-neutral-700! dark:text-neutral-200!",
+        isPending && "opacity-60!",
       )}
     >
       {theme === "dark" ? (
@@ -69,6 +69,6 @@ export default function ThemeToggle({ theme }: { theme: Theme }) {
       ) : (
         <MoonIcon className="h-4.5 w-4.5" />
       )}
-    </button>
+    </Button>
   );
 }

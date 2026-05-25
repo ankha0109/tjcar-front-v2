@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { Button } from "antd";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
@@ -242,7 +243,7 @@ export default function FeaturedAuctionSchedule({
 }
 
 const TAB_BASE =
-  "group relative flex shrink-0 flex-col items-center justify-center rounded-2xl px-3.5 py-2.5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";
+  "group! relative! flex! shrink-0! flex-col! items-center! justify-center! rounded-2xl! px-3.5! py-2.5! h-auto! transition-all! duration-200! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!";
 
 function AllTab({
   isActive,
@@ -258,17 +259,17 @@ function AllTab({
   unit: string;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      type="text"
       role="tab"
       aria-selected={isActive}
       onClick={onClick}
       className={cn(
         TAB_BASE,
-        "min-w-[88px] border",
+        "min-w-22! border!",
         isActive
-          ? "border-transparent bg-neutral-900 text-white shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]"
-          : "border-neutral-200 bg-white text-neutral-700 hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-sm",
+          ? "border-transparent! bg-neutral-900! text-white! shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]!"
+          : "border-neutral-200! bg-white! text-neutral-700! hover:-translate-y-0.5! hover:border-neutral-300! hover:shadow-sm!",
       )}
     >
       <span
@@ -290,7 +291,7 @@ function AllTab({
       >
         {unit}
       </span>
-    </button>
+    </Button>
   );
 }
 
@@ -317,18 +318,18 @@ function DayTab({
 }) {
   const isEmpty = count === 0;
   return (
-    <button
-      type="button"
+    <Button
+      type="text"
       role="tab"
       aria-selected={isActive}
       onClick={onClick}
       className={cn(
         TAB_BASE,
-        "min-w-[80px] border",
+        "min-w-20! border!",
         isActive
-          ? "border-transparent bg-neutral-900 text-white shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]"
-          : "border-neutral-200/70 bg-neutral-50/60 text-neutral-700 hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-white hover:shadow-sm",
-        !isActive && isEmpty && "opacity-55",
+          ? "border-transparent! bg-neutral-900! text-white! shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]!"
+          : "border-neutral-200/70! bg-neutral-50/60! text-neutral-700! hover:-translate-y-0.5! hover:border-neutral-300! hover:bg-white! hover:shadow-sm!",
+        !isActive && isEmpty && "opacity-55!",
       )}
     >
       {highlight && !isActive && (
@@ -379,7 +380,7 @@ function DayTab({
         )}
         {isEmpty ? emptyLabel : count}
       </span>
-    </button>
+    </Button>
   );
 }
 
