@@ -52,9 +52,9 @@
     "search": {
       "placeholder": "Search cars (brand, model, year)..."
     },
-    "howItWorks": "How it works",
+    "howItWorks": "How to order a car?",
     "orderCar": "Order a car",
-    "wishlist": "Saved",
+    "wishlist": "Saved cars",
     "tjcarAi": "TJCAR AI",
     "nav2": {
       "trending": "Trending",
@@ -64,7 +64,33 @@
       "discover": "Discover",
       "regions": "Regions",
       "catalog": "Catalog",
-      "howItWorks": "Guide"
+      "howItWorks": "Guide",
+      "info": "Info"
+    },
+    "topbar": {
+      "rates": {
+        "label": "Rate",
+        "updated": "Last updated: {time}",
+        "usd": "USD",
+        "jpy": "JPY"
+      },
+      "phone": {
+        "label": "Phone",
+        "aria": "Call this number"
+      },
+      "hours": {
+        "label": "Hours",
+        "short": "09:00–18:00",
+        "schedule": {
+          "weekdays": "Mon–Fri: 09:00–18:00",
+          "saturday": "Sat: 10:00–16:00",
+          "sunday": "Sun: Closed"
+        }
+      },
+      "contact": {
+        "label": "Contact",
+        "aria": "Contact page"
+      }
     }
   },
   "howItWorks": {
@@ -462,6 +488,33 @@
       "description": "Auction grade, mileage, real photos, accident and flood history — everything we know, prepared as a PDF report.",
       "cta": "Order a report",
       "priceBadge": "20,000₮"
+    }
+  },
+  "homeBlog": {
+    "eyebrow": "News & guides",
+    "heading": "Know more before you buy",
+    "subheading": "Market notes, new models, buying tips — from Japan and Korea, written by our team.",
+    "viewAll": "All articles",
+    "readMore": "Read more",
+    "posts": {
+      "post1": {
+        "category": "Buying guide",
+        "date": "2026-04-12",
+        "title": "5 things to check before you buy",
+        "excerpt": "Drivetrain, mileage, accident history, auction report — the essentials to verify before any purchase."
+      },
+      "post2": {
+        "category": "Comparison",
+        "date": "2026-03-28",
+        "title": "Hybrid vs electric — which fits Mongolia?",
+        "excerpt": "Total cost of ownership, charging infrastructure, service availability — a side-by-side breakdown."
+      },
+      "post3": {
+        "category": "Market",
+        "date": "2026-02-15",
+        "title": "Japan's most-wanted brands in 2026",
+        "excerpt": "Toyota, Lexus, Subaru — a data-driven ranking based on last quarter's auction volume."
+      }
     }
   },
   "about": {

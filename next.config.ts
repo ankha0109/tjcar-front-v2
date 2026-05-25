@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
     CDN_URL: "https://storage.googleapis.com",
   },
   reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
   turbopack: {
     rules: {
       "*.svg": {

@@ -197,7 +197,6 @@ export function AiChatProvider({ children }: { children: React.ReactNode }) {
           listenToAll?: (cb: (eventName: string, data: unknown) => void) => void;
         };
         withListenAll.listenToAll?.((eventName, data) => {
-          // eslint-disable-next-line no-console
           console.log("[ai-chat] event:", eventName, data);
         });
       }

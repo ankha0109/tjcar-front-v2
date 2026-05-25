@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Button, Form, Input, Segmented, Select, Space } from "antd";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
+import { JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
 import {
   EMPTY_FILTERS,
   RATE_OPTIONS,
@@ -12,33 +12,30 @@ import {
   filtersToQuery,
   type FilterOptions,
   type FilterValues,
-  type MarkaSource,
   type MarkaStatsResponse,
 } from "@/types/filters";
 import { cn } from "@/utils";
 
 type FilterMode = "maker" | "advanced";
+type Tab = "japan" | "korea";
 
 type Props = {
   japan?: MarkaStatsResponse;
   korea?: MarkaStatsResponse;
-  ready?: MarkaStatsResponse;
   filterOptions?: FilterOptions;
 };
 
 const MAX_VISIBLE_MAKES = 29; // leaves room for the trailing "Бүх марк ↓" cell
 
-const VIEW_ALL_HREF: Record<MarkaSource, string> = {
+const VIEW_ALL_HREF: Record<Tab, string> = {
   japan: "/japan",
   korea: "/korea",
-  ready: "/cars",
 };
 
 // Curated "popular" makes shown with logos above the full alphabetic grid.
-const FEATURED_MAKES: Record<MarkaSource, string[]> = {
-  japan: ["Toyota", "Honda", "Nissan", "Subaru", "Mitsubishi", "Lexus"],
+const FEATURED_MAKES: Record<Tab, string[]> = {
+  japan: ["Toyota", "Lexus", "Mercedes-Benz", "Subaru", "Nissan", "Mitsubishi"],
   korea: ["Hyundai", "Kia", "Genesis", "Samsung", "SsangYong", "Chevrolet"],
-  ready: ["Toyota", "Hyundai", "Honda", "Lexus", "Mercedes-Benz", "BMW"],
 };
 
 function logoUrl(marka: string) {
@@ -48,7 +45,7 @@ function logoUrl(marka: string) {
 
 // Demo fallback while backend `/marka-stats` is not yet available.
 // Counts are illustrative; real values come from the API once it ships.
-const DEMO_STATS: Record<MarkaSource, MarkaStatsResponse> = {
+const DEMO_STATS: Record<Tab, MarkaStatsResponse> = {
   japan: {
     total: 312_540,
     items: [
@@ -116,31 +113,6 @@ const DEMO_STATS: Record<MarkaSource, MarkaStatsResponse> = {
       { marka: "Lamborghini", count: 80 },
     ],
   },
-  ready: {
-    total: 1_240,
-    items: [
-      { marka: "Toyota", count: 320 },
-      { marka: "Hyundai", count: 180 },
-      { marka: "Honda", count: 142 },
-      { marka: "Kia", count: 118 },
-      { marka: "Nissan", count: 96 },
-      { marka: "Lexus", count: 78 },
-      { marka: "Mazda", count: 62 },
-      { marka: "Subaru", count: 54 },
-      { marka: "Mercedes-Benz", count: 48 },
-      { marka: "BMW", count: 42 },
-      { marka: "Mitsubishi", count: 36 },
-      { marka: "Genesis", count: 28 },
-      { marka: "Audi", count: 22 },
-      { marka: "Volkswagen", count: 18 },
-      { marka: "Suzuki", count: 14 },
-      { marka: "Land Rover", count: 12 },
-      { marka: "Porsche", count: 10 },
-      { marka: "Volvo", count: 8 },
-      { marka: "Mini", count: 6 },
-      { marka: "Daihatsu", count: 5 },
-    ],
-  },
 };
 
 function formatCount(n: number) {
@@ -150,7 +122,6 @@ function formatCount(n: number) {
 export default function CarSearchSection({
   japan,
   korea,
-  ready,
   filterOptions,
 }: Props) {
   const t = useTranslations("homeSearch");
@@ -158,23 +129,23 @@ export default function CarSearchSection({
   const router = useRouter();
 
   const [mode, setMode] = useState<FilterMode>("maker");
-  const [tab, setTab] = useState<MarkaSource>("japan");
+  const [tab, setTab] = useState<Tab>("japan");
   const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
   const [vinForm] = Form.useForm<{ vin: string }>();
 
   const data = useMemo<MarkaStatsResponse>(() => {
-    const source = tab === "japan" ? japan : tab === "korea" ? korea : ready;
+    const source = tab === "japan" ? japan : korea;
     if (source && source.items.length > 0) return source;
     return DEMO_STATS[tab];
-  }, [tab, japan, korea, ready]);
+  }, [tab, japan, korea]);
 
-  const sortedMakes = useMemo(
-    () =>
-      [...data.items]
-        .sort((a, b) => b.count - a.count)
-        .slice(0, MAX_VISIBLE_MAKES),
-    [data.items],
-  );
+  const sortedMakes = useMemo(() => {
+    const featured = new Set(FEATURED_MAKES[tab]);
+    return [...data.items]
+      .filter((i) => !featured.has(i.marka))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, MAX_VISIBLE_MAKES);
+  }, [data.items, tab]);
 
   const viewAllHref = VIEW_ALL_HREF[tab];
 
@@ -230,9 +201,8 @@ export default function CarSearchSection({
     const q = filtersToQuery(filters);
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(q)) params.set(k, String(v));
-    const advTarget = tab === "ready" ? "japan" : tab;
     const qs = params.toString();
-    router.push(qs ? `/${advTarget}?${qs}` : `/${advTarget}`);
+    router.push(qs ? `/${tab}?${qs}` : `/${tab}`);
   };
 
   const onVinSubmit = ({ vin }: { vin: string }) => {
@@ -241,7 +211,7 @@ export default function CarSearchSection({
     router.push(`/report?vin=${encodeURIComponent(v)}`);
   };
 
-  const baseSegments = [
+  const segments = [
     {
       label: (
         <span className="inline-flex items-center gap-1.5 px-1 text-[13px]">
@@ -262,43 +232,27 @@ export default function CarSearchSection({
     },
   ];
 
-  const segments =
-    mode === "maker"
-      ? [
-          ...baseSegments,
-          {
-            label: (
-              <span className="inline-flex items-center gap-1.5 px-1 text-[13px]">
-                <CarIcon className="h-4 w-4 shrink-0" />
-                {t("segments.ready")}
-              </span>
-            ),
-            value: "ready" as const,
-          },
-        ]
-      : baseSegments;
-
   const modeTabs: { key: FilterMode; label: string }[] = [
     { key: "maker", label: t("filterMode.maker") },
     { key: "advanced", label: t("filterMode.advanced") },
   ];
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-6 pt-10 md:pb-8 md:pt-14">
+    <section className="mx-auto w-full max-w-7xl px-4 pb-6 pt-10 md:pb-8 md:pt-6">
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-10">
         {/* LEFT — 70% */}
         <div className="lg:col-span-7">
-          <header>
+          <div className="flex items-center gap-10">
             <h2 className="text-[22px] font-semibold tracking-tight text-neutral-900 md:text-[26px] dark:text-neutral-50">
               {t("title")}
             </h2>
-            <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14px] dark:text-neutral-400">
+            <p className="max-w-2xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14px] dark:text-neutral-400">
               {t("description")}
             </p>
-          </header>
+          </div>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <Segmented<MarkaSource>
+            <Segmented<Tab>
               value={tab}
               onChange={setTab}
               options={segments}
@@ -314,10 +268,7 @@ export default function CarSearchSection({
                   <Button
                     key={key}
                     type="text"
-                    onClick={() => {
-                      setMode(key);
-                      if (key === "advanced" && tab === "ready") setTab("japan");
-                    }}
+                    onClick={() => setMode(key)}
                     className={cn(
                       "rounded-full! text-[13px]!",
                       active

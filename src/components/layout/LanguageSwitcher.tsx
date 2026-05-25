@@ -52,10 +52,10 @@ export default function LanguageSwitcher() {
       <Button
         type="text"
         aria-label={t("label")}
-        className={cn(
-          "rounded-full! text-[13px]! font-medium! text-neutral-700! dark:text-neutral-300!",
-          "hover:bg-neutral-100! dark:hover:bg-neutral-900!",
-        )}
+        // className={cn(
+        //   "rounded-full! text-[13px]! font-medium! text-neutral-700! dark:text-neutral-300!",
+        //   "hover:bg-neutral-100! dark:hover:bg-neutral-900!",
+        // )}
       >
         <span aria-hidden>{FLAGS[locale]}</span>
         <span className="uppercase">{locale}</span>

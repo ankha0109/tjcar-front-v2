@@ -96,7 +96,9 @@ function BentoCard({
           {description}
         </p>
         <span className="mt-auto inline-flex items-center gap-1 pt-3 text-sm font-medium text-neutral-900 transition-all duration-300 group-hover:gap-2 dark:text-neutral-100">
-          {cta}
+          <span className="bg-[length:0%_1px] bg-bottom bg-no-repeat bg-gradient-to-r from-current to-current transition-[background-size] duration-300 group-hover:bg-[length:100%_1px]">
+            {cta}
+          </span>
           <ArrowIcon className="h-4 w-4" />
         </span>
       </div>
@@ -108,52 +110,66 @@ export default function BentoGrid() {
   const t = useTranslations("homeBento");
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
-      {/* Top row */}
-      <BentoCard
-        href="/japan"
-        image={japanImg}
-        imageAlt={t("japan.title")}
-        imagePriority
-        floatDelayMs={0}
-        title={t("japan.title")}
-        description={t("japan.description")}
-        cta={t("japan.cta")}
-        className="md:col-span-3"
-      />
-      <BentoCard
-        href="/korea"
-        image={koreaImg}
-        imageAlt={t("korea.title")}
-        floatDelayMs={1500}
-        title={t("korea.title")}
-        description={t("korea.description")}
-        cta={t("korea.cta")}
-        className="md:col-span-2"
-      />
+    <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 md:pb-16 md:pt-10">
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary/80">
+          {t("eyebrow")}
+        </span>
+        <h2 className="text-[22px] font-semibold tracking-tight text-neutral-900 md:text-[26px] dark:text-neutral-50">
+          {t("heading")}
+        </h2>
+        <p className="max-w-2xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14px] dark:text-neutral-400">
+          {t("subheading")}
+        </p>
+      </div>
 
-      {/* Bottom row */}
-      <BentoCard
-        href="#"
-        image={readyImg}
-        imageAlt={t("ready.title")}
-        floatDelayMs={3000}
-        title={t("ready.title")}
-        description={t("ready.description")}
-        cta={t("ready.cta")}
-        className="md:col-span-2"
-      />
-      <BentoCard
-        href="#"
-        image={reportImg}
-        imageAlt={t("report.title")}
-        floatDelayMs={4500}
-        title={t("report.title")}
-        description={t("report.description")}
-        cta={t("report.cta")}
-        badge={t("report.priceBadge")}
-        className="md:col-span-3"
-      />
-    </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
+        {/* Top row */}
+        <BentoCard
+          href="/japan"
+          image={japanImg}
+          imageAlt={t("japan.title")}
+          imagePriority
+          floatDelayMs={0}
+          title={t("japan.title")}
+          description={t("japan.description")}
+          cta={t("japan.cta")}
+          className="md:col-span-3"
+        />
+        <BentoCard
+          href="/korea"
+          image={koreaImg}
+          imageAlt={t("korea.title")}
+          floatDelayMs={1500}
+          title={t("korea.title")}
+          description={t("korea.description")}
+          cta={t("korea.cta")}
+          className="md:col-span-2"
+        />
+
+        {/* Bottom row */}
+        <BentoCard
+          href="#"
+          image={readyImg}
+          imageAlt={t("ready.title")}
+          floatDelayMs={3000}
+          title={t("ready.title")}
+          description={t("ready.description")}
+          cta={t("ready.cta")}
+          className="md:col-span-2"
+        />
+        <BentoCard
+          href="#"
+          image={reportImg}
+          imageAlt={t("report.title")}
+          floatDelayMs={4500}
+          title={t("report.title")}
+          description={t("report.description")}
+          cta={t("report.cta")}
+          badge={t("report.priceBadge")}
+          className="md:col-span-3"
+        />
+      </div>
+    </section>
   );
 }
