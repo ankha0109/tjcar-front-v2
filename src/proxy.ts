@@ -1,12 +1,19 @@
 import createIntlMiddleware from "next-intl/middleware";
 import { getToken } from "next-auth/jwt";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, userAgent, type NextRequest } from "next/server";
 import { routing } from "@/i18n/routing";
 import { SESSION_TOKEN_COOKIE } from "@/lib/authCookies";
+import { DEVICE_COOKIE, type Device } from "@/lib/device";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
 const PROTECTED_SEGMENTS = ["/dashboard"];
+
+function resolveDevice(req: NextRequest): Device {
+  const override = req.nextUrl.searchParams.get("view");
+  if (override === "mobile" || override === "desktop") return override;
+  return userAgent(req).device?.type === "mobile" ? "mobile" : "desktop";
+}
 
 function stripLocale(pathname: string): string {
   for (const locale of routing.locales) {
@@ -56,6 +63,16 @@ export async function proxy(req: NextRequest) {
 
   const intlResponse = intlMiddleware(req);
   intlResponse.headers.set("x-pathname", pathname);
+
+  const device = resolveDevice(req);
+  if (req.cookies.get(DEVICE_COOKIE)?.value !== device) {
+    intlResponse.cookies.set(DEVICE_COOKIE, device, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+
   return intlResponse;
 }
 

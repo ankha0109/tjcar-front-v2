@@ -17,12 +17,20 @@ import { CountdownBadge } from "../shared/CountdownBadge";
 import { PremiumBadge, isPremiumCar } from "../shared/PremiumBadge";
 import { ColorDot } from "../shared/SpecIcons";
 
-export default function CarTableView({ cars }: { cars: CarItem[] }) {
+export default function CarTableView({
+  cars,
+  hidePrice,
+  onRowClick,
+}: {
+  cars: CarItem[];
+  hidePrice?: boolean;
+  onRowClick?: (car: CarItem) => void;
+}) {
   const t = useTranslations("car.card");
   const tCol = useTranslations("featured.schedule.view.col");
 
-  const columns = useMemo<ColumnsType<CarItem>>(
-    () => [
+  const columns = useMemo<ColumnsType<CarItem>>(() => {
+    const cols: ColumnsType<CarItem> = [
       {
         title: tCol("car"),
         dataIndex: "marka",
@@ -154,9 +162,9 @@ export default function CarTableView({ cars }: { cars: CarItem[] }) {
           </div>
         ),
       },
-    ],
-    [t, tCol],
-  );
+    ];
+    return hidePrice ? cols.filter((c) => c.key !== "price") : cols;
+  }, [t, tCol, hidePrice]);
 
   return (
     <div className="-mx-4 px-4 lg:mx-0 lg:px-0">
@@ -168,6 +176,14 @@ export default function CarTableView({ cars }: { cars: CarItem[] }) {
         size="middle"
         scroll={{ x: "max-content" }}
         className="featured-car-table"
+        onRow={
+          onRowClick
+            ? (car) => ({
+                onClick: () => onRowClick(car),
+                style: { cursor: "pointer" },
+              })
+            : undefined
+        }
         rowClassName={(car) =>
           isPremiumCar(car.auction?.type)
             ? "featured-car-row-premium"

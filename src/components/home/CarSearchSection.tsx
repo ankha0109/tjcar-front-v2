@@ -12,7 +12,6 @@ import {
   filtersToQuery,
   type FilterOptions,
   type FilterValues,
-  type MarkaStatsResponse,
 } from "@/types/filters";
 import { cn } from "@/utils";
 
@@ -20,8 +19,10 @@ type FilterMode = "maker" | "advanced";
 type Tab = "japan" | "korea";
 
 type Props = {
-  japan?: MarkaStatsResponse;
-  korea?: MarkaStatsResponse;
+  /** Real brand names for the Japan (AJES) auction, from `/filters`. */
+  japanBrands?: string[];
+  /** Korea brands — backend not wired yet, falls back to `DEMO_KOREA_BRANDS`. */
+  koreaBrands?: string[];
   filterOptions?: FilterOptions;
 };
 
@@ -38,114 +39,64 @@ const FEATURED_MAKES: Record<Tab, string[]> = {
   korea: ["Hyundai", "Kia", "Genesis", "Samsung", "SsangYong", "Chevrolet"],
 };
 
+// Demo brand list for Korea while its backend feed is not yet available.
+const DEMO_KOREA_BRANDS = [
+  "Hyundai", "Kia", "Genesis", "Samsung", "SsangYong", "Chevrolet",
+  "Mercedes-Benz", "BMW", "Audi", "Volkswagen", "Toyota", "Lexus", "Honda",
+  "Land Rover", "Volvo", "Mini", "Porsche", "Jaguar", "Tesla", "Renault",
+  "Peugeot", "Ford", "Cadillac", "Lincoln", "Bentley", "Maserati", "Ferrari",
+  "Lamborghini",
+];
+
 function logoUrl(marka: string) {
   const slug = marka.toLowerCase().replace(/\s+/g, "-");
   return `https://www.carlogos.org/car-logos/${slug}-logo.png`;
 }
 
-// Demo fallback while backend `/marka-stats` is not yet available.
-// Counts are illustrative; real values come from the API once it ships.
-const DEMO_STATS: Record<Tab, MarkaStatsResponse> = {
-  japan: {
-    total: 312_540,
-    items: [
-      { marka: "Toyota", count: 78_420 },
-      { marka: "Honda", count: 41_230 },
-      { marka: "Nissan", count: 32_180 },
-      { marka: "Mazda", count: 21_540 },
-      { marka: "Subaru", count: 18_760 },
-      { marka: "Mitsubishi", count: 16_320 },
-      { marka: "Suzuki", count: 15_870 },
-      { marka: "Lexus", count: 14_650 },
-      { marka: "Daihatsu", count: 12_410 },
-      { marka: "Isuzu", count: 9_820 },
-      { marka: "BMW", count: 8_540 },
-      { marka: "Mercedes-Benz", count: 8_120 },
-      { marka: "Volkswagen", count: 6_980 },
-      { marka: "Audi", count: 5_870 },
-      { marka: "Hino", count: 5_240 },
-      { marka: "Acura", count: 4_810 },
-      { marka: "Infiniti", count: 4_320 },
-      { marka: "Volvo", count: 3_760 },
-      { marka: "Porsche", count: 3_210 },
-      { marka: "Mini", count: 2_980 },
-      { marka: "Land Rover", count: 2_640 },
-      { marka: "Jaguar", count: 2_180 },
-      { marka: "Peugeot", count: 1_920 },
-      { marka: "Fiat", count: 1_540 },
-      { marka: "Alfa Romeo", count: 1_180 },
-      { marka: "Renault", count: 980 },
-      { marka: "Ford", count: 870 },
-      { marka: "Chevrolet", count: 620 },
-      { marka: "Tesla", count: 410 },
-    ],
-  },
-  korea: {
-    total: 187_910,
-    items: [
-      { marka: "Hyundai", count: 52_840 },
-      { marka: "Kia", count: 47_320 },
-      { marka: "Genesis", count: 18_460 },
-      { marka: "Samsung", count: 12_980 },
-      { marka: "SsangYong", count: 9_540 },
-      { marka: "Chevrolet", count: 8_760 },
-      { marka: "Mercedes-Benz", count: 7_820 },
-      { marka: "BMW", count: 7_240 },
-      { marka: "Audi", count: 5_180 },
-      { marka: "Volkswagen", count: 4_620 },
-      { marka: "Toyota", count: 4_120 },
-      { marka: "Lexus", count: 3_980 },
-      { marka: "Honda", count: 3_240 },
-      { marka: "Land Rover", count: 2_870 },
-      { marka: "Volvo", count: 2_410 },
-      { marka: "Mini", count: 2_180 },
-      { marka: "Porsche", count: 1_960 },
-      { marka: "Jaguar", count: 1_540 },
-      { marka: "Tesla", count: 1_380 },
-      { marka: "Renault", count: 1_120 },
-      { marka: "Peugeot", count: 980 },
-      { marka: "Ford", count: 820 },
-      { marka: "Cadillac", count: 640 },
-      { marka: "Lincoln", count: 480 },
-      { marka: "Bentley", count: 320 },
-      { marka: "Maserati", count: 240 },
-      { marka: "Ferrari", count: 120 },
-      { marka: "Lamborghini", count: 80 },
-    ],
-  },
-};
+// Backend brand names arrive upper-cased ("TOYOTA"); curated lists use title
+// case. Normalise both sides so they match regardless of casing/punctuation.
+const norm = (s: string) => s.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
 function formatCount(n: number) {
   return new Intl.NumberFormat("en-US").format(n);
 }
 
 export default function CarSearchSection({
-  japan,
-  korea,
+  japanBrands,
+  koreaBrands,
   filterOptions,
 }: Props) {
   const t = useTranslations("homeSearch");
   const tf = useTranslations("featured.filters");
   const router = useRouter();
 
-  const [mode, setMode] = useState<FilterMode>("maker");
+  const [mode, setMode] = useState<FilterMode>("advanced");
   const [tab, setTab] = useState<Tab>("japan");
   const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
   const [vinForm] = Form.useForm<{ vin: string }>();
 
-  const data = useMemo<MarkaStatsResponse>(() => {
-    const source = tab === "japan" ? japan : korea;
-    if (source && source.items.length > 0) return source;
-    return DEMO_STATS[tab];
-  }, [tab, japan, korea]);
+  const brands = useMemo<string[]>(() => {
+    if (tab === "japan") return japanBrands ?? [];
+    return koreaBrands && koreaBrands.length ? koreaBrands : DEMO_KOREA_BRANDS;
+  }, [tab, japanBrands, koreaBrands]);
 
-  const sortedMakes = useMemo(() => {
-    const featured = new Set(FEATURED_MAKES[tab]);
-    return [...data.items]
-      .filter((i) => !featured.has(i.marka))
-      .sort((a, b) => b.count - a.count)
+  // Resolve each curated featured make to its real brand value (for the link)
+  // while keeping the nicely-cased curated label (for the logo + caption).
+  const featuredMakes = useMemo(() => {
+    const byNorm = new Map(brands.map((b) => [norm(b), b]));
+    return FEATURED_MAKES[tab].map((name) => ({
+      value: byNorm.get(norm(name)) ?? name,
+      label: name,
+    }));
+  }, [brands, tab]);
+
+  const otherMakes = useMemo(() => {
+    const featuredNorm = new Set(FEATURED_MAKES[tab].map(norm));
+    return brands
+      .filter((b) => !featuredNorm.has(norm(b)))
+      .sort((a, b) => a.localeCompare(b))
       .slice(0, MAX_VISIBLE_MAKES);
-  }, [data.items, tab]);
+  }, [brands, tab]);
 
   const viewAllHref = VIEW_ALL_HREF[tab];
 
@@ -155,7 +106,10 @@ export default function CarSearchSection({
   ) => setFilters((prev) => ({ ...prev, [key]: v }));
 
   const setMarka = (marka: string | null) =>
-    setFilters((prev) => ({ ...prev, marka, model: null }));
+    setFilters((prev) => ({ ...prev, marka, model: null, chassis: null }));
+
+  const setModel = (model: string | null) =>
+    setFilters((prev) => ({ ...prev, model, chassis: null }));
 
   const markaOptions = useMemo(
     () => (filterOptions?.markas ?? []).map((v) => ({ value: v, label: v })),
@@ -170,10 +124,15 @@ export default function CarSearchSection({
     return filtered.map((m) => ({ value: m.name, label: m.name }));
   }, [filterOptions?.models, filters.marka]);
 
-  const bodyOptions = useMemo(
-    () => (filterOptions?.bodies ?? []).map((v) => ({ value: v, label: v })),
-    [filterOptions?.bodies],
-  );
+  const chassisOptions = useMemo(() => {
+    if (!filters.model) return [];
+    return (filterOptions?.chassis ?? [])
+      .filter((c) => c.model === filters.model)
+      .map((c) => ({
+        value: c.code,
+        label: `${c.code} (${formatCount(c.count)})`,
+      }));
+  }, [filterOptions?.chassis, filters.model]);
 
   const yearFromOptions = useMemo(
     () =>
@@ -196,8 +155,7 @@ export default function CarSearchSection({
     [],
   );
 
-  const onAdvancedSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onAdvancedSubmit = () => {
     const q = filtersToQuery(filters);
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(q)) params.set(k, String(v));
@@ -238,8 +196,8 @@ export default function CarSearchSection({
   ];
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-6 pt-10 md:pb-8 md:pt-6">
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-10">
+    <section className="w-full bg-white dark:bg-neutral-950">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-5 px-4 pb-6 pt-10 md:pb-8 md:pt-6 lg:grid-cols-10">
         {/* LEFT — 70% */}
         <div className="lg:col-span-7">
           <div className="flex items-center gap-10">
@@ -285,83 +243,70 @@ export default function CarSearchSection({
 
           {mode === "maker" ? (
             <>
-              {/* Featured makes — with logos */}
-              <div className="mt-5 grid grid-cols-2 gap-3 border-b border-neutral-100 pb-5 sm:grid-cols-3 md:grid-cols-6 dark:border-neutral-900">
-                {FEATURED_MAKES[tab].map((marka) => {
-                  const entry = data.items.find((i) => i.marka === marka);
-                  return (
+              {/* Featured (left, vertical) + other makes (right) */}
+              <div className="mt-5 grid grid-cols-1 gap-6 border-b border-neutral-100 pb-5 md:grid-cols-[220px_1fr] dark:border-neutral-900">
+                {/* LEFT — featured makes, vertical with logos */}
+                <div className="flex flex-col gap-2">
+                  {featuredMakes.map(({ value, label }) => (
+                    <Link
+                      key={value}
+                      href={`${viewAllHref}?marka=${encodeURIComponent(value)}`}
+                      className="group flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-2.5 transition-all hover:border-neutral-300 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-600"
+                    >
+                      <img
+                        src={logoUrl(label)}
+                        alt={label}
+                        loading="lazy"
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+                      />
+                      <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+                        {label}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* RIGHT — other makes grid */}
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 self-start sm:grid-cols-3 lg:grid-cols-4">
+                  {otherMakes.map((marka) => (
                     <Link
                       key={marka}
                       href={`${viewAllHref}?marka=${encodeURIComponent(marka)}`}
-                      className="group flex flex-col items-center justify-center gap-2 rounded-xl border border-neutral-100 bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-600"
+                      className="group flex items-baseline gap-1.5 truncate py-0.5 text-[13px]"
                     >
-                      <img
-                        src={logoUrl(marka)}
-                        alt={marka}
-                        loading="lazy"
-                        width={40}
-                        height={40}
-                        className="h-10 w-10 object-contain transition-transform group-hover:scale-110"
-                      />
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100">
-                          {marka}
-                        </span>
-                        {entry ? (
-                          <span className="text-[10.5px] tabular-nums text-neutral-400 dark:text-neutral-500">
-                            {formatCount(entry.count)}
-                          </span>
-                        ) : null}
-                      </div>
+                      <span className="truncate font-medium text-neutral-900 group-hover:text-primary dark:text-neutral-100">
+                        {marka}
+                      </span>
                     </Link>
-                  );
-                })}
-              </div>
-
-              {/* Make grid */}
-              <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {sortedMakes.map(({ marka, count }) => (
+                  ))}
                   <Link
-                    key={marka}
-                    href={`${viewAllHref}?marka=${encodeURIComponent(marka)}`}
-                    className="group flex items-baseline gap-1.5 truncate py-0.5 text-[13px]"
+                    href={viewAllHref}
+                    className="flex items-center gap-1 py-0.5 text-[13px] font-medium text-neutral-700 hover:text-primary dark:text-neutral-300"
                   >
-                    <span className="truncate font-medium text-neutral-900 group-hover:text-primary dark:text-neutral-100">
-                      {marka}
-                    </span>
-                    <span className="tabular-nums text-neutral-400 dark:text-neutral-500">
-                      {formatCount(count)}
-                    </span>
+                    <span>{t("allMakes")}</span>
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
                   </Link>
-                ))}
-                <Link
-                  href={viewAllHref}
-                  className="flex items-center gap-1 py-0.5 text-[13px] font-medium text-neutral-700 hover:text-primary dark:text-neutral-300"
-                >
-                  <span>{t("allMakes")}</span>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </Link>
+                </div>
               </div>
 
               {/* Footer */}
-              <div className="mt-6 flex flex-col gap-3 border-t border-neutral-100 pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-900">
-                <span className="text-[13px] text-neutral-600 dark:text-neutral-400">
-                  {t("totalInAuction", { count: formatCount(data.total) })}
-                </span>
+              <div className="mt-6 flex justify-end border-t border-neutral-100 pt-4 dark:border-neutral-900">
                 <Button
                   onClick={() => router.push(viewAllHref)}
-                  className="self-start! rounded-full! text-[13px]! font-semibold! sm:self-auto!"
+                  className="rounded-full! text-[13px]! font-semibold!"
                 >
                   {t("viewAll")}
                   <svg
@@ -381,52 +326,66 @@ export default function CarSearchSection({
               </div>
             </>
           ) : (
-            <form onSubmit={onAdvancedSubmit} className="mt-5">
-              <div className="grid grid-cols-1 divide-y divide-neutral-100 rounded-2xl border border-neutral-200 bg-white sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-5 lg:divide-x dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-950">
-                <AdvCell label={tf("placeholders.marka")}>
+            <Form
+              layout="vertical"
+              onFinish={onAdvancedSubmit}
+              requiredMark={false}
+              className="mt-5"
+            >
+              <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2 md:grid-cols-3">
+                <Form.Item
+                  label={tf("placeholders.marka")}
+                  className="!mb-3"
+                >
                   <Select
                     placeholder={tf("placeholders.marka")}
                     allowClear
                     showSearch
-                    variant="borderless"
+                    size="large"
                     options={markaOptions}
                     value={filters.marka ?? undefined}
                     onChange={(v) => setMarka(v ?? null)}
-                    style={{ width: "100%" }}
                     optionFilterProp="label"
                   />
-                </AdvCell>
-                <AdvCell label={tf("placeholders.model")}>
+                </Form.Item>
+                <Form.Item
+                  label={tf("placeholders.model")}
+                  className="!mb-3"
+                >
                   <Select
                     placeholder={tf("placeholders.model")}
                     allowClear
                     showSearch
-                    variant="borderless"
+                    size="large"
                     options={modelOptions}
                     value={filters.model ?? undefined}
-                    onChange={(v) => setFilter("model", v ?? null)}
+                    onChange={(v) => setModel(v ?? null)}
                     disabled={!filters.marka}
-                    style={{ width: "100%" }}
                     optionFilterProp="label"
                   />
-                </AdvCell>
-                <AdvCell label={tf("placeholders.body")}>
+                </Form.Item>
+                <Form.Item label={tf("placeholders.chassis")} className="!mb-3">
                   <Select
-                    placeholder={tf("placeholders.body")}
+                    placeholder={tf("placeholders.chassis")}
                     allowClear
-                    variant="borderless"
-                    options={bodyOptions}
-                    value={filters.body ?? undefined}
-                    onChange={(v) => setFilter("body", v ?? null)}
-                    style={{ width: "100%" }}
+                    showSearch
+                    size="large"
+                    options={chassisOptions}
+                    value={filters.chassis ?? undefined}
+                    onChange={(v) => setFilter("chassis", v ?? null)}
+                    disabled={!filters.model}
+                    optionFilterProp="label"
                   />
-                </AdvCell>
-                <AdvCell label={tf("year.label")}>
+                </Form.Item>
+                <Form.Item
+                  label={tf("year.label")}
+                  className="!mb-3 sm:col-span-2 md:col-span-2"
+                >
                   <Space.Compact block>
                     <Select
                       placeholder={tf("year.fromPlaceholder")}
                       allowClear
-                      variant="borderless"
+                      size="large"
                       options={yearFromOptions}
                       value={filters.yearFrom ?? undefined}
                       onChange={(v) => setFilter("yearFrom", v ?? null)}
@@ -435,36 +394,35 @@ export default function CarSearchSection({
                     <Select
                       placeholder={tf("year.toPlaceholder")}
                       allowClear
-                      variant="borderless"
+                      size="large"
                       options={yearToOptions}
                       value={filters.yearTo ?? undefined}
                       onChange={(v) => setFilter("yearTo", v ?? null)}
                       style={{ width: "50%" }}
                     />
                   </Space.Compact>
-                </AdvCell>
-                <AdvCell label={tf("placeholders.rate")}>
+                </Form.Item>
+                <Form.Item label={tf("placeholders.rate")} className="!mb-3">
                   <Select
                     placeholder={tf("placeholders.rate")}
                     allowClear
-                    variant="borderless"
+                    size="large"
                     options={rateOptions}
                     value={filters.rate ?? undefined}
                     onChange={(v) => setFilter("rate", v ?? null)}
-                    style={{ width: "100%" }}
                   />
-                </AdvCell>
+                </Form.Item>
               </div>
               <Button
                 htmlType="submit"
                 type="primary"
                 size="large"
                 block
-                className="mt-4! rounded-full! text-[14px]! font-semibold!"
+                className="mt-2! rounded-full! text-[14px]! font-semibold!"
               >
                 {tf("done")}
               </Button>
-            </form>
+            </Form>
           )}
         </div>
 
@@ -519,22 +477,5 @@ export default function CarSearchSection({
         </aside>
       </div>
     </section>
-  );
-}
-
-function AdvCell({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-0.5 px-4 py-3">
-      <span className="text-[10.5px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-        {label}
-      </span>
-      {children}
-    </div>
   );
 }

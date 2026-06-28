@@ -6,12 +6,9 @@ import {
   type ViewMode,
 } from "@/components/cards/views/viewMode";
 import ServerApi from "@/services/ServerApi";
+import { getFilterOptions } from "@/services/filters";
 import { FeaturedCar } from "@/types/featured";
-import {
-  FilterOptions,
-  filtersToQuery,
-  queryToFilters,
-} from "@/types/filters";
+import { filtersToQuery, queryToFilters } from "@/types/filters";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -29,11 +26,7 @@ export default async function KoreaPage({ searchParams }: PageProps) {
     ServerApi.get<FeaturedCar[]>("/featured", filtersToQuery(filters), {
       cache: "no-store",
     }),
-    ServerApi.get<FilterOptions>(
-      "/filter-options",
-      {},
-      { next: { revalidate: 300 } },
-    ),
+    getFilterOptions(),
   ]);
 
   const cars = carsResult.status === "fulfilled" ? carsResult.value : [];
@@ -44,10 +37,7 @@ export default async function KoreaPage({ searchParams }: PageProps) {
   const filterOptions =
     optionsResult.status === "fulfilled" ? optionsResult.value : undefined;
   if (optionsResult.status === "rejected") {
-    console.error(
-      "[Korea] /filter-options fetch failed:",
-      optionsResult.reason,
-    );
+    console.error("[Korea] /filters fetch failed:", optionsResult.reason);
   }
 
   return (

@@ -30,7 +30,13 @@ import {
   IconTransmission,
 } from "../shared/SpecIcons";
 
-export default function CarListItem({ car }: { car: CarItem }) {
+export default function CarListItem({
+  car,
+  hidePrice,
+}: {
+  car: CarItem;
+  hidePrice?: boolean;
+}) {
   const t = useTranslations("car.card");
 
   const isPremium = isPremiumCar(car.auction?.type);
@@ -156,20 +162,22 @@ export default function CarListItem({ car }: { car: CarItem }) {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-              {t("avgPriceLabel")}
-            </span>
-            <div className="flex items-center gap-0.5">
-              <TugrigIcon
-                size={14}
-                className="text-neutral-900 dark:text-neutral-100"
-              />
-              <p className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-                {mntPrice}
-              </p>
+          {!hidePrice && (
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+                {t("avgPriceLabel")}
+              </span>
+              <div className="flex items-center gap-0.5">
+                <TugrigIcon
+                  size={14}
+                  className="text-neutral-900 dark:text-neutral-100"
+                />
+                <p className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                  {mntPrice}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </article>

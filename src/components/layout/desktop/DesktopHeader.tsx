@@ -11,7 +11,7 @@ import { cn } from "@/utils";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import type { Theme } from "@/lib/theme";
-import BrandButton from "../ui/BrandButton";
+import BrandButton from "@/components/ui/BrandButton";
 
 type CustomerUser = {
   firstname: string;
@@ -415,7 +415,7 @@ function TopBarLink({
   );
 }
 
-export default function Header({ theme }: { theme: Theme }) {
+export default function DesktopHeader({ theme }: { theme: Theme }) {
   const t = useTranslations("header");
   const locale = useLocale();
   const pathname = usePathname();
@@ -441,16 +441,14 @@ export default function Header({ theme }: { theme: Theme }) {
 
   const FEATURED = [
     {
-      key: "ending",
+      key: "about",
       labelKey: "nav.about" as const,
       href: "/about",
-      sort: "ending",
     },
     {
-      key: "ending",
+      key: "howItWorks",
       labelKey: "howItWorks" as const,
       href: "/how-it-works",
-      sort: "ending",
     },
   ];
 
@@ -566,7 +564,7 @@ export default function Header({ theme }: { theme: Theme }) {
           "sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-200",
           scrolled
             ? "border-neutral-200 bg-white/35 dark:border-neutral-800 dark:bg-neutral-950/95"
-            : "border-transparent bg-white shadow-none dark:bg-neutral-950",
+            : "border-neutral-100 bg-white shadow-none dark:bg-neutral-950",
         )}
       >
         {/* Row 1 — primary (h-16) */}
@@ -675,7 +673,7 @@ export default function Header({ theme }: { theme: Theme }) {
             </>
           )}
 
-          {/* Mobile menu */}
+          {/* Tablet menu (md ↔ lg) */}
           <Button
             type="text"
             shape="circle"
@@ -706,7 +704,7 @@ export default function Header({ theme }: { theme: Theme }) {
         </div>
 
         {/* Row 2 — secondary nav (h-10, md+) */}
-        <div className="hidden border-b border-neutral-100 dark:border-neutral-900 md:block">
+        <div className="hidden md:block">
           <nav
             aria-label="Secondary"
             className="mx-auto flex h-10 max-w-7xl items-center gap-5 px-4"
@@ -764,7 +762,7 @@ export default function Header({ theme }: { theme: Theme }) {
         </div>
       </header>
 
-      {/* Mobile drawer */}
+      {/* Tablet drawer (md ↔ lg) */}
       <Drawer
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
@@ -848,7 +846,7 @@ export default function Header({ theme }: { theme: Theme }) {
             </div>
           </div>
 
-          {/* Order CTA — mobile prominent */}
+          {/* Order CTA */}
           <div className="border-b border-neutral-100 px-5 py-3 dark:border-neutral-900">
             <Link
               href="/cars"

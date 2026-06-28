@@ -24,7 +24,8 @@ export type FeaturedCar = {
   MARKA_ID: string;
   MODEL_ID: string;
   AVG_PRICE: string;
-  PRICE_MNT: number;
+  /** Computed MNT price — present on `/featured`, ABSENT on `/auctions`. */
+  PRICE_MNT?: number;
   AVG_STRING: string;
   MARKA_NAME: string;
   MODEL_NAME: string;

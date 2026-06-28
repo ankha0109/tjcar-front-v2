@@ -141,7 +141,7 @@ export default function MobileBottomNav() {
   return (
     <nav
       aria-label={t("aria")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgba(15,15,15,0.08)] md:hidden dark:border-neutral-800 dark:bg-neutral-950/95"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgba(15,15,15,0.08)] dark:border-neutral-800 dark:bg-neutral-950/95"
     >
       <ul className="flex h-16 items-stretch">
         {NAV_ITEMS.map((item) => {

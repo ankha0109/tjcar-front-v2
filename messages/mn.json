@@ -1,4 +1,14 @@
 {
+  "auctions": {
+    "title": "Японы дуудлага худалдаа",
+    "subtitle": "Японы дуудлага худалдааны бодит лотууд",
+    "resultsTotal": "{count, number} лот",
+    "loading": "Лотуудыг ачааллаж байна…",
+    "loadingMore": "Цааш ачааллаж байна…",
+    "endOfList": "Бүх лот ачаалагдлаа",
+    "noResultsTitle": "Тохирох лот олдсонгүй",
+    "noResultsDescription": "Шүүлтүүрээ өөрчилж үзнэ үү"
+  },
   "common": {
     "loading": "Уншиж байна...",
     "language": {
@@ -144,11 +154,24 @@
       "signIn": "Нэвтрэх",
       "signUp": "Бүртгүүлэх"
     },
+    "company": {
+      "heading": "Компани",
+      "about": "Бидний тухай",
+      "contact": "Холбоо барих",
+      "privacy": "Нууцлал",
+      "terms": "Үйлчилгээний нөхцөл"
+    },
     "contact": {
       "heading": "Холбоо барих",
       "phone": "+976 7000 0000",
       "address": "Улаанбаатар хот, Монгол улс",
       "hours": "Даваа–Бямба: 09:00 – 18:00"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
     },
     "bottom": {
       "rights": "Бүх эрх хуулиар хамгаалагдсан.",
@@ -191,8 +214,10 @@
       "chips": {
         "marka": "Үйлдвэрлэгч: {value}",
         "model": "Модел: {value}",
-        "body": "Арал: {value}",
+        "chassis": "Арал: {value}",
         "rate": "Үнэлгээ: {value}",
+        "color": "Өнгө: {value}",
+        "engV": "Хөдөлгүүр: {from} – {to}",
         "year": "Он: {from}–{to}",
         "mileage": "Гүйлт: {from} – {to}",
         "location": "Байршил: {value}"
@@ -200,13 +225,14 @@
       "placeholders": {
         "marka": "Үйлдвэрлэгч",
         "model": "Модел",
-        "body": "Арал",
+        "chassis": "Арал",
         "rate": "Үнэлгээ"
       },
       "title": "Шүүлтүүр",
       "sections": {
         "vehicle": "Машин",
         "auction": "Дуудлага",
+        "specs": "Үзүүлэлт",
         "advanced": "Нэмэлт"
       },
       "clear": "Цэвэрлэх",
@@ -223,6 +249,19 @@
         "hint": "Километрийн хязгаар",
         "minPlaceholder": "Хамгийн бага",
         "maxPlaceholder": "Хамгийн их"
+      },
+      "color": {
+        "label": "Өнгө",
+        "placeholder": "Өнгө сонгох"
+      },
+      "engV": {
+        "label": "Хөдөлгүүрийн багтаамж (cc)",
+        "fromPlaceholder": "Доод",
+        "toPlaceholder": "Дээд"
+      },
+      "auctionDate": {
+        "label": "Дуудлагын огноо",
+        "placeholder": "Огноо сонгох"
       },
       "location": {
         "label": "Auction байршил",
@@ -694,5 +733,67 @@
     "errorRateLimit": "Хэт олон асуулт илгээгдлээ. Түр хүлээгээд дахин оролдоно уу.",
     "errorAuth": "Нэвтрэх эрх шаардлагатай эсвэл сесс дууссан байна.",
     "errorRetry": "Дахин оролдох"
+  },
+  "carDetail": {
+    "specs": {
+      "year": "Он",
+      "mileage": "Гүйлт",
+      "engine": "Хөдөлгүүр",
+      "color": "Өнгө",
+      "transmission": "Хурд.",
+      "drive": "Жолоо",
+      "driveLHD": "Зүүн",
+      "driveRHD": "Баруун",
+      "lot": "Лот",
+      "grade": "Грейд",
+      "chassis": "Шасси",
+      "equipment": "Тоноглол",
+      "rate": "Үнэлгээ",
+      "auction": "Дуудлага худалдаа",
+      "auctionDate": "Огноо",
+      "fullTitle": "Бүх үзүүлэлт"
+    },
+    "auction": {
+      "title": "Дуудлага худалдааны мэдээлэл"
+    },
+    "price": {
+      "startLabel": "Эхлэх үнэ",
+      "avgPrefix": "Дундаж"
+    },
+    "bid": {
+      "cta": "Үнийн санал илгээх",
+      "helper": "Бүртгэлээ баталгаажуулсны дараа боломжтой болно.",
+      "comingSoonTitle": "Удахгүй",
+      "comingSoonBody": "{car} автомашины онлайн дуудлага удахгүй идэвхжинэ. Нэвтэрсэн бол мэдэгдэх болно.",
+      "ok": "Ойлголоо"
+    }
+  },
+  "mobile": {
+    "home": {
+      "title": "TJ Car",
+      "welcome": "Тавтай морил",
+      "greeting": "Сайн уу, {name} 👋",
+      "greetingGuest": "Машинаа олоорой",
+      "searchPlaceholder": "Машин хайх (марк, модел)...",
+      "categoriesTitle": "Машины ангилал",
+      "count": "{count, plural, =0 {Машин байхгүй} other {# машин}}",
+      "categories": {
+        "japan": "Япон машин",
+        "korea": "Солонгос машин",
+        "ready": "Бэлэн машин",
+        "readyHint": "Монголд бэлэн",
+        "report": "Үзлэгийн тайлан",
+        "reportHint": "VIN / улсын дугаар"
+      },
+      "quickTitle": "Шуурхай үйлдэл",
+      "quick": {
+        "ai": "TJCAR AI",
+        "aiHint": "Машины талаар асуу",
+        "wishlist": "Хадгалсан машин",
+        "wishlistHint": "Тэмдэглэсэн машинууд",
+        "howItWorks": "Захиалах заавар",
+        "howItWorksHint": "Алхам алхмаар"
+      }
+    }
   }
 }

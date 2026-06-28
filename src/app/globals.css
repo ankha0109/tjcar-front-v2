@@ -76,14 +76,21 @@ a {
 
 /* Subtle float animation for bento card visuals */
 @keyframes bento-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 .bento-float {
   animation: bento-float 6s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .bento-float { animation: none; }
+  .bento-float {
+    animation: none;
+  }
 }
 
 /* ─── Home hero section ───────────────────────────────── */
@@ -133,7 +140,7 @@ a {
     ),
     radial-gradient(
       ellipse 70% 50% at 30% 20%,
-      rgba(120, 60, 40, 0.10),
+      rgba(120, 60, 40, 0.1),
       transparent 65%
     ),
     radial-gradient(
@@ -146,7 +153,7 @@ a {
 :root[data-theme="dark"] .hero-glow {
   background: radial-gradient(
     closest-side,
-    rgba(255, 110, 80, 0.30),
+    rgba(255, 110, 80, 0.3),
     rgba(255, 110, 80, 0.06) 55%,
     transparent 78%
   );

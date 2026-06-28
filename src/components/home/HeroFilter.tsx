@@ -40,7 +40,10 @@ export default function HeroFilter({ filterOptions }: Props) {
     setFilters((prev) => ({ ...prev, [key]: v }));
 
   const setMarka = (marka: string | null) =>
-    setFilters((prev) => ({ ...prev, marka, model: null }));
+    setFilters((prev) => ({ ...prev, marka, model: null, chassis: null }));
+
+  const setModel = (model: string | null) =>
+    setFilters((prev) => ({ ...prev, model, chassis: null }));
 
   const markaOptions = useMemo(
     () => (filterOptions?.markas ?? []).map((v) => ({ value: v, label: v })),
@@ -55,10 +58,12 @@ export default function HeroFilter({ filterOptions }: Props) {
     return filtered.map((m) => ({ value: m.name, label: m.name }));
   }, [filterOptions?.models, filters.marka]);
 
-  const bodyOptions = useMemo(
-    () => (filterOptions?.bodies ?? []).map((v) => ({ value: v, label: v })),
-    [filterOptions?.bodies],
-  );
+  const chassisOptions = useMemo(() => {
+    if (!filters.model) return [];
+    return (filterOptions?.chassis ?? [])
+      .filter((c) => c.model === filters.model)
+      .map((c) => ({ value: c.code, label: c.code }));
+  }, [filterOptions?.chassis, filters.model]);
 
   const yearFromOptions = useMemo(
     () =>
@@ -153,21 +158,24 @@ export default function HeroFilter({ filterOptions }: Props) {
               variant="borderless"
               options={modelOptions}
               value={filters.model ?? undefined}
-              onChange={(v) => set("model", v ?? null)}
+              onChange={(v) => setModel(v ?? null)}
               disabled={!filters.marka}
               style={{ width: "100%" }}
               optionFilterProp="label"
             />
           </Cell>
-          <Cell label={tf("placeholders.body")}>
+          <Cell label={tf("placeholders.chassis")}>
             <Select
-              placeholder={tf("placeholders.body")}
+              placeholder={tf("placeholders.chassis")}
               allowClear
+              showSearch
               variant="borderless"
-              options={bodyOptions}
-              value={filters.body ?? undefined}
-              onChange={(v) => set("body", v ?? null)}
+              options={chassisOptions}
+              value={filters.chassis ?? undefined}
+              onChange={(v) => set("chassis", v ?? null)}
+              disabled={!filters.model}
               style={{ width: "100%" }}
+              optionFilterProp="label"
             />
           </Cell>
           <Cell label={tf("year.label")}>

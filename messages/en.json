@@ -1,4 +1,14 @@
 {
+  "auctions": {
+    "title": "Japan auctions",
+    "subtitle": "Live lots from Japanese auctions",
+    "resultsTotal": "{count, number} lots",
+    "loading": "Loading lots…",
+    "loadingMore": "Loading more…",
+    "endOfList": "No more lots",
+    "noResultsTitle": "No matching lots",
+    "noResultsDescription": "Try adjusting your filters"
+  },
   "common": {
     "loading": "Loading...",
     "language": {
@@ -144,11 +154,24 @@
       "signIn": "Sign in",
       "signUp": "Sign up"
     },
+    "company": {
+      "heading": "Company",
+      "about": "About",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
     "contact": {
       "heading": "Contact",
       "phone": "+976 7000 0000",
       "address": "Ulaanbaatar, Mongolia",
       "hours": "Mon–Sat: 09:00 – 18:00"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
     },
     "bottom": {
       "rights": "All rights reserved.",
@@ -191,8 +214,10 @@
       "chips": {
         "marka": "Make: {value}",
         "model": "Model: {value}",
-        "body": "Body: {value}",
+        "chassis": "Chassis: {value}",
         "rate": "Grade: {value}",
+        "color": "Color: {value}",
+        "engV": "Engine: {from} – {to}",
         "year": "Year: {from}–{to}",
         "mileage": "Mileage: {from} – {to}",
         "location": "Location: {value}"
@@ -200,13 +225,14 @@
       "placeholders": {
         "marka": "Make",
         "model": "Model",
-        "body": "Body",
+        "chassis": "Chassis",
         "rate": "Grade"
       },
       "title": "Filters",
       "sections": {
         "vehicle": "Vehicle",
         "auction": "Auction",
+        "specs": "Specs",
         "advanced": "Advanced"
       },
       "clear": "Clear",
@@ -223,6 +249,19 @@
         "hint": "Kilometer range",
         "minPlaceholder": "Min",
         "maxPlaceholder": "Max"
+      },
+      "color": {
+        "label": "Color",
+        "placeholder": "Select color"
+      },
+      "engV": {
+        "label": "Engine volume (cc)",
+        "fromPlaceholder": "From",
+        "toPlaceholder": "To"
+      },
+      "auctionDate": {
+        "label": "Auction date",
+        "placeholder": "Select date"
       },
       "location": {
         "label": "Auction location",
@@ -649,5 +688,67 @@
     "errorRateLimit": "Too many requests. Please wait a moment and try again.",
     "errorAuth": "Authentication required or your session has expired.",
     "errorRetry": "Try again"
+  },
+  "carDetail": {
+    "specs": {
+      "year": "Year",
+      "mileage": "Mileage",
+      "engine": "Engine",
+      "color": "Color",
+      "transmission": "Trans.",
+      "drive": "Drive",
+      "driveLHD": "Left-hand",
+      "driveRHD": "Right-hand",
+      "lot": "Lot",
+      "grade": "Grade",
+      "chassis": "Chassis",
+      "equipment": "Equipment",
+      "rate": "Rate",
+      "auction": "Auction",
+      "auctionDate": "Auction date",
+      "fullTitle": "Full specifications"
+    },
+    "auction": {
+      "title": "Auction info"
+    },
+    "price": {
+      "startLabel": "Start price",
+      "avgPrefix": "Avg"
+    },
+    "bid": {
+      "cta": "Place bid request",
+      "helper": "Bidding will open once your account is verified.",
+      "comingSoonTitle": "Coming soon",
+      "comingSoonBody": "Online bidding for {car} is launching soon. Sign in to be notified when it goes live.",
+      "ok": "OK"
+    }
+  },
+  "mobile": {
+    "home": {
+      "title": "TJ Car",
+      "welcome": "Welcome",
+      "greeting": "Hi, {name} 👋",
+      "greetingGuest": "Find your next car",
+      "searchPlaceholder": "Search car (brand, model)...",
+      "categoriesTitle": "Car categories",
+      "count": "{count, plural, =0 {No cars} one {# car} other {# cars}}",
+      "categories": {
+        "japan": "Japan cars",
+        "korea": "Korea cars",
+        "ready": "In-stock cars",
+        "readyHint": "Ready in Mongolia",
+        "report": "Accident report",
+        "reportHint": "VIN / plate check"
+      },
+      "quickTitle": "Quick links",
+      "quick": {
+        "ai": "TJCAR AI",
+        "aiHint": "Ask anything about cars",
+        "wishlist": "Saved cars",
+        "wishlistHint": "Cars you've bookmarked",
+        "howItWorks": "How to order",
+        "howItWorksHint": "Step-by-step guide"
+      }
+    }
   }
 }

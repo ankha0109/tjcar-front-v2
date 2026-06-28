@@ -1,4 +1,14 @@
 {
+  "auctions": {
+    "title": "Аукционы Японии",
+    "subtitle": "Актуальные лоты с японских аукционов",
+    "resultsTotal": "{count, number} лотов",
+    "loading": "Загрузка лотов…",
+    "loadingMore": "Загрузка ещё…",
+    "endOfList": "Больше лотов нет",
+    "noResultsTitle": "Подходящих лотов нет",
+    "noResultsDescription": "Измените параметры фильтра"
+  },
   "common": {
     "loading": "Загрузка...",
     "language": {
@@ -144,11 +154,24 @@
       "signIn": "Войти",
       "signUp": "Регистрация"
     },
+    "company": {
+      "heading": "Компания",
+      "about": "О нас",
+      "contact": "Контакты",
+      "privacy": "Конфиденциальность",
+      "terms": "Условия"
+    },
     "contact": {
       "heading": "Контакты",
       "phone": "+976 7000 0000",
       "address": "Улан-Батор, Монголия",
       "hours": "Пн–Сб: 09:00 – 18:00"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
     },
     "bottom": {
       "rights": "Все права защищены.",
@@ -191,8 +214,10 @@
       "chips": {
         "marka": "Марка: {value}",
         "model": "Модель: {value}",
-        "body": "Кузов: {value}",
+        "chassis": "Кузов: {value}",
         "rate": "Оценка: {value}",
+        "color": "Цвет: {value}",
+        "engV": "Двигатель: {from} – {to}",
         "year": "Год: {from}–{to}",
         "mileage": "Пробег: {from} – {to}",
         "location": "Площадка: {value}"
@@ -200,13 +225,14 @@
       "placeholders": {
         "marka": "Марка",
         "model": "Модель",
-        "body": "Кузов",
+        "chassis": "Кузов",
         "rate": "Оценка"
       },
       "title": "Фильтры",
       "sections": {
         "vehicle": "Автомобиль",
         "auction": "Аукцион",
+        "specs": "Характеристики",
         "advanced": "Дополнительно"
       },
       "clear": "Очистить",
@@ -223,6 +249,19 @@
         "hint": "Диапазон в километрах",
         "minPlaceholder": "Мин",
         "maxPlaceholder": "Макс"
+      },
+      "color": {
+        "label": "Цвет",
+        "placeholder": "Выберите цвет"
+      },
+      "engV": {
+        "label": "Объём двигателя (cc)",
+        "fromPlaceholder": "От",
+        "toPlaceholder": "До"
+      },
+      "auctionDate": {
+        "label": "Дата аукциона",
+        "placeholder": "Выберите дату"
       },
       "location": {
         "label": "Площадка аукциона",
@@ -649,5 +688,67 @@
     "errorRateLimit": "Слишком много запросов. Подождите немного и попробуйте снова.",
     "errorAuth": "Требуется авторизация или сессия истекла.",
     "errorRetry": "Повторить"
+  },
+  "carDetail": {
+    "specs": {
+      "year": "Год",
+      "mileage": "Пробег",
+      "engine": "Двигатель",
+      "color": "Цвет",
+      "transmission": "Трансм.",
+      "drive": "Руль",
+      "driveLHD": "Левый",
+      "driveRHD": "Правый",
+      "lot": "Лот",
+      "grade": "Класс",
+      "chassis": "Шасси",
+      "equipment": "Комплектация",
+      "rate": "Оценка",
+      "auction": "Аукцион",
+      "auctionDate": "Дата аукциона",
+      "fullTitle": "Все характеристики"
+    },
+    "auction": {
+      "title": "Информация об аукционе"
+    },
+    "price": {
+      "startLabel": "Стартовая цена",
+      "avgPrefix": "Сред."
+    },
+    "bid": {
+      "cta": "Подать заявку на ставку",
+      "helper": "Ставки доступны после подтверждения аккаунта.",
+      "comingSoonTitle": "Скоро",
+      "comingSoonBody": "Онлайн-ставки для {car} скоро будут доступны. Войдите, чтобы получить уведомление.",
+      "ok": "OK"
+    }
+  },
+  "mobile": {
+    "home": {
+      "title": "TJ Car",
+      "welcome": "Добро пожаловать",
+      "greeting": "Привет, {name} 👋",
+      "greetingGuest": "Найдите свой автомобиль",
+      "searchPlaceholder": "Поиск авто (марка, модель)...",
+      "categoriesTitle": "Категории авто",
+      "count": "{count, plural, =0 {Нет авто} one {# авто} few {# авто} many {# авто} other {# авто}}",
+      "categories": {
+        "japan": "Из Японии",
+        "korea": "Из Кореи",
+        "ready": "В наличии",
+        "readyHint": "Готовы в Монголии",
+        "report": "Отчёт об осмотре",
+        "reportHint": "Проверка VIN / номера"
+      },
+      "quickTitle": "Быстрые действия",
+      "quick": {
+        "ai": "TJCAR AI",
+        "aiHint": "Спросите про авто",
+        "wishlist": "Сохранённые",
+        "wishlistHint": "Отмеченные авто",
+        "howItWorks": "Как заказать",
+        "howItWorksHint": "Пошаговая инструкция"
+      }
+    }
   }
 }

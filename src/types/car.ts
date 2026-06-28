@@ -78,3 +78,64 @@ export function fromFeaturedCar(car: FeaturedCar): CarItem {
     location: car.TOWN || undefined,
   };
 }
+
+// ── Cars-in-stock API (`GET /api/cars`, `GET /api/cars/{id}`) ───────────────
+// Backend: App\Http\Resources\Car\CarResource. `type`/`status` are PHP enums.
+
+export const CAR_TYPES = [
+  "ready_to_ship",
+  "available",
+  "arriving_soon",
+  "preorder_only",
+] as const;
+export type CarType = (typeof CAR_TYPES)[number];
+
+export const CAR_STATUSES = ["active", "sold", "inactive"] as const;
+export type CarStatus = (typeof CAR_STATUSES)[number];
+
+/**
+ * Free-form JSON column copied from an AJES auction lot. Keys are UPPERCASE and
+ * values may arrive as strings or numbers — coerce before use. All optional;
+ * the index signature keeps lesser-used AJES fields accessible.
+ */
+export type CarData = {
+  ID?: string | number;
+  LOT?: string | number;
+  AUCTION_TYPE?: string | number;
+  AUCTION_DATE?: string;
+  AUCTION?: string;
+  MARKA_NAME?: string;
+  MODEL_NAME?: string;
+  YEAR?: string | number;
+  ENG_V?: string | number;
+  KUZOV?: string;
+  GRADE?: string;
+  COLOR?: string;
+  KPP?: string;
+  MILEAGE?: string | number;
+  EQUIP?: string;
+  RATE?: string | number;
+  START?: string | number;
+  AVG_PRICE?: string | number;
+  LHDRIVE?: string | number;
+  IMAGES?: string;
+  INFO?: string;
+  [key: string]: unknown;
+};
+
+/** Raw `GET /cars/{id}` resource (and each item of the `/cars` collection). */
+export type CarResource = {
+  id: number;
+  car_data: CarData;
+  price: number;
+  images: string[];
+  arrival_date: string | null;
+  type: CarType | null;
+  type_label: string | null;
+  status: CarStatus | null;
+  status_label: string | null;
+  user_id: number | null;
+  user?: { id: number; name: string };
+  created_at: string | null;
+  updated_at: string | null;
+};

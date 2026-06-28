@@ -7,14 +7,14 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import AntdProvider from "@/providers/AntdProvider";
 import { auth } from "@/auth";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import DesktopShell from "@/components/layout/desktop/DesktopShell";
+import MobileShell from "@/components/layout/mobile/MobileShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
+import { getDevice } from "@/lib/device";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const viewport = {
   width: "device-width",
@@ -56,9 +56,11 @@ async function safeAuth() {
 
 export default async function LocaleLayout({
   children,
+  mobileHeader,
   params,
 }: {
   children: React.ReactNode;
+  mobileHeader: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
@@ -66,10 +68,11 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const [session, messages, cookieStore] = await Promise.all([
+  const [session, messages, cookieStore, device] = await Promise.all([
     safeAuth(),
     getMessages(),
     cookies(),
+    getDevice(),
   ]);
 
   const theme: Theme =
@@ -81,15 +84,12 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AntdRegistry>
             <AntdProvider session={session} locale={locale} theme={theme}>
-              <div className="flex flex-col min-h-screen bg-white dark:bg-neutral-950">
-                <Header theme={theme} />
-                <main className="flex-1 flex flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
-                  {children}
-                </main>
-                <Footer />
-                <MobileBottomNav />
-                <AiChatWidget />
-              </div>
+              {device === "mobile" ? (
+                <MobileShell header={mobileHeader}>{children}</MobileShell>
+              ) : (
+                <DesktopShell theme={theme}>{children}</DesktopShell>
+              )}
+              <AiChatWidget />
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>

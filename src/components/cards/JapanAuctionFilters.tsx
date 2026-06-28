@@ -1,10 +1,12 @@
 "use client";
 
-import { Button, Drawer, Input, Select, Space, Tag } from "antd";
+import { Button, DatePicker, Drawer, Input, Select, Space, Tag } from "antd";
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import dayjs from "dayjs";
 import {
   EMPTY_FILTERS,
+  ENG_V_STEPS,
   FilterOptions,
   FilterValues,
   isFiltersEmpty,
@@ -12,6 +14,7 @@ import {
   RATE_OPTIONS,
   YEAR_OPTIONS,
 } from "@/types/filters";
+import { getColorSwatch } from "@/utils/carColor";
 import { cn } from "@/utils";
 
 type Props = {
@@ -23,6 +26,9 @@ type Props = {
 
 const formatKm = (n: number) =>
   new Intl.NumberFormat("en-US").format(n);
+
+const formatCc = (n: number) =>
+  `${new Intl.NumberFormat("en-US").format(n)} cc`;
 
 function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -73,7 +79,20 @@ function ChevronIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export default function FeaturedAuctionFilters({
+function ColorSwatch({ name }: { name: string }) {
+  const swatch = getColorSwatch(name);
+  return (
+    <span
+      className={cn(
+        "inline-block h-3 w-3 shrink-0 rounded-full",
+        swatch.ring && "ring-1 ring-inset ring-neutral-300",
+      )}
+      style={{ background: swatch.bg }}
+    />
+  );
+}
+
+export default function JapanAuctionFilters({
   value,
   onChange,
   options,
@@ -87,12 +106,23 @@ export default function FeaturedAuctionFilters({
   };
 
   const setMarka = (marka: string | null) => {
-    onChange({ ...value, marka, model: null });
+    onChange({ ...value, marka, model: null, chassis: null });
+  };
+
+  const setModel = (model: string | null) => {
+    onChange({ ...value, model, chassis: null });
   };
 
   const markaOptions = useMemo(
     () => (options?.markas ?? []).map((v) => ({ value: v, label: v })),
     [options?.markas],
+  );
+
+  // Model → marka lookup so chassis (which only carries its model name) can be
+  // narrowed by the selected marka even when no model is chosen.
+  const modelToMarka = useMemo(
+    () => new Map((options?.models ?? []).map((m) => [m.name, m.marka])),
+    [options?.models],
   );
 
   const modelOptions = useMemo(() => {
@@ -103,14 +133,60 @@ export default function FeaturedAuctionFilters({
     return filtered.map((m) => ({ value: m.name, label: m.name }));
   }, [options?.models, value.marka]);
 
-  const bodyOptions = useMemo(
-    () => (options?.bodies ?? []).map((v) => ({ value: v, label: v })),
-    [options?.bodies],
+  // Chassis is independent of marka/model: when nothing is selected every code
+  // is searchable (type "AWS210" to find Crown). A marka narrows it to that
+  // marka's chassis; a model narrows it further to that model's chassis.
+  const chassisOptions = useMemo(() => {
+    const all = options?.chassis ?? [];
+    const filtered = value.model
+      ? all.filter((c) => c.model === value.model)
+      : value.marka
+        ? all.filter((c) => modelToMarka.get(c.model) === value.marka)
+        : all;
+    // Without a model the list spans every model, so the bare code is
+    // ambiguous — append the model name to disambiguate.
+    const withModel = !value.model;
+    return filtered.map((c) => ({
+      value: c.code,
+      label: withModel
+        ? `${c.code} · ${c.model} (${c.count})`
+        : `${c.code} (${c.count})`,
+    }));
+  }, [options?.chassis, value.model, value.marka, modelToMarka]);
+
+  const colorOptions = useMemo(
+    () =>
+      (options?.colors ?? []).map((c) => ({
+        value: c,
+        label: (
+          <span className="flex items-center gap-2">
+            <ColorSwatch name={c} />
+            <span className="capitalize">{c}</span>
+          </span>
+        ),
+      })),
+    [options?.colors],
+  );
+
+  const engVFromOptions = useMemo(
+    () =>
+      ENG_V_STEPS.filter(
+        (v) => value.engVTo == null || v <= value.engVTo,
+      ).map((v) => ({ value: v, label: formatCc(v) })),
+    [value.engVTo],
+  );
+
+  const engVToOptions = useMemo(
+    () =>
+      ENG_V_STEPS.filter(
+        (v) => value.engVFrom == null || v >= value.engVFrom,
+      ).map((v) => ({ value: v, label: formatCc(v) })),
+    [value.engVFrom],
   );
 
   const locationOptions = useMemo(
-    () => (options?.locations ?? []).map((v) => ({ value: v, label: v })),
-    [options?.locations],
+    () => (options?.auctions ?? []).map((v) => ({ value: v, label: v })),
+    [options?.auctions],
   );
 
   const yearFromOptions = useMemo(
@@ -146,15 +222,19 @@ export default function FeaturedAuctionFilters({
   );
 
   const vehicleCount =
-    (value.marka ? 1 : 0) + (value.model ? 1 : 0) + (value.body ? 1 : 0);
+    (value.marka ? 1 : 0) + (value.model ? 1 : 0) + (value.chassis ? 1 : 0);
   const auctionCount = (value.rate ? 1 : 0) + (value.lot ? 1 : 0);
+  const specsCount =
+    (value.color ? 1 : 0) +
+    (value.engVFrom != null ? 1 : 0) +
+    (value.engVTo != null ? 1 : 0);
   const advancedCount =
     (value.yearFrom != null ? 1 : 0) +
     (value.yearTo != null ? 1 : 0) +
     (value.mileageFrom != null ? 1 : 0) +
     (value.mileageTo != null ? 1 : 0) +
     (value.location ? 1 : 0);
-  const totalCount = vehicleCount + auctionCount + advancedCount;
+  const totalCount = vehicleCount + auctionCount + specsCount + advancedCount;
   const hasFilters = !isFiltersEmpty(value);
 
   const body = (
@@ -185,24 +265,25 @@ export default function FeaturedAuctionFilters({
             showSearch
             options={modelOptions}
             value={value.model ?? undefined}
-            onChange={(v) => set("model", v ?? null)}
-            disabled={!value.marka}
+            onChange={(v) => setModel(v ?? null)}
             variant="filled"
             loading={optionsLoading}
             style={{ width: "100%" }}
             optionFilterProp="label"
           />
         </Field>
-        <Field label={t("placeholders.body")}>
+        <Field label={t("placeholders.chassis")}>
           <Select
-            placeholder={t("placeholders.body")}
+            placeholder={t("placeholders.chassis")}
             allowClear
-            options={bodyOptions}
-            value={value.body ?? undefined}
-            onChange={(v) => set("body", v ?? null)}
+            showSearch
+            options={chassisOptions}
+            value={value.chassis ?? undefined}
+            onChange={(v) => set("chassis", v ?? null)}
             variant="filled"
             loading={optionsLoading}
             style={{ width: "100%" }}
+            optionFilterProp="label"
           />
         </Field>
       </Section>
@@ -232,6 +313,64 @@ export default function FeaturedAuctionFilters({
             onChange={(e) => set("lot", e.target.value)}
             variant="filled"
           />
+        </Field>
+        <Field label={t("auctionDate.label")}>
+          <DatePicker
+            placeholder={t("auctionDate.placeholder")}
+            allowClear
+            value={value.date ? dayjs(value.date) : null}
+            onChange={(d) => set("date", d ? d.format("YYYY-MM-DD") : null)}
+            variant="filled"
+            format="YYYY-MM-DD"
+            style={{ width: "100%" }}
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title={t("sections.specs")}
+        defaultOpen={specsCount > 0}
+        activeCount={specsCount}
+      >
+        <Field label={t("color.label")}>
+          <Select
+            placeholder={t("color.placeholder")}
+            allowClear
+            showSearch
+            options={colorOptions}
+            value={value.color ?? undefined}
+            onChange={(v) => set("color", v ?? null)}
+            variant="filled"
+            loading={optionsLoading}
+            style={{ width: "100%" }}
+            filterOption={(input, opt) =>
+              String(opt?.value ?? "")
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+          />
+        </Field>
+        <Field label={t("engV.label")}>
+          <Space.Compact block>
+            <Select
+              placeholder={t("engV.fromPlaceholder")}
+              allowClear
+              options={engVFromOptions}
+              value={value.engVFrom ?? undefined}
+              onChange={(v) => set("engVFrom", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+            <Select
+              placeholder={t("engV.toPlaceholder")}
+              allowClear
+              options={engVToOptions}
+              value={value.engVTo ?? undefined}
+              onChange={(v) => set("engVTo", v ?? null)}
+              variant="filled"
+              style={{ width: "50%" }}
+            />
+          </Space.Compact>
         </Field>
       </Section>
 
@@ -366,7 +505,7 @@ export default function FeaturedAuctionFilters({
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
         placement="left"
-        width={320}
+        size={320}
         title={
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
@@ -409,7 +548,7 @@ export default function FeaturedAuctionFilters({
   );
 }
 
-export function FeaturedAuctionFilterChips({
+export function JapanAuctionFilterChips({
   value,
   onChange,
 }: {
@@ -436,11 +575,11 @@ export function FeaturedAuctionFilterChips({
       label: t("chips.model", { value: value.model }),
       onRemove: () => set("model", null),
     });
-  if (value.body)
+  if (value.chassis)
     chips.push({
-      key: "body",
-      label: t("chips.body", { value: value.body }),
-      onRemove: () => set("body", null),
+      key: "chassis",
+      label: t("chips.chassis", { value: value.chassis }),
+      onRemove: () => set("chassis", null),
     });
   if (value.rate)
     chips.push({
@@ -453,6 +592,21 @@ export function FeaturedAuctionFilterChips({
       key: "lot",
       label: `LOT: ${value.lot}`,
       onRemove: () => set("lot", ""),
+    });
+  if (value.color)
+    chips.push({
+      key: "color",
+      label: t("chips.color", { value: value.color }),
+      onRemove: () => set("color", null),
+    });
+  if (value.engVFrom != null || value.engVTo != null)
+    chips.push({
+      key: "engV",
+      label: t("chips.engV", {
+        from: value.engVFrom != null ? formatCc(value.engVFrom) : "…",
+        to: value.engVTo != null ? formatCc(value.engVTo) : "…",
+      }),
+      onRemove: () => onChange({ ...value, engVFrom: null, engVTo: null }),
     });
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({

@@ -39,11 +39,13 @@ type Props = {
    * - "original": no size param
    */
   imageSize?: AuctionImageSize;
+  /** Hide the price footer (e.g. auction listing where MNT price is unavailable). */
+  hidePrice?: boolean;
 };
 
 const MAX_SCRUB_IMAGES = 4;
 
-export default function CarCard({ car, imageSize = "card" }: Props) {
+export default function CarCard({ car, imageSize = "card", hidePrice }: Props) {
   const t = useTranslations("car.card");
 
   const isPremium = isPremiumCar(car.auction?.type);
@@ -174,20 +176,22 @@ export default function CarCard({ car, imageSize = "card" }: Props) {
         )}
 
         {/* Avg price */}
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-dashed border-neutral-200 pt-3 dark:border-neutral-800">
-          <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-            {t("avgPriceLabel")}
-          </p>
-          <div className="flex items-center gap-0.5">
-            <TugrigIcon
-              size={14}
-              className="text-neutral-900 dark:text-neutral-100"
-            />
-            <p className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-              {mntPrice}
+        {!hidePrice && (
+          <div className="mt-auto flex items-center justify-between gap-2 border-t border-dashed border-neutral-200 pt-3 dark:border-neutral-800">
+            <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+              {t("avgPriceLabel")}
             </p>
+            <div className="flex items-center gap-0.5">
+              <TugrigIcon
+                size={14}
+                className="text-neutral-900 dark:text-neutral-100"
+              />
+              <p className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                {mntPrice}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </article>
   );

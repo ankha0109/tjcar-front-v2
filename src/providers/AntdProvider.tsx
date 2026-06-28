@@ -77,6 +77,7 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
               components: {
                 Button: {
                   // primaryColor: "#0b0b0c",
+                  colorPrimary: "#0b0b0c",
                   // colorPrimary: isDark ? "#e8e8ea" : "#222",
                   // linkHoverBg: "transparent",
                   // defaultHoverBg: "transparent",

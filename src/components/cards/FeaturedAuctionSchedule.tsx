@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { Button } from "antd";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
@@ -14,9 +13,14 @@ import {
   VIEW_MODE_COOKIE_MAX_AGE,
   type ViewMode,
 } from "@/components/cards/views/viewMode";
-import FeaturedAuctionFilters, {
-  FeaturedAuctionFilterChips,
-} from "@/components/cards/FeaturedAuctionFilters";
+import JapanAuctionFilters, {
+  JapanAuctionFilterChips,
+} from "@/components/cards/JapanAuctionFilters";
+import {
+  AllTab,
+  DayTab,
+  EmptyState,
+} from "@/components/cards/views/scheduleTabs";
 import {
   FilterOptions,
   FilterValues,
@@ -154,7 +158,7 @@ export default function FeaturedAuctionSchedule({
       </div>
 
       <div className="flex flex-col lg:flex-row lg:gap-6">
-        <FeaturedAuctionFilters
+        <JapanAuctionFilters
           value={filters}
           onChange={setFilters}
           options={filterOptions}
@@ -163,7 +167,7 @@ export default function FeaturedAuctionSchedule({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
-              <div role="tablist" className="flex items-stretch gap-2">
+              <div role="tablist" className="flex items-center gap-2">
                 <AllTab
                   isActive={selected === "all"}
                   onClick={() => setSelected("all")}
@@ -203,7 +207,7 @@ export default function FeaturedAuctionSchedule({
             </div>
           </div>
 
-          <FeaturedAuctionFilterChips value={filters} onChange={setFilters} />
+          <JapanAuctionFilterChips value={filters} onChange={setFilters} />
 
           {filteredCars.length > 0 ? (
             <div
@@ -239,182 +243,5 @@ export default function FeaturedAuctionSchedule({
         </div>
       </div>
     </section>
-  );
-}
-
-const TAB_BASE =
-  "group! relative! flex! shrink-0! flex-col! items-center! justify-center! rounded-2xl! px-3.5! py-2.5! h-auto! transition-all! duration-200! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!";
-
-function AllTab({
-  isActive,
-  onClick,
-  label,
-  count,
-  unit,
-}: {
-  isActive: boolean;
-  onClick: () => void;
-  label: string;
-  count: number;
-  unit: string;
-}) {
-  return (
-    <Button
-      type="text"
-      role="tab"
-      aria-selected={isActive}
-      onClick={onClick}
-      className={cn(
-        TAB_BASE,
-        "min-w-22! border!",
-        isActive
-          ? "border-transparent! bg-neutral-900! text-white! shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]!"
-          : "border-neutral-200! bg-white! text-neutral-700! hover:-translate-y-0.5! hover:border-neutral-300! hover:shadow-sm!",
-      )}
-    >
-      <span
-        className={cn(
-          "text-[10px] font-semibold uppercase",
-          isActive ? "text-white/70" : "text-neutral-500",
-        )}
-      >
-        {label}
-      </span>
-      <span className="mt-0.5 text-[19px] font-semibold tabular-nums">
-        {count}
-      </span>
-      <span
-        className={cn(
-          "mt-0.5 text-[10.5px] font-medium",
-          isActive ? "text-white/75" : "text-neutral-400",
-        )}
-      >
-        {unit}
-      </span>
-    </Button>
-  );
-}
-
-function DayTab({
-  isActive,
-  onClick,
-  topLabel,
-  day,
-  month,
-  count,
-  emptyLabel,
-  weekend,
-  highlight,
-}: {
-  isActive: boolean;
-  onClick: () => void;
-  topLabel: string;
-  day: string;
-  month: string;
-  count: number;
-  emptyLabel: string;
-  weekend?: boolean;
-  highlight?: boolean;
-}) {
-  const isEmpty = count === 0;
-  return (
-    <Button
-      type="text"
-      role="tab"
-      aria-selected={isActive}
-      onClick={onClick}
-      className={cn(
-        TAB_BASE,
-        "min-w-20! border!",
-        isActive
-          ? "border-transparent! bg-neutral-900! text-white! shadow-[0_10px_24px_-12px_rgba(0,0,0,0.55)]!"
-          : "border-neutral-200/70! bg-neutral-50/60! text-neutral-700! hover:-translate-y-0.5! hover:border-neutral-300! hover:bg-white! hover:shadow-sm!",
-        !isActive && isEmpty && "opacity-55!",
-      )}
-    >
-      {highlight && !isActive && (
-        <span className="absolute -top-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_0_3px_rgba(255,255,255,0.9)]" />
-      )}
-      <span
-        className={cn(
-          "text-[10px] font-semibold uppercase",
-          isActive
-            ? "text-white/70"
-            : weekend
-              ? "text-red-500/80"
-              : "text-neutral-500",
-        )}
-      >
-        {topLabel}
-      </span>
-      <span className="mt-0.5 flex items-baseline gap-1">
-        <span className="text-[20px] font-semibold tabular-nums leading-none">
-          {day}
-        </span>
-        <span
-          className={cn(
-            "text-[9.5px] font-semibold uppercase",
-            isActive ? "text-white/60" : "text-neutral-400",
-          )}
-        >
-          {month}
-        </span>
-      </span>
-      <span
-        className={cn(
-          "mt-1 inline-flex items-center gap-1 text-[10.5px] font-medium tabular-nums",
-          isActive
-            ? "text-white/80"
-            : isEmpty
-              ? "text-neutral-400"
-              : "text-primary",
-        )}
-      >
-        {!isEmpty && (
-          <span
-            className={cn(
-              "h-1 w-1 rounded-full",
-              isActive ? "bg-white/70" : "bg-primary",
-            )}
-          />
-        )}
-        {isEmpty ? emptyLabel : count}
-      </span>
-    </Button>
-  );
-}
-
-function EmptyState({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/40 py-16">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-200">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-neutral-400"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-      </div>
-      <p className="mt-3 text-[14px] font-medium text-neutral-700">
-        {title}
-      </p>
-      <p className="mt-1 text-[12.5px] text-neutral-500">
-        {description}
-      </p>
-    </div>
   );
 }
