@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Drawer, Dropdown, Tooltip } from "antd";
+import { Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -173,17 +173,6 @@ function formatRate(value: number) {
   }).format(value);
 }
 
-function formatUpdatedTime(iso: string, locale: string) {
-  try {
-    return new Date(iso).toLocaleTimeString(locale, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return "";
-  }
-}
-
 function getInitials(user: CustomerUser) {
   const f = user.firstname?.[0] ?? "";
   const l = user.lastname?.[0] ?? "";
@@ -216,55 +205,6 @@ function NavLink({
     >
       {children}
     </Link>
-  );
-}
-
-function UtilityPill({
-  icon,
-  label,
-  onClick,
-  href,
-  badge,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  href?: string;
-  badge?: number;
-}) {
-  const inner = (
-    <span
-      className={cn(
-        "group inline-flex h-8 items-center gap-1.5 rounded-full px-2 transition-colors",
-        "text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/15 dark:focus-visible:ring-neutral-100/15",
-      )}
-    >
-      <span className="relative inline-flex h-5 w-5 items-center justify-center">
-        {icon}
-        {badge && badge > 0 ? (
-          <span className="absolute -right-1.5 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold leading-none text-white">
-            {badge > 9 ? "9+" : badge}
-          </span>
-        ) : null}
-      </span>
-      <span className="hidden text-sm font-medium leading-none md:inline">
-        {label}
-      </span>
-    </span>
-  );
-
-  if (href) {
-    return (
-      <Link href={href} aria-label={label} title={label}>
-        {inner}
-      </Link>
-    );
-  }
-  return (
-    <Button type="text" onClick={onClick} aria-label={label} title={label}>
-      {inner}
-    </Button>
   );
 }
 
@@ -341,80 +281,6 @@ function DrawerLink({
   );
 }
 
-function RateBadge({
-  CurrencyIcon,
-  code,
-  value,
-  updatedAt,
-  locale,
-  updatedLabelTemplate,
-  iconClass,
-}: {
-  CurrencyIcon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  code: string;
-  value: number;
-  updatedAt: string;
-  locale: string;
-  updatedLabelTemplate: (time: string) => string;
-  iconClass: string;
-}) {
-  const updatedTime = formatUpdatedTime(updatedAt, locale);
-  return (
-    <Tooltip
-      title={updatedLabelTemplate(updatedTime)}
-      placement="bottom"
-      mouseEnterDelay={0.15}
-    >
-      <span className="inline-flex shrink-0 items-center gap-1.5 text-[11.5px] font-medium tabular-nums text-neutral-600 dark:text-neutral-400">
-        <CurrencyIcon className={cn("h-3 w-3", iconClass)} aria-hidden="true" />
-        <span className="font-semibold text-neutral-700 dark:text-neutral-300">
-          {code}
-        </span>
-        <span>{formatRate(value)}</span>
-        <span className="text-neutral-400 dark:text-neutral-500">₮</span>
-      </span>
-    </Tooltip>
-  );
-}
-
-function TopBarLink({
-  href,
-  label,
-  ariaLabel,
-  icon,
-  external,
-}: {
-  href: string;
-  label: React.ReactNode;
-  ariaLabel: string;
-  icon: React.ReactNode;
-  external?: boolean;
-}) {
-  const className =
-    "group inline-flex shrink-0 items-center gap-1.5 rounded-md px-1.5 py-1 text-[11.5px] font-medium text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100";
-  const inner = (
-    <>
-      <span className="inline-flex h-3.5 w-3.5 items-center justify-center text-neutral-500 transition-colors group-hover:text-neutral-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
-        {icon}
-      </span>
-      <span className="tabular-nums">{label}</span>
-    </>
-  );
-
-  if (external) {
-    return (
-      <a href={href} aria-label={ariaLabel} className={className}>
-        {inner}
-      </a>
-    );
-  }
-  return (
-    <Link href={href} aria-label={ariaLabel} className={className}>
-      {inner}
-    </Link>
-  );
-}
-
 export default function DesktopHeader({ theme }: { theme: Theme }) {
   const t = useTranslations("header");
   const locale = useLocale();
@@ -469,96 +335,8 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
     },
   ];
 
-  const updatedLabel = (time: string) =>
-    t("topbar.rates.updated", { time: time || "—" });
-
-  const hoursTooltip = (
-    <div className="space-y-0.5 py-0.5 text-[12px] leading-relaxed">
-      <div>{t("topbar.hours.schedule.weekdays")}</div>
-      <div>{t("topbar.hours.schedule.saturday")}</div>
-      <div className="text-neutral-300">
-        {t("topbar.hours.schedule.sunday")}
-      </div>
-    </div>
-  );
-
   return (
     <>
-      {/* Row 0 — Topbar (rates + contact) — non-sticky, scrolls away */}
-      <div className="border-b border-neutral-100 bg-neutral-50 dark:border-neutral-900 dark:bg-neutral-900/40">
-        <div className="mx-auto flex h-9 max-w-7xl items-center gap-3 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6">
-          {/* Left — exchange rates */}
-          <div className="flex shrink-0 items-center gap-3 md:gap-4">
-            <RateBadge
-              CurrencyIcon={DollarIcon}
-              code={t("topbar.rates.usd")}
-              value={EXCHANGE_RATES.USD.value}
-              updatedAt={EXCHANGE_RATES.USD.updatedAt}
-              locale={locale}
-              updatedLabelTemplate={updatedLabel}
-              iconClass="text-emerald-600 dark:text-emerald-400"
-            />
-            <span
-              aria-hidden="true"
-              className="h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800"
-            />
-            <RateBadge
-              CurrencyIcon={YenIcon}
-              code={t("topbar.rates.jpy")}
-              value={EXCHANGE_RATES.JPY.value}
-              updatedAt={EXCHANGE_RATES.JPY.updatedAt}
-              locale={locale}
-              updatedLabelTemplate={updatedLabel}
-              iconClass="text-rose-500 dark:text-rose-400"
-            />
-          </div>
-
-          {/* Spacer */}
-          <div className="flex-1" />
-
-          {/* Right — contact + hours */}
-          <div className="flex shrink-0 items-center gap-1 md:gap-2">
-            <TopBarLink
-              href={`tel:${CONTACT_PHONE_RAW}`}
-              ariaLabel={t("topbar.phone.aria")}
-              icon={<PhoneIcon className="h-3.5 w-3.5" />}
-              label={CONTACT_PHONE_DISPLAY}
-              external
-            />
-            <span
-              aria-hidden="true"
-              className="hidden h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800 sm:block"
-            />
-            <Tooltip
-              title={hoursTooltip}
-              placement="bottom"
-              mouseEnterDelay={0.15}
-            >
-              <span className="hidden shrink-0 items-center gap-1.5 rounded-md px-1.5 py-1 text-[11.5px] font-medium text-neutral-600 dark:text-neutral-400 sm:inline-flex">
-                <ClockIcon className="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-500" />
-                <span className="tabular-nums">{t("topbar.hours.short")}</span>
-              </span>
-            </Tooltip>
-            <span
-              aria-hidden="true"
-              className="hidden h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800 md:block"
-            />
-            {/* TODO: replace href with /contact once that route exists */}
-            <TopBarLink
-              href="/about"
-              ariaLabel={t("topbar.contact.aria")}
-              icon={<MailIcon className="h-3.5 w-3.5" />}
-              label={
-                <span className="hidden md:inline">
-                  {t("topbar.contact.label")}
-                </span>
-              }
-            />
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </div>
-
       <header
         className={cn(
           "sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-200",
@@ -602,6 +380,9 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
 
           {/* Spacer */}
           <div className="flex-1" />
+
+          {/* Language */}
+          <LanguageSwitcher />
 
           {/* Theme */}
           <ThemeToggle theme={theme} />
@@ -698,68 +479,6 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
           </Button>
         </div>
 
-        {/* Row 1 bottom divider — inside container padding */}
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="border-b border-neutral-100 dark:border-neutral-900" />
-        </div>
-
-        {/* Row 2 — secondary nav (h-10, md+) */}
-        <div className="hidden md:block">
-          <nav
-            aria-label="Secondary"
-            className="mx-auto flex h-10 max-w-7xl items-center gap-5 px-4"
-          >
-            {FEATURED.map((tab) => {
-              const active = isPathActive(tab.href);
-              return (
-                <Link
-                  key={tab.key}
-                  href={tab.href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-md py-1 text-sm font-medium transition-colors",
-                    active
-                      ? "text-neutral-900 dark:text-neutral-100"
-                      : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-200",
-                  )}
-                >
-                  {t(tab.labelKey)}
-                </Link>
-              );
-            })}
-            <div className="ml-auto flex items-center gap-1">
-              <Link
-                href="/dashboard/profile?ai=1"
-                aria-label={t("tjcarAi")}
-                title={t("tjcarAi")}
-                className={cn(
-                  "group relative inline-flex h-8 items-center gap-1.5 overflow-hidden rounded-full px-2.5 transition-all",
-                  "bg-gradient-to-r from-violet-50 via-fuchsia-50 to-violet-50 ring-1 ring-violet-200/70 hover:ring-violet-300",
-                  "dark:from-violet-950/40 dark:via-fuchsia-950/40 dark:to-violet-950/40 dark:ring-violet-800/60 dark:hover:ring-violet-700",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400",
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full dark:via-white/10"
-                />
-                <SparkleIcon className="relative h-4 w-4 text-violet-600 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 dark:text-violet-300" />
-                <span className="relative hidden bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-sm font-semibold leading-none text-transparent dark:from-violet-200 dark:to-fuchsia-200 md:inline">
-                  {t("tjcarAi")}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="relative ml-0.5 hidden h-1.5 w-1.5 animate-pulse rounded-full bg-fuchsia-500 shadow-[0_0_6px_rgba(217,70,239,0.6)] md:inline-block"
-                />
-              </Link>
-              <UtilityPill
-                href="/dashboard/tracking"
-                icon={<HeartIcon className="h-4 w-4" />}
-                label={t("wishlist")}
-              />
-            </div>
-          </nav>
-        </div>
       </header>
 
       {/* Tablet drawer (md ↔ lg) */}

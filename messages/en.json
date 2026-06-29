@@ -122,6 +122,9 @@
       "ready": "In-stock"
     },
     "allMakes": "All makes",
+    "viewAllShort": "All",
+    "search": "Search",
+    "featuredTitle": "Featured makers",
     "totalInAuction": "{count} cars currently in auction",
     "viewAll": "View all",
     "vin": {
@@ -206,7 +209,52 @@
       "submit": "Sign in",
       "errorInvalid": "Phone number or password is incorrect.",
       "errorGeneric": "Sign-in failed. Please try again.",
-      "metaDescription": "Sign-in page"
+      "metaDescription": "Sign-in page",
+      "welcomeBadge": "Welcome back",
+      "brandHeading": "Pick up right where you left off",
+      "brandSubheading": "Track your cars, manage orders and download reports — all from a single account.",
+      "benefit1": "Live Japan & Korea auctions",
+      "benefit2": "Real-time order tracking",
+      "benefit3": "Reports & documents in one place",
+      "noAccount": "New to TJCAR?",
+      "registerLink": "Create account"
+    },
+    "register": {
+      "title": "Sign up",
+      "subtitle": "Enter your details to create a new account",
+      "welcomeBadge": "Get started",
+      "brandHeading": "Create your account in a few steps",
+      "brandSubheading": "Sign up to join live Japan & Korea auctions and follow your orders from start to finish.",
+      "benefit1": "Set up in just a few minutes",
+      "benefit2": "Auctions & orders in one account",
+      "benefit3": "Personal advisor & PDF reports",
+      "lastnameLabel": "Last name",
+      "lastnamePlaceholder": "Enter your last name",
+      "lastnameRequired": "Please enter your last name",
+      "firstnameLabel": "First name",
+      "firstnamePlaceholder": "Enter your first name",
+      "firstnameRequired": "Please enter your first name",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
+      "phoneRequired": "Please enter your phone number",
+      "phoneInvalid": "Phone number must be 8 digits.",
+      "emailLabel": "Email (optional)",
+      "emailPlaceholder": "Enter your email address",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "passwordRequired": "Please enter your password",
+      "passwordMin": "Password must be at least 8 characters.",
+      "confirmLabel": "Confirm password",
+      "confirmPlaceholder": "Re-enter your password",
+      "confirmRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match.",
+      "submit": "Sign up",
+      "successMessage": "Registration successful. Please sign in.",
+      "errorGeneric": "Registration failed. Please try again.",
+      "haveAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "metaDescription": "Sign-up page"
     }
   },
   "featured": {
@@ -226,7 +274,8 @@
         "marka": "Make",
         "model": "Model",
         "chassis": "Chassis",
-        "rate": "Grade"
+        "rate": "Grade",
+        "lot": "Lot"
       },
       "title": "Filters",
       "sections": {
@@ -535,6 +584,7 @@
     "subheading": "Market notes, new models, buying tips — from Japan and Korea, written by our team.",
     "viewAll": "All articles",
     "readMore": "Read more",
+    "latest": "Latest",
     "posts": {
       "post1": {
         "category": "Buying guide",
@@ -553,6 +603,18 @@
         "date": "2026-02-15",
         "title": "Japan's most-wanted brands in 2026",
         "excerpt": "Toyota, Lexus, Subaru — a data-driven ranking based on last quarter's auction volume."
+      },
+      "post4": {
+        "category": "Costs",
+        "date": "2026-01-20",
+        "title": "Import duties and taxes, explained",
+        "excerpt": "Customs, VAT, age-based rates — how to estimate the real landed price before you bid."
+      },
+      "post5": {
+        "category": "Guide",
+        "date": "2025-12-10",
+        "title": "Korea or Japan — where to buy?",
+        "excerpt": "Pricing, condition, shipping times — a practical comparison of the two biggest markets."
       }
     }
   },
@@ -721,6 +783,45 @@
       "comingSoonTitle": "Coming soon",
       "comingSoonBody": "Online bidding for {car} is launching soon. Sign in to be notified when it goes live.",
       "ok": "OK"
+    },
+    "gallery": {
+      "viewFull": "Open full size"
+    },
+    "evaluation": {
+      "title": "Auction evaluation sheet",
+      "subtitle": "Official inspector grade for this vehicle",
+      "viewFull": "Open full sheet",
+      "ai": {
+        "title": "AI explanation",
+        "badge": "Demo",
+        "intro": "This is the **official auction inspection sheet** for this car. Before every sale, an independent auction inspector checks the vehicle and records its condition, so this sheet is the most trustworthy summary you can get.\n\n- **Overall grade:** {rate}\n- **Interior grade:** {grade}\n- **Equipment noted:** {equip}\n\nThe car diagram on the sheet marks each scratch, dent and repaired panel. Pick a question below or ask your own.",
+        "suggestedTitle": "Try asking",
+        "suggested": [
+          "What does the overall grade mean?",
+          "How is the interior condition?",
+          "What equipment is included?",
+          "Are there scratches or repairs?"
+        ],
+        "placeholder": "Ask about this evaluation sheet...",
+        "send": "Send",
+        "disclaimer": "The AI explanation is a static demo for now and may not reflect the exact sheet.",
+        "answers": {
+          "rate": "**Overall grade {rate}** is the inspector overall score for the car. On the common scale, **5** is almost new, **4.5 and 4** are clean used cars with only minor marks, **3.5** shows visible wear, and **R / RA** means the car was repaired after an accident. This car is graded **{rate}**.",
+          "interior": "The **interior grade {grade}** rates the cabin separately from the body. **A** is a very clean interior, **B** is normal light wear, and **C** shows heavier use such as stains or scratches on the trim. Inside, this car is rated **{grade}**.",
+          "equipment": "The sheet lists the factory and added equipment for this car: **{equip}**. These short codes describe features such as power steering, air conditioning, power windows, airbags and the audio system.",
+          "damage": "The diagram marks damage with letter and number codes. For example **A** is a scratch, **U** is a dent, **W** is a repaired or repainted panel, and the number next to it shows the size from 1 (small) to 4 (large). Check the diagram on the sheet to see exactly where each mark is.",
+          "fallback": "I can explain this evaluation sheet — the overall grade, the interior grade, the listed equipment, or the damage marks on the diagram. Try one of the suggested questions above."
+        }
+      }
+    },
+    "priceHistory": {
+      "title": "Comparable price history",
+      "subtitle": "Similar cars sold in the last 14 days",
+      "jpy": "JPY",
+      "mnt": "MNT",
+      "listTitle": "Recent sales",
+      "noData": "No data yet",
+      "demoBadge": "Demo data"
     }
   },
   "mobile": {
@@ -750,5 +851,152 @@
         "howItWorksHint": "Step-by-step guide"
       }
     }
+  },
+  "reportLanding": {
+    "metadata": {
+      "title": "Auction Report",
+      "description": "The full Japanese auction history as a PDF report in 2 minutes. Mileage verification, accident records, high-quality photos. Only 20,000₮."
+    },
+    "hero": {
+      "eyebrow": "Auction Report",
+      "headingLine1": "The real history of a",
+      "headingAccent": "Japanese auction car",
+      "headingLine2": "in 2 minutes",
+      "subheading": "Just enter the lot or chassis number. We automatically gather how the car looked at the auction — mileage, accident records, water damage and original high-quality photos — into a single PDF report, with no human involvement.",
+      "inputPlaceholder": "Lot or chassis number",
+      "cta": "Get report",
+      "chips": {
+        "auto": "No human involvement",
+        "fast": "Ready in 2 minutes",
+        "price": "Only 20,000₮"
+      }
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "heading": "3 steps, 2 minutes",
+      "subheading": "Everything is automatic. You only enter the number.",
+      "items": {
+        "input": {
+          "step": "01",
+          "title": "Enter the number",
+          "body": "Type the lot or chassis number and run the search."
+        },
+        "collect": {
+          "step": "02",
+          "title": "The system collects data",
+          "body": "Auction archive, mileage check, accident records and photos are merged automatically."
+        },
+        "ready": {
+          "step": "03",
+          "title": "PDF is ready",
+          "body": "Your full report is ready to download within 2 minutes."
+        }
+      }
+    },
+    "contents": {
+      "eyebrow": "What's in the report",
+      "heading": "Everything you need to decide",
+      "subheading": "Based on real Japanese auction data.",
+      "items": {
+        "km": {
+          "title": "Mileage verification",
+          "body": "We verify the real mileage against the auction record."
+        },
+        "accident": {
+          "title": "Accident records",
+          "body": "Repairs, collisions and damage history shown clearly."
+        },
+        "water": {
+          "title": "Water damage",
+          "body": "Detects cars with flood or water damage."
+        },
+        "photos": {
+          "title": "High-quality photos",
+          "body": "Original high-resolution photos from the auction."
+        },
+        "history": {
+          "title": "Auction history",
+          "body": "How many times it went to auction, at what price and grade."
+        },
+        "grade": {
+          "title": "Grade",
+          "body": "Exterior and interior grades and overall score."
+        }
+      }
+    },
+    "sample": {
+      "eyebrow": "Sample report",
+      "heading": "Here's what it looks like",
+      "body": "All the information delivered clearly, in one tidy PDF.",
+      "points": {
+        "p1": "Core specs and VIN / chassis",
+        "p2": "Mileage check and grade sheet",
+        "p3": "Accident and damage markers",
+        "p4": "Gallery of original photos"
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "heading": "One report — one price",
+      "price": "20,000₮",
+      "period": "/ report",
+      "cta": "Order report",
+      "note": "No extra fees. Ready in 2 minutes once paid.",
+      "includes": {
+        "i1": "Mileage check and verification",
+        "i2": "Accident and water-damage check",
+        "i3": "Original high-quality photos",
+        "i4": "Auction history and grade",
+        "i5": "PDF download"
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "heading": "Questions & answers",
+      "items": {
+        "q1": {
+          "q": "How fast is the report ready?",
+          "a": "Usually within 2 minutes after you enter the number."
+        },
+        "q2": {
+          "q": "What number should I enter?",
+          "a": "The Japanese auction lot number or the car's chassis (chassis/VIN) number."
+        },
+        "q3": {
+          "q": "Is it checked by a person?",
+          "a": "No. The system gathers and compiles everything automatically, so no human involvement is needed."
+        },
+        "q4": {
+          "q": "How much does it cost?",
+          "a": "One report is 20,000₮. No hidden fees."
+        },
+        "q5": {
+          "q": "Where does the data come from?",
+          "a": "It is based on Japanese auction archives and original grading data."
+        }
+      }
+    },
+    "finalCta": {
+      "heading": "Know the history before you buy",
+      "subheading": "2 minutes and 20,000₮ clears every doubt.",
+      "cta": "Get report"
+    }
+  },
+  "japanBrands": {
+    "metadata": {
+      "title": "Japanese manufacturers",
+      "description": "Browse every manufacturer in the Japanese auction and their models. Pick a manufacturer to see its models listed alphabetically."
+    },
+    "title": "Japanese manufacturers",
+    "subtitle": "Pick a manufacturer to explore its models and find them in the auction.",
+    "featuredLabel": "Featured",
+    "allLabel": "All manufacturers",
+    "searchPlaceholder": "Search manufacturer",
+    "noMakes": "No manufacturers found",
+    "modelsTitle": "{brand} models",
+    "modelCount": "{count} models",
+    "viewAllInAuctions": "All {brand} listings",
+    "noModels": "No models found",
+    "unavailable": "Catalogue is temporarily unavailable. Please try again."
   }
 }

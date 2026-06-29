@@ -71,17 +71,22 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
               token: {
                 fontFamily: "Inter, sans-serif",
                 colorPrimary: "#F1472C",
+                // Black "solid default" button: <Button color="default" variant="solid">.
+                // Light: pure black + black/80 hover. Dark: leave antd's darkAlgorithm
+                // defaults, which invert colorBgSolid to near-white with dark text so the
+                // button stays visible on the dark background (hardcoding #000 here hid it).
+                ...(isDark
+                  ? {}
+                  : {
+                      colorBgSolid: "#000000",
+                      colorBgSolidHover: "rgba(0, 0, 0, 0.8)",
+                      colorBgSolidActive: "rgba(0, 0, 0, 0.9)",
+                    }),
                 // colorLink: isDark ? "#e8e8ea" : "#ffffff",
                 // colorLinkHover: isDark ? "#ffffff" : "#000",
               },
               components: {
                 Button: {
-                  // primaryColor: "#0b0b0c",
-                  colorPrimary: "#0b0b0c",
-                  // colorPrimary: isDark ? "#e8e8ea" : "#222",
-                  // linkHoverBg: "transparent",
-                  // defaultHoverBg: "transparent",
-                  // colorPrimaryHover: "#e8e8ea",
                   primaryShadow: "none",
                   defaultShadow: "none",
                   dangerShadow: "none",

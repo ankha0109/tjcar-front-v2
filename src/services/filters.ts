@@ -87,3 +87,41 @@ export const getFilterOptions = cache(async (): Promise<FilterOptions> => {
     auctions: [...filters.auctions].sort((a, b) => a.localeCompare(b)),
   };
 });
+
+/** Brand → its models, for the `/japan/brands` manufacturers explorer. */
+export type BrandsCatalog = {
+  /** Every make name, sorted A–Z. */
+  brands: string[];
+  /** Make name → its models, deduped + sorted A–Z. */
+  modelsByBrand: Record<string, string[]>;
+};
+
+/**
+ * Lean catalogue for the brands explorer: only `/filters` + `/filters/models`
+ * (skips the large chassis/colors feeds). Reuses the same cached `getFilters`
+ * / `getModels` the home page already warms, so this is an ISR cache hit with
+ * no extra backend round-trip.
+ */
+export const getBrandsCatalog = cache(async (): Promise<BrandsCatalog> => {
+  const [filters, models] = await Promise.all([getFilters(), getModels()]);
+
+  const nameById = new Map(filters.brands.map((b) => [b.manuf_id, b.manuf_name]));
+  const byBrand: Record<string, Set<string>> = {};
+  for (const m of models) {
+    const brand = nameById.get(m.manuf_id);
+    if (!brand || !m.model_name) continue;
+    (byBrand[brand] ??= new Set<string>()).add(m.model_name);
+  }
+
+  return {
+    brands: filters.brands
+      .map((b) => b.manuf_name)
+      .sort((a, b) => a.localeCompare(b)),
+    modelsByBrand: Object.fromEntries(
+      Object.entries(byBrand).map(([brand, set]) => [
+        brand,
+        [...set].sort((a, b) => a.localeCompare(b)),
+      ]),
+    ),
+  };
+});

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import CarCard from "@/components/cards/CarCard";
@@ -219,19 +219,34 @@ export default function FeaturedAuctionSchedule({
               {viewMode === "grid" && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                   {filteredCars.map((car) => (
-                    <CarCard key={car.ID} car={fromFeaturedCar(car)} />
+                    <Link
+                      key={car.ID}
+                      href={`/korea/${car.ID}`}
+                      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
+                    >
+                      <CarCard car={fromFeaturedCar(car)} />
+                    </Link>
                   ))}
                 </div>
               )}
               {viewMode === "list" && (
                 <div className="flex flex-col gap-3">
                   {filteredCars.map((car) => (
-                    <CarListItem key={car.ID} car={fromFeaturedCar(car)} />
+                    <Link
+                      key={car.ID}
+                      href={`/korea/${car.ID}`}
+                      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
+                    >
+                      <CarListItem car={fromFeaturedCar(car)} />
+                    </Link>
                   ))}
                 </div>
               )}
               {viewMode === "table" && (
-                <CarTableView cars={filteredCars.map(fromFeaturedCar)} />
+                <CarTableView
+                  cars={filteredCars.map(fromFeaturedCar)}
+                  onRowClick={(car) => router.push(`/korea/${car.id}`)}
+                />
               )}
             </div>
           ) : (

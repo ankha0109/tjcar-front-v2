@@ -215,7 +215,7 @@ export default function AuctionBrowser({
                     {items.map((car) => (
                       <Link
                         key={car.id}
-                        href={`/auctions/${car.id}`}
+                        href={`/japan/${car.id}`}
                         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                       >
                         <CarCard car={car} hidePrice />
@@ -228,7 +228,7 @@ export default function AuctionBrowser({
                     {items.map((car) => (
                       <Link
                         key={car.id}
-                        href={`/auctions/${car.id}`}
+                        href={`/japan/${car.id}`}
                         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                       >
                         <CarListItem car={car} hidePrice />
@@ -240,7 +240,7 @@ export default function AuctionBrowser({
                   <CarTableView
                     cars={items}
                     hidePrice
-                    onRowClick={(car) => router.push(`/auctions/${car.id}`)}
+                    onRowClick={(car) => router.push(`/japan/${car.id}`)}
                   />
                 )}
               </div>

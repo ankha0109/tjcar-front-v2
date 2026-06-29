@@ -159,7 +159,7 @@ export default function BentoGrid() {
           className="md:col-span-2"
         />
         <BentoCard
-          href="#"
+          href="/report"
           image={reportImg}
           imageAlt={t("report.title")}
           floatDelayMs={4500}
