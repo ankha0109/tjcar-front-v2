@@ -47,6 +47,9 @@ jobs:
         run: |
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
+          # pm2 entrypoint that loads .env.production before booting server.js
+          # (standalone server.js does not load .env itself). See start.js.
+          cp start.js .next/standalone/start.js
 
       - name: Configure SSH
         run: |
