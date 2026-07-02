@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import type { CarFixture } from "@/lib/carFixtures";
 import { withImageSize } from "@/utils/auctionImage";
 import EvaluationAiChat from "./EvaluationAiChat";
+import EvaluationGuide from "./EvaluationGuide";
 
 type Props = {
   /** The auction evaluation sheet (the last image of the gallery). */
@@ -15,12 +16,10 @@ type Props = {
   car: CarFixture;
 };
 
-const dash = (v: string) => (v && v.trim() ? v : "—");
-
 /**
  * Full-width section that splits the auction evaluation sheet out of the photo
- * gallery: the sheet image (zoomable to full size) beside a static AI assistant
- * that explains it.
+ * gallery: the sheet image (zoomable to full size) beside an AI assistant that
+ * analyzes and explains it.
  */
 export default function CarEvaluation({ image, car }: Props) {
   const t = useTranslations("carDetail.evaluation");
@@ -45,9 +44,10 @@ export default function CarEvaluation({ image, car }: Props) {
           aria-label={t("viewFull")}
           className="group relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
         >
+          {/* Full-size sheet — the marks must stay legible, so no w=320 here. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={withImageSize(image, "card")}
+            src={withImageSize(image, "original")}
             alt={t("title")}
             loading="lazy"
             className="max-h-[520px] w-full object-contain"
@@ -57,13 +57,21 @@ export default function CarEvaluation({ image, car }: Props) {
           </span>
         </button>
 
-        {/* Static AI assistant */}
+        {/* AI assistant backed by the vision evaluation endpoints */}
         <EvaluationAiChat
-          rate={dash(car.RATE)}
-          grade={dash(car.GRADE)}
-          equip={dash(car.EQUIP)}
+          carId={car.ID}
+          image={withImageSize(image, "original")}
+          marka={car.MARKA_NAME}
+          model={car.MODEL_NAME}
+          year={car.YEAR}
+          rate={car.RATE}
+          grade={car.GRADE}
+          equip={car.EQUIP}
         />
       </div>
+
+      {/* Legend explaining the inspector's shorthand marks on the sheet. */}
+      <EvaluationGuide />
 
       <Lightbox
         open={open}

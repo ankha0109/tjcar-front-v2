@@ -52,7 +52,7 @@ const NAV_HREFS = [
     ),
   },
   {
-    href: "/dashboard/tracking",
+    href: "/wishlist",
     key: "tracking",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

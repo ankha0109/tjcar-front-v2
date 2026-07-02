@@ -1,11 +1,18 @@
 "use client";
 
-import { Button, Tooltip } from "antd";
+import { App, Button, Tooltip } from "antd";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { cn } from "@/utils";
+import { useCompare } from "@/hooks/useCompare";
+import { useWishlist } from "@/hooks/useWishlist";
+import { compareItemFromCarItem } from "@/lib/compare";
+import { wishlistItemFromCarItem } from "@/lib/wishlist";
+import type { CarItem } from "@/types/car";
+import { isComparableSource } from "@/types/compare";
 
 type Props = {
+  /** The card's car — drives the wishlist identity + snapshot. */
+  car: CarItem;
   /**
    * Visibility mode.
    * - "hover" (default): hidden until parent .group is hovered
@@ -14,15 +21,28 @@ type Props = {
   visibility?: "hover" | "always";
   /** Absolute overlay positioning by default. Set false for inline placement. */
   absolute?: boolean;
+  /**
+   * Hide the compare toggle even for a comparable source — for cards whose
+   * `source` doesn't match the id's real upstream (e.g. FeaturedAuctionSchedule
+   * labels AJES rows "korea", so a compare fetch would 404).
+   */
+  disableCompare?: boolean;
 };
 
 export function CardActions({
+  car,
   visibility = "hover",
   absolute = true,
+  disableCompare = false,
 }: Props) {
   const t = useTranslations("car.card");
-  const [wishlisted, setWishlisted] = useState(false);
-  const [compared, setCompared] = useState(false);
+  const tc = useTranslations("compare");
+  const { message } = App.useApp();
+  const { isWishlisted, toggle } = useWishlist();
+  const wishlisted = isWishlisted(car.source, car.id);
+  const { isCompared, toggle: toggleCompare } = useCompare();
+  const canCompare = !disableCompare && isComparableSource(car.source);
+  const compared = canCompare && isCompared(car.source, car.id);
 
   const stop = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,7 +66,7 @@ export function CardActions({
           aria-pressed={wishlisted}
           onClick={(e) => {
             stop(e);
-            setWishlisted((v) => !v);
+            toggle(wishlistItemFromCarItem(car));
           }}
           className={cn(
             "ring-1! backdrop-blur-md! active:scale-95!",
@@ -69,38 +89,42 @@ export function CardActions({
           </svg>
         </Button>
       </Tooltip>
-      <Tooltip title={t("compare")} placement="bottom" mouseEnterDelay={0.2}>
-        <Button
-          type="text"
-          shape="circle"
-          aria-label={t("compare")}
-          aria-pressed={compared}
-          onClick={(e) => {
-            stop(e);
-            setCompared((v) => !v);
-          }}
-          className={cn(
-            "ring-1! backdrop-blur-md! active:scale-95!",
-            compared
-              ? "bg-neutral-900! text-white! ring-white/20! shadow-md! hover:bg-neutral-900!"
-              : "bg-white/85! text-neutral-700! ring-black/5! hover:bg-white! hover:text-neutral-900!",
-          )}
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {canCompare && (
+        <Tooltip title={t("compare")} placement="bottom" mouseEnterDelay={0.2}>
+          <Button
+            type="text"
+            shape="circle"
+            aria-label={t("compare")}
+            aria-pressed={compared}
+            onClick={(e) => {
+              stop(e);
+              if (toggleCompare(compareItemFromCarItem(car)) === "full") {
+                message.warning(tc("fullWarning"));
+              }
+            }}
+            className={cn(
+              "ring-1! backdrop-blur-md! active:scale-95!",
+              compared
+                ? "bg-neutral-900! text-white! ring-white/20! shadow-md! hover:bg-neutral-900!"
+                : "bg-white/85! text-neutral-700! ring-black/5! hover:bg-white! hover:text-neutral-900!",
+            )}
           >
-            <path d="M3 7h13l-3-3" />
-            <path d="M21 17H8l3 3" />
-          </svg>
-        </Button>
-      </Tooltip>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 7h13l-3-3" />
+              <path d="M21 17H8l3 3" />
+            </svg>
+          </Button>
+        </Tooltip>
+      )}
     </div>
   );
 }

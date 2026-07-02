@@ -3,6 +3,7 @@
 import { Link } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { useTranslations } from "next-intl";
+import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
 import type { ComponentType, SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -33,6 +34,40 @@ const TiktokIcon = (props: IconProps) => (
   </svg>
 );
 
+const DollarIcon = (props: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+    {...props}
+  >
+    <line x1="12" y1="2" x2="12" y2="22" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+const YenIcon = (props: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+    {...props}
+  >
+    <path d="M6 3l6 9 6-9" />
+    <line x1="12" y1="12" x2="12" y2="21" />
+    <line x1="5" y1="14" x2="19" y2="14" />
+    <line x1="5" y1="18" x2="19" y2="18" />
+  </svg>
+);
+
 const SOCIAL_LINKS: ReadonlyArray<{
   href: string;
   key: "facebook" | "instagram" | "youtube" | "tiktok";
@@ -51,13 +86,6 @@ const CARS_LINKS = [
   { href: "/report", key: "report" as const },
 ] as const;
 
-const SERVICES_LINKS = [
-  { href: "/dashboard", key: "dashboard" as const },
-  { href: "/about", key: "about" as const },
-  { href: "/auth/login", key: "signIn" as const },
-  { href: "/auth/register", key: "signUp" as const },
-] as const;
-
 const COMPANY_LINKS = [
   { href: "/about", key: "about" as const },
   { href: "/contact", key: "contact" as const },
@@ -67,18 +95,49 @@ const COMPANY_LINKS = [
 
 export default function DesktopFooter() {
   const t = useTranslations("footer");
+  const tr = useTranslations("header.topbar");
 
   return (
-    <footer className="border-t border-neutral-200 bg-white text-neutral-700 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
+    <footer className="bg-neutral-950 text-neutral-400">
+      {/* Exchange-rate strip (moved from the header topbar) */}
+      <div className="border-b border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3.5 lg:px-10">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+            {tr("rates.label")}
+          </span>
+          <div className="flex items-center gap-2">
+            <DollarIcon className="h-3.5 w-3.5 text-emerald-400" />
+            <span className="text-[13px] font-medium text-neutral-500">
+              {tr("rates.usd")}
+            </span>
+            <span className="text-sm font-semibold tabular-nums text-white">
+              {formatRate(EXCHANGE_RATES.USD.value)}
+            </span>
+            <span className="text-xs text-neutral-500">₮</span>
+          </div>
+          <span className="h-3.5 w-px bg-white/10" aria-hidden />
+          <div className="flex items-center gap-2">
+            <YenIcon className="h-3.5 w-3.5 text-rose-400" />
+            <span className="text-[13px] font-medium text-neutral-500">
+              {tr("rates.jpy")}
+            </span>
+            <span className="text-sm font-semibold tabular-nums text-white">
+              {formatRate(EXCHANGE_RATES.JPY.value)}
+            </span>
+            <span className="text-xs text-neutral-500">₮</span>
+          </div>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
         {/* Main row */}
         <div className="grid grid-cols-12 gap-8">
           {/* Brand + socials */}
-          <div className="col-span-12 lg:col-span-4">
+          <div className="col-span-12 lg:col-span-5">
             <Link href="/" aria-label="TJ Car" className="inline-flex">
-              <Logo className="h-8 w-auto" />
+              <Logo className="h-8 w-auto [&_path:not(.cls-1)]:fill-white" />
             </Link>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-400">
               {t("about")}
             </p>
             <ul className="mt-8 flex items-center gap-2.5">
@@ -89,7 +148,7 @@ export default function DesktopFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={t(`social.${key}`)}
-                    className="flex h-9 w-9 items-center justify-center rounded-md border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-900 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-100 dark:hover:text-neutral-100"
+                    className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -99,19 +158,11 @@ export default function DesktopFooter() {
           </div>
 
           {/* Link columns */}
-          <div className="col-span-12 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
+          <div className="col-span-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
             <FooterColumn heading={t("cars.heading")}>
               {CARS_LINKS.map((item) => (
                 <FooterLink key={item.href} href={item.href}>
                   {t(`cars.${item.key}`)}
-                </FooterLink>
-              ))}
-            </FooterColumn>
-
-            <FooterColumn heading={t("services.heading")}>
-              {SERVICES_LINKS.map((item) => (
-                <FooterLink key={`${item.href}-${item.key}`} href={item.href}>
-                  {t(`services.${item.key}`)}
                 </FooterLink>
               ))}
             </FooterColumn>
@@ -125,35 +176,28 @@ export default function DesktopFooter() {
             </FooterColumn>
 
             <FooterColumn heading={t("contact.heading")}>
-              <li className="text-sm text-neutral-600 dark:text-neutral-400">
-                {t("contact.phone")}
-              </li>
-              <li className="text-sm text-neutral-600 dark:text-neutral-400">
+              <li className="text-sm text-neutral-400">{t("contact.phone")}</li>
+              <li className="text-sm text-neutral-400">
                 {t("contact.address")}
               </li>
-              <li className="text-sm text-neutral-600 dark:text-neutral-400">
-                {t("contact.hours")}
-              </li>
+              <li className="text-sm text-neutral-400">{t("contact.hours")}</li>
             </FooterColumn>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 flex items-center justify-between border-t border-neutral-200 pt-5 text-[13px] text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+        <div className="mt-14 flex items-center justify-between border-t border-white/10 pt-5 text-[13px] text-neutral-500">
           <p>
             &copy; {new Date().getFullYear()} TJ Car. {t("bottom.rights")}
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="/privacy"
-              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
+              className="transition-colors hover:text-white"
             >
               {t("bottom.privacy")}
             </Link>
-            <Link
-              href="/terms"
-              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
-            >
+            <Link href="/terms" className="transition-colors hover:text-white">
               {t("bottom.terms")}
             </Link>
           </div>
@@ -172,9 +216,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-        {heading}
-      </h3>
+      <h3 className="text-sm font-semibold text-white">{heading}</h3>
       <ul className="mt-4 space-y-3">{children}</ul>
     </div>
   );
@@ -191,7 +233,7 @@ function FooterLink({
     <li>
       <Link
         href={href}
-        className="text-sm text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+        className="text-sm text-neutral-400 transition-colors hover:text-white"
       >
         {children}
       </Link>

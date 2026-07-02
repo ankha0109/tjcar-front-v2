@@ -1,43 +1,15 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import EmptyState from "@/components/dashboard/EmptyState";
-import SectionMast from "@/components/dashboard/SectionMast";
+import { redirect } from "@/i18n/navigation";
 
+/**
+ * The tracked-cars page was replaced by the public `/wishlist` page (no login
+ * required). Keep this route as a locale-aware redirect so old links and the
+ * dashboard nav still land somewhere sensible.
+ */
 export default async function TrackingPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("dashboard.tracking");
-
-  return (
-    <>
-      <DashboardHeader
-        title={t("title")}
-        description={t("description")}
-      />
-
-      <section className="space-y-4">
-        <SectionMast title={t("listHeading")} />
-        <EmptyState
-          title={t("listEmptyTitle")}
-          description={t("listEmptyDescription")}
-          cta={{ label: t("listEmptyCta"), href: "/cars" }}
-        />
-      </section>
-
-      <section className="space-y-4">
-        <SectionMast
-          title={t("endingHeading")}
-          description={t("endingSubheading")}
-        />
-        <EmptyState
-          title={t("endingEmptyTitle")}
-          description={t("endingEmptyDescription")}
-        />
-      </section>
-    </>
-  );
+  redirect({ href: "/wishlist", locale });
 }

@@ -29,7 +29,7 @@ Keep `next/navigation` for `useSearchParams`, `notFound`, and for any redirect t
 - Every API request includes `Accept-Language: <locale>` automatically:
   - Client: `src/services/Api.ts` reads the `NEXT_LOCALE` cookie.
   - Server: `src/services/ServerApi.ts` calls `getLocale()` from `next-intl/server`.
-  - Proxy: `src/app/api/proxy/[...path]/route.ts` forwards the incoming `Accept-Language` header to the backend.
+  - Proxy: `src/app/api/v1/[...path]/route.ts` forwards the incoming `Accept-Language` header to the backend.
 
 ## Antd locale
 

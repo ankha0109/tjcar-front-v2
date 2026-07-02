@@ -38,7 +38,13 @@ export type CarItem = {
   location?: string;
 };
 
-export function fromFeaturedCar(car: FeaturedCar): CarItem {
+// `source` defaults to Japan (the auction browser) but the Korea schedule reuses
+// the same AJES shape, so it passes `"korea"` — this keeps `CarItem.source`
+// truthful for links and the wishlist identity instead of hardcoding one value.
+export function fromFeaturedCar(
+  car: FeaturedCar,
+  source: CarSource = "japan",
+): CarItem {
   const images = car.IMAGES?.split("#").filter(Boolean) ?? [];
   const mileage = Number(car.MILEAGE);
   const engine = Number(car.ENG_V);
@@ -46,7 +52,7 @@ export function fromFeaturedCar(car: FeaturedCar): CarItem {
 
   return {
     id: car.ID,
-    source: "japan",
+    source,
     marka: car.MARKA_NAME,
     model: car.MODEL_NAME,
     grade: car.GRADE || undefined,

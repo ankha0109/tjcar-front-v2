@@ -1,4 +1,53 @@
 {
+  "korea": {
+    "price": {
+      "label": "Price ($)",
+      "fromPlaceholder": "Min",
+      "toPlaceholder": "Max"
+    }
+  },
+  "compare": {
+    "title": "Compare cars",
+    "empty": {
+      "title": "Nothing to compare yet",
+      "description": "Pick cars with the compare button on any listing — up to 4 at a time.",
+      "cta": "Browse cars"
+    },
+    "fullWarning": "You can compare up to 4 cars",
+    "dropdown": {
+      "compareCta": "Compare",
+      "clearAll": "Clear",
+      "remove": "Remove",
+      "minHint": "Select at least 2 cars to compare"
+    },
+    "notice": {
+      "missing": "Some cars are no longer available and were removed from this comparison."
+    },
+    "yes": "Yes",
+    "no": "No",
+    "sections": {
+      "general": "General",
+      "price": "Price",
+      "tech": "Specifications",
+      "auction": "Auction",
+      "condition": "Condition"
+    },
+    "rows": {
+      "brand": "Brand",
+      "model": "Model",
+      "bodyType": "Body type",
+      "fuel": "Fuel",
+      "priceOriginal": "Price",
+      "priceUsd": "Price (USD)",
+      "avgPrice": "Avg. auction price",
+      "priceMnt": "Est. landed price (₮)",
+      "accident": "Accident history",
+      "owners": "Owners",
+      "verified": "Verified",
+      "region": "Region",
+      "evaluation": "Inspection sheet"
+    }
+  },
   "auctions": {
     "title": "Japan auctions",
     "subtitle": "Live lots from Japanese auctions",
@@ -24,6 +73,19 @@
       "template": "%s | TJ Car"
     },
     "description": "TJ Car - Japanese car auction service"
+  },
+  "wishlist": {
+    "title": "Saved cars",
+    "description": "Cars you save appear here — kept on this device even without an account.",
+    "count": "{count, plural, one {# saved car} other {# saved cars}}",
+    "guestHint": "You're browsing as a guest — saved cars live only on this device.",
+    "guestHintCta": "Log in to sync",
+    "ended": "Ended",
+    "empty": {
+      "title": "No saved cars yet",
+      "description": "Tap the heart on any car to save it here for later.",
+      "cta": "Browse auctions"
+    }
   },
   "header": {
     "nav": {
@@ -65,6 +127,7 @@
     "howItWorks": "How to order a car?",
     "orderCar": "Order a car",
     "wishlist": "Saved cars",
+    "compare": "Compare",
     "tjcarAi": "TJCAR AI",
     "nav2": {
       "trending": "Trending",
@@ -578,6 +641,191 @@
       "priceBadge": "20,000₮"
     }
   },
+  "homeV2": {
+    "eyebrow": "Services",
+    "heading": "All services in one place",
+    "subheading": "Pick a service to see its details and live stats right away.",
+    "prev": "Previous",
+    "next": "Next",
+    "hero": {
+      "badge": "Japan · Korea · Mongolia",
+      "titleLead": "From the auction,",
+      "titleAccent": "straight to your driveway",
+      "subtitle": "Bidding, inspection and delivery from Japan and Korea to Mongolia — every step handled in one place.",
+      "ctaPrimary": "Browse cars",
+      "ctaSecondary": "How it works",
+      "routeFrom1": "Japan",
+      "routeFrom2": "Korea",
+      "routeTo": "Mongolia",
+      "routeNote": "14-day delivery",
+      "s1": {
+        "value": "15,000+",
+        "label": "Cars delivered"
+      },
+      "s2": {
+        "value": "10+",
+        "label": "Years"
+      },
+      "s3": {
+        "value": "4.9★",
+        "label": "Rating"
+      }
+    },
+    "services": {
+      "japan": {
+        "tab": "Japan",
+        "title": "Japan cars",
+        "url": "tjcar.mn/japan",
+        "summary": "We bid for you across every major Japanese auction, win at the best price, and handle delivery all the way to Mongolia.",
+        "cta": "Browse Japan cars",
+        "m1": {
+          "value": "12,400+",
+          "label": "Active listings"
+        },
+        "m2": {
+          "value": "40+",
+          "label": "Connected auctions"
+        },
+        "m3": {
+          "value": "100%",
+          "label": "Real reports"
+        }
+      },
+      "korea": {
+        "tab": "Korea",
+        "title": "Korea cars",
+        "url": "tjcar.mn/korea",
+        "summary": "Buy directly from Korea's Encar platform and get official delivery to Mongolia within 14 days.",
+        "cta": "Browse Korea cars",
+        "m1": {
+          "value": "14 days",
+          "label": "Avg. delivery"
+        },
+        "m2": {
+          "value": "8,900+",
+          "label": "Encar listings"
+        },
+        "m3": {
+          "value": "2x",
+          "label": "Verified"
+        }
+      },
+      "ready": {
+        "tab": "In stock",
+        "title": "In-stock cars",
+        "url": "tjcar.mn/cars",
+        "summary": "Choose from cars already in Mongolia, in transit, or ready to ship — and take delivery fast.",
+        "cta": "View in-stock cars",
+        "m1": {
+          "value": "320+",
+          "label": "In stock"
+        },
+        "m2": {
+          "value": "100+",
+          "label": "In transit"
+        },
+        "m3": {
+          "value": "24h",
+          "label": "Fast reply"
+        }
+      },
+      "report": {
+        "tab": "Report",
+        "title": "Vehicle history report",
+        "url": "tjcar.mn/report",
+        "summary": "Verify mileage, accident and flood history, and auction grade from the source in a trusted PDF report.",
+        "cta": "Check a report",
+        "m1": {
+          "value": "20,000₮",
+          "label": "Per report"
+        },
+        "m2": {
+          "value": "60s",
+          "label": "Lookup time"
+        },
+        "m3": {
+          "value": "100%",
+          "label": "Sourced"
+        }
+      },
+      "brands": {
+        "tab": "Brands",
+        "title": "Japan brand catalog",
+        "url": "tjcar.mn/japan/brands",
+        "summary": "Filter cars by manufacturer — Toyota, Lexus, Nissan and more — to find the model you want fast.",
+        "cta": "Open catalog",
+        "m1": {
+          "value": "60+",
+          "label": "Brands"
+        },
+        "m2": {
+          "value": "900+",
+          "label": "Models"
+        },
+        "m3": {
+          "value": "A–Z",
+          "label": "Sorted"
+        }
+      },
+      "howItWorks": {
+        "tab": "Guide",
+        "title": "How to order",
+        "url": "tjcar.mn/how-it-works",
+        "summary": "A simple 5-step guide covering everything from placing an order to receiving your car.",
+        "cta": "Read the guide",
+        "m1": {
+          "value": "5",
+          "label": "Easy steps"
+        },
+        "m2": {
+          "value": "24/7",
+          "label": "Support"
+        },
+        "m3": {
+          "value": "0₮",
+          "label": "Consultation"
+        }
+      },
+      "about": {
+        "tab": "About",
+        "title": "About us",
+        "url": "tjcar.mn/about",
+        "summary": "An experienced team, a reliable partner network and transparent pricing — meet TJ Car.",
+        "cta": "Learn more",
+        "m1": {
+          "value": "10+",
+          "label": "Years"
+        },
+        "m2": {
+          "value": "15,000+",
+          "label": "Cars delivered"
+        },
+        "m3": {
+          "value": "4.9★",
+          "label": "Customer rating"
+        }
+      },
+      "dashboard": {
+        "tab": "Dashboard",
+        "title": "My dashboard",
+        "url": "tjcar.mn/dashboard",
+        "summary": "Manage your orders, auction bids and saved cars from a single dashboard.",
+        "cta": "Open dashboard",
+        "m1": {
+          "value": "All-in-one",
+          "label": "Orders"
+        },
+        "m2": {
+          "value": "Live",
+          "label": "Status updates"
+        },
+        "m3": {
+          "value": "∞",
+          "label": "Saved cars"
+        }
+      }
+    }
+  },
   "homeBlog": {
     "eyebrow": "News & guides",
     "heading": "Know more before you buy",
@@ -637,15 +885,36 @@
       "heading": "A transparent bridge between Japanese and Korean markets",
       "body": "TJ Car LLC has been importing and brokering cars from Japan and Korea since 2022. In 2024 we launched TJcar.mn, giving Mongolian customers free real-time access to every Japan auction listing in their own language — with bidding, accurate pricing in MNT, and end-to-end order placement.",
       "milestones": {
-        "y2022": { "label": "2022", "text": "Company founded" },
-        "y2024": { "label": "2024", "text": "TJcar.mn platform launched" },
-        "y2025": { "label": "2025", "text": "7,200+ users · 800+ orders" }
+        "y2022": {
+          "label": "2022",
+          "text": "Company founded"
+        },
+        "y2024": {
+          "label": "2024",
+          "text": "TJcar.mn platform launched"
+        },
+        "y2025": {
+          "label": "2025",
+          "text": "7,200+ users · 800+ orders"
+        }
       },
       "stats": {
-        "orders": { "value": "800+", "label": "Orders fulfilled" },
-        "users": { "value": "7,200+", "label": "Registered users" },
-        "delivery": { "value": "45–60", "label": "Days to delivery" },
-        "savings": { "value": "10–20%", "label": "Below market price" }
+        "orders": {
+          "value": "800+",
+          "label": "Orders fulfilled"
+        },
+        "users": {
+          "value": "7,200+",
+          "label": "Registered users"
+        },
+        "delivery": {
+          "value": "45–60",
+          "label": "Days to delivery"
+        },
+        "savings": {
+          "value": "10–20%",
+          "label": "Below market price"
+        }
       }
     },
     "services": {
@@ -653,12 +922,30 @@
       "heading": "What we do",
       "subheading": "A single team for every step — from auction to handover.",
       "items": {
-        "japan": { "title": "Japan orders", "body": "Bid across 30+ auction houses in Japan, secure the best price." },
-        "korea": { "title": "Korea orders", "body": "Direct from Encar to Ulaanbaatar in 14 days." },
-        "auction": { "title": "Auction brokerage", "body": "We bid on your behalf at Japanese and Korean auctions." },
-        "ready": { "title": "In-stock cars", "body": "Cars already in Mongolia or in transit — ready to view." },
-        "report": { "title": "Vehicle report", "body": "Auction history, accidents, mileage, real photos in PDF." },
-        "custom": { "title": "Custom sourcing", "body": "Year, color, mileage, options — sourced exactly to your spec." }
+        "japan": {
+          "title": "Japan orders",
+          "body": "Bid across 30+ auction houses in Japan, secure the best price."
+        },
+        "korea": {
+          "title": "Korea orders",
+          "body": "Direct from Encar to Ulaanbaatar in 14 days."
+        },
+        "auction": {
+          "title": "Auction brokerage",
+          "body": "We bid on your behalf at Japanese and Korean auctions."
+        },
+        "ready": {
+          "title": "In-stock cars",
+          "body": "Cars already in Mongolia or in transit — ready to view."
+        },
+        "report": {
+          "title": "Vehicle report",
+          "body": "Auction history, accidents, mileage, real photos in PDF."
+        },
+        "custom": {
+          "title": "Custom sourcing",
+          "body": "Year, color, mileage, options — sourced exactly to your spec."
+        }
       }
     },
     "process": {
@@ -666,21 +953,48 @@
       "heading": "5 steps to your driveway",
       "durationBadge": "45–60 days",
       "steps": {
-        "select": { "title": "Select", "body": "Pick a car on TJcar.mn and confirm with your account manager." },
-        "deposit": { "title": "30–50% deposit", "body": "We sign a contract and you pay 30–50% of the total upfront." },
-        "auction": { "title": "Auction / purchase", "body": "Our team bids and secures the car at a fair market price." },
-        "ship": { "title": "Shipping", "body": "Insured shipping from Japan or Korea to Mongolia." },
-        "handover": { "title": "Final payment & handover", "body": "Settle the balance and we hand the car directly to you." }
+        "select": {
+          "title": "Select",
+          "body": "Pick a car on TJcar.mn and confirm with your account manager."
+        },
+        "deposit": {
+          "title": "30–50% deposit",
+          "body": "We sign a contract and you pay 30–50% of the total upfront."
+        },
+        "auction": {
+          "title": "Auction / purchase",
+          "body": "Our team bids and secures the car at a fair market price."
+        },
+        "ship": {
+          "title": "Shipping",
+          "body": "Insured shipping from Japan or Korea to Mongolia."
+        },
+        "handover": {
+          "title": "Final payment & handover",
+          "body": "Settle the balance and we hand the car directly to you."
+        }
       }
     },
     "advantages": {
       "eyebrow": "Why us",
       "heading": "What makes TJ Car different",
       "items": {
-        "savings": { "title": "10–20% savings", "body": "Buying below market price thanks to live auction access." },
-        "transparency": { "title": "Transparent pricing", "body": "Every order is contracted; payments go through the company account only." },
-        "endToEnd": { "title": "End-to-end service", "body": "From auction to handover we run every step." },
-        "value": { "title": "Lasting value", "body": "Inspected cars with real grades hold their resale value." }
+        "savings": {
+          "title": "10–20% savings",
+          "body": "Buying below market price thanks to live auction access."
+        },
+        "transparency": {
+          "title": "Transparent pricing",
+          "body": "Every order is contracted; payments go through the company account only."
+        },
+        "endToEnd": {
+          "title": "End-to-end service",
+          "body": "From auction to handover we run every step."
+        },
+        "value": {
+          "title": "Lasting value",
+          "body": "Inspected cars with real grades hold their resale value."
+        }
       },
       "callout": {
         "eyebrow": "Why now",
@@ -752,6 +1066,78 @@
     "errorRetry": "Try again"
   },
   "carDetail": {
+    "countdown": {
+      "label": "Auction starts in",
+      "scheduled": "Scheduled (UB)",
+      "unknown": "Time not set",
+      "started": "Started",
+      "days": "days",
+      "hours": "hrs",
+      "mins": "min",
+      "secs": "sec"
+    },
+    "landed": {
+      "title": "Est. landed price",
+      "unknown": "Unavailable",
+      "infoTitle": "Estimated landed price",
+      "close": "Got it",
+      "infoParagraphs": [
+        "This price includes the fees paid in Japan, shipping costs and all taxes due in Mongolia — in other words, the total cost to get this car into your hands.",
+        "Note: it is estimated from the average sold prices of cars with similar specifications.",
+        "Placing a realistic, competitive bid based on this figure improves your chances of winning."
+      ]
+    },
+    "verify": {
+      "title": "Verify year by chassis number",
+      "subtitle": "Confirm the manufacture year against the maker's VIN records.",
+      "chassisPlaceholder": "Chassis code",
+      "serialPlaceholder": "Serial number",
+      "submit": "Check",
+      "required": "Required",
+      "notFound": "No record found. Please check the chassis number.",
+      "error": "Something went wrong. Please try again.",
+      "model": "Model",
+      "made": "Manufactured",
+      "grade": "Grade",
+      "modelCode": "Model code",
+      "engineCode": "Engine code",
+      "colorCode": "Color code"
+    },
+    "evaluationGuide": {
+      "title": "Inspection sheet guide",
+      "subtitle": "What the inspector's shorthand marks mean",
+      "marks": {
+        "A1": "Tiny scratch",
+        "A2": "Scratch",
+        "A3": "Large scratch",
+        "E1": "Dent with a small scratch",
+        "E2": "Dent with a medium scratch",
+        "E3": "Dent with a large scratch",
+        "U1": "Small dent",
+        "U2": "Minor dent",
+        "U3": "Large dent",
+        "W1": "Minor repair (not visible)",
+        "W2": "Repaired",
+        "W3": "Repaired (needs repainting)",
+        "S1": "Rust",
+        "S2": "Deep rust",
+        "C1": "Corrosion",
+        "C2": "Deep corrosion",
+        "P": "Painted",
+        "H": "Faded paint (needs replacing)",
+        "XX": "Replaced part",
+        "B1": "Small dent",
+        "B2": "Minor dent",
+        "B3": "Large dent",
+        "Y1": "Small hole or crack",
+        "Y2": "Hole or crack",
+        "Y3": "Large hole or crack",
+        "X1": "~1cm crack in the glass",
+        "R": "Windshield repaired",
+        "RX": "Windshield cracked (needs replacing)",
+        "G": "Stone chip on the glass"
+      }
+    },
     "specs": {
       "year": "Year",
       "mileage": "Mileage",
@@ -782,10 +1168,47 @@
       "helper": "Bidding will open once your account is verified.",
       "comingSoonTitle": "Coming soon",
       "comingSoonBody": "Online bidding for {car} is launching soon. Sign in to be notified when it goes live.",
-      "ok": "OK"
+      "ok": "OK",
+      "panelTitle": "Join the auction",
+      "currencyLabel": "Currency",
+      "priceLabelMnt": "Your bid /MNT/",
+      "priceLabelJpy": "Your bid /JPY/",
+      "priceTooltip": "Price varies by year, mileage, color, grade and inspection rating — review the evaluation sheet before deciding your bid.",
+      "required": "Please enter an amount",
+      "belowMinMnt": "Below the minimum. Minimum price: {min}",
+      "belowMinJpy": "Below the start price. Start price: {min}",
+      "minPriceHelp": "Minimum price: {min}",
+      "startPriceHelp": "Start price: {min}",
+      "advanceLabel": "Advance {percent}%",
+      "remainderLabel": "Balance due after arrival in Mongolia",
+      "approxMnt": "Approx. in MNT",
+      "submit": "Submit bid",
+      "confirmTitle": "Submit this bid?",
+      "confirmBody": "After submitting you can edit it under 'My requests'.",
+      "confirmOk": "Submit bid",
+      "confirmCancel": "Cancel",
+      "successTitle": "Success",
+      "successFallback": "Your bid was submitted successfully.",
+      "errorTitle": "Sorry",
+      "errorFallback": "Something went wrong submitting your bid. Please try again.",
+      "guestTitle": "Please sign in",
+      "guestBody": "Sign in and top up your account to join the auction.",
+      "login": "Sign in",
+      "register": "Register",
+      "or": "or",
+      "depositTitle": "Top up your account",
+      "depositBody": "To join the auction, keep at least {amount} in your account.",
+      "contact": "Contact us",
+      "closedTitle": "Bidding closed",
+      "closedBody": "Bidding has closed for this lot. Bids are accepted up to {hours} hours before the auction."
     },
     "gallery": {
-      "viewFull": "Open full size"
+      "viewFull": "Open full size",
+      "premiumBanner": "Premium photos. Please don't redistribute or post them on social media.",
+      "premiumLockedTitle": "Premium photos locked",
+      "premiumLockedBody": "USS auction data is a paid source, so only customers who have topped up their wallet can view these photos.",
+      "premiumContactLabel": "Contact:",
+      "premiumPhone": "7511-5888"
     },
     "evaluation": {
       "title": "Auction evaluation sheet",
@@ -793,7 +1216,7 @@
       "viewFull": "Open full sheet",
       "ai": {
         "title": "AI explanation",
-        "badge": "Demo",
+        "badge": "Beta",
         "intro": "This is the **official auction inspection sheet** for this car. Before every sale, an independent auction inspector checks the vehicle and records its condition, so this sheet is the most trustworthy summary you can get.\n\n- **Overall grade:** {rate}\n- **Interior grade:** {grade}\n- **Equipment noted:** {equip}\n\nThe car diagram on the sheet marks each scratch, dent and repaired panel. Pick a question below or ask your own.",
         "suggestedTitle": "Try asking",
         "suggested": [
@@ -804,14 +1227,10 @@
         ],
         "placeholder": "Ask about this evaluation sheet...",
         "send": "Send",
-        "disclaimer": "The AI explanation is a static demo for now and may not reflect the exact sheet.",
-        "answers": {
-          "rate": "**Overall grade {rate}** is the inspector overall score for the car. On the common scale, **5** is almost new, **4.5 and 4** are clean used cars with only minor marks, **3.5** shows visible wear, and **R / RA** means the car was repaired after an accident. This car is graded **{rate}**.",
-          "interior": "The **interior grade {grade}** rates the cabin separately from the body. **A** is a very clean interior, **B** is normal light wear, and **C** shows heavier use such as stains or scratches on the trim. Inside, this car is rated **{grade}**.",
-          "equipment": "The sheet lists the factory and added equipment for this car: **{equip}**. These short codes describe features such as power steering, air conditioning, power windows, airbags and the audio system.",
-          "damage": "The diagram marks damage with letter and number codes. For example **A** is a scratch, **U** is a dent, **W** is a repaired or repainted panel, and the number next to it shows the size from 1 (small) to 4 (large). Check the diagram on the sheet to see exactly where each mark is.",
-          "fallback": "I can explain this evaluation sheet — the overall grade, the interior grade, the listed equipment, or the damage marks on the diagram. Try one of the suggested questions above."
-        }
+        "disclaimer": "AI answers may contain mistakes. Double-check the inspection sheet yourself before making important decisions.",
+        "error": "Something went wrong while getting the answer. Please try again.",
+        "errorRateLimit": "Too many requests. Please wait a moment and try again.",
+        "retry": "Try again"
       }
     },
     "priceHistory": {

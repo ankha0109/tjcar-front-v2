@@ -6,6 +6,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
+import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
+import { useCompare } from "@/hooks/useCompare";
+import { useWalletBalance } from "@/hooks/useWalletBalance";
+import { useWishlist } from "@/hooks/useWishlist";
 
 type CustomerUser = {
   firstname: string;
@@ -17,14 +21,16 @@ type CustomerUser = {
 const CONTACT_PHONE_RAW = "+97670000000";
 const CONTACT_PHONE_DISPLAY = "+976 7000-0000";
 
-const EXCHANGE_RATES = {
-  USD: { value: 3450 },
-  JPY: { value: 23.1 },
-};
-
 const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
+const CompareIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M3 7h13l-3-3" />
+    <path d="M21 17H8l3 3" />
   </svg>
 );
 
@@ -88,10 +94,6 @@ const YenIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 function formatBalance(amount: number, currency: string) {
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount ?? 0)} ${currency || "₮"}`;
-}
-
-function formatRate(value: number) {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value);
 }
 
 function getInitials(user: CustomerUser) {
@@ -172,6 +174,9 @@ export default function MobileDrawer({ open, onClose }: Props) {
   const locale = useLocale();
   const { data: session } = useSession();
   const user = session?.user as CustomerUser | undefined;
+  const { balance: liveBalance, currency: liveCurrency } = useWalletBalance();
+  const { count: wishlistCount } = useWishlist();
+  const { count: compareCount } = useCompare();
 
   const MAIN_NAV: {
     key: string;
@@ -233,7 +238,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
                   {t("menu.balanceLabel")}
                 </div>
                 <div className="text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
-                  {formatBalance(user.balance, user.currency)}
+                  {formatBalance(liveBalance, liveCurrency)}
                 </div>
               </div>
             </div>
@@ -326,11 +331,32 @@ export default function MobileDrawer({ open, onClose }: Props) {
 
           <DrawerSection>
             <DrawerLink
-              href="/dashboard/tracking"
+              href="/wishlist"
               onClick={onClose}
               leading={<HeartIcon className="h-4 w-4 text-rose-500" />}
             >
-              {t("wishlist")}
+              <span className="flex items-center gap-2">
+                {t("wishlist")}
+                {wishlistCount > 0 && (
+                  <span className="rounded-full bg-rose-500 px-1.5 text-[11px] font-semibold leading-5 text-white">
+                    {wishlistCount}
+                  </span>
+                )}
+              </span>
+            </DrawerLink>
+            <DrawerLink
+              href="/compare"
+              onClick={onClose}
+              leading={<CompareIcon className="h-4 w-4 text-neutral-500" />}
+            >
+              <span className="flex items-center gap-2">
+                {t("compare")}
+                {compareCount > 0 && (
+                  <span className="rounded-full bg-neutral-900 px-1.5 text-[11px] font-semibold leading-5 text-white dark:bg-neutral-100 dark:text-neutral-900">
+                    {compareCount}
+                  </span>
+                )}
+              </span>
             </DrawerLink>
             <DrawerLink
               href="/dashboard/profile?ai=1"

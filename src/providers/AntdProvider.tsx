@@ -16,6 +16,7 @@ import type { Session } from "next-auth";
 import { StyleProvider } from "@ant-design/cssinjs";
 import type { Theme } from "@/lib/theme";
 import { AiChatProvider } from "@/components/ai-chat/AiChatContext";
+import WishlistSyncGate from "@/components/wishlist/WishlistSyncGate";
 
 type AntdProviderProps = {
   children?: React.ReactNode;
@@ -98,6 +99,7 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
               {contextHolder}
               <AiChatProvider>{children}</AiChatProvider>
               <GuideModalRoot />
+              <WishlistSyncGate />
             </App>
           </ConfigProvider>
         </StyleProvider>

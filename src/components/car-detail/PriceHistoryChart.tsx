@@ -137,7 +137,8 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
       </div>
 
       <div className="rounded-2xl border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="h-64 w-full sm:h-72">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          <div className="h-64 w-full sm:h-72 lg:w-[70%]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}
@@ -205,14 +206,14 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+          </div>
 
-        {/* Explicit sales list — guarantees the requested "date · ¥ · ₮" format */}
-        <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+          {/* Explicit sales list — guarantees the requested "date · ¥ · ₮" format */}
+          <div className="border-t border-neutral-100 pt-3 dark:border-neutral-800 lg:w-[30%] lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0">
           <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
             {t("listTitle")}
           </h3>
-          <ul className="max-h-44 space-y-1 overflow-y-auto pr-1">
+          <ul className="max-h-44 space-y-1 overflow-y-auto pr-1 lg:max-h-72">
             {[...data].reverse().map((s, idx) => (
               <li
                 key={`${s.date}-${idx}`}
@@ -249,6 +250,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
               </li>
             ))}
           </ul>
+          </div>
         </div>
       </div>
     </section>

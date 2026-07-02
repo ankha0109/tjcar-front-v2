@@ -49,7 +49,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         let response: Response;
         const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
-        console.log("API_URL:", apiUrl);
         try {
           response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",

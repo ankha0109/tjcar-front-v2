@@ -1,10 +1,15 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import CarGallery from "./CarGallery";
+import CarActionButtons from "./CarActionButtons";
 import CarEvaluation from "./CarEvaluation";
 import CarBidCta from "./CarBidCta";
+import CarBidSection from "./CarBidSection";
 import PriceHistoryChart from "./PriceHistoryChart";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
+import { wishlistItemFromFixture } from "@/lib/wishlist";
+import type { CarSource } from "@/types/car";
 import { getComparableSales, sameSpecLabel } from "@/lib/priceHistory";
+import { getConfig } from "@/services/config";
 import { getColorSwatch } from "@/utils/carColor";
 import { formatEngine, formatMileage, formatTransmission } from "@/utils/carFormat";
 import { cn } from "@/utils";
@@ -13,6 +18,17 @@ type Props = {
   car: CarFixture;
   /** Hide JPY price (auction detail, where we don't surface cost/start price). */
   hidePrice?: boolean;
+  /** Enable the live auction bid panel (Japan auction detail only). */
+  enableBid?: boolean;
+  /** Wishlist source for this car (stock/Korea by default). */
+  source?: CarSource;
+  /** MNT price for the wishlist snapshot (the fixture has no MNT field). */
+  priceMnt?: number;
+  /**
+   * Show the compare pill. Only pages whose id the compare endpoint can
+   * re-fetch upstream set this (`/korea/[id]`); local stock ids would 404.
+   */
+  enableCompare?: boolean;
 };
 
 function formatJpy(value: number) {
@@ -31,10 +47,20 @@ function formatDate(iso: string, locale: string) {
   });
 }
 
-export default async function CarDetail({ car, hidePrice }: Props) {
+export default async function CarDetail({
+  car,
+  hidePrice,
+  enableBid,
+  source = "korea",
+  priceMnt = 0,
+  enableCompare,
+}: Props) {
   const locale = await getLocale();
   const t = await getTranslations("carDetail");
   const tFmt = await getTranslations("car.card");
+
+  // Live JPY→MNT rate for the bid panel; only fetched where bidding is enabled.
+  const jpyRate = enableBid ? (await getConfig()).JPY : 0;
 
   const title = carTitle(car);
   const allImages = parseImages(car.IMAGES);
@@ -82,32 +108,38 @@ export default async function CarDetail({ car, hidePrice }: Props) {
 
         {/* Info column */}
         <div className="flex flex-col gap-5 px-4 py-5 lg:order-2 lg:py-0">
-          <header className="flex flex-col gap-1">
-            <h1 className="text-2xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 lg:text-[28px]">
-              {title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-2 text-[13px] text-neutral-600 dark:text-neutral-400">
-              <span>{car.YEAR}</span>
-              {car.GRADE && (
-                <>
-                  <span aria-hidden>·</span>
-                  <span>{car.GRADE}</span>
-                </>
-              )}
-              {colorSwatch && car.COLOR && (
-                <>
-                  <span aria-hidden>·</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span
-                      className={`h-3 w-3 rounded-full ${colorSwatch.ring ? "ring-1 ring-neutral-300" : ""}`}
-                      style={{ background: colorSwatch.bg }}
-                      aria-hidden
-                    />
-                    {car.COLOR}
-                  </span>
-                </>
-              )}
+          <header className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-2xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 lg:text-[28px]">
+                {title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-2 text-[13px] text-neutral-600 dark:text-neutral-400">
+                <span>{car.YEAR}</span>
+                {car.GRADE && (
+                  <>
+                    <span aria-hidden>·</span>
+                    <span>{car.GRADE}</span>
+                  </>
+                )}
+                {colorSwatch && car.COLOR && (
+                  <>
+                    <span aria-hidden>·</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span
+                        className={`h-3 w-3 rounded-full ${colorSwatch.ring ? "ring-1 ring-neutral-300" : ""}`}
+                        style={{ background: colorSwatch.bg }}
+                        aria-hidden
+                      />
+                      {car.COLOR}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
+            <CarActionButtons
+              item={wishlistItemFromFixture(car, source, priceMnt)}
+              enableCompare={enableCompare}
+            />
           </header>
 
           {/* Valuation hero — RATE (most important) + LOT, grouped once */}
@@ -207,13 +239,29 @@ export default async function CarDetail({ car, hidePrice }: Props) {
             )}
           </section>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:block">
-            <CarBidCta carTitle={title} />
-            <p className="mt-2 text-[12px] text-neutral-500 dark:text-neutral-400">
-              {t("bid.helper")}
-            </p>
-          </div>
+          {/* Bid panel (auction) or the coming-soon CTA (listings). */}
+          {enableBid ? (
+            <CarBidSection
+              auctionId={car.ID}
+              startPrice={startNum || 0}
+              status={car.STATUS}
+              auctionDate={car.AUCTION_DATE}
+              auctionLocation={car.AUCTION}
+              lot={car.LOT}
+              chassis={car.KUZOV}
+              engineSize={car.ENG_V}
+              year={car.YEAR}
+              rate={car.RATE}
+              jpyRate={jpyRate}
+            />
+          ) : (
+            <div className="hidden lg:block">
+              <CarBidCta carTitle={title} />
+              <p className="mt-2 text-[12px] text-neutral-500 dark:text-neutral-400">
+                {t("bid.helper")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -227,31 +275,36 @@ export default async function CarDetail({ car, hidePrice }: Props) {
         locale={locale}
       />
 
-      {/* Mobile sticky CTA */}
-      <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-neutral-100 bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
-        <div
-          className={cn(
-            "flex items-center gap-3",
-            hidePrice ? "justify-stretch" : "justify-between",
-          )}
-        >
-          {!hidePrice && (
-            <div className="flex flex-col">
-              <span className="text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400">
-                {t("price.startLabel")}
-              </span>
-              <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-                ¥{formatJpy(startNum || 0)}
-              </span>
+      {/* Mobile sticky CTA — coming-soon listings only; the bid panel renders
+          its own sticky bar + drawer when enableBid is set. */}
+      {!enableBid && (
+        <>
+          <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-neutral-100 bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
+            <div
+              className={cn(
+                "flex items-center gap-3",
+                hidePrice ? "justify-stretch" : "justify-between",
+              )}
+            >
+              {!hidePrice && (
+                <div className="flex flex-col">
+                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400">
+                    {t("price.startLabel")}
+                  </span>
+                  <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                    ¥{formatJpy(startNum || 0)}
+                  </span>
+                </div>
+              )}
+              <div className={cn("shrink-0", hidePrice && "flex-1")}>
+                <CarBidCta carTitle={title} />
+              </div>
             </div>
-          )}
-          <div className={cn("shrink-0", hidePrice && "flex-1")}>
-            <CarBidCta carTitle={title} />
           </div>
-        </div>
-      </div>
-      {/* Spacer so sticky CTA doesn't cover last content on mobile */}
-      <div className="h-20 lg:hidden" aria-hidden />
+          {/* Spacer so sticky CTA doesn't cover last content on mobile */}
+          <div className="h-20 lg:hidden" aria-hidden />
+        </>
+      )}
     </article>
   );
 }

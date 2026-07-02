@@ -41,11 +41,18 @@ type Props = {
   imageSize?: AuctionImageSize;
   /** Hide the price footer (e.g. auction listing where MNT price is unavailable). */
   hidePrice?: boolean;
+  /** Hide the compare toggle (cards whose `source` mislabels the id's upstream). */
+  disableCompare?: boolean;
 };
 
 const MAX_SCRUB_IMAGES = 4;
 
-export default function CarCard({ car, imageSize = "card", hidePrice }: Props) {
+export default function CarCard({
+  car,
+  imageSize = "card",
+  hidePrice,
+  disableCompare,
+}: Props) {
   const t = useTranslations("car.card");
 
   const isPremium = isPremiumCar(car.auction?.type);
@@ -86,7 +93,7 @@ export default function CarCard({ car, imageSize = "card", hidePrice }: Props) {
         {isPremium && (
           <PremiumBadge className="absolute left-2.5 top-2.5" />
         )}
-        <CardActions />
+        <CardActions car={car} disableCompare={disableCompare} />
       </CarImageScrub>
 
       <div className="flex flex-1 flex-col gap-3 p-3.5">

@@ -33,9 +33,12 @@ import {
 export default function CarListItem({
   car,
   hidePrice,
+  disableCompare,
 }: {
   car: CarItem;
   hidePrice?: boolean;
+  /** Hide the compare toggle (cards whose `source` mislabels the id's upstream). */
+  disableCompare?: boolean;
 }) {
   const t = useTranslations("car.card");
 
@@ -84,7 +87,7 @@ export default function CarListItem({
         {isPremium && (
           <PremiumBadge size="sm" className="absolute left-2 top-2" />
         )}
-        <CardActions />
+        <CardActions car={car} disableCompare={disableCompare} />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">

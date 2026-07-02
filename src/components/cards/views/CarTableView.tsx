@@ -21,10 +21,13 @@ export default function CarTableView({
   cars,
   hidePrice,
   onRowClick,
+  disableCompare,
 }: {
   cars: CarItem[];
   hidePrice?: boolean;
   onRowClick?: (car: CarItem) => void;
+  /** Hide the compare toggle (cards whose `source` mislabels the id's upstream). */
+  disableCompare?: boolean;
 }) {
   const t = useTranslations("car.card");
   const tCol = useTranslations("featured.schedule.view.col");
@@ -156,15 +159,20 @@ export default function CarTableView({
         width: 90,
         fixed: "right",
         align: "center",
-        render: () => (
+        render: (_, car) => (
           <div className="flex justify-center">
-            <CardActions visibility="always" absolute={false} />
+            <CardActions
+              car={car}
+              visibility="always"
+              absolute={false}
+              disableCompare={disableCompare}
+            />
           </div>
         ),
       },
     ];
     return hidePrice ? cols.filter((c) => c.key !== "price") : cols;
-  }, [t, tCol, hidePrice]);
+  }, [t, tCol, hidePrice, disableCompare]);
 
   return (
     <div className="-mx-4 px-4 lg:mx-0 lg:px-0">

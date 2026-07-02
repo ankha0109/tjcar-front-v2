@@ -71,10 +71,12 @@
 
 | Бүлэг | Мөрүүд | Japan эх | Korea эх |
 |---|---|---|---|
-| Ерөнхий | brand, model, grade, year, bodyType, color | MARKA_NAME, MODEL_NAME, GRADE, YEAR, KUZOV, COLOR | brand_name, model_name, trim, year, body_type, color |
+| Ерөнхий | brand, model, grade, year, bodyType, color, region, evaluation | MARKA_NAME, MODEL_NAME, GRADE, YEAR, KUZOV, COLOR, TOWN, IMAGES[0] | brand_name, model_name, trim, year, body_type, color, region, photos[0] |
 | Үнэ | priceOriginal, priceUsd, avgPrice, priceMnt | START (JPY), —, AVG_STRING/AVG_PRICE, PRICE_MNT | price_original+currency, price_usd, —, price_mnt |
 | Техник | mileage, engine, transmission, fuel, drive | MILEAGE, ENG_V, KPP, —, LHDRIVE | mileage, engine_cc, transmission, fuel_type, drive_type |
 | Дуудлага худалдаа | auctionName, auctionDate, lot, rate, equipment | AUCTION, AUCTION_DATE, LOT, RATE, EQUIP | — |
 | Байдал | accident, owners, verified, region | — | has_accident, owner_count, is_verified, region |
 
 Утгын формат: MNT → `formatMnt`; тоо → `.toLocaleString()` + CarCard-тай ижил unit suffix; boolean → Тийм/Үгүй; байхгүй → «—».
+
+**Зургийн конвенц:** зураг 1-ээс олон үед index 0 нь үнэлгээний (үзлэгийн) хуудас — CarDetail-ийн gallery split-тэй ижил. Тиймээс машины нүүр зураг (snapshot `thumbnail`, хүснэгтийн баганын зураг) нь `images[1]`, харин `images[0]` нь тусдаа `evaluationImage` талбарт хадгалагдаж, хүснэгтэд «Үнэлгээний хуудас» мөрөнд шинэ tab-аар нээгдэх thumbnail болж харагдана. Зөвхөн 1 зурагтай бол тэр нь машины зураг гэж үзнэ.

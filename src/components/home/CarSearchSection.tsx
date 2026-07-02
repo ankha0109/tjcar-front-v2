@@ -310,13 +310,13 @@ export default function CarSearchSection({
               BorderBeam running along its edge. */}
           <div className="mt-6">
             <BorderBeam color={SEARCH_BEAM_COLOR} outset={0}>
-              <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/40">
+              <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-[#f2f2f2] p-5 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/40">
                 <Form
                   layout="vertical"
                   onFinish={onAdvancedSubmit}
                   requiredMark={false}
                 >
-                  <div className="[&_.ant-input-affix-wrapper-filled]:bg-neutral-200! [&_.ant-input-filled]:bg-neutral-200! [&_.ant-input::placeholder]:text-neutral-500! [&_.ant-select-filled]:bg-neutral-200! [&_.ant-select-placeholder]:text-neutral-500!">
+                  <div className="[&_.ant-input-affix-wrapper-filled]:bg-white! [&_.ant-input-filled]:bg-white! [&_.ant-input::placeholder]:text-neutral-500! [&_.ant-select-filled]:bg-white! [&_.ant-select-placeholder]:text-neutral-500!">
                     {/* Row 1 — marka · model · chassis */}
                     <div className="grid grid-cols-1 gap-x-3 sm:grid-cols-3">
                       <Form.Item

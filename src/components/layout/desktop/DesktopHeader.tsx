@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Drawer, Dropdown } from "antd";
+import { Badge, Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -12,18 +12,16 @@ import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import type { Theme } from "@/lib/theme";
 import BrandButton from "@/components/ui/BrandButton";
+import CompareDropdown from "@/components/layout/desktop/CompareDropdown";
+import { useWalletBalance } from "@/hooks/useWalletBalance";
+import { useWishlist } from "@/hooks/useWishlist";
+import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
 
 type CustomerUser = {
   firstname: string;
   lastname: string;
   balance: number;
   currency: string;
-};
-
-// TODO: Replace with Mongolbank API hook later
-const EXCHANGE_RATES = {
-  USD: { value: 3450, updatedAt: "2026-05-25T10:00:00Z" },
-  JPY: { value: 23.1, updatedAt: "2026-05-25T10:00:00Z" },
 };
 
 const CONTACT_PHONE_RAW = "+97670000000";
@@ -40,6 +38,21 @@ const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
+const CompareIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M3 7h13l-3-3" />
+    <path d="M21 17H8l3 3" />
   </svg>
 );
 
@@ -167,12 +180,6 @@ function formatBalance(amount: number, currency: string) {
   return `${formatted} ${currency || "₮"}`;
 }
 
-function formatRate(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
-  }).format(value);
-}
-
 function getInitials(user: CustomerUser) {
   const f = user.firstname?.[0] ?? "";
   const l = user.lastname?.[0] ?? "";
@@ -287,10 +294,13 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user as CustomerUser | undefined;
+  const { balance: liveBalance, currency: liveCurrency } = useWalletBalance();
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+
+  const { count: wishlistCount } = useWishlist();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -381,6 +391,23 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
           {/* Spacer */}
           <div className="flex-1" />
 
+          {/* Wishlist */}
+          <Link
+            href="/wishlist"
+            aria-label={t("wishlist")}
+            title={t("wishlist")}
+            className="inline-flex shrink-0"
+          >
+            <Badge count={wishlistCount} size="small">
+              <Button type="text" shape="circle" aria-label={t("wishlist")}>
+                <HeartIcon className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
+              </Button>
+            </Badge>
+          </Link>
+
+          {/* Compare */}
+          <CompareDropdown />
+
           {/* Language */}
           <LanguageSwitcher />
 
@@ -406,7 +433,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                         </div>
                         <div className="mt-0.5 text-[11px] tabular-nums text-neutral-500">
                           {t("menu.balanceLabel")} ·{" "}
-                          {formatBalance(user.balance, user.currency)}
+                          {formatBalance(liveBalance, liveCurrency)}
                         </div>
                       </div>
                     ),
@@ -534,7 +561,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                     {t("menu.balanceLabel")}
                   </div>
                   <div className="text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
-                    {formatBalance(user.balance, user.currency)}
+                    {formatBalance(liveBalance, liveCurrency)}
                   </div>
                 </div>
               </div>
@@ -644,6 +671,13 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                 leading={<HeartIcon className="h-4 w-4 text-rose-500" />}
               >
                 {t("wishlist")}
+              </DrawerLink>
+              <DrawerLink
+                href="/compare"
+                onClick={() => setMobileOpen(false)}
+                leading={<CompareIcon className="h-4 w-4 text-neutral-500" />}
+              >
+                {t("compare")}
               </DrawerLink>
               <DrawerLink
                 href="/dashboard/profile?ai=1"

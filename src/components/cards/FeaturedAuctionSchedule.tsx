@@ -224,7 +224,8 @@ export default function FeaturedAuctionSchedule({
                       href={`/korea/${car.ID}`}
                       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                     >
-                      <CarCard car={fromFeaturedCar(car)} />
+                      {/* Rows are AJES lots labeled "korea" — the compare fetch would 404. */}
+                      <CarCard car={fromFeaturedCar(car, "korea")} disableCompare />
                     </Link>
                   ))}
                 </div>
@@ -237,15 +238,16 @@ export default function FeaturedAuctionSchedule({
                       href={`/korea/${car.ID}`}
                       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                     >
-                      <CarListItem car={fromFeaturedCar(car)} />
+                      <CarListItem car={fromFeaturedCar(car, "korea")} disableCompare />
                     </Link>
                   ))}
                 </div>
               )}
               {viewMode === "table" && (
                 <CarTableView
-                  cars={filteredCars.map(fromFeaturedCar)}
+                  cars={filteredCars.map((car) => fromFeaturedCar(car, "korea"))}
                   onRowClick={(car) => router.push(`/korea/${car.id}`)}
+                  disableCompare
                 />
               )}
             </div>

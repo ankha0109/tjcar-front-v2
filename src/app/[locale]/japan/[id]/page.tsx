@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import CarDetail from "@/components/car-detail/CarDetail";
+import JapanCarDetail from "@/components/car-detail/JapanCarDetail";
 import { getAuction } from "@/services/auctions";
 import { auctionLotToFixture, carTitle } from "@/lib/carFixtures";
 
@@ -22,5 +22,5 @@ export default async function AuctionDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const lot = await getAuction(id);
   if (!lot) notFound();
-  return <CarDetail car={auctionLotToFixture(lot)} hidePrice />;
+  return <JapanCarDetail car={auctionLotToFixture(lot)} />;
 }

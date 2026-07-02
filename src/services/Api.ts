@@ -24,7 +24,7 @@ export class ApiError extends Error {
 }
 
 const Api = () => {
-  const baseURL = "/api/proxy";
+  const baseURL = "/api/v1";
 
   const request = async <T = unknown>(
     url: string,

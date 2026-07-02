@@ -328,3 +328,127 @@ a {
 :root[data-theme="dark"] .featured-car-row-premium:hover > td {
   background-color: rgb(120 53 15 / 0.28) !important;
 }
+
+/* ─── Home v2 — service showcase ──────────────────────── */
+
+/* Connector lines fan from the heading node down to each service tab.
+   pathLength is normalised to 1 so the draw is uniform across curves. */
+.sc-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sc-line-draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes sc-line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* The active connector keeps a slow flowing dash for a "live" feel. */
+.sc-line-active {
+  stroke-dasharray: 0.14 0.09;
+  animation: sc-line-flow 1.5s linear infinite;
+}
+@keyframes sc-line-flow {
+  to {
+    stroke-dashoffset: -0.23;
+  }
+}
+
+/* Panel + visual reveal when the active service changes. */
+.sc-panel-in {
+  animation: sc-panel-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes sc-panel-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.sc-visual-in {
+  animation: sc-visual-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes sc-visual-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+/* Staggered stat reveal — set --i inline for the per-item delay. */
+.sc-stat {
+  opacity: 0;
+  animation: sc-panel-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(140ms + var(--i, 0) * 90ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-line,
+  .sc-line-active,
+  .sc-panel-in,
+  .sc-visual-in,
+  .sc-stat {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transform: none;
+  }
+}
+
+/* ─── Home v2 — hero route diagram ────────────────────── */
+
+/* Flowing dashes along the Japan/Korea → Mongolia routes. */
+.hv-arc {
+  stroke-dasharray: 6 9;
+  animation: hv-arc-flow 4.5s linear infinite;
+}
+@keyframes hv-arc-flow {
+  to {
+    stroke-dashoffset: -220;
+  }
+}
+/* Gentle bob for the flag nodes / chips (applied to an inner wrapper
+   so it never clobbers the outer centring transform). */
+.hv-float {
+  animation: hv-float 5.5s ease-in-out infinite;
+}
+@keyframes hv-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+/* Pulse ring behind the destination node. */
+.hv-pulse {
+  animation: hv-pulse 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes hv-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv-arc,
+  .hv-float,
+  .hv-pulse {
+    animation: none;
+  }
+}

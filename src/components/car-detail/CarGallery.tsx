@@ -29,6 +29,13 @@ export default function CarGallery({ images, alt }: Props) {
   const t = useTranslations("carDetail.gallery");
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  // Which main slides have been viewed. Only these load the full-size original;
+  // the rest stay on the light `card` (w=320) variant until navigated to, so we
+  // never fetch every full-size image at once (the image host rate-limits that).
+  // Seeded with the first slide + its neighbour so the first "next" is instant.
+  const [visited, setVisited] = useState<Set<number>>(
+    () => new Set(images.length > 1 ? [0, 1] : [0]),
+  );
   // -1 = closed; any >= 0 index opens the lightbox at that slide.
   const [openIndex, setOpenIndex] = useState(-1);
   // The lightbox tracks its own current slide in a ref so navigating inside it
@@ -37,8 +44,20 @@ export default function CarGallery({ images, alt }: Props) {
   const viewIndexRef = useRef(0);
 
   const onSelect = useCallback(() => {
-    if (emblaApi) setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
+    if (!emblaApi) return;
+    const idx = emblaApi.selectedScrollSnap();
+    setSelectedIndex(idx);
+    // Mark this slide (and preload its neighbour) as full-size on demand.
+    setVisited((prev) => {
+      if (prev.has(idx) && (idx + 1 >= images.length || prev.has(idx + 1))) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.add(idx);
+      if (idx + 1 < images.length) next.add(idx + 1);
+      return next;
+    });
+  }, [emblaApi, images.length]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -111,7 +130,7 @@ export default function CarGallery({ images, alt }: Props) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={withImageSize(src, "card")}
+                    src={withImageSize(src, visited.has(idx) ? "original" : "card")}
                     alt={`${alt} ${idx + 1}`}
                     loading={idx === 0 ? "eager" : "lazy"}
                     className="h-full w-full object-cover"
