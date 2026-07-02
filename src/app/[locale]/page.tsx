@@ -15,7 +15,7 @@ export default async function Home({ params }: PageProps) {
   const [device, filterOptions] = await Promise.all([
     getDevice(),
     getFilterOptions().catch((reason) => {
-      console.error("[Home] /filters fetch failed:", reason);
+      console.error("[Home] /filters fetch failed here:", reason);
       return undefined;
     }),
   ]);
