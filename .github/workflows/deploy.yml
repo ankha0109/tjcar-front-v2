@@ -1,0 +1,83 @@
+name: Deploy front-v2 to EC2
+
+# Zero-downtime deploy: build the Next.js standalone artifact in CI (the EC2 box
+# has little RAM), rsync it into a fresh atomic release dir on the server, then
+# atomically flip the `current` symlink and `pm2 reload`. Production keeps
+# serving the old release for the entire build — it is never stopped to build.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-front-v2
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (standalone)
+        env:
+          NODE_ENV: production
+          # Build-time public vars (inlined into the client bundle).
+          # Non-secret; override via repo Variables if needed.
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'https://api-v2.tjcar.mn' }}
+          NEXT_PUBLIC_REVERB_SCHEME: ${{ vars.NEXT_PUBLIC_REVERB_SCHEME || 'https' }}
+          NEXT_PUBLIC_REVERB_PORT: ${{ vars.NEXT_PUBLIC_REVERB_PORT || '443' }}
+          NEXT_PUBLIC_REVERB_HOST: ${{ vars.NEXT_PUBLIC_REVERB_HOST }}
+          NEXT_PUBLIC_REVERB_KEY: ${{ vars.NEXT_PUBLIC_REVERB_KEY }}
+        run: npm run build
+
+      - name: Assemble standalone artifact
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Upload artifact to new release
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          REL="/var/www/front-v2/releases/$SHA/.next/standalone"
+          ssh -i ~/.ssh/deploy_key "deploy@${{ secrets.VPS_HOST }}" "mkdir -p '$REL'"
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" \
+            .next/standalone/ "deploy@${{ secrets.VPS_HOST }}:$REL/"
+
+      - name: Activate release (atomic) + reload
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          ssh -i ~/.ssh/deploy_key "deploy@${{ secrets.VPS_HOST }}" bash -s <<EOF
+          set -euo pipefail
+          FRONT=/var/www/front-v2
+          REL=\$FRONT/releases/$SHA
+          # Link shared runtime env into the standalone cwd
+          ln -sfn \$FRONT/shared/.env.production \$REL/.next/standalone/.env.production
+          # Atomic flip
+          ln -sfn \$REL \$FRONT/current
+          # Graceful reload (start on first run)
+          pm2 reload front-v2 --update-env || pm2 start \$FRONT/ecosystem.config.js
+          pm2 save
+          # Keep only the 5 most recent releases
+          ls -1dt \$FRONT/releases/*/ | tail -n +6 | xargs -r rm -rf
+          echo "Deployed front-v2 @ $SHA"
+          EOF
