@@ -55,7 +55,7 @@ export function CardActions({
         "flex gap-1.5",
         absolute && "absolute right-2.5 top-2.5 z-10",
         visibility === "hover" &&
-          "opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100",
+          "pointer-fine:opacity-0 transition-opacity duration-200 pointer-fine:group-hover:opacity-100 focus-within:opacity-100",
       )}
     >
       <Tooltip title={t("wishlist")} placement="bottom" mouseEnterDelay={0.2}>
@@ -69,13 +69,14 @@ export function CardActions({
             toggle(wishlistItemFromCarItem(car));
           }}
           className={cn(
-            "ring-1! backdrop-blur-md! active:scale-95!",
+            "ring-1! backdrop-blur-md! active:scale-95! pointer-coarse:h-10! pointer-coarse:w-10! pointer-coarse:min-w-10!",
             wishlisted
               ? "bg-rose-500! text-white! ring-rose-300/40! shadow-md! hover:bg-rose-500!"
-              : "bg-white/85! text-neutral-700! ring-black/5! hover:bg-white! hover:text-rose-500!",
+              : "bg-white/90! text-neutral-700! ring-black/5! shadow-sm! hover:bg-white! hover:text-rose-500!",
           )}
         >
           <svg
+            className="pointer-coarse:size-4.25"
             width="15"
             height="15"
             viewBox="0 0 24 24"
@@ -103,13 +104,14 @@ export function CardActions({
               }
             }}
             className={cn(
-              "ring-1! backdrop-blur-md! active:scale-95!",
+              "ring-1! backdrop-blur-md! active:scale-95! pointer-coarse:h-10! pointer-coarse:w-10! pointer-coarse:min-w-10!",
               compared
                 ? "bg-neutral-900! text-white! ring-white/20! shadow-md! hover:bg-neutral-900!"
-                : "bg-white/85! text-neutral-700! ring-black/5! hover:bg-white! hover:text-neutral-900!",
+                : "bg-white/90! text-neutral-700! ring-black/5! shadow-sm! hover:bg-white! hover:text-neutral-900!",
             )}
           >
             <svg
+              className="pointer-coarse:size-4.25"
               width="15"
               height="15"
               viewBox="0 0 24 24"
