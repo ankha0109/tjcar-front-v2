@@ -30,6 +30,16 @@ const formatKm = (n: number) =>
 const formatCc = (n: number) =>
   `${new Intl.NumberFormat("en-US").format(n)} cc`;
 
+// Short "from–to" label for range pills; mirrors the chip formatting (… for an open bound).
+const rangeSummary = (
+  from: number | null,
+  to: number | null,
+  fmt: (n: number) => string,
+): string | null => {
+  if (from == null && to == null) return null;
+  return `${from != null ? fmt(from) : "…"}–${to != null ? fmt(to) : "…"}`;
+};
+
 function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -91,6 +101,18 @@ function ColorSwatch({ name }: { name: string }) {
     />
   );
 }
+
+type FieldSection = "vehicle" | "auction" | "specs" | "advanced";
+
+type FieldDef = {
+  key: string;
+  label: string;
+  section: FieldSection;
+  active: boolean;
+  summary: string | null;
+  control: React.ReactNode;
+  clear: () => void;
+};
 
 export default function JapanAuctionFilters({
   value,
@@ -237,206 +259,309 @@ export default function JapanAuctionFilters({
   const totalCount = vehicleCount + auctionCount + specsCount + advancedCount;
   const hasFilters = !isFiltersEmpty(value);
 
+  const fields: FieldDef[] = [
+    {
+      key: "marka",
+      label: t("placeholders.marka"),
+      section: "vehicle",
+      active: !!value.marka,
+      summary: value.marka,
+      clear: () => setMarka(null),
+      control: (
+        <Select
+          placeholder={t("placeholders.marka")}
+          allowClear
+          showSearch
+          options={markaOptions}
+          value={value.marka ?? undefined}
+          onChange={(v) => setMarka(v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          optionFilterProp="label"
+        />
+      ),
+    },
+    {
+      key: "model",
+      label: t("placeholders.model"),
+      section: "vehicle",
+      active: !!value.model,
+      summary: value.model,
+      clear: () => setModel(null),
+      control: (
+        <Select
+          placeholder={t("placeholders.model")}
+          allowClear
+          showSearch
+          options={modelOptions}
+          value={value.model ?? undefined}
+          onChange={(v) => setModel(v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          optionFilterProp="label"
+        />
+      ),
+    },
+    {
+      key: "chassis",
+      label: t("placeholders.chassis"),
+      section: "vehicle",
+      active: !!value.chassis,
+      summary: value.chassis,
+      clear: () => set("chassis", null),
+      control: (
+        <Select
+          placeholder={t("placeholders.chassis")}
+          allowClear
+          showSearch
+          options={chassisOptions}
+          value={value.chassis ?? undefined}
+          onChange={(v) => set("chassis", v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          optionFilterProp="label"
+        />
+      ),
+    },
+    {
+      key: "rate",
+      label: t("placeholders.rate"),
+      section: "auction",
+      active: !!value.rate,
+      summary: value.rate,
+      clear: () => set("rate", null),
+      control: (
+        <Select
+          placeholder={t("placeholders.rate")}
+          allowClear
+          options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
+          value={value.rate ?? undefined}
+          onChange={(v) => set("rate", v ?? null)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      ),
+    },
+    {
+      key: "lot",
+      label: "LOT №",
+      section: "auction",
+      active: !!value.lot,
+      summary: value.lot || null,
+      clear: () => set("lot", ""),
+      control: (
+        <Input
+          placeholder="LOT №"
+          allowClear
+          prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+          value={value.lot}
+          onChange={(e) => set("lot", e.target.value)}
+          variant="filled"
+        />
+      ),
+    },
+    {
+      key: "date",
+      label: t("auctionDate.label"),
+      section: "auction",
+      active: !!value.date,
+      summary: value.date,
+      clear: () => set("date", null),
+      control: (
+        <DatePicker
+          placeholder={t("auctionDate.placeholder")}
+          allowClear
+          value={value.date ? dayjs(value.date) : null}
+          onChange={(d) => set("date", d ? d.format("YYYY-MM-DD") : null)}
+          variant="filled"
+          format="YYYY-MM-DD"
+          style={{ width: "100%" }}
+        />
+      ),
+    },
+    {
+      key: "color",
+      label: t("color.label"),
+      section: "specs",
+      active: !!value.color,
+      summary: value.color,
+      clear: () => set("color", null),
+      control: (
+        <Select
+          placeholder={t("color.placeholder")}
+          allowClear
+          showSearch
+          options={colorOptions}
+          value={value.color ?? undefined}
+          onChange={(v) => set("color", v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          filterOption={(input, opt) =>
+            String(opt?.value ?? "")
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+        />
+      ),
+    },
+    {
+      key: "engine",
+      label: t("engV.label"),
+      section: "specs",
+      active: value.engVFrom != null || value.engVTo != null,
+      summary: rangeSummary(value.engVFrom, value.engVTo, formatCc),
+      clear: () => onChange({ ...value, engVFrom: null, engVTo: null }),
+      control: (
+        <Space.Compact block>
+          <Select
+            placeholder={t("engV.fromPlaceholder")}
+            allowClear
+            options={engVFromOptions}
+            value={value.engVFrom ?? undefined}
+            onChange={(v) => set("engVFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+          <Select
+            placeholder={t("engV.toPlaceholder")}
+            allowClear
+            options={engVToOptions}
+            value={value.engVTo ?? undefined}
+            onChange={(v) => set("engVTo", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+        </Space.Compact>
+      ),
+    },
+    {
+      key: "year",
+      label: t("year.label"),
+      section: "advanced",
+      active: value.yearFrom != null || value.yearTo != null,
+      summary: rangeSummary(value.yearFrom, value.yearTo, (n) => String(n)),
+      clear: () => onChange({ ...value, yearFrom: null, yearTo: null }),
+      control: (
+        <Space.Compact block>
+          <Select
+            placeholder={t("year.fromPlaceholder")}
+            allowClear
+            options={yearFromOptions}
+            value={value.yearFrom ?? undefined}
+            onChange={(v) => set("yearFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+          <Select
+            placeholder={t("year.toPlaceholder")}
+            allowClear
+            options={yearToOptions}
+            value={value.yearTo ?? undefined}
+            onChange={(v) => set("yearTo", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+        </Space.Compact>
+      ),
+    },
+    {
+      key: "mileage",
+      label: t("mileage.label"),
+      section: "advanced",
+      active: value.mileageFrom != null || value.mileageTo != null,
+      summary: rangeSummary(value.mileageFrom, value.mileageTo, formatKm),
+      clear: () => onChange({ ...value, mileageFrom: null, mileageTo: null }),
+      control: (
+        <Space.Compact block>
+          <Select
+            placeholder={t("mileage.minPlaceholder")}
+            allowClear
+            options={mileageFromOptions}
+            value={value.mileageFrom ?? undefined}
+            onChange={(v) => set("mileageFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+          <Select
+            placeholder={t("mileage.maxPlaceholder")}
+            allowClear
+            options={mileageToOptions}
+            value={value.mileageTo ?? undefined}
+            onChange={(v) => set("mileageTo", v ?? null)}
+            variant="filled"
+            style={{ width: "50%" }}
+          />
+        </Space.Compact>
+      ),
+    },
+    {
+      key: "location",
+      label: t("location.label"),
+      section: "advanced",
+      active: !!value.location,
+      summary: value.location,
+      clear: () => set("location", null),
+      control: (
+        <Select
+          placeholder={t("location.placeholder")}
+          allowClear
+          showSearch
+          options={locationOptions}
+          value={value.location ?? undefined}
+          onChange={(v) => set("location", v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          optionFilterProp="label"
+        />
+      ),
+    },
+  ];
+
+  const sectionFields = (s: FieldSection) =>
+    fields.filter((f) => f.section === s);
+
   const body = (
     <div className="divide-y divide-neutral-100">
-      <Section
-        title={t("sections.vehicle")}
-        defaultOpen
-        activeCount={vehicleCount}
-      >
-        <Field label={t("placeholders.marka")}>
-          <Select
-            placeholder={t("placeholders.marka")}
-            allowClear
-            showSearch
-            options={markaOptions}
-            value={value.marka ?? undefined}
-            onChange={(v) => setMarka(v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ width: "100%" }}
-            optionFilterProp="label"
-          />
-        </Field>
-        <Field label={t("placeholders.model")}>
-          <Select
-            placeholder={t("placeholders.model")}
-            allowClear
-            showSearch
-            options={modelOptions}
-            value={value.model ?? undefined}
-            onChange={(v) => setModel(v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ width: "100%" }}
-            optionFilterProp="label"
-          />
-        </Field>
-        <Field label={t("placeholders.chassis")}>
-          <Select
-            placeholder={t("placeholders.chassis")}
-            allowClear
-            showSearch
-            options={chassisOptions}
-            value={value.chassis ?? undefined}
-            onChange={(v) => set("chassis", v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ width: "100%" }}
-            optionFilterProp="label"
-          />
-        </Field>
+      <Section title={t("sections.vehicle")} defaultOpen activeCount={vehicleCount}>
+        {sectionFields("vehicle").map((f) => (
+          <Field key={f.key} label={f.label}>
+            {f.control}
+          </Field>
+        ))}
       </Section>
-
-      <Section
-        title={t("sections.auction")}
-        defaultOpen
-        activeCount={auctionCount}
-      >
-        <Field label={t("placeholders.rate")}>
-          <Select
-            placeholder={t("placeholders.rate")}
-            allowClear
-            options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
-            value={value.rate ?? undefined}
-            onChange={(v) => set("rate", v ?? null)}
-            variant="filled"
-            style={{ width: "100%" }}
-          />
-        </Field>
-        <Field label="LOT №">
-          <Input
-            placeholder="LOT №"
-            allowClear
-            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
-            value={value.lot}
-            onChange={(e) => set("lot", e.target.value)}
-            variant="filled"
-          />
-        </Field>
-        <Field label={t("auctionDate.label")}>
-          <DatePicker
-            placeholder={t("auctionDate.placeholder")}
-            allowClear
-            value={value.date ? dayjs(value.date) : null}
-            onChange={(d) => set("date", d ? d.format("YYYY-MM-DD") : null)}
-            variant="filled"
-            format="YYYY-MM-DD"
-            style={{ width: "100%" }}
-          />
-        </Field>
+      <Section title={t("sections.auction")} defaultOpen activeCount={auctionCount}>
+        {sectionFields("auction").map((f) => (
+          <Field key={f.key} label={f.label}>
+            {f.control}
+          </Field>
+        ))}
       </Section>
-
       <Section
         title={t("sections.specs")}
         defaultOpen={specsCount > 0}
         activeCount={specsCount}
       >
-        <Field label={t("color.label")}>
-          <Select
-            placeholder={t("color.placeholder")}
-            allowClear
-            showSearch
-            options={colorOptions}
-            value={value.color ?? undefined}
-            onChange={(v) => set("color", v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ width: "100%" }}
-            filterOption={(input, opt) =>
-              String(opt?.value ?? "")
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-          />
-        </Field>
-        <Field label={t("engV.label")}>
-          <Space.Compact block>
-            <Select
-              placeholder={t("engV.fromPlaceholder")}
-              allowClear
-              options={engVFromOptions}
-              value={value.engVFrom ?? undefined}
-              onChange={(v) => set("engVFrom", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-            <Select
-              placeholder={t("engV.toPlaceholder")}
-              allowClear
-              options={engVToOptions}
-              value={value.engVTo ?? undefined}
-              onChange={(v) => set("engVTo", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-          </Space.Compact>
-        </Field>
+        {sectionFields("specs").map((f) => (
+          <Field key={f.key} label={f.label}>
+            {f.control}
+          </Field>
+        ))}
       </Section>
-
       <Section
         title={t("sections.advanced")}
         defaultOpen={advancedCount > 0}
         activeCount={advancedCount}
       >
-        <Field label={t("year.label")}>
-          <Space.Compact block>
-            <Select
-              placeholder={t("year.fromPlaceholder")}
-              allowClear
-              options={yearFromOptions}
-              value={value.yearFrom ?? undefined}
-              onChange={(v) => set("yearFrom", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-            <Select
-              placeholder={t("year.toPlaceholder")}
-              allowClear
-              options={yearToOptions}
-              value={value.yearTo ?? undefined}
-              onChange={(v) => set("yearTo", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-          </Space.Compact>
-        </Field>
-        <Field label={t("mileage.label")}>
-          <Space.Compact block>
-            <Select
-              placeholder={t("mileage.minPlaceholder")}
-              allowClear
-              options={mileageFromOptions}
-              value={value.mileageFrom ?? undefined}
-              onChange={(v) => set("mileageFrom", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-            <Select
-              placeholder={t("mileage.maxPlaceholder")}
-              allowClear
-              options={mileageToOptions}
-              value={value.mileageTo ?? undefined}
-              onChange={(v) => set("mileageTo", v ?? null)}
-              variant="filled"
-              style={{ width: "50%" }}
-            />
-          </Space.Compact>
-        </Field>
-        <Field label={t("location.label")}>
-          <Select
-            placeholder={t("location.placeholder")}
-            allowClear
-            showSearch
-            options={locationOptions}
-            value={value.location ?? undefined}
-            onChange={(v) => set("location", v ?? null)}
-            variant="filled"
-            loading={optionsLoading}
-            style={{ width: "100%" }}
-            optionFilterProp="label"
-          />
-        </Field>
+        {sectionFields("advanced").map((f) => (
+          <Field key={f.key} label={f.label}>
+            {f.control}
+          </Field>
+        ))}
       </Section>
     </div>
   );
