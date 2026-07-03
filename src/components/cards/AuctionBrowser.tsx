@@ -20,6 +20,7 @@ import {
   AllTab,
   DayTab,
   EmptyState,
+  ScheduleTabList,
 } from "@/components/cards/views/scheduleTabs";
 import { FilterOptions, FilterValues, filtersToQuery } from "@/types/filters";
 import { fromFeaturedCar, type CarItem } from "@/types/car";
@@ -36,7 +37,7 @@ type Props = {
   initialViewMode?: ViewMode;
 };
 
-const DAYS_AHEAD = 7;
+const DAYS_AHEAD = 3;
 const FILTER_DEBOUNCE_MS = 400;
 
 function serializeFilters(filters: FilterValues): string {
@@ -98,7 +99,7 @@ export default function AuctionBrowser({
 
   useScrollRestoration(!!infinite.data);
 
-  // ── Date strip (All + next 7 days) ──
+  // ── Date strip (All + next 3 days) ──
   const RELATIVE_LABELS: Record<number, string> = {
     1: tSchedule("tomorrow"),
     2: tSchedule("dayAfter"),
@@ -168,7 +169,7 @@ export default function AuctionBrowser({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
-              <div role="tablist" className="flex items-center gap-2">
+              <ScheduleTabList>
                 <AllTab
                   isActive={selected === "all"}
                   onClick={() => setSelected("all")}
@@ -186,9 +187,9 @@ export default function AuctionBrowser({
                     highlight={day.isHighlighted}
                   />
                 ))}
-              </div>
+              </ScheduleTabList>
             </div>
-            <div className="shrink-0 pt-1">
+            <div className="shrink-0">
               <ViewModeSwitcher
                 value={viewMode}
                 onChange={handleViewModeChange}

@@ -10,7 +10,7 @@ import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { getGradeInfo } from "@/utils/auctionGrade";
 import { withImageSize } from "@/utils/auctionImage";
 import { getCountdown } from "@/utils/carCountdown";
-import { formatEngine, formatMileage, formatTransmission } from "@/utils/carFormat";
+import { formatEngine, formatMileage } from "@/utils/carFormat";
 import { cn } from "@/utils";
 import { CardActions } from "../shared/CardActions";
 import { CountdownBadge } from "../shared/CountdownBadge";
@@ -38,15 +38,13 @@ export default function CarTableView({
         title: tCol("car"),
         dataIndex: "marka",
         key: "car",
-        width: 280,
-        fixed: "left",
         render: (_, car) => <CarNameCell car={car} t={t} />,
       },
       {
         title: tCol("year"),
         dataIndex: "year",
         key: "year",
-        width: 80,
+        width: 70,
         render: (year: string | undefined) => (
           <span className="tabular-nums">{year ?? "—"}</span>
         ),
@@ -55,7 +53,8 @@ export default function CarTableView({
         title: tCol("mileage"),
         dataIndex: "mileageKm",
         key: "mileage",
-        width: 120,
+        width: 105,
+        responsive: ["sm"],
         render: (_, car) => (
           <span className="tabular-nums">
             {formatMileage(car.mileageKm, t) ?? "—"}
@@ -66,26 +65,18 @@ export default function CarTableView({
         title: tCol("engine"),
         dataIndex: "engineCc",
         key: "engine",
-        width: 80,
+        width: 70,
+        responsive: ["lg"],
         render: (cc: number | undefined) => (
           <span className="tabular-nums">{formatEngine(cc) ?? "—"}</span>
         ),
       },
       {
-        title: tCol("transmission"),
-        dataIndex: "transmission",
-        key: "transmission",
-        width: 100,
-        render: (raw: string | undefined) =>
-          formatTransmission(raw, t) ?? (
-            <span className="text-neutral-400">—</span>
-          ),
-      },
-      {
         title: tCol("color"),
         dataIndex: "color",
         key: "color",
-        width: 130,
+        width: 105,
+        responsive: ["xl"],
         render: (color: string | undefined) => {
           if (!color) return <span className="text-neutral-400">—</span>;
           return (
@@ -99,7 +90,8 @@ export default function CarTableView({
       {
         title: tCol("grade"),
         key: "grade",
-        width: 90,
+        width: 65,
+        responsive: ["xl"],
         render: (_, car) => {
           const grade = getGradeInfo(car.auction?.grade);
           if (!grade) return <span className="text-neutral-400">—</span>;
@@ -120,19 +112,10 @@ export default function CarTableView({
         },
       },
       {
-        title: tCol("lot"),
-        key: "lot",
-        width: 90,
-        render: (_, car) => (
-          <span className="tabular-nums text-neutral-600 dark:text-neutral-300">
-            {car.auction?.lot ? `#${car.auction.lot}` : "—"}
-          </span>
-        ),
-      },
-      {
         title: tCol("time"),
         key: "time",
-        width: 130,
+        width: 115,
+        responsive: ["sm"],
         render: (_, car) => {
           const countdown = getCountdown(car.auction?.date);
           if (!countdown) return <span className="text-neutral-400">—</span>;
@@ -149,15 +132,15 @@ export default function CarTableView({
       {
         title: tCol("price"),
         key: "price",
-        width: 140,
+        width: 120,
         align: "right",
+        responsive: ["xl"],
         render: (_, car) => <PriceCell car={car} />,
       },
       {
         title: "",
         key: "actions",
-        width: 90,
-        fixed: "right",
+        width: 92,
         align: "center",
         render: (_, car) => (
           <div className="flex justify-center">
@@ -176,13 +159,18 @@ export default function CarTableView({
 
   return (
     <div className="-mx-4 px-4 lg:mx-0 lg:px-0">
+      {/* No `scroll.x` (and no `fixed` columns): the inner scroll container
+          antd creates becomes a ~1400px-wide composited layer spanning every
+          row, and with 40+ rows Chromium intermittently fails to rasterize it
+          (whole bands of the table—or the page—render blank on scroll).
+          Narrow viewports shed secondary columns via `responsive` instead. */}
       <Table<CarItem>
         columns={columns}
         dataSource={cars}
         rowKey="id"
         pagination={false}
         size="middle"
-        scroll={{ x: "max-content" }}
+        tableLayout="fixed"
         className="featured-car-table"
         onRow={
           onRowClick

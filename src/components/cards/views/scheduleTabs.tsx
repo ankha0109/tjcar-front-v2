@@ -3,16 +3,30 @@
 import { Button } from "antd";
 import { cn } from "@/utils";
 
-// Slim, flat, single-row chips for the All + day selectors. No shadow, no lift —
-// they sit inline with the page. Fixed h-9 keeps the strip short and even.
-const CHIP_BASE =
-  "group! relative! inline-flex! shrink-0! flex-row! items-center! gap-1.5! rounded-xl! px-3! h-9! border-0! transition-colors! duration-150! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!";
+// Segmented date rail: calendar-style two-line tiles inside one rounded
+// container. Matches ViewModeSwitcher's rail exactly (border + tinted bg +
+// p-1 + 32px inner buttons) so the two controls read as one aligned system.
+export function ScheduleTabList({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      role="tablist"
+      className="inline-flex items-stretch gap-0.5 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-1 dark:border-neutral-800 dark:bg-neutral-900/40"
+    >
+      {children}
+    </div>
+  );
+}
 
-const CHIP_INACTIVE =
-  "bg-neutral-100! text-neutral-700! hover:bg-neutral-200/70! dark:bg-neutral-800/60! dark:text-neutral-200! dark:hover:bg-neutral-800!";
+// h-8 keeps the tile the same height as ViewModeSwitcher's buttons; the two
+// text lines stay readable by dropping to micro sizes with leading-none.
+const TILE_BASE =
+  "group! relative! inline-flex! h-8! shrink-0! flex-col! items-center! justify-center! gap-[3px]! rounded-xl! border-0! px-2.5! transition-all! duration-150! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!";
 
-const CHIP_ACTIVE =
-  "bg-neutral-900! text-white! dark:bg-white! dark:text-neutral-900!";
+const TILE_INACTIVE =
+  "bg-transparent! text-neutral-800! hover:bg-white! hover:shadow-sm! dark:text-neutral-100! dark:hover:bg-neutral-800!";
+
+const TILE_ACTIVE =
+  "bg-neutral-900! text-white! shadow-sm! dark:bg-white! dark:text-neutral-900!";
 
 export function AllTab({
   isActive,
@@ -34,28 +48,16 @@ export function AllTab({
       aria-selected={isActive}
       onClick={onClick}
       title={count != null && unit ? `${count} ${unit}` : undefined}
-      className={cn(CHIP_BASE, isActive ? CHIP_ACTIVE : CHIP_INACTIVE)}
-    >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={cn(isActive ? "" : "text-neutral-400 group-hover:text-neutral-600")}
-      >
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      </svg>
-      <span className="text-[12.5px] font-semibold">{label}</span>
-      {count != null && (
-        <CountBadge value={count} isActive={isActive} />
+      className={cn(
+        TILE_BASE,
+        "min-w-12!",
+        isActive ? TILE_ACTIVE : TILE_INACTIVE,
       )}
+    >
+      <span className="inline-flex items-center gap-1.5">
+        <span className="text-[12.5px] font-bold">{label}</span>
+        {count != null && <CountBadge value={count} isActive={isActive} />}
+      </span>
     </Button>
   );
 }
@@ -90,53 +92,62 @@ export function DayTab({
       aria-selected={isActive}
       onClick={onClick}
       className={cn(
-        CHIP_BASE,
-        isActive ? CHIP_ACTIVE : CHIP_INACTIVE,
+        TILE_BASE,
+        "min-w-14!",
+        isActive ? TILE_ACTIVE : TILE_INACTIVE,
         !isActive && isEmpty && "opacity-50!",
       )}
     >
-      {highlight && (
+      <span className="inline-flex items-center gap-1 leading-none">
+        {highlight && (
+          <span
+            className={cn(
+              "h-1 w-1 shrink-0 rounded-full",
+              isActive ? "bg-current opacity-70" : "bg-primary",
+            )}
+          />
+        )}
         <span
           className={cn(
-            "h-1.5 w-1.5 shrink-0 rounded-full",
-            isActive ? "bg-current opacity-70" : "bg-primary",
+            "whitespace-nowrap text-[9px] font-semibold uppercase leading-none tracking-wide",
+            weekend
+              ? isActive
+                ? "text-rose-300 dark:text-rose-500"
+                : "text-rose-500"
+              : isActive
+                ? "opacity-60"
+                : "text-neutral-400 dark:text-neutral-500",
           )}
-        />
-      )}
-      <span
-        className={cn(
-          "whitespace-nowrap text-[11px] font-semibold uppercase tracking-wide",
-          isActive ? "" : weekend ? "text-rose-500" : "text-neutral-400",
+        >
+          {topLabel}
+        </span>
+        {showCount && !isEmpty && (
+          <CountBadge value={count} isActive={isActive} />
         )}
-      >
-        {topLabel}
       </span>
-      <span className="inline-flex items-baseline gap-0.5">
-        <span className="text-[14px] font-bold leading-none tabular-nums">
+      <span className="inline-flex items-baseline gap-1">
+        <span className="text-[12.5px] font-bold leading-none tabular-nums">
           {day}
         </span>
         <span
           className={cn(
-            "text-[9.5px] font-medium uppercase",
-            isActive ? "opacity-55" : "text-neutral-400",
+            "whitespace-nowrap text-[8.5px] font-medium uppercase leading-none",
+            isActive ? "opacity-55" : "text-neutral-400 dark:text-neutral-500",
           )}
         >
           {month}
         </span>
-      </span>
-      {showCount &&
-        (isEmpty ? (
+        {showCount && isEmpty && (
           <span
             className={cn(
-              "text-[10px] font-medium",
+              "text-[8.5px] font-medium leading-none",
               isActive ? "opacity-60" : "text-neutral-400",
             )}
           >
             {emptyLabel}
           </span>
-        ) : (
-          <CountBadge value={count} isActive={isActive} />
-        ))}
+        )}
+      </span>
     </Button>
   );
 }
@@ -145,7 +156,7 @@ function CountBadge({ value, isActive }: { value: number; isActive: boolean }) {
   return (
     <span
       className={cn(
-        "rounded-full px-1.5 text-[10px] font-semibold leading-4.5 tabular-nums",
+        "rounded-full px-1 text-[9px] font-semibold leading-3.5 tabular-nums",
         isActive
           ? "bg-white/20 text-current dark:bg-neutral-900/15"
           : "bg-primary/10 text-primary",
