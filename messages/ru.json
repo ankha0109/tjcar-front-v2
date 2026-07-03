@@ -118,6 +118,7 @@
       "signUp": "Регистрация"
     },
     "theme": {
+      "darkMode": "Тёмная тема",
       "switchToDark": "Переключить на тёмную тему",
       "switchToLight": "Переключить на светлую тему"
     },
@@ -134,11 +135,11 @@
       "new": "Новое",
       "endingSoon": "Скоро завершится",
       "more": "Ещё",
-      "discover": "Подборка",
-      "regions": "Регионы",
+      "discover": "Информация",
+      "regions": "Услуги",
       "catalog": "Каталог",
       "howItWorks": "Гид",
-      "info": "Информация"
+      "info": "Контакты"
     },
     "topbar": {
       "rates": {
@@ -1250,7 +1251,9 @@
       "quickTitle": "Помощь и инструкции",
       "quick": {
         "howItWorks": "Как заказать",
-        "howItWorksHint": "Пошаговая инструкция"
+        "howItWorksHint": "Пошаговая инструкция",
+        "about": "О нас",
+        "aboutHint": "О компании"
       }
     }
   },

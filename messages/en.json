@@ -118,6 +118,7 @@
       "signUp": "Sign up"
     },
     "theme": {
+      "darkMode": "Dark mode",
       "switchToDark": "Switch to dark mode",
       "switchToLight": "Switch to light mode"
     },
@@ -134,11 +135,11 @@
       "new": "New",
       "endingSoon": "Ending soon",
       "more": "More",
-      "discover": "Discover",
-      "regions": "Regions",
+      "discover": "Information",
+      "regions": "Service",
       "catalog": "Catalog",
       "howItWorks": "Guide",
-      "info": "Info"
+      "info": "Contact"
     },
     "topbar": {
       "rates": {
@@ -1250,7 +1251,9 @@
       "quickTitle": "Help & guide",
       "quick": {
         "howItWorks": "How to order",
-        "howItWorksHint": "Step-by-step guide"
+        "howItWorksHint": "Step-by-step guide",
+        "about": "About us",
+        "aboutHint": "Who we are"
       }
     }
   },

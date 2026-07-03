@@ -118,7 +118,8 @@
       "signUp": "Бүртгүүлэх"
     },
     "theme": {
-      "switchToDark": "Бараан горим руу шилжих",
+      "darkMode": "Шөнийн горим",
+      "switchToDark": "Шөнийн горим руу шилжих",
       "switchToLight": "Гэрэлтэй горим руу шилжих"
     },
     "search": {
@@ -134,11 +135,11 @@
       "new": "Шинэ",
       "endingSoon": "Удахгүй дуусах",
       "more": "Бусад",
-      "discover": "Шинээр",
-      "regions": "Бүс",
+      "discover": "Мэдээлэл",
+      "regions": "Үйлчилгээ",
       "catalog": "Каталог",
       "howItWorks": "Заавар",
-      "info": "Мэдээлэл"
+      "info": "Холбогдох хаяг"
     },
     "topbar": {
       "rates": {
@@ -1250,7 +1251,9 @@
       "quickTitle": "Тусламж, заавар",
       "quick": {
         "howItWorks": "Захиалах заавар",
-        "howItWorksHint": "Алхам алхмаар"
+        "howItWorksHint": "Алхам алхмаар",
+        "about": "Бидний тухай",
+        "aboutHint": "Компанийн танилцуулга"
       }
     }
   },

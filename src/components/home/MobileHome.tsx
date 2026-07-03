@@ -37,6 +37,27 @@ const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const AboutIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M3 21h18" />
+    <path d="M5 21V7l7-4 7 4v14" />
+    <path d="M9 9h.01" />
+    <path d="M9 13h.01" />
+    <path d="M9 17h.01" />
+    <path d="M15 9h.01" />
+    <path d="M15 13h.01" />
+    <path d="M15 17h.01" />
+  </svg>
+);
+
 const CarTile = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
@@ -184,6 +205,12 @@ export default function MobileHome() {
             icon={<InfoIcon className="h-4 w-4 text-sky-500" />}
             label={t("quick.howItWorks")}
             hint={t("quick.howItWorksHint")}
+          />
+          <QuickLink
+            href="/about"
+            icon={<AboutIcon className="h-4 w-4 text-emerald-500" />}
+            label={t("quick.about")}
+            hint={t("quick.aboutHint")}
           />
         </div>
       </section>
