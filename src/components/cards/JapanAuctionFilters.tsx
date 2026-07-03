@@ -762,7 +762,7 @@ export function JapanAuctionFilterChips({
   if (chips.length === 0) return null;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+    <div className="mt-3 hidden flex-wrap items-center gap-1.5 lg:flex">
       <span className="text-[11px] font-medium uppercase text-neutral-400">
         {t("active")}
       </span>
