@@ -3,6 +3,7 @@
 import { Link, usePathname } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useWishlist } from "@/hooks/useWishlist";
 import { cn } from "@/utils";
 
 // Доод цэс гарахгүй замууд. Шинэ замыг энд нэмж/хасаж тохируулна.
@@ -20,6 +21,8 @@ type NavItem = {
   label: string;
   match: (pathname: string) => boolean;
   icon: (active: boolean) => React.ReactNode;
+  /** Optional count badge on the icon (e.g. wishlist size). Hidden when 0. */
+  badge?: number;
 };
 
 const stroke = (active: boolean) => (active ? 2.2 : 1.8);
@@ -43,6 +46,7 @@ export default function MobileBottomNav() {
   const t = useTranslations("mobileNav");
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { count: wishlistCount } = useWishlist();
 
   const NAV_ITEMS: NavItem[] = [
     {
@@ -130,6 +134,28 @@ export default function MobileBottomNav() {
         </svg>
       ),
     },
+    {
+      href: "/wishlist",
+      label: t("wishlist"),
+      match: (p) => p === "/wishlist" || p.startsWith("/wishlist/"),
+      badge: wishlistCount,
+      icon: (active) => (
+        <svg
+          viewBox="0 0 24 24"
+          fill={active ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth={stroke(active)}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(
+            "h-[22px] w-[22px]",
+            active && "fill-current/10 stroke-current",
+          )}
+        >
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+      ),
+    },
   ];
 
   if (shouldHideOn(pathname)) return null;
@@ -160,11 +186,16 @@ export default function MobileBottomNav() {
                 )}
                 <span
                   className={cn(
-                    "transition-transform duration-200",
+                    "relative transition-transform duration-200",
                     active && "-translate-y-0.5 scale-105",
                   )}
                 >
                   {item.icon(active)}
+                  {item.badge ? (
+                    <span className="absolute -top-1.5 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold leading-none text-white">
+                      {item.badge > 99 ? "99+" : item.badge}
+                    </span>
+                  ) : null}
                 </span>
                 <span
                   className={cn(

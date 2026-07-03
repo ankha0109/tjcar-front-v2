@@ -12,5 +12,10 @@ export default async function MobileHeaderHome({ params }: Props) {
   const device = await getDevice();
   if (device !== "mobile") return null;
   const t = await getTranslations("mobile.home");
-  return <MobileHeader title={t("title")} menuButton />;
+  return (
+    <MobileHeader
+      // title={t("title")}
+      menuButton
+    />
+  );
 }

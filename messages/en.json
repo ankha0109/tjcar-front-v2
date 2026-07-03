@@ -255,6 +255,7 @@
     "korea": "Korea",
     "ready": "In-stock",
     "check": "Check",
+    "wishlist": "Saved",
     "aria": "Bottom navigation",
     "profile": "Profile"
   },
@@ -1253,22 +1254,17 @@
       "greeting": "Hi, {name} 👋",
       "greetingGuest": "Find your next car",
       "searchPlaceholder": "Search car (brand, model)...",
-      "categoriesTitle": "Car categories",
       "count": "{count, plural, =0 {No cars} one {# car} other {# cars}}",
       "categories": {
         "japan": "Japan cars",
         "korea": "Korea cars",
         "ready": "In-stock cars",
         "readyHint": "Ready in Mongolia",
-        "report": "Accident report",
-        "reportHint": "VIN / plate check"
+        "report": "Report service",
+        "reportHint": "Check damage, mileage & see real photos"
       },
-      "quickTitle": "Quick links",
+      "quickTitle": "Help & guide",
       "quick": {
-        "ai": "TJCAR AI",
-        "aiHint": "Ask anything about cars",
-        "wishlist": "Saved cars",
-        "wishlistHint": "Cars you've bookmarked",
         "howItWorks": "How to order",
         "howItWorksHint": "Step-by-step guide"
       }

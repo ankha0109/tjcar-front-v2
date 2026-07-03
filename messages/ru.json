@@ -255,6 +255,7 @@
     "korea": "Корея",
     "ready": "В наличии",
     "check": "Проверка",
+    "wishlist": "Избранное",
     "aria": "Нижняя навигация",
     "profile": "Профиль"
   },
@@ -1253,22 +1254,17 @@
       "greeting": "Привет, {name} 👋",
       "greetingGuest": "Найдите свой автомобиль",
       "searchPlaceholder": "Поиск авто (марка, модель)...",
-      "categoriesTitle": "Категории авто",
       "count": "{count, plural, =0 {Нет авто} one {# авто} few {# авто} many {# авто} other {# авто}}",
       "categories": {
         "japan": "Из Японии",
         "korea": "Из Кореи",
         "ready": "В наличии",
         "readyHint": "Готовы в Монголии",
-        "report": "Отчёт об осмотре",
-        "reportHint": "Проверка VIN / номера"
+        "report": "Услуга отчёта",
+        "reportHint": "Проверка повреждений, пробега и реальные фото"
       },
-      "quickTitle": "Быстрые действия",
+      "quickTitle": "Помощь и инструкции",
       "quick": {
-        "ai": "TJCAR AI",
-        "aiHint": "Спросите про авто",
-        "wishlist": "Сохранённые",
-        "wishlistHint": "Отмеченные авто",
         "howItWorks": "Как заказать",
         "howItWorksHint": "Пошаговая инструкция"
       }

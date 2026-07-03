@@ -255,6 +255,7 @@
     "korea": "Солонгос",
     "ready": "Бэлэн",
     "check": "Шалгах",
+    "wishlist": "Хадгалсан",
     "aria": "Доод цэс",
     "profile": "Хувийн"
   },
@@ -1253,22 +1254,17 @@
       "greeting": "Сайн уу, {name} 👋",
       "greetingGuest": "Машинаа олоорой",
       "searchPlaceholder": "Машин хайх (марк, модел)...",
-      "categoriesTitle": "Машины ангилал",
       "count": "{count, plural, =0 {Машин байхгүй} other {# машин}}",
       "categories": {
         "japan": "Япон машин",
         "korea": "Солонгос машин",
         "ready": "Бэлэн машин",
         "readyHint": "Монголд бэлэн",
-        "report": "Үзлэгийн тайлан",
-        "reportHint": "VIN / улсын дугаар"
+        "report": "Репорт үйлчилгээ",
+        "reportHint": "Эвдрэл гэмтэл, км гүйлт шалгах, бодит зурагнуудыг харах"
       },
-      "quickTitle": "Шуурхай үйлдэл",
+      "quickTitle": "Тусламж, заавар",
       "quick": {
-        "ai": "TJCAR AI",
-        "aiHint": "Машины талаар асуу",
-        "wishlist": "Хадгалсан машин",
-        "wishlistHint": "Тэмдэглэсэн машинууд",
         "howItWorks": "Захиалах заавар",
         "howItWorksHint": "Алхам алхмаар"
       }
