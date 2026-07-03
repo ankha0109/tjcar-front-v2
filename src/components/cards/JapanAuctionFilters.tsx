@@ -128,8 +128,36 @@ type FieldDef = {
   active: boolean;
   summary: string | null;
   control: React.ReactNode;
+  mobile: MobileControl;
   clear: () => void;
 };
+
+type RangeOpt = { value: number; label: string };
+
+type MobileControl =
+  | {
+      type: "single";
+      options: { value: string; label: React.ReactNode; searchText: string }[];
+      value: string | null;
+      onSelect: (v: string | null) => void;
+    }
+  | {
+      type: "range";
+      from: {
+        options: RangeOpt[];
+        value: number | null;
+        onChange: (v: number | null) => void;
+        placeholder: string;
+      };
+      to: {
+        options: RangeOpt[];
+        value: number | null;
+        onChange: (v: number | null) => void;
+        placeholder: string;
+      };
+    }
+  | { type: "date"; value: string | null; onChange: (v: string | null) => void; placeholder: string }
+  | { type: "text"; value: string; onChange: (v: string) => void; placeholder: string };
 
 export default function JapanAuctionFilters({
   value,
@@ -298,6 +326,12 @@ export default function JapanAuctionFilters({
           optionFilterProp="label"
         />
       ),
+      mobile: {
+        type: "single",
+        options: markaOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
+        value: value.marka,
+        onSelect: (v) => setMarka(v),
+      },
     },
     {
       key: "model",
@@ -320,6 +354,12 @@ export default function JapanAuctionFilters({
           optionFilterProp="label"
         />
       ),
+      mobile: {
+        type: "single",
+        options: modelOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
+        value: value.model,
+        onSelect: (v) => setModel(v),
+      },
     },
     {
       key: "chassis",
@@ -342,6 +382,12 @@ export default function JapanAuctionFilters({
           optionFilterProp="label"
         />
       ),
+      mobile: {
+        type: "single",
+        options: chassisOptions.map((o) => ({ value: o.value, label: o.label, searchText: String(o.label) })),
+        value: value.chassis,
+        onSelect: (v) => set("chassis", v),
+      },
     },
     {
       key: "rate",
@@ -361,6 +407,12 @@ export default function JapanAuctionFilters({
           style={{ width: "100%" }}
         />
       ),
+      mobile: {
+        type: "single",
+        options: RATE_OPTIONS.map((r) => ({ value: r, label: r, searchText: r })),
+        value: value.rate,
+        onSelect: (v) => set("rate", v),
+      },
     },
     {
       key: "lot",
@@ -379,6 +431,7 @@ export default function JapanAuctionFilters({
           variant="filled"
         />
       ),
+      mobile: { type: "text", value: value.lot, onChange: (v) => set("lot", v), placeholder: "LOT №" },
     },
     {
       key: "date",
@@ -398,6 +451,12 @@ export default function JapanAuctionFilters({
           style={{ width: "100%" }}
         />
       ),
+      mobile: {
+        type: "date",
+        value: value.date,
+        onChange: (v) => set("date", v),
+        placeholder: t("auctionDate.placeholder"),
+      },
     },
     {
       key: "color",
@@ -424,6 +483,12 @@ export default function JapanAuctionFilters({
           }
         />
       ),
+      mobile: {
+        type: "single",
+        options: colorOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
+        value: value.color,
+        onSelect: (v) => set("color", v),
+      },
     },
     {
       key: "engine",
@@ -454,6 +519,11 @@ export default function JapanAuctionFilters({
           />
         </Space.Compact>
       ),
+      mobile: {
+        type: "range",
+        from: { options: engVFromOptions, value: value.engVFrom, onChange: (v) => set("engVFrom", v), placeholder: t("engV.fromPlaceholder") },
+        to: { options: engVToOptions, value: value.engVTo, onChange: (v) => set("engVTo", v), placeholder: t("engV.toPlaceholder") },
+      },
     },
     {
       key: "year",
@@ -484,6 +554,11 @@ export default function JapanAuctionFilters({
           />
         </Space.Compact>
       ),
+      mobile: {
+        type: "range",
+        from: { options: yearFromOptions, value: value.yearFrom, onChange: (v) => set("yearFrom", v), placeholder: t("year.fromPlaceholder") },
+        to: { options: yearToOptions, value: value.yearTo, onChange: (v) => set("yearTo", v), placeholder: t("year.toPlaceholder") },
+      },
     },
     {
       key: "mileage",
@@ -514,6 +589,11 @@ export default function JapanAuctionFilters({
           />
         </Space.Compact>
       ),
+      mobile: {
+        type: "range",
+        from: { options: mileageFromOptions, value: value.mileageFrom, onChange: (v) => set("mileageFrom", v), placeholder: t("mileage.minPlaceholder") },
+        to: { options: mileageToOptions, value: value.mileageTo, onChange: (v) => set("mileageTo", v), placeholder: t("mileage.maxPlaceholder") },
+      },
     },
     {
       key: "location",
@@ -536,6 +616,12 @@ export default function JapanAuctionFilters({
           optionFilterProp="label"
         />
       ),
+      mobile: {
+        type: "single",
+        options: locationOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
+        value: value.location,
+        onSelect: (v) => set("location", v),
+      },
     },
   ];
 
@@ -652,13 +738,13 @@ export default function JapanAuctionFilters({
         open={openField != null}
         onClose={() => setOpenField(null)}
         placement="bottom"
-        height="auto"
+        size="auto"
         title={activeField?.label}
         styles={{
           header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
           body: { padding: "20px" },
           footer: { padding: 16 },
-          content: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
+          section: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
         }}
         footer={
           <div className="flex items-center justify-between gap-2">
