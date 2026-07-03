@@ -14,7 +14,7 @@
 - Desktop (`lg+`) visual output stays byte-for-identical: keep the existing section badge counts (`vehicleCount`, `auctionCount`, `specsCount`, `advancedCount`) wired to the desktop `Section`s. `fields[].active` is a per-field boolean used ONLY by mobile pills — it does not replace the desktop counts.
 - Live-apply everywhere (existing `onChange` semantics). No draft state.
 - Clear-all preserves date: `onChange({ ...EMPTY_FILTERS, date: value.date })` (existing behaviour; `date` is day-tab navigation).
-- Locale keys go in all three of `messages/{mn,en,ru}.json`.
+- Do NOT touch `messages/*.json` — the working tree already has unrelated uncommitted changes in those files. The mobile clear-all button reuses the existing `featured.filters.clear` key (the spec-sanctioned fallback), which is also what the current desktop/mobile clear-all already uses. No new locale key is added.
 - No unit-test framework exists in this repo. Automated gate per task is `npm run lint` + `npx tsc --noEmit`; behaviour is confirmed manually via `npm run dev` (port 2500) at mobile (`<1024px`) and desktop (`≥1024px`) widths.
 - Reuse the existing SVG icon helper style and the `Section` / `Field` components already in the file.
 
@@ -27,7 +27,7 @@
   - Add a `fields: FieldDef[]` array inside the component; refactor `body` to render from it.
   - Replace mobile trigger bar + left `Drawer` with a pill row + a bottom `Drawer`.
   - Change `JapanAuctionFilterChips` root to hide on mobile.
-- **Modify:** `messages/mn.json`, `messages/en.json`, `messages/ru.json` — add `featured.filters.clearAll`.
+  - The mobile clear-all button reuses the existing `featured.filters.clear` key — no `messages/*.json` edits (those files carry unrelated uncommitted work).
 
 ---
 
@@ -463,39 +463,15 @@ git commit -m "feat: hide active-filter chip row on mobile"
 Replace the mobile trigger button and the left `Drawer` with a scrollable pill row and a single bottom `Drawer` scoped to the tapped field.
 
 **Files:**
-- Modify: `src/components/cards/JapanAuctionFilters.tsx`
-- Modify: `messages/mn.json`, `messages/en.json`, `messages/ru.json`
+- Modify: `src/components/cards/JapanAuctionFilters.tsx` (this task touches NO other file)
 
 **Interfaces:**
 - Consumes: `fields: FieldDef[]`, `sectionFields`, `hasFilters`, `EMPTY_FILTERS` (from Task 1 / existing).
 - Produces: `FilterPill` component; `openField: string | null` state.
 
-- [ ] **Step 1: Add the `clearAll` locale key to all three files**
+Note: the mobile clear-all button uses the existing `t("clear")` label. Do NOT add a new locale key and do NOT edit `messages/*.json`.
 
-In `messages/mn.json`, inside `featured.filters`, add after the `"clear"` key:
-
-```json
-    "clearAll": "Бүгдийг цэвэрлэх",
-```
-
-In `messages/en.json`, same location:
-
-```json
-    "clearAll": "Clear all",
-```
-
-In `messages/ru.json`, same location:
-
-```json
-    "clearAll": "Очистить всё",
-```
-
-- [ ] **Step 2: Verify the JSON is valid and the key is present**
-
-Run: `node -e "for (const l of ['mn','en','ru']) { const m=require('./messages/'+l+'.json'); if(!m.featured.filters.clearAll) throw new Error('missing in '+l); console.log(l, '->', m.featured.filters.clearAll); }"`
-Expected: prints the three translations, no error.
-
-- [ ] **Step 3: Add the `CloseIcon` SVG helper**
+- [ ] **Step 1: Add the `CloseIcon` SVG helper**
 
 Add near the other icon helpers (after `ChevronIcon`, ~line 80):
 
@@ -518,7 +494,7 @@ function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 ```
 
-- [ ] **Step 4: Add the `FilterPill` component**
+- [ ] **Step 2: Add the `FilterPill` component**
 
 Add at module scope, next to `Section` / `Field` (bottom of file):
 
@@ -573,7 +549,7 @@ function FilterPill({
 }
 ```
 
-- [ ] **Step 5: Swap the mobile state variable**
+- [ ] **Step 3: Swap the mobile state variable**
 
 Replace:
 
@@ -587,7 +563,7 @@ with:
   const [openField, setOpenField] = useState<string | null>(null);
 ```
 
-- [ ] **Step 6: Derive the currently-open field**
+- [ ] **Step 4: Derive the currently-open field**
 
 Add just after the `fields` array / `sectionFields` definition:
 
@@ -595,7 +571,7 @@ Add just after the `fields` array / `sectionFields` definition:
 const activeField = fields.find((f) => f.key === openField) ?? null;
 ```
 
-- [ ] **Step 7: Replace the mobile trigger bar with the pill row**
+- [ ] **Step 5: Replace the mobile trigger bar with the pill row**
 
 In the returned JSX, replace the whole mobile trigger block (the `{/* Mobile trigger bar — visible below lg */}` div, current lines ~446-469) with:
 
@@ -620,7 +596,7 @@ In the returned JSX, replace the whole mobile trigger block (the `{/* Mobile tri
                 onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
                 className="!shrink-0 !text-neutral-500"
               >
-                {t("clearAll")}
+                {t("clear")}
               </Button>
             )}
           </div>
@@ -628,7 +604,7 @@ In the returned JSX, replace the whole mobile trigger block (the `{/* Mobile tri
       </div>
 ```
 
-- [ ] **Step 8: Replace the left `Drawer` with the bottom `Drawer`**
+- [ ] **Step 6: Replace the left `Drawer` with the bottom `Drawer`**
 
 Replace the whole `{/* Mobile drawer */}` `<Drawer ...>{body}</Drawer>` block (current lines ~503-546) with:
 
@@ -666,12 +642,12 @@ Replace the whole `{/* Mobile drawer */}` `<Drawer ...>{body}</Drawer>` block (c
       </Drawer>
 ```
 
-- [ ] **Step 9: Lint + typecheck**
+- [ ] **Step 7: Lint + typecheck**
 
 Run: `npm run lint && npx tsc --noEmit`
 Expected: no errors, and no "unused variable" for `mobileOpen`/`setMobileOpen` (both removed). `totalCount` is still used by the desktop header badge — leave it.
 
-- [ ] **Step 10: Manual verification — mobile**
+- [ ] **Step 8: Manual verification — mobile**
 
 With `npm run dev` at <1024px on a Japan auction listing page:
 - Pill row scrolls horizontally edge-to-edge; scrollbar hidden.
@@ -679,13 +655,15 @@ With `npm run dev` at <1024px on a Japan auction listing page:
 - Changing a control updates the list behind immediately (live). For a range field the sheet shows both from/to selects.
 - A set filter's pill turns primary-tinted and reads `Label: value`; its `✕` clears just that filter without opening the sheet.
 - Sheet footer: `Цэвэрлэх` disabled until the field has a value; `Болсон` closes.
-- "Бүгдийг цэвэрлэх" appears at the row end only when a filter is set and resets all filters except date.
+- The trailing clear-all button (labelled `Цэвэрлэх`, reusing `t("clear")`) appears at the row end only when a filter is set and resets all filters except date.
 - Confirm at ≥1024px the desktop sidebar and behaviour are unchanged.
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 9: Commit**
+
+Stage ONLY the component file — the `messages/*.json` files carry unrelated uncommitted work and must not be swept in.
 
 ```bash
-git add src/components/cards/JapanAuctionFilters.tsx messages/mn.json messages/en.json messages/ru.json
+git add src/components/cards/JapanAuctionFilters.tsx
 git commit -m "feat: mobile inline filter pills with per-filter bottom drawer"
 ```
 
@@ -699,9 +677,9 @@ git commit -m "feat: mobile inline filter pills with per-filter bottom drawer"
 - Selected pill shows value + inline ✕ → `FilterPill` active branch. ✓
 - Active-chip row hidden on mobile → Task 2. ✓
 - Single source of truth (desktop + mobile from `fields`) → Task 1. ✓
-- Remove old trigger + left drawer → Task 3 Steps 7–8. ✓
+- Remove old trigger + left drawer → Task 3 Steps 5–6. ✓
 - Desktop unchanged (badge counts preserved) → Task 1 note + kept count vars. ✓
-- clearAll in mn/en/ru → Task 3 Step 1. ✓
+- Clear-all label → reuses `t("clear")`; no `messages/*.json` edits (those files hold unrelated uncommitted work). ✓
 - Parents untouched → chips hidden via own class; no parent edits. ✓
 
 **Placeholder scan:** none — every step has concrete code/commands.
