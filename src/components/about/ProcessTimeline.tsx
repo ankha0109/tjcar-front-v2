@@ -10,7 +10,7 @@ export default async function ProcessTimeline() {
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
           <div>
-            <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               {t("eyebrow")}
             </span>
             <h2 className="mt-2 text-2xl font-semibold text-neutral-900 md:text-3xl dark:text-neutral-100">

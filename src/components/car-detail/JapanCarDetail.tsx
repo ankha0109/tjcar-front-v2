@@ -3,6 +3,7 @@ import PremiumGallery from "./PremiumGallery";
 import CarActionButtons from "./CarActionButtons";
 import CarEvaluation from "./CarEvaluation";
 import CarBidSection from "./CarBidSection";
+import AvgPriceChart from "./AvgPriceChart";
 import RateCard from "./RateCard";
 import LandedPriceCard from "./LandedPriceCard";
 import ChassisYearVerify from "./ChassisYearVerify";
@@ -63,19 +64,20 @@ export default async function JapanCarDetail({ car }: Props) {
     { label: t("specs.drive"), value: driveLabel },
   ];
 
-  const detailedRows: Array<{ label: string; value: string; wide?: boolean }> = [
-    { label: t("specs.grade"), value: car.GRADE || "—" },
-    { label: t("specs.chassis"), value: car.KUZOV || "—" },
-    // Equipment is a long comma-separated list — give it the full row width.
-    { label: t("specs.equipment"), value: car.EQUIP || "—", wide: true },
-  ];
+  const detailedRows: Array<{ label: string; value: string; wide?: boolean }> =
+    [
+      { label: t("specs.grade"), value: car.GRADE || "—" },
+      { label: t("specs.chassis"), value: car.KUZOV || "—" },
+      // Equipment is a long comma-separated list — give it the full row width.
+      { label: t("specs.equipment"), value: car.EQUIP || "—", wide: true },
+    ];
 
   return (
     <article className="mx-auto w-full max-w-7xl px-0 lg:px-6 lg:py-8">
       <div className="lg:grid lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-x-10 lg:gap-y-8">
         {/* Gallery — top-left; full-bleed on mobile (no side padding) */}
         <div className="lg:col-start-1 lg:row-start-1">
-          <div className="pt-2 lg:p-0">
+          <div className="lg:p-0">
             <PremiumGallery
               images={images}
               alt={title}
@@ -122,16 +124,20 @@ export default async function JapanCarDetail({ car }: Props) {
           </header>
 
           {/* Headline tiles — inspection grade + MNT landed price */}
-          <div className="grid grid-cols-2 gap-3">
-            <RateCard rate={car.RATE} label={t("specs.rate")} />
-            <LandedPriceCard
-              auctionId={car.ID}
-              chassis={car.KUZOV}
-              engineSize={car.ENG_V}
-              year={car.YEAR}
-              rate={car.RATE}
-              avgPrice={avgNum}
-            />
+          <div className="grid grid-cols-5 gap-3">
+            <div className="col-span-2">
+              <RateCard rate={car.RATE} label={t("specs.rate")} />
+            </div>
+            <div className="col-span-3">
+              <LandedPriceCard
+                auctionId={car.ID}
+                chassis={car.KUZOV}
+                engineSize={car.ENG_V}
+                year={car.YEAR}
+                rate={car.RATE}
+                avgPrice={avgNum}
+              />
+            </div>
           </div>
 
           {/* Quick specs — key figures right under the grade/price tiles */}
@@ -141,7 +147,7 @@ export default async function JapanCarDetail({ car }: Props) {
                 key={label}
                 className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900"
               >
-                <span className="text-[10.5px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                   {label}
                 </span>
                 <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
@@ -165,6 +171,10 @@ export default async function JapanCarDetail({ car }: Props) {
             rate={car.RATE}
             jpyRate={jpyRate}
           />
+
+          {/* Average sold-price trend (₮) — AJES AVG_STRING converted at the live
+              JPY rate; hides when empty or the rate is unavailable. */}
+          <AvgPriceChart avgString={car.AVG_STRING} jpyRate={jpyRate} />
         </div>
 
         {/* Details under the gallery — full spec table + chassis-year verify */}
@@ -179,7 +189,7 @@ export default async function JapanCarDetail({ car }: Props) {
                   key={row.label}
                   className={`flex flex-col gap-1 rounded-xl border border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900 ${row.wide ? "col-span-2 sm:col-span-3" : ""}`}
                 >
-                  <dt className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                  <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                     {row.label}
                   </dt>
                   <dd className="break-words text-[13px] font-medium text-neutral-900 dark:text-neutral-100">

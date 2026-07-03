@@ -65,7 +65,7 @@ const AiChatInput = forwardRef<AiChatInputHandle>(function AiChatInput(_, ref) {
         e.preventDefault();
         submit();
       }}
-      className="flex items-end gap-2 border-t border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900"
+      className="flex items-end gap-2 border-t border-neutral-200 bg-white px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] dark:border-neutral-800 dark:bg-neutral-900"
     >
       <textarea
         ref={textareaRef}

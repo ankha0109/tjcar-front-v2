@@ -124,7 +124,7 @@ export default function MobileHome() {
     <div className="flex flex-col gap-5 px-4 pb-6 pt-3">
       {/* Greeting */}
       <section className="flex flex-col gap-0.5">
-        <span className="text-[12px] font-medium uppercase tracking-wider text-neutral-400">
+        <span className="text-[12px] font-medium uppercase text-neutral-400">
           {t("welcome")}
         </span>
         <h2 className="text-[20px] font-bold leading-tight text-neutral-900 dark:text-neutral-100">

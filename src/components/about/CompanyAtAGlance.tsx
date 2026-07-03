@@ -37,7 +37,7 @@ export default async function CompanyAtAGlance() {
         {/* Team */}
         <div>
           <div className="max-w-2xl">
-            <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               {tTeam("eyebrow")}
             </span>
             <h2 className="mt-2 text-2xl font-semibold text-neutral-900 md:text-3xl dark:text-neutral-100">
@@ -60,7 +60,7 @@ export default async function CompanyAtAGlance() {
                 >
                   {monogram}
                 </span>
-                <span className="mt-3 text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <span className="mt-3 text-[11px] font-medium uppercase text-neutral-500 dark:text-neutral-400">
                   {tTeam(`roles.${role}`)}
                 </span>
                 <span className="mt-1 text-[13px] italic text-neutral-400 dark:text-neutral-500">
@@ -74,7 +74,7 @@ export default async function CompanyAtAGlance() {
         {/* Gallery */}
         <div className="mt-14 md:mt-20">
           <div className="max-w-2xl">
-            <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               {tGallery("eyebrow")}
             </span>
             <h3 className="mt-2 text-xl font-semibold text-neutral-900 md:text-2xl dark:text-neutral-100">

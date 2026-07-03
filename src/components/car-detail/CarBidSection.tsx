@@ -97,7 +97,7 @@ export default function CarBidSection(props: Props) {
       <AuctionCountdown auctionDate={auctionDate} />
       <dl className="grid grid-cols-2 gap-3 border-t border-neutral-100 pt-3 text-[13px] dark:border-neutral-800">
         <div className="flex flex-col gap-0.5">
-          <dt className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+          <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
             {tSpecs("auction")}
           </dt>
           <dd className="font-semibold text-neutral-900 dark:text-neutral-100">
@@ -105,7 +105,7 @@ export default function CarBidSection(props: Props) {
           </dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+          <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
             {tSpecs("lot")}
           </dt>
           <dd className="font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">

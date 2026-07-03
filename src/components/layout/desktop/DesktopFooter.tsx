@@ -73,7 +73,7 @@ const SOCIAL_LINKS: ReadonlyArray<{
   key: "facebook" | "instagram" | "youtube" | "tiktok";
   Icon: ComponentType<IconProps>;
 }> = [
-  { href: "https://facebook.com", key: "facebook", Icon: FacebookIcon },
+  { href: "https://www.facebook.com/tjcar.llc", key: "facebook", Icon: FacebookIcon },
   { href: "https://instagram.com", key: "instagram", Icon: InstagramIcon },
   { href: "https://youtube.com", key: "youtube", Icon: YoutubeIcon },
   { href: "https://tiktok.com", key: "tiktok", Icon: TiktokIcon },
@@ -89,7 +89,6 @@ const CARS_LINKS = [
 const COMPANY_LINKS = [
   { href: "/about", key: "about" as const },
   { href: "/contact", key: "contact" as const },
-  { href: "/privacy", key: "privacy" as const },
   { href: "/terms", key: "terms" as const },
 ] as const;
 
@@ -176,7 +175,22 @@ export default function DesktopFooter() {
             </FooterColumn>
 
             <FooterColumn heading={t("contact.heading")}>
-              <li className="text-sm text-neutral-400">{t("contact.phone")}</li>
+              <li>
+                <a
+                  href="tel:+97675115888"
+                  className="text-sm text-neutral-400 transition-colors hover:text-white"
+                >
+                  {t("contact.phone")}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:info@tjcar.mn"
+                  className="text-sm text-neutral-400 transition-colors hover:text-white"
+                >
+                  {t("contact.email")}
+                </a>
+              </li>
               <li className="text-sm text-neutral-400">
                 {t("contact.address")}
               </li>
@@ -191,12 +205,6 @@ export default function DesktopFooter() {
             &copy; {new Date().getFullYear()} TJ Car. {t("bottom.rights")}
           </p>
           <div className="flex items-center gap-6">
-            <Link
-              href="/privacy"
-              className="transition-colors hover:text-white"
-            >
-              {t("bottom.privacy")}
-            </Link>
             <Link href="/terms" className="transition-colors hover:text-white">
               {t("bottom.terms")}
             </Link>

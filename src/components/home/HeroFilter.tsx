@@ -240,7 +240,7 @@ function Cell({
 }) {
   return (
     <div className="flex flex-col gap-0.5 px-4 py-3">
-      <span className="text-[10.5px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+      <span className="text-[10.5px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
         {label}
       </span>
       {children}

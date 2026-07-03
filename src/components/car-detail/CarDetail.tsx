@@ -145,7 +145,7 @@ export default async function CarDetail({
           {/* Valuation hero — RATE (most important) + LOT, grouped once */}
           <section className="flex items-center justify-between gap-4 rounded-2xl bg-neutral-900 p-4 ring-1 ring-white/10 dark:bg-neutral-800">
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+              <div className="text-[11px] font-semibold uppercase text-neutral-400">
                 {t("specs.rate")}
               </div>
               <div className="mt-0.5 text-4xl font-extrabold leading-none tabular-nums text-emerald-400">
@@ -153,7 +153,7 @@ export default async function CarDetail({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+              <div className="text-[11px] font-semibold uppercase text-neutral-400">
                 {t("specs.lot")}
               </div>
               <div className="mt-0.5 text-lg font-semibold tabular-nums text-neutral-100">
@@ -165,7 +165,7 @@ export default async function CarDetail({
           {/* Price card — start/avg JPY (omitted on auction detail) */}
           {!hidePrice && (
             <section className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
                 {t("price.startLabel")}
               </div>
               <div className="mt-1 text-2xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
@@ -186,7 +186,7 @@ export default async function CarDetail({
                 key={label}
                 className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900"
               >
-                <span className="text-[10.5px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                   {label}
                 </span>
                 <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
@@ -288,7 +288,7 @@ export default async function CarDetail({
             >
               {!hidePrice && (
                 <div className="flex flex-col">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400">
+                  <span className="text-[10.5px] font-semibold uppercase text-neutral-400">
                     {t("price.startLabel")}
                   </span>
                   <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
@@ -312,7 +312,7 @@ export default async function CarDetail({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+      <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
         {label}
       </dt>
       <dd className="font-medium text-neutral-900 dark:text-neutral-100">{value}</dd>

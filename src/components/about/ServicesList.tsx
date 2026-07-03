@@ -18,7 +18,7 @@ export default async function ServicesList() {
     <section className="border-b border-neutral-100 dark:border-neutral-900">
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
         <div className="mb-8 max-w-2xl md:mb-10">
-          <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+          <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
             {t("eyebrow")}
           </span>
           <h2 className="mt-2 text-2xl font-semibold text-neutral-900 md:text-3xl dark:text-neutral-100">

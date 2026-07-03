@@ -137,7 +137,7 @@ export default function ChassisYearVerify({
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px]">
           {rows.map((row) => (
             <div key={row.label} className="flex flex-col gap-0.5">
-              <dt className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+              <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                 {row.label}
               </dt>
               <dd className="font-semibold text-neutral-900 dark:text-neutral-100">

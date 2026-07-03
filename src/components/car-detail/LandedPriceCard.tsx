@@ -48,7 +48,7 @@ export default function LandedPriceCard({
   return (
     <div className="flex flex-col justify-between gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
       <div className="flex items-start justify-between gap-1">
-        <div className="text-[11px] font-semibold uppercase leading-tight tracking-wider text-neutral-500 dark:text-neutral-400">
+        <div className="text-[11px] font-semibold uppercase leading-tight text-neutral-500 dark:text-neutral-400">
           {t("title")}
         </div>
         <button

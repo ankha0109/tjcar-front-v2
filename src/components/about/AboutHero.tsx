@@ -50,7 +50,7 @@ export default async function AboutHero() {
               <ArrowIcon className="h-3.5 w-3.5" />
             </Link>
             <a
-              href="tel:+97670000000"
+              href="tel:+97675115888"
               className="inline-flex h-11 items-center gap-2 rounded-full border border-neutral-300 bg-white/70 px-5 text-[13.5px] font-semibold text-neutral-900 backdrop-blur transition-colors duration-200 hover:border-neutral-900 hover:bg-white dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-100 dark:hover:border-neutral-100"
             >
               {t("cta.secondary")}

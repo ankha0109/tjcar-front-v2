@@ -117,7 +117,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
             <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
               {t("title")}
             </h2>
-            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium uppercase text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
               {t("demoBadge")}
             </span>
           </div>
@@ -210,7 +210,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
 
           {/* Explicit sales list — guarantees the requested "date · ¥ · ₮" format */}
           <div className="border-t border-neutral-100 pt-3 dark:border-neutral-800 lg:w-[30%] lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0">
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+          <h3 className="mb-2 text-[11px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
             {t("listTitle")}
           </h3>
           <ul className="max-h-44 space-y-1 overflow-y-auto pr-1 lg:max-h-72">

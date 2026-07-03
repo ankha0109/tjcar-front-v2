@@ -163,7 +163,7 @@ export default function CompareTable({ cars, onRemove }: Props) {
               <tr>
                 <td
                   colSpan={cars.length + 1}
-                  className="border-b border-neutral-100 bg-neutral-50 px-3 py-2 text-[11.5px] font-semibold uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
+                  className="border-b border-neutral-100 bg-neutral-50 px-3 py-2 text-[11.5px] font-semibold uppercase text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
                 >
                   {t(section.labelKey)}
                 </td>

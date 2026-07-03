@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { cn } from "@/utils";
 import MobileDrawer from "./MobileDrawer";
@@ -64,11 +64,25 @@ export default function MobileHeader({
   menuButton,
 }: Props) {
   const t = useTranslations("header");
+  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Go back through browser history so the previous list page restores its
+  // scroll position, URL filters and cached state. Only fall back to a fresh
+  // navigation to `href` when there is no in-app history to return to (direct
+  // entry, shared link, opened in a new tab).
+  const handleBack = (href: string) => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(href);
+    }
+  };
+
   const leading = back ? (
-    <Link
-      href={back.href}
+    <button
+      type="button"
+      onClick={() => handleBack(back.href)}
       aria-label={t("menu.closeMenu")}
       className="-ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-900"
     >
@@ -85,9 +99,13 @@ export default function MobileHeader({
       >
         <polyline points="15 18 9 12 15 6" />
       </svg>
-    </Link>
+    </button>
   ) : (
-    <Link href="/" aria-label={t("menu.homeAria")} className="inline-flex shrink-0">
+    <Link
+      href="/"
+      aria-label={t("menu.homeAria")}
+      className="inline-flex shrink-0"
+    >
       <Logo className="h-8 w-auto" />
     </Link>
   );

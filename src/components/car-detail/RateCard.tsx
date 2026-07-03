@@ -19,7 +19,7 @@ export default function RateCard({ rate, label }: Props) {
 
   return (
     <div className="flex flex-col justify-between gap-2 rounded-2xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+      <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
         {label}
       </div>
       <div

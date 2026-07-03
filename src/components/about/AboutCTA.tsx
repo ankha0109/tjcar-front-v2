@@ -28,7 +28,7 @@ export default async function AboutCTA() {
                 {t("primary")}
               </Link>
               <a
-                href="tel:+97670000000"
+                href="tel:+97675115888"
                 className="inline-flex h-11 items-center gap-2 rounded-full border border-neutral-300 bg-white px-5 text-[13.5px] font-semibold text-neutral-900 transition-colors duration-200 hover:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100 dark:hover:border-neutral-100"
               >
                 {t("secondary")}
@@ -37,7 +37,7 @@ export default async function AboutCTA() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-neutral-200 pt-6 dark:border-neutral-800">
-            <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="mr-1 text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
               {t("comingSoon.label")}
             </span>
             {COMING.map((key) => (

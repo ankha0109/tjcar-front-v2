@@ -17,7 +17,7 @@ export default async function AdvantagesAndTrust() {
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-7">
-            <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               {t("eyebrow")}
             </span>
             <h2 className="mt-2 text-2xl font-semibold text-neutral-900 md:text-3xl dark:text-neutral-100">
@@ -45,7 +45,7 @@ export default async function AdvantagesAndTrust() {
 
           <aside className="lg:col-span-5">
             <div className="rounded-2xl border border-neutral-200 bg-neutral-50/70 p-6 dark:border-neutral-800 dark:bg-neutral-900/40 md:p-7">
-              <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              <span className="text-xs font-medium uppercase text-primary">
                 {t("callout.eyebrow")}
               </span>
               <h3 className="mt-2 text-xl font-semibold text-neutral-900 md:text-2xl dark:text-neutral-100">
@@ -55,7 +55,7 @@ export default async function AdvantagesAndTrust() {
                 {t("callout.body")}
               </p>
               <div className="mt-5 rounded-xl border border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950">
-                <span className="block text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <span className="block text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
                   Toyota Prius
                 </span>
                 <span className="mt-1 block text-[13px] font-medium text-neutral-900 dark:text-neutral-100">

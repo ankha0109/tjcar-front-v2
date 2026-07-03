@@ -1,4 +1,25 @@
+import { signOut } from "next-auth/react";
 import { buildQuery, type QueryParams } from "@/utils/buildQuery";
+
+let signingOut = false;
+
+/**
+ * A 401 from the proxied backend means our bearer token was rejected (expired /
+ * revoked) even though next-auth may still report us as "authenticated" — e.g. a
+ * session that outlived its Sanctum token, or a backend that cleared tokens on
+ * redeploy. Clear the stale session once so the client re-syncs to a guest
+ * state; authed features (e.g. the wishlist) then fall back to their
+ * localStorage path instead of silently 401-ing on every write. `redirect:
+ * false` keeps the user on the current page as a guest rather than bouncing them
+ * to the login screen.
+ */
+function handleUnauthorized(): void {
+  if (signingOut || typeof window === "undefined") return;
+  signingOut = true;
+  void signOut({ redirect: false }).finally(() => {
+    signingOut = false;
+  });
+}
 
 function readLocaleFromCookie(): string {
   if (typeof document === "undefined") return "mn";
@@ -59,6 +80,7 @@ const Api = () => {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      if (response.status === 401) handleUnauthorized();
       throw new ApiError(
         response.status,
         errorData.message || response.statusText || "Unknown error",

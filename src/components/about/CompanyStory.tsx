@@ -11,7 +11,7 @@ export default async function CompanyStory() {
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-7">
-            <span className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               {t("eyebrow")}
             </span>
             <h2 className="mt-2 text-2xl font-semibold text-neutral-900 md:text-3xl dark:text-neutral-100">
@@ -29,7 +29,7 @@ export default async function CompanyStory() {
                   <span className="absolute -left-[27px] top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-950">
                     <span className="h-1 w-1 rounded-full bg-primary" />
                   </span>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
                     {t(`milestones.${key}.label`)}
                   </div>
                   <div className="mt-0.5 text-sm font-medium text-neutral-900 dark:text-neutral-100">

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { wishlistStore } from "@/lib/wishlistStore";
+import { ApiError } from "@/services/Api";
 import {
   addWishlist,
   getWishlist,
@@ -68,8 +69,12 @@ export function useWishlist(): UseWishlistResult {
       ]);
       return { prev };
     },
-    onError: (_err, _item, ctx) => {
+    onError: (err, item, ctx) => {
       if (ctx) queryClient.setQueryData(WISHLIST_KEY, ctx.prev);
+      // Token rejected: don't lose the save. Persist it to the guest store —
+      // Api's 401 handler signs us out, flipping us to the guest path where
+      // `localItems` (now holding this item) keeps the heart filled.
+      if (err instanceof ApiError && err.status === 401) wishlistStore.add(item);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: WISHLIST_KEY });
@@ -88,8 +93,11 @@ export function useWishlist(): UseWishlistResult {
       );
       return { prev };
     },
-    onError: (_err, _vars, ctx) => {
+    onError: (err, { source, id }, ctx) => {
       if (ctx) queryClient.setQueryData(WISHLIST_KEY, ctx.prev);
+      if (err instanceof ApiError && err.status === 401) {
+        wishlistStore.remove(source, id);
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: WISHLIST_KEY });

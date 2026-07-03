@@ -52,7 +52,7 @@ export default function AuctionCountdown({ auctionDate }: Props) {
   }, [auctionDate]);
 
   const label = (
-    <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+    <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
       {t("label")}
     </div>
   );

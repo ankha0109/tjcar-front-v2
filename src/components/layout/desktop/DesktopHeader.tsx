@@ -24,8 +24,8 @@ type CustomerUser = {
   currency: string;
 };
 
-const CONTACT_PHONE_RAW = "+97670000000";
-const CONTACT_PHONE_DISPLAY = "+976 7000-0000";
+const CONTACT_PHONE_RAW = "+97675115888";
+const CONTACT_PHONE_DISPLAY = "+976 7511-5888";
 
 const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -225,7 +225,7 @@ function DrawerSection({
   return (
     <div className="border-b border-neutral-100 py-2 last:border-b-0 dark:border-neutral-900">
       {title ? (
-        <div className="px-5 pb-1 pt-2 text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+        <div className="px-5 pb-1 pt-2 text-[10.5px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
           {title}
         </div>
       ) : null}
@@ -570,7 +570,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
 
           {/* Rates card */}
           <div className="border-b border-neutral-100 px-5 py-3 dark:border-neutral-900">
-            <div className="mb-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+            <div className="mb-1.5 text-[10.5px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
               {t("topbar.rates.label")}
             </div>
             <div className="flex items-center gap-4">
