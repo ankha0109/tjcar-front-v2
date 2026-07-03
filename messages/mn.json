@@ -387,6 +387,7 @@
       "updating": "Шинэчилж байна",
       "totalCars": "Нийт {count} машин",
       "all": "Бүгд",
+      "pickDay": "Өдөр сонгох",
       "carsUnit": "машин",
       "empty": "Хоосон",
       "noResultsTitle": "Тохирох машин олдсонгүй",

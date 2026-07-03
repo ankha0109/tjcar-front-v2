@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "antd";
+import { useState } from "react";
+import { Button, Drawer } from "antd";
 import { cn } from "@/utils";
 
 // Segmented date rail: calendar-style two-line tiles inside one rounded
@@ -195,5 +196,194 @@ export function EmptyState({
       <p className="mt-3 text-[14px] font-medium text-neutral-700">{title}</p>
       <p className="mt-1 text-[12.5px] text-neutral-500">{description}</p>
     </div>
+  );
+}
+
+export type ScheduleDayOption = {
+  key: string; // "YYYY-MM-DD"
+  topLabel: string; // relative label ("Маргааш") or dow ("Sat")
+  day: string; // "04"
+  month: string; // "Jul"
+  weekend?: boolean;
+  count?: number;
+};
+
+// Mobile replacement for ScheduleTabList: a rail-styled trigger that opens a
+// bottom drawer of day options. Parents gate it behind `sm:hidden`; the
+// component itself has no breakpoint knowledge.
+export function ScheduleDayDrawer({
+  selected,
+  onSelect,
+  allLabel,
+  allCount,
+  days,
+  title,
+  emptyLabel,
+}: {
+  selected: string; // "all" | "YYYY-MM-DD"
+  onSelect: (key: string) => void;
+  allLabel: string;
+  allCount?: number;
+  days: ScheduleDayOption[];
+  title: string;
+  emptyLabel?: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const activeDay = days.find((d) => d.key === selected);
+  const triggerLabel =
+    selected === "all"
+      ? allLabel
+      : activeDay
+        ? `${activeDay.topLabel} · ${activeDay.day} ${activeDay.month}`
+        : selected;
+
+  const pick = (key: string) => {
+    onSelect(key);
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        className="flex h-10 w-full min-w-0 items-center justify-between gap-2 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 px-3.5 text-[12.5px] font-bold text-neutral-800 transition-colors hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-100 dark:hover:bg-neutral-800"
+      >
+        <span className="truncate">{triggerLabel}</span>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="shrink-0 text-neutral-400"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      <Drawer
+        open={open}
+        onClose={() => setOpen(false)}
+        placement="bottom"
+        size="auto"
+        title={title}
+        styles={{
+          header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
+          body: { padding: "8px 8px 16px" },
+          section: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
+        }}
+      >
+        <div role="listbox" aria-label={title} className="flex flex-col">
+          <DrawerRow
+            isActive={selected === "all"}
+            onClick={() => pick("all")}
+            label={allLabel}
+            count={allCount}
+            emptyLabel={emptyLabel}
+          />
+          {days.map((d) => (
+            <DrawerRow
+              key={d.key}
+              isActive={selected === d.key}
+              onClick={() => pick(d.key)}
+              label={`${d.day} ${d.month}`}
+              topLabel={d.topLabel}
+              weekend={d.weekend}
+              count={d.count}
+              emptyLabel={emptyLabel}
+            />
+          ))}
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+function DrawerRow({
+  isActive,
+  onClick,
+  label,
+  topLabel,
+  weekend,
+  count,
+  emptyLabel,
+}: {
+  isActive: boolean;
+  onClick: () => void;
+  label: string;
+  topLabel?: string;
+  weekend?: boolean;
+  count?: number;
+  emptyLabel?: string;
+}) {
+  const isEmpty = count === 0;
+  return (
+    <button
+      type="button"
+      role="option"
+      aria-selected={isActive}
+      onClick={onClick}
+      className={cn(
+        "flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-colors",
+        isActive
+          ? "bg-neutral-100 dark:bg-neutral-800"
+          : "hover:bg-neutral-50 dark:hover:bg-neutral-800/60",
+        !isActive && isEmpty && "opacity-50",
+      )}
+    >
+      <span
+        className={cn(
+          "inline-flex h-4 w-4 shrink-0 items-center justify-center text-neutral-900 dark:text-neutral-100",
+          !isActive && "invisible",
+        )}
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      </span>
+      <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
+        {topLabel && (
+          <span
+            className={cn(
+              "shrink-0 text-[10px] font-semibold uppercase tracking-wide",
+              weekend
+                ? "text-rose-500"
+                : "text-neutral-400 dark:text-neutral-500",
+            )}
+          >
+            {topLabel}
+          </span>
+        )}
+        <span className="truncate text-[13.5px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+          {label}
+        </span>
+      </span>
+      {count != null && !isEmpty && (
+        <span className="rounded-full bg-primary/10 px-1.5 text-[10.5px] font-semibold leading-4.5 tabular-nums text-primary">
+          {count}
+        </span>
+      )}
+      {isEmpty && emptyLabel && (
+        <span className="text-[10.5px] font-medium text-neutral-400">
+          {emptyLabel}
+        </span>
+      )}
+    </button>
   );
 }

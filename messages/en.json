@@ -387,6 +387,7 @@
       "updating": "Updating",
       "totalCars": "{count} cars total",
       "all": "All",
+      "pickDay": "Pick a day",
       "carsUnit": "cars",
       "empty": "Empty",
       "noResultsTitle": "No matching cars",

@@ -387,6 +387,7 @@
       "updating": "Обновление",
       "totalCars": "Всего {count} авто",
       "all": "Все",
+      "pickDay": "Выбрать день",
       "carsUnit": "авто",
       "empty": "Пусто",
       "noResultsTitle": "Подходящих авто не найдено",
