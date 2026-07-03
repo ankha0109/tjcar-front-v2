@@ -20,6 +20,7 @@ import {
   AllTab,
   DayTab,
   EmptyState,
+  ScheduleDayDrawer,
   ScheduleTabList,
 } from "@/components/cards/views/scheduleTabs";
 import {
@@ -167,7 +168,25 @@ export default function FeaturedAuctionSchedule({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
+            <div className="min-w-0 flex-1 pb-3 sm:hidden">
+              <ScheduleDayDrawer
+                selected={selected}
+                onSelect={setSelected}
+                allLabel={t("all")}
+                allCount={cars.length}
+                days={days.map((d) => ({
+                  key: d.key,
+                  topLabel: d.topLabel,
+                  day: d.day,
+                  month: d.month,
+                  weekend: d.isWeekend,
+                  count: countsByDate.get(d.key) ?? 0,
+                }))}
+                title={t("pickDay")}
+                emptyLabel={t("empty")}
+              />
+            </div>
+            <div className="hidden min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:block lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
               <ScheduleTabList>
                 <AllTab
                   isActive={selected === "all"}
