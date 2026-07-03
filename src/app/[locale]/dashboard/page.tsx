@@ -18,11 +18,10 @@ export default async function DashboardIndex({
   const session = await auth();
   const firstName = session?.user?.name?.trim().split(" ")[0] || t("guestName");
 
-  // TODO: wire APIs for personal counts (bids/reports/tracking)
+  // TODO: wire APIs for personal counts (bids/reports)
   const stats = {
     bids: { count: 0, pending: 0 },
     reports: { count: 0 },
-    tracking: { count: 0, endingToday: 0 },
   };
 
   const QUICK_ACTIONS = [
@@ -50,7 +49,7 @@ export default async function DashboardIndex({
         description={t("subtitle")}
       />
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StatCard
             label={t("stats.bidsLabel")}
             value={stats.bids.count}
@@ -62,16 +61,6 @@ export default async function DashboardIndex({
             value={stats.reports.count}
             hint={t("stats.reportsHint")}
             href="/dashboard/reports"
-          />
-          <StatCard
-            label={t("stats.trackingLabel")}
-            value={stats.tracking.count}
-            hint={
-              stats.tracking.endingToday > 0
-                ? t("stats.trackingHintEnding", { count: stats.tracking.endingToday })
-                : t("stats.trackingHintActive")
-            }
-            href="/dashboard/tracking"
           />
         </section>
 

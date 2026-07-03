@@ -230,12 +230,35 @@ export default function JapanAuctionFilters({
     // Without a model the list spans every model, so the bare code is
     // ambiguous — append the model name to disambiguate.
     const withModel = !value.model;
-    return filtered.map((c) => ({
-      value: c.code,
-      label: withModel
-        ? `${c.code} · ${c.model} (${c.count})`
-        : `${c.code} (${c.count})`,
-    }));
+    // A chassis code can appear under several models (the feed is per
+    // code×model), but the filter value is the code alone — collapse to one
+    // option per code (summing counts) so option values stay unique. Keep the
+    // model in the label only when the code maps to a single model; otherwise
+    // it would misleadingly imply the selection filters by that one model.
+    const byCode = new Map<
+      string,
+      { code: string; models: Set<string>; count: number }
+    >();
+    for (const c of filtered) {
+      const entry = byCode.get(c.code) ?? {
+        code: c.code,
+        models: new Set<string>(),
+        count: 0,
+      };
+      entry.models.add(c.model);
+      entry.count += c.count;
+      byCode.set(c.code, entry);
+    }
+    return [...byCode.values()].map((e) => {
+      const singleModel = e.models.size === 1 ? [...e.models][0] : null;
+      return {
+        value: e.code,
+        label:
+          withModel && singleModel
+            ? `${e.code} · ${singleModel} (${e.count})`
+            : `${e.code} (${e.count})`,
+      };
+    });
   }, [options?.chassis, value.model, value.marka, modelToMarka]);
 
   const colorOptions = useMemo(
@@ -1050,11 +1073,11 @@ function OptionList({
             —
           </div>
         ) : (
-          filtered.map((o) => {
+          filtered.map((o, i) => {
             const active = o.value === selected;
             return (
               <button
-                key={o.value}
+                key={`${o.value}::${i}`}
                 type="button"
                 onClick={() => onSelect(o.value)}
                 className={cn(
@@ -1105,11 +1128,11 @@ function RangeColumns({
                 —
               </div>
             ) : (
-              col.options.map((o) => {
+              col.options.map((o, i) => {
                 const active = o.value === col.value;
                 return (
                   <button
-                    key={o.value}
+                    key={`${o.value}::${i}`}
                     type="button"
                     onClick={() => col.onChange(active ? null : o.value)}
                     className={cn(

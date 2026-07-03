@@ -51,15 +51,6 @@ const NAV_HREFS = [
       </svg>
     ),
   },
-  {
-    href: "/wishlist",
-    key: "tracking",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-      </svg>
-    ),
-  },
 ] as const;
 
 export default function Sidebar() {
@@ -68,25 +59,13 @@ export default function Sidebar() {
 
   const NAV = NAV_HREFS.map((item) => ({
     ...item,
-    label: t(item.key as "overview" | "profile" | "bids" | "reports" | "tracking"),
+    label: t(item.key as "overview" | "profile" | "bids" | "reports"),
   }));
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white h-full dark:border-neutral-800 dark:bg-neutral-950">
-      <div className="px-4 py-5 border-b border-neutral-200 dark:border-neutral-800">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-neutral-900 text-white flex items-center justify-center text-xs font-bold dark:bg-neutral-100 dark:text-neutral-900">
-            T
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">TJCAR</span>
-            <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{t("title")}</span>
-          </div>
-        </Link>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto p-2">
-        <p className="px-2 py-2 text-[11px] font-medium uppercaser text-neutral-500 dark:text-neutral-400">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+      <nav className="flex-1 overflow-y-auto p-3">
+        <p className="px-2 py-2 text-[11px] font-medium uppercase text-neutral-500 dark:text-neutral-400">
           {t("menuHeading")}
         </p>
         <ul className="space-y-0.5">
@@ -121,10 +100,6 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
-
-      <div className="border-t border-neutral-200 p-3 dark:border-neutral-800">
-        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">TJCAR · v0.2</p>
-      </div>
     </aside>
   );
 }

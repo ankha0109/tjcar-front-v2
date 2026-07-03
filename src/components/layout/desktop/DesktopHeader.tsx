@@ -666,7 +666,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
 
             <DrawerSection>
               <DrawerLink
-                href="/dashboard/tracking"
+                href="/wishlist"
                 onClick={() => setMobileOpen(false)}
                 leading={<HeartIcon className="h-4 w-4 text-rose-500" />}
               >

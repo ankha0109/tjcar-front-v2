@@ -262,7 +262,6 @@
   "auth": {
     "login": {
       "title": "Sign in",
-      "subtitle": "Enter your details to access the platform",
       "phoneLabel": "Phone number",
       "phonePlaceholder": "Enter your phone number",
       "phoneRequired": "Please enter your phone number",
@@ -273,7 +272,6 @@
       "errorInvalid": "Phone number or password is incorrect.",
       "errorGeneric": "Sign-in failed. Please try again.",
       "metaDescription": "Sign-in page",
-      "welcomeBadge": "Welcome back",
       "brandHeading": "Pick up right where you left off",
       "brandSubheading": "Track your cars, manage orders and download reports — all from a single account.",
       "benefit1": "Live Japan & Korea auctions",
@@ -284,8 +282,6 @@
     },
     "register": {
       "title": "Sign up",
-      "subtitle": "Enter your details to create a new account",
-      "welcomeBadge": "Get started",
       "brandHeading": "Create your account in a few steps",
       "brandSubheading": "Sign up to join live Japan & Korea auctions and follow your orders from start to finish.",
       "benefit1": "Set up in just a few minutes",
@@ -301,8 +297,9 @@
       "phonePlaceholder": "Enter your phone number",
       "phoneRequired": "Please enter your phone number",
       "phoneInvalid": "Phone number must be 8 digits.",
-      "emailLabel": "Email (optional)",
+      "emailLabel": "Email",
       "emailPlaceholder": "Enter your email address",
+      "emailRequired": "Please enter your email address",
       "emailInvalid": "Please enter a valid email address.",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
@@ -415,13 +412,11 @@
   },
   "dashboard": {
     "sidebar": {
-      "title": "Dashboard",
       "menuHeading": "Menu",
       "overview": "Overview",
       "profile": "Profile",
       "bids": "My bids",
-      "reports": "My reports",
-      "tracking": "Tracked cars"
+      "reports": "My reports"
     },
     "home": {
       "guestName": "Guest",
@@ -445,10 +440,7 @@
         "bidsLabel": "Bids sent",
         "bidsHint": "{count} pending",
         "reportsLabel": "My reports",
-        "reportsHint": "total created",
-        "trackingLabel": "Tracked cars",
-        "trackingHintEnding": "{count} ending today",
-        "trackingHintActive": "in watchlist"
+        "reportsHint": "total created"
       },
       "recent": {
         "title": "Recent activity",
@@ -486,18 +478,6 @@
       "settingsSubheading": "Notifications, currency, language preferences.",
       "settingsComingTitle": "Settings are coming soon",
       "settingsComingDescription": "Available in an upcoming release."
-    },
-    "tracking": {
-      "title": "Tracked cars",
-      "description": "Manage your watchlist.",
-      "listHeading": "Watchlist",
-      "listEmptyTitle": "Watchlist is empty",
-      "listEmptyDescription": "Add cars you're interested in from active auctions.",
-      "listEmptyCta": "Find cars",
-      "endingHeading": "Ending soon",
-      "endingSubheading": "Auctions ending in the next 24 hours.",
-      "endingEmptyTitle": "Nothing ending soon",
-      "endingEmptyDescription": "Items you add will appear here."
     },
     "reports": {
       "title": "My reports",
@@ -1258,9 +1238,11 @@
       "count": "{count, plural, =0 {No cars} one {# car} other {# cars}}",
       "categories": {
         "japan": "Japan cars",
+        "japanHint": "Pick your car from Japanese auctions (45–60 days)",
         "korea": "Korea cars",
+        "koreaHint": "Buy directly from the Korean car market (14 days)",
         "ready": "In-stock cars",
-        "readyHint": "Ready in Mongolia",
+        "readyHint": "In stock in Mongolia, in transit, or available to pre-order",
         "report": "Report service",
         "reportHint": "Check damage, mileage & see real photos"
       },

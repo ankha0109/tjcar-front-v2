@@ -20,7 +20,7 @@ type RegisterFormValues = {
   lastname: string;
   firstname: string;
   phone: string;
-  email?: string;
+  email: string;
   password: string;
   confirm: string;
 };
@@ -41,18 +41,13 @@ const RegisterFormContent = () => {
   const onFinish = async (values: RegisterFormValues) => {
     setLoading(true);
     try {
-      const email = values.email?.trim();
-      const payload: Record<string, string> = {
+      await Api.post("/auth/register", {
         firstname: values.firstname,
         lastname: values.lastname,
         phone: values.phone,
+        email: values.email.trim(),
         password: values.password,
-      };
-      if (email) {
-        payload.email = email;
-      }
-
-      await Api.post("/auth/register", payload);
+      });
 
       const signInResult = await signIn("credentials", {
         phone: values.phone,
@@ -111,16 +106,9 @@ const RegisterFormContent = () => {
               className="hero-reveal mb-7"
               style={{ animationDelay: "80ms" }}
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[12px] font-medium text-primary">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {t("welcomeBadge")}
-              </span>
-              <h1 className="mt-4 text-[28px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+              <h1 className="text-[28px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
                 {t("title")}
               </h1>
-              <p className="mt-1.5 text-[14.5px] text-neutral-500 dark:text-neutral-400">
-                {t("subtitle")}
-              </p>
             </div>
 
             <Form
@@ -194,7 +182,10 @@ const RegisterFormContent = () => {
                 <Form.Item
                   label={fieldLabel(t("emailLabel"))}
                   name="email"
-                  rules={[{ type: "email", message: t("emailInvalid") }]}
+                  rules={[
+                    { required: true, message: t("emailRequired") },
+                    { type: "email", message: t("emailInvalid") },
+                  ]}
                 >
                   <Input
                     size="large"

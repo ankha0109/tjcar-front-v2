@@ -73,16 +73,9 @@ const LoginFormContent = () => {
               className="hero-reveal mb-8"
               style={{ animationDelay: "80ms" }}
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[12px] font-medium text-primary">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {t("welcomeBadge")}
-              </span>
-              <h1 className="mt-4 text-[28px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+              <h1 className="text-[28px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
                 {t("title")}
               </h1>
-              <p className="mt-1.5 text-[14.5px] text-neutral-500 dark:text-neutral-400">
-                {t("subtitle")}
-              </p>
             </div>
 
             <Form
