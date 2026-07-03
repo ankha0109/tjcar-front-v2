@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, DatePicker, Drawer, Input, Select, Space, Tag } from "antd";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import {
@@ -106,6 +106,22 @@ function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function CheckIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
 function ColorSwatch({ name }: { name: string }) {
   const swatch = getColorSwatch(name);
   return (
@@ -167,6 +183,7 @@ export default function JapanAuctionFilters({
 }: Props) {
   const t = useTranslations("featured.filters");
   const [openField, setOpenField] = useState<string | null>(null);
+  const drawerBodyRef = useRef<HTMLDivElement>(null);
 
   const set = <K extends keyof FilterValues>(key: K, v: FilterValues[K]) => {
     onChange({ ...value, [key]: v });
@@ -630,6 +647,53 @@ export default function JapanAuctionFilters({
 
   const activeField = fields.find((f) => f.key === openField) ?? null;
 
+  const renderMobileControl = (m: MobileControl) => {
+    switch (m.type) {
+      case "single":
+        return (
+          <OptionList
+            options={m.options}
+            selected={m.value}
+            searchPlaceholder={t("search")}
+            onSelect={(v) => {
+              m.onSelect(v);
+              setOpenField(null);
+            }}
+          />
+        );
+      case "range":
+        return <RangeColumns from={m.from} to={m.to} />;
+      case "date":
+        return (
+          <DatePicker
+            placeholder={m.placeholder}
+            allowClear
+            inputReadOnly
+            value={m.value ? dayjs(m.value) : null}
+            onChange={(d) => {
+              m.onChange(d ? d.format("YYYY-MM-DD") : null);
+              if (d) setOpenField(null);
+            }}
+            variant="filled"
+            format="YYYY-MM-DD"
+            style={{ width: "100%" }}
+            getPopupContainer={() => drawerBodyRef.current ?? document.body}
+          />
+        );
+      case "text":
+        return (
+          <Input
+            placeholder={m.placeholder}
+            allowClear
+            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+            value={m.value}
+            onChange={(e) => m.onChange(e.target.value)}
+            variant="filled"
+          />
+        );
+    }
+  };
+
   const body = (
     <div className="divide-y divide-neutral-100">
       <Section title={t("sections.vehicle")} defaultOpen activeCount={vehicleCount}>
@@ -747,22 +811,36 @@ export default function JapanAuctionFilters({
           section: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
         }}
         footer={
-          <div className="flex items-center justify-between gap-2">
-            <Button
-              type="text"
-              onClick={() => activeField?.clear()}
-              disabled={!activeField?.active}
-              className="!text-neutral-500"
-            >
-              {t("clear")}
-            </Button>
-            <Button type="primary" onClick={() => setOpenField(null)}>
-              {t("done")}
-            </Button>
-          </div>
+          activeField ? (
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="text"
+                onClick={() => {
+                  activeField.clear();
+                  if (
+                    activeField.mobile.type !== "range" &&
+                    activeField.mobile.type !== "text"
+                  )
+                    setOpenField(null);
+                }}
+                disabled={!activeField.active}
+                className="!text-neutral-500"
+              >
+                {t("clear")}
+              </Button>
+              {(activeField.mobile.type === "range" ||
+                activeField.mobile.type === "text") && (
+                <Button type="primary" onClick={() => setOpenField(null)}>
+                  {t("search")}
+                </Button>
+              )}
+            </div>
+          ) : null
         }
       >
-        {activeField?.control}
+        <div ref={drawerBodyRef} className="relative">
+          {activeField && renderMobileControl(activeField.mobile)}
+        </div>
       </Drawer>
     </>
   );
@@ -928,6 +1006,128 @@ function FilterPill({
           <CloseIcon className="h-3 w-3" />
         </button>
       )}
+    </div>
+  );
+}
+
+function OptionList({
+  options,
+  selected,
+  onSelect,
+  searchPlaceholder,
+  searchThreshold = 8,
+}: {
+  options: { value: string; label: React.ReactNode; searchText: string }[];
+  selected: string | null;
+  onSelect: (value: string) => void;
+  searchPlaceholder: string;
+  searchThreshold?: number;
+}) {
+  const [query, setQuery] = useState("");
+  const showSearch = options.length > searchThreshold;
+  const filtered =
+    showSearch && query
+      ? options.filter((o) =>
+          o.searchText.toLowerCase().includes(query.toLowerCase()),
+        )
+      : options;
+  return (
+    <div className="flex flex-col">
+      {showSearch && (
+        <Input
+          placeholder={searchPlaceholder}
+          allowClear
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+          variant="filled"
+          className="mb-2"
+        />
+      )}
+      <div className="-mx-1 max-h-[50vh] overflow-y-auto">
+        {filtered.length === 0 ? (
+          <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
+            —
+          </div>
+        ) : (
+          filtered.map((o) => {
+            const active = o.value === selected;
+            return (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => onSelect(o.value)}
+                className={cn(
+                  "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-[14px] transition-colors",
+                  active
+                    ? "bg-primary/10 font-medium text-primary"
+                    : "text-neutral-700 hover:bg-neutral-50 dark:text-neutral-200 dark:hover:bg-neutral-800",
+                )}
+              >
+                <span className="min-w-0 flex-1 truncate">{o.label}</span>
+                {active && <CheckIcon className="h-4 w-4 shrink-0" />}
+              </button>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RangeColumns({
+  from,
+  to,
+}: {
+  from: {
+    options: RangeOpt[];
+    value: number | null;
+    onChange: (v: number | null) => void;
+    placeholder: string;
+  };
+  to: {
+    options: RangeOpt[];
+    value: number | null;
+    onChange: (v: number | null) => void;
+    placeholder: string;
+  };
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {[from, to].map((col) => (
+        <div key={col.placeholder} className="min-w-0">
+          <div className="mb-1.5 text-[11px] font-semibold uppercase text-neutral-500">
+            {col.placeholder}
+          </div>
+          <div className="max-h-[45vh] overflow-y-auto rounded-lg border border-neutral-100 dark:border-neutral-800">
+            {col.options.length === 0 ? (
+              <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
+                —
+              </div>
+            ) : (
+              col.options.map((o) => {
+                const active = o.value === col.value;
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => col.onChange(active ? null : o.value)}
+                    className={cn(
+                      "flex w-full items-center justify-between gap-1 px-3 py-2 text-left text-[13px] transition-colors",
+                      active
+                        ? "bg-primary/10 font-medium text-primary"
+                        : "text-neutral-700 hover:bg-neutral-50 dark:text-neutral-200 dark:hover:bg-neutral-800",
+                    )}
+                  >
+                    <span className="truncate">{o.label}</span>
+                    {active && <CheckIcon className="h-3.5 w-3.5 shrink-0" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
