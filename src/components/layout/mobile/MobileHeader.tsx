@@ -1,19 +1,12 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
+import { useCompare } from "@/hooks/useCompare";
 import { cn } from "@/utils";
 import MobileDrawer from "./MobileDrawer";
-
-type CustomerUser = {
-  firstname: string;
-  lastname: string;
-  balance?: number;
-  currency?: string;
-};
 
 type Props = {
   title?: string;
@@ -23,35 +16,37 @@ type Props = {
   menuButton?: boolean;
 };
 
-function getInitials(user: CustomerUser) {
-  const f = user.firstname?.[0] ?? "";
-  const l = user.lastname?.[0] ?? "";
-  return `${f}${l}`.toUpperCase() || "U";
-}
-
+// Compare tray entry point. Auth lives in the bottom nav's profile tab, so
+// the header's right slot goes to compare instead of sign-in/avatar.
 function DefaultRight() {
   const t = useTranslations("header");
-  const { data: session } = useSession();
-  const user = session?.user as CustomerUser | undefined;
-
-  if (session && user) {
-    return (
-      <Link
-        href="/dashboard"
-        aria-label={t("menu.open")}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-neutral-900 text-[12px] font-semibold text-white dark:bg-neutral-100 dark:text-neutral-900"
-      >
-        {getInitials(user)}
-      </Link>
-    );
-  }
+  const { count } = useCompare();
 
   return (
     <Link
-      href="/auth/login"
-      className="inline-flex h-9 items-center rounded-full bg-neutral-900 px-3 text-[12px] font-semibold text-white dark:bg-neutral-100 dark:text-neutral-900"
+      href="/compare"
+      aria-label={t("compare")}
+      className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-900"
     >
-      {t("auth.signIn")}
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M3 7h13l-3-3" />
+        <path d="M21 17H8l3 3" />
+      </svg>
+      {count > 0 && (
+        <span className="absolute top-0 right-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold leading-none text-white">
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
     </Link>
   );
 }
