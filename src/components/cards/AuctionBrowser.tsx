@@ -38,7 +38,7 @@ type Props = {
   initialViewMode?: ViewMode;
 };
 
-const DAYS_AHEAD = 3;
+const DAYS_AHEAD = 5;
 const FILTER_DEBOUNCE_MS = 400;
 
 function serializeFilters(filters: FilterValues): string {
