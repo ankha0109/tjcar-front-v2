@@ -89,6 +89,23 @@ function ChevronIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+
 function ColorSwatch({ name }: { name: string }) {
   const swatch = getColorSwatch(name);
   return (
@@ -121,7 +138,7 @@ export default function JapanAuctionFilters({
   optionsLoading,
 }: Props) {
   const t = useTranslations("featured.filters");
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openField, setOpenField] = useState<string | null>(null);
 
   const set = <K extends keyof FilterValues>(key: K, v: FilterValues[K]) => {
     onChange({ ...value, [key]: v });
@@ -525,6 +542,8 @@ export default function JapanAuctionFilters({
   const sectionFields = (s: FieldSection) =>
     fields.filter((f) => f.section === s);
 
+  const activeField = fields.find((f) => f.key === openField) ?? null;
+
   const body = (
     <div className="divide-y divide-neutral-100">
       <Section title={t("sections.vehicle")} defaultOpen activeCount={vehicleCount}>
@@ -568,29 +587,31 @@ export default function JapanAuctionFilters({
 
   return (
     <>
-      {/* Mobile trigger bar — visible below lg */}
-      <div className="mb-3 flex items-center gap-2 lg:hidden">
-        <Button
-          onClick={() => setMobileOpen(true)}
-          icon={<FilterIcon className="h-3.5 w-3.5" />}
-          className="!h-9 !shrink-0"
-        >
-          {t("title")}
-          {totalCount > 0 && (
-            <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
-              {totalCount}
-            </span>
-          )}
-        </Button>
-        {hasFilters && (
-          <Button
-            type="text"
-            onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
-            className="!text-neutral-500"
-          >
-            {t("clear")}
-          </Button>
-        )}
+      {/* Mobile pill row — visible below lg */}
+      <div className="mb-3 lg:hidden">
+        <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-2">
+            {fields.map((f) => (
+              <FilterPill
+                key={f.key}
+                label={f.label}
+                summary={f.summary}
+                active={f.active}
+                onOpen={() => setOpenField(f.key)}
+                onClear={f.clear}
+              />
+            ))}
+            {hasFilters && (
+              <Button
+                type="text"
+                onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
+                className="!shrink-0 !text-neutral-500"
+              >
+                {t("clear")}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Desktop sidebar — visible at lg+ */}
@@ -625,49 +646,36 @@ export default function JapanAuctionFilters({
         </div>
       </aside>
 
-      {/* Mobile drawer */}
+      {/* Mobile per-field bottom drawer */}
       <Drawer
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        placement="left"
-        size={320}
-        title={
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
-              <FilterIcon className="h-3.5 w-3.5" />
-            </span>
-            <span className="text-[14px] font-semibold text-neutral-900">
-              {t("title")}
-            </span>
-            {totalCount > 0 && (
-              <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
-                {totalCount}
-              </span>
-            )}
-          </div>
-        }
+        open={openField != null}
+        onClose={() => setOpenField(null)}
+        placement="bottom"
+        height="auto"
+        title={activeField?.label}
         styles={{
           header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
-          body: { padding: "4px 20px" },
+          body: { padding: "20px" },
           footer: { padding: 16 },
+          content: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
         }}
         footer={
           <div className="flex items-center justify-between gap-2">
             <Button
               type="text"
-              onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
-              disabled={!hasFilters}
+              onClick={() => activeField?.clear()}
+              disabled={!activeField?.active}
               className="!text-neutral-500"
             >
               {t("clear")}
             </Button>
-            <Button type="primary" onClick={() => setMobileOpen(false)}>
+            <Button type="primary" onClick={() => setOpenField(null)}>
               {t("done")}
             </Button>
           </div>
         }
       >
-        {body}
+        {activeField?.control}
       </Drawer>
     </>
   );
@@ -782,6 +790,55 @@ export function JapanAuctionFilterChips({
           {c.label}
         </Tag>
       ))}
+    </div>
+  );
+}
+
+function FilterPill({
+  label,
+  summary,
+  active,
+  onOpen,
+  onClear,
+}: {
+  label: string;
+  summary: string | null;
+  active: boolean;
+  onOpen: () => void;
+  onClear: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "inline-flex shrink-0 items-center gap-1 rounded-full border px-3 py-1.5 text-[13px] transition-colors",
+        active
+          ? "border-primary/30 bg-primary/10 text-primary"
+          : "border-neutral-200 bg-white text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200",
+      )}
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        className="inline-flex items-center gap-1"
+      >
+        <span className="whitespace-nowrap font-medium">
+          {active && summary ? `${label}: ${summary}` : label}
+        </span>
+        {!active && <ChevronIcon className="h-3 w-3 opacity-60" />}
+      </button>
+      {active && (
+        <button
+          type="button"
+          aria-label="clear"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClear();
+          }}
+          className="ml-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full text-primary/70 hover:bg-primary/20 hover:text-primary"
+        >
+          <CloseIcon className="h-3 w-3" />
+        </button>
+      )}
     </div>
   );
 }
