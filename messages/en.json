@@ -350,6 +350,7 @@
       "clear": "Clear",
       "active": "Active",
       "done": "Done",
+      "search": "Search",
       "year": {
         "label": "Production year",
         "hint": "Range of production years",
