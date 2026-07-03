@@ -40,6 +40,45 @@ export default function AiChatPanel({ mounted }: Props) {
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<AiChatInputHandle | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
+  // On-screen keyboards (iOS Safari, Android Chrome) shrink only the visual
+  // viewport — the layout viewport that position:fixed anchors to stays
+  // full-height, so the bottom-anchored input ends up behind the keyboard.
+  // While the keyboard is up, pin the panel to the visible area instead;
+  // otherwise leave sizing to the CSS classes (h-dvh + the open animation).
+  useEffect(() => {
+    const el = panelRef.current;
+    const vv = window.visualViewport;
+    if (!el || !vv) return;
+    let keyboardWasOpen = false;
+    const apply = () => {
+      const keyboardInset = window.innerHeight - vv.height - vv.offsetTop;
+      const keyboardOpen =
+        window.innerWidth < 768 && (keyboardInset > 1 || vv.offsetTop > 0);
+      if (keyboardOpen) {
+        el.style.height = `${vv.height}px`;
+        el.style.transform = `translateY(${vv.offsetTop}px)`;
+        if (!keyboardWasOpen) {
+          const list = scrollRef.current;
+          list?.scrollTo({ top: list.scrollHeight });
+        }
+      } else {
+        el.style.height = "";
+        el.style.transform = "";
+      }
+      keyboardWasOpen = keyboardOpen;
+    };
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+      el.style.height = "";
+      el.style.transform = "";
+    };
+  }, []);
 
   // Focus input on first open.
   useEffect(() => {
@@ -64,6 +103,7 @@ export default function AiChatPanel({ mounted }: Props) {
 
   return (
     <div
+      ref={panelRef}
       role="dialog"
       aria-modal="false"
       aria-label={t("title")}
@@ -74,8 +114,10 @@ export default function AiChatPanel({ mounted }: Props) {
         "transition-all duration-300 ease-out",
         "data-[state=closed]:translate-y-4 data-[state=closed]:opacity-0",
         "data-[state=open]:translate-y-0 data-[state=open]:opacity-100",
-        // Mobile: always full-screen drawer
-        "inset-0 w-screen h-screen rounded-none border-0",
+        // Mobile: always full-screen drawer. h-dvh (not h-screen): 100vh is the
+        // large-viewport height on iOS Safari, which puts the input behind the
+        // bottom browser bar whenever the bar is expanded.
+        "inset-0 h-dvh rounded-none border-0",
         // Desktop windowed
         "md:data-[mode=window]:right-6 md:data-[mode=window]:bottom-6 md:data-[mode=window]:top-auto md:data-[mode=window]:left-auto",
         "md:data-[mode=window]:h-[640px] md:data-[mode=window]:w-[400px] md:data-[mode=window]:max-h-[calc(100vh-3rem)]",
