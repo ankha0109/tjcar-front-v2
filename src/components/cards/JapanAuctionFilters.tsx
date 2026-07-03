@@ -597,6 +597,7 @@ export default function JapanAuctionFilters({
                 label={f.label}
                 summary={f.summary}
                 active={f.active}
+                clearLabel={t("clear")}
                 onOpen={() => setOpenField(f.key)}
                 onClear={f.clear}
               />
@@ -798,12 +799,14 @@ function FilterPill({
   label,
   summary,
   active,
+  clearLabel,
   onOpen,
   onClear,
 }: {
   label: string;
   summary: string | null;
   active: boolean;
+  clearLabel: string;
   onOpen: () => void;
   onClear: () => void;
 }) {
@@ -829,7 +832,7 @@ function FilterPill({
       {active && (
         <button
           type="button"
-          aria-label="clear"
+          aria-label={clearLabel}
           onClick={(e) => {
             e.stopPropagation();
             onClear();
