@@ -1,7 +1,7 @@
 {
   "korea": {
     "price": {
-      "label": "Price ($)",
+      "label": "Price (₩)",
       "fromPlaceholder": "Min",
       "toPlaceholder": "Max"
     }
@@ -1145,6 +1145,23 @@
     "price": {
       "startLabel": "Start price",
       "avgPrefix": "Avg"
+    },
+    "encar": {
+      "priceLabel": "Price",
+      "officialLink": "Official listing (Encar)",
+      "inspection": {
+        "title": "Inspection report",
+        "flood": "Flood damage",
+        "tuning": "Modified",
+        "panelsTitle": "Repaired / repainted panels",
+        "painted": "Repainted",
+        "clean": "No accident findings",
+        "guaranty": "Warranty",
+        "vin": "VIN"
+      },
+      "options": {
+        "title": "Key options"
+      }
     },
     "avgPrice": {
       "title": "Average sold price",

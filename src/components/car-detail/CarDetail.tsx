@@ -4,10 +4,12 @@ import CarActionButtons from "./CarActionButtons";
 import CarEvaluation from "./CarEvaluation";
 import CarBidCta from "./CarBidCta";
 import CarBidSection from "./CarBidSection";
+import KoreaDetailExtras from "./KoreaDetailExtras";
 import PriceHistoryChart from "./PriceHistoryChart";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
 import type { CarSource } from "@/types/car";
+import type { KoreaInspection, KoreaOptionGroup } from "@/types/korea";
 import { getComparableSales, sameSpecLabel } from "@/lib/priceHistory";
 import { getConfig } from "@/services/config";
 import { getColorSwatch } from "@/utils/carColor";
@@ -29,9 +31,21 @@ type Props = {
    * re-fetch upstream set this (`/korea/[id]`); local stock ids would 404.
    */
   enableCompare?: boolean;
+  /**
+   * Encar (Korea) pricing + official listing link, rendered as its own price
+   * card (the JPY card stays hidden via `hidePrice` on Korea detail). Options
+   * and the performance inspection render in their own sections below.
+   */
+  encar?: {
+    priceKrw: number | null;
+    priceMnt: number | null;
+    officialUrl: string | null;
+    options?: KoreaOptionGroup[];
+    inspection?: KoreaInspection | null;
+  };
 };
 
-function formatJpy(value: number) {
+function formatNumber(value: number) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 }
 
@@ -54,6 +68,7 @@ export default async function CarDetail({
   source = "korea",
   priceMnt = 0,
   enableCompare,
+  encar,
 }: Props) {
   const locale = await getLocale();
   const t = await getTranslations("carDetail");
@@ -162,6 +177,51 @@ export default async function CarDetail({
             </div>
           </section>
 
+          {/* Encar price card + official listing link (Korea detail only) */}
+          {encar && (encar.priceMnt || encar.priceKrw || encar.officialUrl) && (
+            <section className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
+              {encar.priceMnt ? (
+                <>
+                  <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
+                    {t("encar.priceLabel")}
+                  </div>
+                  <div className="mt-1 text-2xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                    ₮{formatNumber(encar.priceMnt)}
+                  </div>
+                </>
+              ) : null}
+              {encar.priceKrw ? (
+                <div className="mt-0.5 text-[12px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                  ₩{formatNumber(encar.priceKrw)}
+                </div>
+              ) : null}
+              {encar.officialUrl && (
+                <a
+                  href={encar.officialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-neutral-900 text-[13px] font-semibold text-white transition hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                >
+                  {t("encar.officialLink")}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5"
+                    aria-hidden
+                  >
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              )}
+            </section>
+          )}
+
           {/* Price card — start/avg JPY (omitted on auction detail) */}
           {!hidePrice && (
             <section className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
@@ -169,11 +229,11 @@ export default async function CarDetail({
                 {t("price.startLabel")}
               </div>
               <div className="mt-1 text-2xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-                ¥{formatJpy(startNum || 0)}
+                ¥{formatNumber(startNum || 0)}
               </div>
               {avgNum > 0 && (
                 <div className="mt-0.5 text-[12px] tabular-nums text-neutral-500 dark:text-neutral-400">
-                  {t("price.avgPrefix")} ¥{formatJpy(avgNum)}
+                  {t("price.avgPrefix")} ¥{formatNumber(avgNum)}
                 </div>
               )}
             </section>
@@ -239,6 +299,14 @@ export default async function CarDetail({
             )}
           </section>
 
+          {/* Encar performance inspection + grouped options (Korea detail only) */}
+          {encar && (
+            <KoreaDetailExtras
+              inspection={encar.inspection}
+              options={encar.options}
+            />
+          )}
+
           {/* Bid panel (auction) or the coming-soon CTA (listings). */}
           {enableBid ? (
             <CarBidSection
@@ -292,7 +360,7 @@ export default async function CarDetail({
                     {t("price.startLabel")}
                   </span>
                   <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-                    ¥{formatJpy(startNum || 0)}
+                    ¥{formatNumber(startNum || 0)}
                   </span>
                 </div>
               )}

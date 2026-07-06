@@ -1,59 +1,115 @@
-// Korea vehicle catalogue served by the backend `/api/korea` module (CARAPIS
-// catalog API). Shape mirrors App\Http\Resources\Korea\KoreaListingResource — a
-// pass-through of the CARAPIS vehicle row plus a server-computed `price_mnt`.
+// Korea vehicle catalogue served by the backend `/api/korea` module, which now
+// proxies encar.com's own JSON API directly (CARAPIS was dropped 2026-07).
+// Shape mirrors the normalized rows App\Services\Encar\EncarListingService
+// builds — no upstream (Encar) field name ever reaches the client.
 
-// `original_url` (source CDN) is stripped by the backend so the provider stays
-// hidden; only the aggregator-hosted `url` reaches the client.
 export type KoreaPhoto = {
   url?: string;
-  thumb_url?: string;
-  is_main?: boolean;
+};
+
+/** Standard options grouped by Encar category (names are Korean). Detail only. */
+export type KoreaOptionGroup = {
+  category: string;
+  items: string[];
+};
+
+/**
+ * Normalized 성능점검 (government performance inspection). Detail only; null when
+ * the car has no inspection on file. Text values stay in Korean (the source).
+ */
+export type KoreaInspection = {
+  state: string | null;
+  mileage: number | null;
+  mileage_state: string | null;
+  tuning: boolean;
+  flood: boolean;
+  guaranty: string | null;
+  vin: string | null;
+  paint_panels: string[];
+  serious_issues: string[];
+  repair_panels: Array<{ part: string; status: string }>;
 };
 
 /**
  * One vehicle from `GET /api/korea` (`data[]`) or `/api/korea/{id}` (`data`).
- * Source-revealing fields (`source_code`, `listing_url`) are stripped server-side.
+ * Detail-only fields are absent on list rows.
  */
 export type KoreaListing = {
   id: string;
+  brand_slug?: string | null;
   brand_name?: string;
-  brand_slug?: string;
-  model_name?: string;
-  model_slug?: string;
-  trim?: string;
-  generation?: string;
-  year?: number;
-  /** Normalized USD price. */
-  price_usd?: number;
-  /** Server-computed MNT price (USD × live rate); mirrors Japan `PRICE_MNT`. */
-  price_mnt?: number;
-  price_original?: number;
-  price_original_currency?: string;
-  mileage?: number;
-  engine_cc?: number;
-  fuel_type?: string;
-  transmission?: string;
-  body_type?: string;
-  color?: string;
-  drive_type?: string;
-  region?: string;
-  has_accident?: boolean | null;
-  is_verified?: boolean;
-  owner_count?: number;
-  features?: string[];
-  description?: string;
-  vin?: string;
-  thumb?: KoreaPhoto;
+  /** List rows carry the Encar (Korean) model line; detail is English. */
+  model_name?: string | null;
+  /** Full Encar model line, e.g. 더 뉴 그랜저 IG (detail only). */
+  model_detail?: string | null;
+  trim?: string | null;
+  year?: number | null;
+  /** YYYYMM registration month (detail only). */
+  year_month?: string | null;
+  /** Full KRW asking price. */
+  price_krw?: number | null;
+  /** Server-computed MNT price (KRW × config rate); mirrors Japan `PRICE_MNT`. */
+  price_mnt?: number | null;
+  /** New-car (factory) KRW price (detail only). */
+  new_price_krw?: number | null;
+  mileage?: number | null;
+  /** Engine displacement in cc (detail only). */
+  displacement?: number | null;
+  seat_count?: number | null;
+  fuel_type?: string | null;
+  transmission?: string | null;
+  color?: string | null;
+  body_type?: string | null;
+  region?: string | null;
+  option_count?: number | null;
+  /** Standard options grouped by category (detail only). */
+  options?: KoreaOptionGroup[];
+  /** Government performance-inspection summary (detail only, may be null). */
+  inspection?: KoreaInspection | null;
+  /** Official encar.com listing page (detail only) — the "view source" link. */
+  listing_url?: string | null;
+  thumb?: string | null;
   photos?: KoreaPhoto[];
-  photos_count?: number;
 };
 
+/**
+ * Brand slugs the backend accepts (mirrors EncarListingService::BRANDS — an
+ * unknown slug is a 422). Labels are the English names the API returns.
+ */
+export const KOREA_BRANDS: ReadonlyArray<{ slug: string; label: string }> = [
+  { slug: "hyundai", label: "Hyundai" },
+  { slug: "kia", label: "Kia" },
+  { slug: "genesis", label: "Genesis" },
+  { slug: "chevrolet", label: "Chevrolet" },
+  { slug: "renault-korea", label: "Renault Korea" },
+  { slug: "kg-mobility", label: "KG Mobility" },
+  { slug: "bmw", label: "BMW" },
+  { slug: "mercedes-benz", label: "Mercedes-Benz" },
+  { slug: "audi", label: "Audi" },
+  { slug: "volkswagen", label: "Volkswagen" },
+  { slug: "volvo", label: "Volvo" },
+  { slug: "lexus", label: "Lexus" },
+  { slug: "toyota", label: "Toyota" },
+  { slug: "honda", label: "Honda" },
+  { slug: "nissan", label: "Nissan" },
+  { slug: "ford", label: "Ford" },
+  { slug: "jeep", label: "Jeep" },
+  { slug: "land-rover", label: "Land Rover" },
+  { slug: "porsche", label: "Porsche" },
+  { slug: "mini", label: "Mini" },
+  { slug: "tesla", label: "Tesla" },
+];
+
+export function koreaBrandLabel(slug: string): string {
+  return KOREA_BRANDS.find((b) => b.slug === slug)?.label ?? slug;
+}
+
 export type KoreaFilterValues = {
+  /** Brand slug from KOREA_BRANDS (the backend rejects anything else). */
   make: string | null;
-  model: string | null;
   yearFrom: number | null;
   yearTo: number | null;
-  /** USD bounds (CARAPIS normalizes every price to USD). */
+  /** Full KRW bounds (Encar prices are KRW). */
   priceFrom: number | null;
   priceTo: number | null;
   mileageTo: number | null;
@@ -61,7 +117,6 @@ export type KoreaFilterValues = {
 
 export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
   make: null,
-  model: null,
   yearFrom: null,
   yearTo: null,
   priceFrom: null,
@@ -72,7 +127,6 @@ export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
 export function isKoreaFiltersEmpty(f: KoreaFilterValues): boolean {
   return (
     !f.make &&
-    !f.model &&
     f.yearFrom == null &&
     f.yearTo == null &&
     f.priceFrom == null &&
@@ -81,22 +135,16 @@ export function isKoreaFiltersEmpty(f: KoreaFilterValues): boolean {
   );
 }
 
-/** CARAPIS `brand`/`model` filters take slug values (hyundai, ioniq-5). */
-function slug(v: string): string {
-  return v.trim().toLowerCase().replace(/\s+/g, "-");
-}
-
 /**
- * Map UI filters to the `GET /api/korea` backend param names, which mirror the
- * upstream CARAPIS `/vehicles/` contract (brand/model slugs, min_/max_ ranges;
- * price is USD). Empty values are omitted; pagination is added by the caller.
+ * Map UI filters to the `GET /api/korea` backend param names (brand slug,
+ * min_/max_ ranges; price is full KRW). Empty values are omitted; pagination
+ * is added by the caller.
  */
 export function koreaFiltersToQuery(
   f: KoreaFilterValues,
 ): Record<string, string | number> {
   const q: Record<string, string | number> = {};
-  if (f.make) q.brand = slug(f.make);
-  if (f.model) q.model = slug(f.model);
+  if (f.make) q.brand = f.make;
   if (f.yearFrom != null) q.min_year = f.yearFrom;
   if (f.yearTo != null) q.max_year = f.yearTo;
   if (f.priceFrom != null) q.min_price = f.priceFrom;
@@ -124,7 +172,6 @@ function pickInt(p: SearchParamRecord, key: string): number | null {
 export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
   return {
     make: pickString(p, "brand"),
-    model: pickString(p, "model"),
     yearFrom: pickInt(p, "min_year"),
     yearTo: pickInt(p, "max_year"),
     priceFrom: pickInt(p, "min_price"),

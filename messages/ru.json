@@ -1,7 +1,7 @@
 {
   "korea": {
     "price": {
-      "label": "Цена ($)",
+      "label": "Цена (₩)",
       "fromPlaceholder": "От",
       "toPlaceholder": "До"
     }
@@ -1145,6 +1145,23 @@
     "price": {
       "startLabel": "Стартовая цена",
       "avgPrefix": "Сред."
+    },
+    "encar": {
+      "priceLabel": "Цена",
+      "officialLink": "Официальное объявление (Encar)",
+      "inspection": {
+        "title": "Отчёт о проверке",
+        "flood": "Повреждён водой",
+        "tuning": "Тюнинг",
+        "panelsTitle": "Ремонт / покраска кузова",
+        "painted": "Окрашено",
+        "clean": "Без следов ДТП",
+        "guaranty": "Гарантия",
+        "vin": "VIN"
+      },
+      "options": {
+        "title": "Ключевые опции"
+      }
     },
     "avgPrice": {
       "title": "Средняя цена продажи",

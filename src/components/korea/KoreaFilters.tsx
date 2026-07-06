@@ -1,11 +1,13 @@
 "use client";
 
-import { Button, Drawer, Input, InputNumber, Select, Space, Tag } from "antd";
+import { Button, Drawer, InputNumber, Select, Space, Tag } from "antd";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   EMPTY_KOREA_FILTERS,
+  KOREA_BRANDS,
   isKoreaFiltersEmpty,
+  koreaBrandLabel,
   type KoreaFilterValues,
 } from "@/types/korea";
 import { MILEAGE_STEPS, YEAR_OPTIONS } from "@/types/filters";
@@ -17,7 +19,7 @@ type Props = {
 };
 
 const formatKm = (n: number) => new Intl.NumberFormat("en-US").format(n);
-const formatUsd = (n: number) => `$${new Intl.NumberFormat("en-US").format(n)}`;
+const formatKrw = (n: number) => `₩${new Intl.NumberFormat("en-US").format(n)}`;
 
 function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -60,7 +62,6 @@ export default function KoreaFilters({ value, onChange }: Props) {
 
   const totalCount =
     (value.make ? 1 : 0) +
-    (value.model ? 1 : 0) +
     (value.yearFrom != null ? 1 : 0) +
     (value.yearTo != null ? 1 : 0) +
     (value.priceFrom != null ? 1 : 0) +
@@ -71,21 +72,16 @@ export default function KoreaFilters({ value, onChange }: Props) {
   const body = (
     <div className="space-y-3 py-2">
       <Field label={t("placeholders.marka")}>
-        <Input
+        <Select
           placeholder={t("placeholders.marka")}
           allowClear
-          value={value.make ?? ""}
-          onChange={(e) => set("make", e.target.value || null)}
+          showSearch
+          optionFilterProp="label"
+          options={KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label }))}
+          value={value.make ?? undefined}
+          onChange={(v) => set("make", v ?? null)}
           variant="filled"
-        />
-      </Field>
-      <Field label={t("placeholders.model")}>
-        <Input
-          placeholder={t("placeholders.model")}
-          allowClear
-          value={value.model ?? ""}
-          onChange={(e) => set("model", e.target.value || null)}
-          variant="filled"
+          style={{ width: "100%" }}
         />
       </Field>
       <Field label={t("year.label")}>
@@ -119,7 +115,7 @@ export default function KoreaFilters({ value, onChange }: Props) {
             onChange={(v) => set("priceFrom", (v as number | null) ?? null)}
             variant="filled"
             style={{ width: "50%" }}
-            formatter={(v) => (v ? formatUsd(Number(v)) : "")}
+            formatter={(v) => (v ? formatKrw(Number(v)) : "")}
             parser={(v) => Number((v ?? "").replace(/[^0-9]/g, ""))}
           />
           <InputNumber
@@ -129,7 +125,7 @@ export default function KoreaFilters({ value, onChange }: Props) {
             onChange={(v) => set("priceTo", (v as number | null) ?? null)}
             variant="filled"
             style={{ width: "50%" }}
-            formatter={(v) => (v ? formatUsd(Number(v)) : "")}
+            formatter={(v) => (v ? formatKrw(Number(v)) : "")}
             parser={(v) => Number((v ?? "").replace(/[^0-9]/g, ""))}
           />
         </Space.Compact>
@@ -246,14 +242,8 @@ export function KoreaFilterChips({ value, onChange }: Props) {
   if (value.make)
     chips.push({
       key: "make",
-      label: t("chips.marka", { value: value.make }),
+      label: t("chips.marka", { value: koreaBrandLabel(value.make) }),
       onRemove: () => set("make", null),
-    });
-  if (value.model)
-    chips.push({
-      key: "model",
-      label: t("chips.model", { value: value.model }),
-      onRemove: () => set("model", null),
     });
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({
@@ -267,7 +257,7 @@ export function KoreaFilterChips({ value, onChange }: Props) {
   if (value.priceFrom != null || value.priceTo != null)
     chips.push({
       key: "price",
-      label: `${value.priceFrom != null ? formatUsd(value.priceFrom) : "$…"} – ${value.priceTo != null ? formatUsd(value.priceTo) : "$…"}`,
+      label: `${value.priceFrom != null ? formatKrw(value.priceFrom) : "$…"} – ${value.priceTo != null ? formatKrw(value.priceTo) : "$…"}`,
       onRemove: () => onChange({ ...value, priceFrom: null, priceTo: null }),
     });
   if (value.mileageTo != null)

@@ -1,7 +1,7 @@
 {
   "korea": {
     "price": {
-      "label": "Үнэ ($)",
+      "label": "Үнэ (₩)",
       "fromPlaceholder": "Доод",
       "toPlaceholder": "Дээд"
     }
@@ -1145,6 +1145,23 @@
     "price": {
       "startLabel": "Эхлэх үнэ",
       "avgPrefix": "Дундаж"
+    },
+    "encar": {
+      "priceLabel": "Үнэ",
+      "officialLink": "Албан ёсны зар (Encar)",
+      "inspection": {
+        "title": "Үзлэгийн мэдээлэл",
+        "flood": "Усны гэмтэлтэй",
+        "tuning": "Тюнинг хийсэн",
+        "panelsTitle": "Засвар / будсан хэсэг",
+        "painted": "Будсан",
+        "clean": "Ослын тэмдэглэгээгүй",
+        "guaranty": "Баталгаа",
+        "vin": "Арлын дугаар"
+      },
+      "options": {
+        "title": "Онцлох тоноглол"
+      }
     },
     "avgPrice": {
       "title": "Дундаж зарагдсан үнэ",

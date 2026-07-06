@@ -24,8 +24,8 @@ export default async function KoreaDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const listing = await getKoreaListing(id);
   if (!listing) notFound();
-  // Encar detail: price shows on the list card (MNT); the shared CarDetail
-  // renders JPY pricing, so hide it here and disable the auction bid panel.
+  // Encar detail: the shared JPY price card stays hidden; pricing renders from
+  // the `encar` block (MNT + KRW) alongside the official listing link.
   return (
     <CarDetail
       car={koreaListingToFixture(listing)}
@@ -33,6 +33,13 @@ export default async function KoreaDetailPage({ params }: Props) {
       enableBid={false}
       priceMnt={listing.price_mnt ?? 0}
       enableCompare
+      encar={{
+        priceKrw: listing.price_krw ?? null,
+        priceMnt: listing.price_mnt ?? null,
+        officialUrl: listing.listing_url ?? null,
+        options: listing.options,
+        inspection: listing.inspection,
+      }}
     />
   );
 }
