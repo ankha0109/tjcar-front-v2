@@ -16,16 +16,22 @@ import { cn } from "@/utils";
 type Props = {
   images: string[];
   alt: string;
+  /**
+   * Whether the image host supports the auction-CDN `w=`/`h=` size params
+   * (Japan/AJES). Encar photo URLs don't — pass `false` there so every image
+   * (thumbnails included) loads the URL untouched.
+   */
+  sizeVariants?: boolean;
 };
 
 /**
  * Car photo gallery: an Embla carousel (full-bleed on mobile) with a synced
  * thumbnail strip, and a yet-another-react-lightbox overlay for full-size
- * pinch/scroll zoom. Inline images and the lightbox thumbnails use the `&w=320`
+ * pinch/scroll zoom. Inline images and the lightbox thumbnails use the `w=320`
  * (card) variant; the main lightbox slide / zoom loads the original (no size
  * param) via {@link withImageSize}.
  */
-export default function CarGallery({ images, alt }: Props) {
+export default function CarGallery({ images, alt, sizeVariants = true }: Props) {
   const t = useTranslations("carDetail.gallery");
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -83,21 +89,29 @@ export default function CarGallery({ images, alt }: Props) {
     setOpenIndex(idx);
   }, []);
 
+  // Size-variant URL, or the raw URL when the host has no size params.
+  const sized = useCallback(
+    (src: string, size: Parameters<typeof withImageSize>[1]) =>
+      sizeVariants ? withImageSize(src, size) : src,
+    [sizeVariants],
+  );
+
   // Stable slide list: small (card) image for thumbnails, original for the main
   // view + zoom. Memoised so the lightbox isn't handed a fresh array each render.
   const slides = useMemo(
     () =>
       images.map((src) => {
-        const original = withImageSize(src, "original");
+        const original = sized(src, "original");
+        if (!sizeVariants) return { src: original };
         return {
           src: original,
           srcSet: [
-            { src: withImageSize(src, "card"), width: 320, height: 240 },
+            { src: sized(src, "card"), width: 320, height: 240 },
             { src: original, width: 1600, height: 1200 },
           ],
         };
       }),
-    [images],
+    [images, sized, sizeVariants],
   );
 
   if (images.length === 0) {
@@ -130,7 +144,7 @@ export default function CarGallery({ images, alt }: Props) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={withImageSize(src, visited.has(idx) ? "original" : "card")}
+                    src={sized(src, visited.has(idx) ? "original" : "card")}
                     alt={`${alt} ${idx + 1}`}
                     loading={idx === 0 ? "eager" : "lazy"}
                     className="h-full w-full object-cover"
@@ -207,7 +221,7 @@ export default function CarGallery({ images, alt }: Props) {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={withImageSize(src, "card")}
+                  src={sized(src, "card")}
                   alt=""
                   loading="lazy"
                   className="h-full w-full object-cover"

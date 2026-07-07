@@ -50,7 +50,7 @@ export function koreaListingToCarItem(listing: KoreaListing): CarItem {
 /**
  * Map a Korea catalog vehicle into the AJES-shaped `CarFixture` the detail UI
  * reads. Catalog vehicles have no auction/inspection semantics, so those fields
- * stay empty. Pricing + the official Encar link render from CarDetail's `encar`
+ * stay empty. Pricing + the official Encar link render from EncarDetail's `encar`
  * prop, not from the fixture.
  */
 export function koreaListingToFixture(listing: KoreaListing): CarFixture {

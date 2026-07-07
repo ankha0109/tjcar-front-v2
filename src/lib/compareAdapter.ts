@@ -125,7 +125,7 @@ const toFeatured = (car: CompareJapanCar): FeaturedCar => ({
 });
 
 // Image index 0 is the evaluation (inspection) sheet whenever a car photo
-// remains after it — same split CarDetail and the snapshot builders use.
+// remains after it — same split EncarDetail and the snapshot builders use.
 const carPhoto = (images: string[]): string | undefined =>
   images[1] ?? images[0];
 const evaluationSheet = (images: string[]): CompareValue =>

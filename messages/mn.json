@@ -506,7 +506,8 @@
       },
       "transmission": {
         "auto": "Автомат",
-        "manual": "Механик"
+        "manual": "Механик",
+        "semiAuto": "Хагас автомат"
       },
       "drive": {
         "lhd": "Зүүн",
@@ -1137,7 +1138,36 @@
       "rate": "Үнэлгээ",
       "auction": "Дуудлага худалдаа",
       "auctionDate": "Огноо",
-      "fullTitle": "Бүх үзүүлэлт"
+      "fullTitle": "Бүх үзүүлэлт",
+      "fuel": "Шатахуун",
+      "seats": "Суудал",
+      "bodyType": "Төрөл",
+      "regMonth": "Анх бүртгэсэн"
+    },
+    "fuel": {
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "hybrid": "Хайбрид",
+      "electric": "Цахилгаан",
+      "hydrogen": "Устөрөгч",
+      "lpg": "Хий (LPG)"
+    },
+    "colors": {
+      "white": "Цагаан",
+      "pearl": "Сувдан цагаан",
+      "black": "Хар",
+      "gray": "Саарал",
+      "silver": "Мөнгөлөг",
+      "blue": "Цэнхэр",
+      "red": "Улаан",
+      "green": "Ногоон",
+      "yellow": "Шар",
+      "brown": "Бор",
+      "pink": "Ягаан",
+      "beige": "Шаргал",
+      "orange": "Улбар шар",
+      "purple": "Нил ягаан",
+      "gold": "Алтлаг"
     },
     "auction": {
       "title": "Дуудлага худалдааны мэдээлэл"
@@ -1148,6 +1178,7 @@
     },
     "encar": {
       "priceLabel": "Үнэ",
+      "newPriceLabel": "Шинэ машины үнэ (Солонгост)",
       "officialLink": "Албан ёсны зар (Encar)",
       "inspection": {
         "title": "Үзлэгийн мэдээлэл",

@@ -506,7 +506,8 @@
       },
       "transmission": {
         "auto": "Automatic",
-        "manual": "Manual"
+        "manual": "Manual",
+        "semiAuto": "Semi-automatic"
       },
       "drive": {
         "lhd": "Left-hand",
@@ -1137,7 +1138,36 @@
       "rate": "Rate",
       "auction": "Auction",
       "auctionDate": "Auction date",
-      "fullTitle": "Full specifications"
+      "fullTitle": "Full specifications",
+      "fuel": "Fuel",
+      "seats": "Seats",
+      "bodyType": "Body type",
+      "regMonth": "First registered"
+    },
+    "fuel": {
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "hybrid": "Hybrid",
+      "electric": "Electric",
+      "hydrogen": "Hydrogen",
+      "lpg": "LPG"
+    },
+    "colors": {
+      "white": "White",
+      "pearl": "Pearl white",
+      "black": "Black",
+      "gray": "Gray",
+      "silver": "Silver",
+      "blue": "Blue",
+      "red": "Red",
+      "green": "Green",
+      "yellow": "Yellow",
+      "brown": "Brown",
+      "pink": "Pink",
+      "beige": "Beige",
+      "orange": "Orange",
+      "purple": "Purple",
+      "gold": "Gold"
     },
     "auction": {
       "title": "Auction info"
@@ -1148,6 +1178,7 @@
     },
     "encar": {
       "priceLabel": "Price",
+      "newPriceLabel": "New car price (Korea)",
       "officialLink": "Official listing (Encar)",
       "inspection": {
         "title": "Inspection report",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import CarDetail from "@/components/car-detail/CarDetail";
+import EncarDetail from "@/components/car-detail/EncarDetail";
 import { getKoreaListing } from "@/services/korea";
 import { koreaListingToFixture } from "@/lib/koreaAdapter";
 import { carTitle } from "@/lib/carFixtures";
@@ -24,19 +24,19 @@ export default async function KoreaDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const listing = await getKoreaListing(id);
   if (!listing) notFound();
-  // Encar detail: the shared JPY price card stays hidden; pricing renders from
-  // the `encar` block (MNT + KRW) alongside the official listing link.
   return (
-    <CarDetail
+    <EncarDetail
       car={koreaListingToFixture(listing)}
-      hidePrice
-      enableBid={false}
       priceMnt={listing.price_mnt ?? 0}
       enableCompare
       encar={{
         priceKrw: listing.price_krw ?? null,
         priceMnt: listing.price_mnt ?? null,
+        newPriceKrw: listing.new_price_krw ?? null,
         officialUrl: listing.listing_url ?? null,
+        fuelType: listing.fuel_type ?? null,
+        seatCount: listing.seat_count ?? null,
+        yearMonth: listing.year_month ?? null,
         options: listing.options,
         inspection: listing.inspection,
       }}

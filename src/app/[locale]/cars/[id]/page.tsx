@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import CarDetail from "@/components/car-detail/CarDetail";
+import EncarDetail from "@/components/car-detail/EncarDetail";
 import { getCar } from "@/services/cars";
 import { carResourceToFixture, carTitle } from "@/lib/carFixtures";
 
@@ -22,5 +22,5 @@ export default async function CarDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const car = await getCar(id);
   if (!car) notFound();
-  return <CarDetail car={carResourceToFixture(car)} />;
+  return <EncarDetail car={carResourceToFixture(car)} />;
 }

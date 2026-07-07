@@ -31,7 +31,11 @@ export function formatTransmission(
 ): string | undefined {
   if (!transmission) return undefined;
   const code = transmission.toUpperCase();
-  if (code === "MT") return t("transmission.manual");
-  if (["AT", "FAT", "IAT", "CVT"].includes(code)) return t("transmission.auto");
+  // AJES codes (MT/AT/FAT/IAT/CVT) + normalized Encar values (auto/manual/semi-auto/cvt).
+  if (["MT", "MANUAL"].includes(code)) return t("transmission.manual");
+  if (["AT", "FAT", "IAT", "CVT", "AUTO"].includes(code)) {
+    return t("transmission.auto");
+  }
+  if (code === "SEMI-AUTO") return t("transmission.semiAuto");
   return transmission;
 }

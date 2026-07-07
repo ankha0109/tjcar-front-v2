@@ -2,12 +2,16 @@ import type { CarItem, CarSource } from "@/types/car";
 import type { WishlistItem } from "@/types/wishlist";
 import { parseImages, type CarFixture } from "@/lib/carFixtures";
 
-// Image index 0 is the auction evaluation (inspection) sheet whenever a car
-// photo remains after it — same convention CarDetail uses to split its gallery.
-const carPhoto = (images: string[]): string | undefined =>
-  images[1] ?? images[0];
-const evaluationSheet = (images: string[]): string | undefined =>
-  images.length > 1 ? images[0] : undefined;
+// On AJES-sourced cars, image index 0 is the auction evaluation (inspection)
+// sheet whenever a car photo remains after it — same convention the snapshot
+// consumers use. Encar (korea) photo lists are all car photos, so no split.
+const carPhoto = (images: string[], source: CarSource): string | undefined =>
+  source === "korea" ? images[0] : (images[1] ?? images[0]);
+const evaluationSheet = (
+  images: string[],
+  source: CarSource,
+): string | undefined =>
+  source !== "korea" && images.length > 1 ? images[0] : undefined;
 
 /** Build a saved-car snapshot from a listing-card `CarItem` (has MNT price). */
 export function wishlistItemFromCarItem(car: CarItem): WishlistItem {
@@ -18,8 +22,8 @@ export function wishlistItemFromCarItem(car: CarItem): WishlistItem {
     model: car.model,
     grade: car.grade,
     year: car.year,
-    thumbnail: carPhoto(car.images),
-    evaluationImage: evaluationSheet(car.images),
+    thumbnail: carPhoto(car.images, car.source),
+    evaluationImage: evaluationSheet(car.images, car.source),
     priceMnt: car.price.mnt,
     priceOriginal:
       car.price.original.amount > 0 ? car.price.original : undefined,
@@ -50,8 +54,8 @@ export function wishlistItemFromFixture(
     model: car.MODEL_NAME,
     grade: car.GRADE || undefined,
     year: car.YEAR || undefined,
-    thumbnail: carPhoto(images),
-    evaluationImage: evaluationSheet(images),
+    thumbnail: carPhoto(images, source),
+    evaluationImage: evaluationSheet(images, source),
     priceMnt,
     priceOriginal:
       source === "japan" && Number.isFinite(start) && start > 0
