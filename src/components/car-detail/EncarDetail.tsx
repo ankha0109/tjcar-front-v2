@@ -2,10 +2,15 @@ import { getTranslations } from "next-intl/server";
 import CarGallery from "./CarGallery";
 import CarActionButtons from "./CarActionButtons";
 import KoreaDetailExtras from "./KoreaDetailExtras";
+import KoreaOptionsPanel from "./KoreaOptionsPanel";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
 import type { CarSource } from "@/types/car";
-import type { KoreaInspection, KoreaOptionGroup } from "@/types/korea";
+import type {
+  KoreaInspection,
+  KoreaInsurance,
+  KoreaOptionGroup,
+} from "@/types/korea";
 import { colorNameKey, getColorSwatch } from "@/utils/carColor";
 import { formatMileage, formatTransmission } from "@/utils/carFormat";
 
@@ -38,6 +43,7 @@ type Props = {
     yearMonth?: string | null;
     options?: KoreaOptionGroup[];
     inspection?: KoreaInspection | null;
+    insurance?: KoreaInsurance | null;
   };
 };
 
@@ -121,6 +127,14 @@ export default async function EncarDetail({
           <div className="pt-2 lg:p-0">
             <CarGallery images={images} alt={title} sizeVariants={!encar} />
           </div>
+          {/* Options live under the gallery on desktop; on mobile they render
+              at the end of the info column so the price stays next to the
+              photos. */}
+          {encar && (
+            <div className="hidden lg:mt-6 lg:block">
+              <KoreaOptionsPanel options={encar.options} />
+            </div>
+          )}
         </div>
 
         {/* Info column */}
@@ -258,12 +272,19 @@ export default async function EncarDetail({
             )}
           </section>
 
-          {/* Encar performance inspection + grouped options */}
+          {/* Encar performance inspection + insurance history */}
           {encar && (
             <KoreaDetailExtras
               inspection={encar.inspection}
-              options={encar.options}
+              insurance={encar.insurance}
             />
+          )}
+
+          {/* Mobile-only options placement (desktop shows them under the gallery) */}
+          {encar && (
+            <div className="lg:hidden">
+              <KoreaOptionsPanel options={encar.options} />
+            </div>
           )}
         </div>
       </div>

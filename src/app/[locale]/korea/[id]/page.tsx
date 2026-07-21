@@ -39,6 +39,7 @@ export default async function KoreaDetailPage({ params }: Props) {
         yearMonth: listing.year_month ?? null,
         options: listing.options,
         inspection: listing.inspection,
+        insurance: listing.insurance,
       }}
     />
   );

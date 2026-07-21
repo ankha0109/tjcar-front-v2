@@ -6,11 +6,15 @@ import { useTranslations } from "next-intl";
 import {
   EMPTY_KOREA_FILTERS,
   KOREA_BRANDS,
+  KOREA_FUELS,
+  KOREA_TRANSMISSIONS,
   isKoreaFiltersEmpty,
   koreaBrandLabel,
   type KoreaFilterValues,
+  type KoreaModelGroup,
 } from "@/types/korea";
 import { MILEAGE_STEPS, YEAR_OPTIONS } from "@/types/filters";
+import { useKoreaModels } from "@/hooks/useKoreaModels";
 import { cn } from "@/utils";
 
 type Props = {
@@ -20,6 +24,17 @@ type Props = {
 
 const formatKm = (n: number) => new Intl.NumberFormat("en-US").format(n);
 const formatKrw = (n: number) => `₩${new Intl.NumberFormat("en-US").format(n)}`;
+
+/** Model groups render by their English name when the backend has one. */
+const modelLabel = (m: KoreaModelGroup) => m.english ?? m.name;
+
+/** `car.card.transmission` keys are camelCase (semi-auto → semiAuto); cvt has no key. */
+const TRANSMISSION_LABEL_KEYS: Record<string, string | null> = {
+  auto: "auto",
+  manual: "manual",
+  "semi-auto": "semiAuto",
+  cvt: null,
+};
 
 function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -40,7 +55,11 @@ function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function KoreaFilters({ value, onChange }: Props) {
   const t = useTranslations("featured.filters");
   const tk = useTranslations("korea");
+  const tFuel = useTranslations("carDetail.fuel");
+  const tTrans = useTranslations("car.card.transmission");
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const models = useKoreaModels(value.make);
 
   const set = <K extends keyof KoreaFilterValues>(
     key: K,
@@ -48,6 +67,24 @@ export default function KoreaFilters({ value, onChange }: Props) {
   ) => {
     onChange({ ...value, [key]: v });
   };
+
+  // A model only means anything within its brand — switching brand clears it.
+  const setMake = (v: string | null) => {
+    onChange({ ...value, make: v, model: null });
+  };
+
+  const modelOptions = (models.data ?? []).map((m) => ({
+    value: m.name,
+    label: `${modelLabel(m)} (${formatKm(m.count)})`,
+  }));
+  const fuelOptions = KOREA_FUELS.map((f) => ({
+    value: f,
+    label: tFuel(f),
+  }));
+  const transmissionOptions = KOREA_TRANSMISSIONS.map((tr) => {
+    const key = TRANSMISSION_LABEL_KEYS[tr];
+    return { value: tr, label: key ? tTrans(key) : tr.toUpperCase() };
+  });
 
   const yearFromOptions = YEAR_OPTIONS.filter(
     (y) => value.yearTo == null || y <= value.yearTo,
@@ -62,11 +99,14 @@ export default function KoreaFilters({ value, onChange }: Props) {
 
   const totalCount =
     (value.make ? 1 : 0) +
+    (value.model ? 1 : 0) +
     (value.yearFrom != null ? 1 : 0) +
     (value.yearTo != null ? 1 : 0) +
     (value.priceFrom != null ? 1 : 0) +
     (value.priceTo != null ? 1 : 0) +
-    (value.mileageTo != null ? 1 : 0);
+    (value.mileageTo != null ? 1 : 0) +
+    (value.fuel ? 1 : 0) +
+    (value.transmission ? 1 : 0);
   const hasFilters = !isKoreaFiltersEmpty(value);
 
   const body = (
@@ -79,7 +119,24 @@ export default function KoreaFilters({ value, onChange }: Props) {
           optionFilterProp="label"
           options={KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label }))}
           value={value.make ?? undefined}
-          onChange={(v) => set("make", v ?? null)}
+          onChange={(v) => setMake(v ?? null)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      </Field>
+      <Field label={t("placeholders.model")}>
+        <Select
+          placeholder={
+            value.make ? t("placeholders.model") : tk("filters.modelNeedsBrand")
+          }
+          allowClear
+          showSearch
+          optionFilterProp="label"
+          options={modelOptions}
+          value={value.model ?? undefined}
+          onChange={(v) => set("model", v ?? null)}
+          disabled={!value.make}
+          loading={models.isLoading}
           variant="filled"
           style={{ width: "100%" }}
         />
@@ -137,6 +194,28 @@ export default function KoreaFilters({ value, onChange }: Props) {
           options={mileageToOptions}
           value={value.mileageTo ?? undefined}
           onChange={(v) => set("mileageTo", v ?? null)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      </Field>
+      <Field label={tk("filters.fuel")}>
+        <Select
+          placeholder={tk("filters.fuel")}
+          allowClear
+          options={fuelOptions}
+          value={value.fuel ?? undefined}
+          onChange={(v) => set("fuel", v ?? null)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      </Field>
+      <Field label={tk("filters.transmission")}>
+        <Select
+          placeholder={tk("filters.transmission")}
+          allowClear
+          options={transmissionOptions}
+          value={value.transmission ?? undefined}
+          onChange={(v) => set("transmission", v ?? null)}
           variant="filled"
           style={{ width: "100%" }}
         />
@@ -229,6 +308,10 @@ export default function KoreaFilters({ value, onChange }: Props) {
 
 export function KoreaFilterChips({ value, onChange }: Props) {
   const t = useTranslations("featured.filters");
+  const tFuel = useTranslations("carDetail.fuel");
+  const tTrans = useTranslations("car.card.transmission");
+  // Served from the react-query cache the filter select already filled.
+  const models = useKoreaModels(value.make);
 
   const set = <K extends keyof KoreaFilterValues>(
     key: K,
@@ -245,6 +328,16 @@ export function KoreaFilterChips({ value, onChange }: Props) {
       label: t("chips.marka", { value: koreaBrandLabel(value.make) }),
       onRemove: () => set("make", null),
     });
+  if (value.model) {
+    const group = models.data?.find((m) => m.name === value.model);
+    chips.push({
+      key: "model",
+      label: t("chips.model", {
+        value: group ? modelLabel(group) : value.model,
+      }),
+      onRemove: () => set("model", null),
+    });
+  }
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({
       key: "year",
@@ -266,6 +359,20 @@ export function KoreaFilterChips({ value, onChange }: Props) {
       label: t("chips.mileage", { from: "0", to: formatKm(value.mileageTo) }),
       onRemove: () => set("mileageTo", null),
     });
+  if (value.fuel)
+    chips.push({
+      key: "fuel",
+      label: tFuel(value.fuel),
+      onRemove: () => set("fuel", null),
+    });
+  if (value.transmission) {
+    const key = TRANSMISSION_LABEL_KEYS[value.transmission];
+    chips.push({
+      key: "transmission",
+      label: key ? tTrans(key) : value.transmission.toUpperCase(),
+      onRemove: () => set("transmission", null),
+    });
+  }
 
   if (chips.length === 0) return null;
 

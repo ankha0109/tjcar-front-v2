@@ -4,6 +4,11 @@
       "label": "Price (₩)",
       "fromPlaceholder": "Min",
       "toPlaceholder": "Max"
+    },
+    "filters": {
+      "modelNeedsBrand": "Pick a make first",
+      "fuel": "Fuel",
+      "transmission": "Transmission"
     }
   },
   "compare": {
@@ -1189,6 +1194,25 @@
         "clean": "No accident findings",
         "guaranty": "Warranty",
         "vin": "VIN"
+      },
+      "insurance": {
+        "title": "Insurance history",
+        "clean": "No accident history",
+        "accidentBadge": "{count} accidents",
+        "totalLoss": "Total-loss history",
+        "theft": "Theft history",
+        "flood": "Flood damage history",
+        "governmentUse": "Ex-government use",
+        "businessUse": "Ex-commercial use",
+        "myAccidents": "Damage to this car",
+        "otherAccidents": "Damage to others",
+        "ownerChanges": "Owner changes",
+        "plateChanges": "Plate changes",
+        "firstRegistered": "First registered",
+        "claimsTitle": "Insurance claims",
+        "parts": "Parts",
+        "labor": "Labor",
+        "painting": "Paint"
       },
       "options": {
         "title": "Key options"

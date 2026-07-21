@@ -4,6 +4,11 @@
       "label": "Цена (₩)",
       "fromPlaceholder": "От",
       "toPlaceholder": "До"
+    },
+    "filters": {
+      "modelNeedsBrand": "Сначала выберите марку",
+      "fuel": "Топливо",
+      "transmission": "Коробка передач"
     }
   },
   "compare": {
@@ -1189,6 +1194,25 @@
         "clean": "Без следов ДТП",
         "guaranty": "Гарантия",
         "vin": "VIN"
+      },
+      "insurance": {
+        "title": "Страховая история",
+        "clean": "Без ДТП",
+        "accidentBadge": "ДТП: {count}",
+        "totalLoss": "Был в тотале",
+        "theft": "Был в угоне",
+        "flood": "Пострадал от наводнения",
+        "governmentUse": "Служебное использование",
+        "businessUse": "Коммерческое использование",
+        "myAccidents": "Ущерб этому авто",
+        "otherAccidents": "Ущерб другим",
+        "ownerChanges": "Смен владельца",
+        "plateChanges": "Смен номера",
+        "firstRegistered": "Первая регистрация",
+        "claimsTitle": "Страховые выплаты",
+        "parts": "Запчасти",
+        "labor": "Работа",
+        "painting": "Покраска"
       },
       "options": {
         "title": "Ключевые опции"

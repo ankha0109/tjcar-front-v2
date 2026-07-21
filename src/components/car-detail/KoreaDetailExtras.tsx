@@ -1,22 +1,35 @@
 import { getTranslations } from "next-intl/server";
-import type { KoreaInspection, KoreaOptionGroup } from "@/types/korea";
+import type { KoreaInspection, KoreaInsurance } from "@/types/korea";
 
 type Props = {
   inspection?: KoreaInspection | null;
-  options?: KoreaOptionGroup[];
+  insurance?: KoreaInsurance | null;
 };
 
+const formatKrw = (n: number) => `₩${new Intl.NumberFormat("en-US").format(n)}`;
+
 /**
- * Encar-only detail sections: the government performance inspection (성능점검)
- * summary and the grouped standard-option list. Option/condition text stays in
- * Korean (the source of truth); only the surrounding labels are localized.
- * Rendered on the Korea car detail page beneath the spec table.
+ * Encar-only condition sections: the government performance inspection
+ * (성능점검) summary and the insurance history (보험이력). Inspection text
+ * stays in Korean (the source of truth); only the surrounding labels are
+ * localized. Rendered in the info column of the Korea car detail page; the
+ * grouped options live in KoreaOptionsPanel beneath the gallery.
  */
-export default async function KoreaDetailExtras({ inspection, options }: Props) {
+export default async function KoreaDetailExtras({
+  inspection,
+  insurance,
+}: Props) {
   const t = await getTranslations("carDetail.encar");
 
-  const hasOptions = (options?.length ?? 0) > 0;
-  if (!inspection && !hasOptions) return null;
+  if (!inspection && !insurance) return null;
+
+  const accidentTotal =
+    (insurance?.my_accident_count ?? 0) + (insurance?.other_accident_count ?? 0);
+  const insuranceClean =
+    accidentTotal === 0 &&
+    (insurance?.total_loss_count ?? 0) === 0 &&
+    (insurance?.theft_count ?? 0) === 0 &&
+    (insurance?.flood_count ?? 0) === 0;
 
   const repairs = inspection?.repair_panels ?? [];
   const paints = inspection?.paint_panels ?? [];
@@ -138,37 +151,139 @@ export default async function KoreaDetailExtras({ inspection, options }: Props) 
         </section>
       )}
 
-      {hasOptions && (
+      {insurance && (
         <section className="flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-3">
             <h2 className="text-[14px] font-semibold text-neutral-900 dark:text-neutral-100">
-              {t("options.title")}
+              {t("insurance.title")}
             </h2>
-            <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-neutral-100 px-1.5 text-[11px] font-semibold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-              {options!.reduce((n, g) => n + g.items.length, 0)}
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                insuranceClean
+                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                  : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${insuranceClean ? "bg-emerald-500" : "bg-amber-500"}`}
+                aria-hidden
+              />
+              {insuranceClean
+                ? t("insurance.clean")
+                : t("insurance.accidentBadge", { count: accidentTotal })}
             </span>
           </div>
-          <div className="flex flex-col gap-4">
-            {options!.map((group) => (
-              <div key={group.category} className="flex flex-col gap-2">
-                <span className="text-[10.5px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-                  {group.category}
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {group.items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-lg bg-neutral-100 px-2.5 py-1 text-[12.5px] text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+
+          {/* Hard red flags — write-off / theft / flood / fleet history */}
+          {(insurance.total_loss_count > 0 ||
+            insurance.theft_count > 0 ||
+            insurance.flood_count > 0 ||
+            insurance.government_use ||
+            insurance.business_use) && (
+            <div className="flex flex-wrap gap-2">
+              {insurance.total_loss_count > 0 && (
+                <Flag tone="danger" label={t("insurance.totalLoss")} />
+              )}
+              {insurance.theft_count > 0 && (
+                <Flag tone="danger" label={t("insurance.theft")} />
+              )}
+              {insurance.flood_count > 0 && (
+                <Flag tone="danger" label={t("insurance.flood")} />
+              )}
+              {insurance.government_use && (
+                <Flag tone="warn" label={t("insurance.governmentUse")} />
+              )}
+              {insurance.business_use && (
+                <Flag tone="warn" label={t("insurance.businessUse")} />
+              )}
+            </div>
+          )}
+
+          {/* History-at-a-glance */}
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <StatCell
+              label={t("insurance.myAccidents")}
+              value={String(insurance.my_accident_count)}
+              sub={
+                insurance.my_accident_cost > 0
+                  ? formatKrw(insurance.my_accident_cost)
+                  : undefined
+              }
+            />
+            <StatCell
+              label={t("insurance.otherAccidents")}
+              value={String(insurance.other_accident_count)}
+              sub={
+                insurance.other_accident_cost > 0
+                  ? formatKrw(insurance.other_accident_cost)
+                  : undefined
+              }
+            />
+            <StatCell
+              label={t("insurance.ownerChanges")}
+              value={String(insurance.owner_change_count)}
+            />
+            <StatCell
+              label={t("insurance.plateChanges")}
+              value={String(insurance.plate_change_count)}
+            />
+            {insurance.first_registered && (
+              <StatCell
+                label={t("insurance.firstRegistered")}
+                value={insurance.first_registered}
+              />
+            )}
           </div>
+
+          {/* Individual claims (damage to this car) */}
+          {insurance.accidents.length > 0 && (
+            <div className="flex flex-col gap-3 rounded-xl bg-amber-50/60 p-3 dark:bg-amber-500/5">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                {t("insurance.claimsTitle")}
+              </div>
+              <ul className="flex flex-col gap-2.5">
+                {insurance.accidents.map((accident, idx) => (
+                  <li
+                    key={`${accident.date ?? "?"}-${idx}`}
+                    className="flex flex-col gap-0.5"
+                  >
+                    <div className="flex items-center justify-between gap-3 text-[12.5px]">
+                      <span className="text-neutral-700 dark:text-neutral-300">
+                        {accident.date ?? "—"}
+                      </span>
+                      {accident.insurance_benefit != null && (
+                        <span className="shrink-0 font-semibold tabular-nums text-amber-700 dark:text-amber-400">
+                          {formatKrw(accident.insurance_benefit)}
+                        </span>
+                      )}
+                    </div>
+                    {(accident.part_cost != null ||
+                      accident.labor_cost != null ||
+                      accident.painting_cost != null) && (
+                      <div className="text-[11px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                        {[
+                          accident.part_cost != null
+                            ? `${t("insurance.parts")} ${formatKrw(accident.part_cost)}`
+                            : null,
+                          accident.labor_cost != null
+                            ? `${t("insurance.labor")} ${formatKrw(accident.labor_cost)}`
+                            : null,
+                          accident.painting_cost != null
+                            ? `${t("insurance.painting")} ${formatKrw(accident.painting_cost)}`
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
+
     </>
   );
 }
@@ -198,6 +313,32 @@ function Flag({ tone, label }: { tone: "danger" | "warn"; label: string }) {
       </svg>
       {label}
     </span>
+  );
+}
+
+function StatCell({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900">
+      <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+        {label}
+      </span>
+      <span className="text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+        {value}
+      </span>
+      {sub && (
+        <span className="text-[11px] tabular-nums text-neutral-500 dark:text-neutral-400">
+          {sub}
+        </span>
+      )}
+    </div>
   );
 }
 

@@ -4,6 +4,11 @@
       "label": "Үнэ (₩)",
       "fromPlaceholder": "Доод",
       "toPlaceholder": "Дээд"
+    },
+    "filters": {
+      "modelNeedsBrand": "Эхлээд үйлдвэрлэгч сонгоно",
+      "fuel": "Шатахуун",
+      "transmission": "Хурдны хайрцаг"
     }
   },
   "compare": {
@@ -1189,6 +1194,25 @@
         "clean": "Ослын тэмдэглэгээгүй",
         "guaranty": "Баталгаа",
         "vin": "Арлын дугаар"
+      },
+      "insurance": {
+        "title": "Даатгалын түүх",
+        "clean": "Ослын түүхгүй",
+        "accidentBadge": "{count} осол",
+        "totalLoss": "Бүрэн сүйрлийн түүхтэй",
+        "theft": "Хулгайн түүхтэй",
+        "flood": "Үерийн хохиролтой",
+        "governmentUse": "Албаны хэрэглээтэй байсан",
+        "businessUse": "Такси/түрээсийн хэрэглээтэй байсан",
+        "myAccidents": "Өөрийн машины хохирол",
+        "otherAccidents": "Бусдад учруулсан хохирол",
+        "ownerChanges": "Эзэмшигч солигдсон",
+        "plateChanges": "Дугаар солигдсон",
+        "firstRegistered": "Анхны бүртгэл",
+        "claimsTitle": "Даатгалын нөхөн төлбөрүүд",
+        "parts": "Сэлбэг",
+        "labor": "Ажил",
+        "painting": "Будаг"
       },
       "options": {
         "title": "Онцлох тоноглол"
