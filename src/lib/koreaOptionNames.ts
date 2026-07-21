@@ -25,7 +25,7 @@ const OPTIONS: Record<string, LocalizedName> = {
   "Headlamp (HID)": { mn: "Урд гэрэл (HID)", ru: "Фары (HID)" },
   "Headlamp (LED)": { mn: "Урд гэрэл (LED)", ru: "Фары (LED)" },
   "Power tailgate": {
-    mn: "Хойд хаалга сорно",
+    mn: "Автомат багажны хаалга",
     ru: "Электропривод багажника",
   },
   "Soft-close doors": {
