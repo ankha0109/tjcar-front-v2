@@ -8,6 +8,9 @@
 /** Japan timezone offset the raw AUCTION_DATE strings are expressed in. */
 const JAPAN_TZ_OFFSET = "+09:00";
 
+/** Timezone the auction house runs on — the raw AUCTION_DATE zone. */
+export const AUCTION_TIME_ZONE = "Asia/Tokyo";
+
 /** Timezone auction times are shown in on the site. */
 export const DISPLAY_TIME_ZONE = "Asia/Ulaanbaatar";
 
@@ -32,14 +35,47 @@ export function parseJapanAuctionDate(raw: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-/** Format an absolute instant as Ulaanbaatar local time. */
-export function formatUlaanbaatarTime(date: Date, locale: string): string {
-  return date.toLocaleString(locale, {
-    timeZone: DISPLAY_TIME_ZONE,
+/** One auction instant rendered for a single timezone. */
+export type ZonedAuctionTime = { date: string; time: string };
+
+/**
+ * Split an absolute instant into `2026/07/25` + `10:42` as seen in the given
+ * zone. Numeric and 24-hour on purpose, identical in every locale: the Japan and
+ * Ulaanbaatar times sit side by side and are meant to be compared at a glance.
+ */
+export function formatZonedAuctionTime(
+  date: Date,
+  timeZone: string,
+): ZonedAuctionTime {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
     year: "numeric",
-    month: "short",
+    month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-  });
+    hourCycle: "h23",
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return {
+    date: `${part("year")}/${part("month")}/${part("day")}`,
+    time: `${part("hour")}:${part("minute")}`,
+  };
+}
+
+/**
+ * Both clocks for one auction: the auction house's own (Japan, GMT+9) and the
+ * viewer-facing Ulaanbaatar one (GMT+8, i.e. Japan − 1h). Null when the lot has
+ * no scheduled time yet.
+ */
+export function auctionSchedule(
+  raw: string,
+): { japan: ZonedAuctionTime; ulaanbaatar: ZonedAuctionTime } | null {
+  const date = parseJapanAuctionDate(raw);
+  if (!date) return null;
+  return {
+    japan: formatZonedAuctionTime(date, AUCTION_TIME_ZONE),
+    ulaanbaatar: formatZonedAuctionTime(date, DISPLAY_TIME_ZONE),
+  };
 }

@@ -9,7 +9,7 @@ export default function Loading() {
     <section
       role="status"
       aria-busy="true"
-      className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:pt-10"
+      className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:pt-10 lg:px-6"
     >
       <span className="sr-only">Loading…</span>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr]">

@@ -36,7 +36,7 @@ export default function ReportPricing() {
   return (
     <section
       id="report-pricing"
-      className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16"
+      className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16 lg:px-6"
     >
       <ReportHeading
         eyebrow={t("eyebrow")}

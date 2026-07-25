@@ -7,7 +7,7 @@ export default async function ReportSteps() {
   const t = await getTranslations("reportLanding.steps");
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+    <section className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16 lg:px-6">
       <ReportHeading
         eyebrow={t("eyebrow")}
         heading={t("heading")}

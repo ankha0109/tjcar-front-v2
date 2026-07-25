@@ -88,6 +88,7 @@ const CARS_LINKS = [
 
 const COMPANY_LINKS = [
   { href: "/about", key: "about" as const },
+  { href: "/posts", key: "posts" as const },
   { href: "/contact", key: "contact" as const },
   { href: "/terms", key: "terms" as const },
 ] as const;
@@ -100,7 +101,7 @@ export default function DesktopFooter() {
     <footer className="bg-neutral-950 text-neutral-400">
       {/* Exchange-rate strip (moved from the header topbar) */}
       <div className="border-b border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3.5 lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3.5 lg:px-6">
           <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
             {tr("rates.label")}
           </span>
@@ -128,7 +129,7 @@ export default function DesktopFooter() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 lg:px-6">
         {/* Main row */}
         <div className="grid grid-cols-12 gap-8">
           {/* Brand + socials */}

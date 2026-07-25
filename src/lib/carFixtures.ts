@@ -1,5 +1,6 @@
 import type { CarResource } from "@/types/car";
 import type { FeaturedCar } from "@/types/featured";
+import { decodeAuctionText } from "@/utils/auctionInfo";
 
 export type CarFixture = {
   ID: string;
@@ -35,10 +36,23 @@ export type CarFixture = {
   SERIAL: string;
   INFO: string;
   premium_images: string | null;
+  /**
+   * Landed ("гар дээр ирэх") MNT price, computed by the API. Null on in-stock
+   * cars, which are already priced in tugrik, and on auction lots the upstream
+   * has no comparable sale for.
+   */
+  PRICE_MNT: number | null;
 };
 
 const str = (value: unknown): string =>
   value === null || value === undefined ? "" : String(value);
+
+/**
+ * AJES sends `GRADE` as HTML-entity-encoded halfwidth katakana
+ * (`"RS&#65393;&#65412;&#65438; Van"`), so decode it once here — every consumer
+ * (title, cards, evaluation sheet, wishlist) then reads plain text.
+ */
+const grade = (value: unknown): string => decodeAuctionText(str(value));
 
 /**
  * Flatten a `CarResource` into the AJES-shaped view model the detail UI reads.
@@ -64,7 +78,7 @@ export function carResourceToFixture(car: CarResource): CarFixture {
     ENG_V: str(cd.ENG_V),
     PW: str(cd.PW),
     KUZOV: str(cd.KUZOV),
-    GRADE: str(cd.GRADE),
+    GRADE: grade(cd.GRADE),
     COLOR: str(cd.COLOR),
     KPP: str(cd.KPP),
     KPP_TYPE: str(cd.KPP_TYPE),
@@ -83,11 +97,12 @@ export function carResourceToFixture(car: CarResource): CarFixture {
     SERIAL: str(cd.SERIAL),
     INFO: str(cd.INFO),
     premium_images: null,
+    PRICE_MNT: null, // in-stock cars carry their own tugrik price
   };
 }
 
 /**
- * Map a raw `GET /auctions/{id}` lot (flat UPPERCASE shape) into the `CarFixture`
+ * Map a raw `GET /japan/{id}` lot (flat UPPERCASE shape) into the `CarFixture`
  * the detail UI reads. Near-identity — `IMAGES` is already `#`-joined.
  */
 export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
@@ -106,7 +121,7 @@ export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
     ENG_V: str(lot.ENG_V),
     PW: str(lot.PW),
     KUZOV: str(lot.KUZOV),
-    GRADE: str(lot.GRADE),
+    GRADE: grade(lot.GRADE),
     COLOR: str(lot.COLOR),
     KPP: str(lot.KPP),
     KPP_TYPE: str(lot.KPP_TYPE),
@@ -125,6 +140,7 @@ export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
     SERIAL: str(lot.SERIAL),
     INFO: str(lot.INFO),
     premium_images: null,
+    PRICE_MNT: lot.PRICE_MNT ?? null,
   };
 }
 

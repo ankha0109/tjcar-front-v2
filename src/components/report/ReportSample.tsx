@@ -25,7 +25,7 @@ export default async function ReportSample() {
   const t = await getTranslations("reportLanding.sample");
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+    <section className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16 lg:px-6">
       <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Sample visual */}
         <div className="relative order-2 overflow-hidden rounded-2xl border border-neutral-200 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.5)] lg:order-1 dark:border-neutral-800">

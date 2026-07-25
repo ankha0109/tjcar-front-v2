@@ -32,7 +32,7 @@ export function useAuctionsInfinite(
   return useInfiniteQuery<AuctionPage>({
     queryKey: ["auctions", query],
     queryFn: ({ pageParam }) =>
-      Api.get<AuctionPage>("/auctions", {
+      Api.get<AuctionPage>("/japan", {
         ...query,
         page: pageParam as number,
         per_page: AUCTIONS_PER_PAGE,

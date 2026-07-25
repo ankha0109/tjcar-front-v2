@@ -9,7 +9,7 @@ export default function Loading() {
     <section
       role="status"
       aria-busy="true"
-      className="mx-auto w-full max-w-7xl px-4 py-8 md:py-12"
+      className="mx-auto w-full max-w-7xl px-4 py-8 md:py-12 lg:px-6"
     >
       <span className="sr-only">Loading…</span>
       <Skeleton className="mb-6 h-7 w-40" />

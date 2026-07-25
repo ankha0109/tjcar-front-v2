@@ -75,7 +75,7 @@ export default function PremiumGallery({ images, alt, isPremium, lot }: Props) {
             )}
           </div>
           <p className="text-[12px] text-neutral-400">
-            LOT: {lot || "—"} · {t("gallery.premiumContactLabel")}{" "}
+            LOT: {lot || "-"} · {t("gallery.premiumContactLabel")}{" "}
             {t("gallery.premiumPhone")}
           </p>
         </div>

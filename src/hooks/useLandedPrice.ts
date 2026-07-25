@@ -11,10 +11,8 @@ type Params = {
   year: string;
   rate: string;
   /**
-   * JPY price basis for the calculation:
-   *  - the START (opening) price → the minimum acceptable MNT bid (bid floor);
-   *  - the AVG_PRICE (comparable) → the expected landed ("гар дээр ирэх") price.
-   * Omit to let the backend estimate from specs alone.
+   * JPY price basis for the calculation — the START (opening) price, giving the
+   * minimum acceptable MNT bid. Omit to let the backend estimate from specs.
    */
   price?: number;
   enabled?: boolean;
@@ -22,9 +20,13 @@ type Params = {
 
 /**
  * POST /calculator → the landed MNT price for a lot. Returns `average` (0 on
- * failure or empty). Both the bid floor (price = START) and the "гар дээр ирэх
- * дундаж үнэ" card (price = AVG_PRICE) reuse this — the `price` basis is part of
- * the cache key, so the two coexist without clobbering each other.
+ * failure or empty).
+ *
+ * Only the bid floor uses this now: the "гар дээр ирэх дундаж үнэ" tile reads
+ * `PRICE_MNT` straight off the lot payload, since fetching it here put a spinner
+ * on the page's headline number. Keep this for CarBidSection — the floor is
+ * derived from THIS lot's start price, which no comparable history can supply,
+ * and it only fires for a logged-in customer with a deposit.
  */
 export function useLandedPrice({
   auctionId,

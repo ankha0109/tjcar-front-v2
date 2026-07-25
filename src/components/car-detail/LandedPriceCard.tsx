@@ -3,17 +3,11 @@
 import { useState } from "react";
 import { Modal } from "antd";
 import { useTranslations } from "next-intl";
-import { useLandedPrice } from "@/hooks/useLandedPrice";
 import { formatMnt } from "@/lib/bidConfig";
 
 type Props = {
-  auctionId: string;
-  chassis: string;
-  engineSize: string;
-  year: string;
-  rate: string;
-  /** Comparable (AVG_PRICE) JPY basis; omit/0 lets the backend estimate. */
-  avgPrice?: number;
+  /** Landed MNT price from `GET /japan/{id}` (`PRICE_MNT`); null when unpriceable. */
+  priceMnt?: number | null;
 };
 
 /**
@@ -22,26 +16,17 @@ type Props = {
  * with {@link RateCard}; a help icon opens the breakdown explanation. On the
  * Japan auction page the JPY start price is hidden, so this is the headline
  * number a buyer anchors their bid to.
+ *
+ * The figure arrives with the lot payload. It used to be fetched here with
+ * `POST /calculator`, which put a spinner on the page's headline number and
+ * cost a ~300ms upstream lookup after paint; the API computes it on the same
+ * basis now, so the value is unchanged and the request is gone.
  */
-export default function LandedPriceCard({
-  auctionId,
-  chassis,
-  engineSize,
-  year,
-  rate,
-  avgPrice,
-}: Props) {
+export default function LandedPriceCard({ priceMnt }: Props) {
   const t = useTranslations("carDetail.landed");
   const [open, setOpen] = useState(false);
 
-  const { data: average = 0, isLoading } = useLandedPrice({
-    auctionId,
-    chassis,
-    engineSize,
-    year,
-    rate,
-    price: avgPrice && avgPrice > 0 ? avgPrice : undefined,
-  });
+  const average = priceMnt ?? 0;
 
   const paragraphs = (t.raw("infoParagraphs") as string[]) ?? [];
 
@@ -66,9 +51,7 @@ export default function LandedPriceCard({
       </div>
 
       <div>
-        {isLoading ? (
-          <div className="h-8 w-28 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
-        ) : average > 0 ? (
+        {average > 0 ? (
           <div className="text-[22px] font-extrabold leading-tight tabular-nums text-neutral-900 dark:text-neutral-100">
             {formatMnt(average)}
           </div>

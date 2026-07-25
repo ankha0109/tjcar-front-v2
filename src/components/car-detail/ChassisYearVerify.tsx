@@ -141,7 +141,7 @@ export default function ChassisYearVerify({
                 {row.label}
               </dt>
               <dd className="font-semibold text-neutral-900 dark:text-neutral-100">
-                {row.value?.trim() || "—"}
+                {row.value?.trim() || "-"}
               </dd>
             </div>
           ))}

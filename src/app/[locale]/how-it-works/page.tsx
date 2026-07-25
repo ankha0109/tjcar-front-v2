@@ -24,7 +24,7 @@ export default async function HowItWorksPage({ params }: PageProps) {
 
   return (
     <section className="relative">
-      <div className="relative isolate mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-14 pt-12 md:gap-14 md:pb-20 md:pt-20 lg:grid-cols-12 lg:gap-12">
+      <div className="relative isolate mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-14 pt-12 md:gap-14 md:pb-20 md:pt-20 lg:px-6 lg:grid-cols-12 lg:gap-12">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10 hidden lg:block lg:bg-[url(/images/hero_bg_white.png)] dark:lg:bg-[url(/images/hero_bg_black.png)] lg:bg-contain lg:bg-right lg:bg-no-repeat lg:bg-origin-content lg:pl-[30%]"

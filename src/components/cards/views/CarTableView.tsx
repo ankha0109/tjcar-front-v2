@@ -46,7 +46,7 @@ export default function CarTableView({
         key: "year",
         width: 70,
         render: (year: string | undefined) => (
-          <span className="tabular-nums">{year ?? "—"}</span>
+          <span className="tabular-nums">{year ?? "-"}</span>
         ),
       },
       {
@@ -57,7 +57,7 @@ export default function CarTableView({
         responsive: ["sm"],
         render: (_, car) => (
           <span className="tabular-nums">
-            {formatMileage(car.mileageKm, t) ?? "—"}
+            {formatMileage(car.mileageKm, t) ?? "-"}
           </span>
         ),
       },
@@ -68,7 +68,7 @@ export default function CarTableView({
         width: 70,
         responsive: ["lg"],
         render: (cc: number | undefined) => (
-          <span className="tabular-nums">{formatEngine(cc) ?? "—"}</span>
+          <span className="tabular-nums">{formatEngine(cc) ?? "-"}</span>
         ),
       },
       {
@@ -78,7 +78,7 @@ export default function CarTableView({
         width: 105,
         responsive: ["xl"],
         render: (color: string | undefined) => {
-          if (!color) return <span className="text-neutral-400">—</span>;
+          if (!color) return <span className="text-neutral-400">-</span>;
           return (
             <span className="inline-flex items-center gap-1.5 capitalize">
               <ColorDot color={color} size={10} />
@@ -94,7 +94,7 @@ export default function CarTableView({
         responsive: ["xl"],
         render: (_, car) => {
           const grade = getGradeInfo(car.auction?.grade);
-          if (!grade) return <span className="text-neutral-400">—</span>;
+          if (!grade) return <span className="text-neutral-400">-</span>;
           const description = t(`grade.description.${grade.tier}`);
           return (
             <span
@@ -118,7 +118,7 @@ export default function CarTableView({
         responsive: ["sm"],
         render: (_, car) => {
           const countdown = getCountdown(car.auction?.date);
-          if (!countdown) return <span className="text-neutral-400">—</span>;
+          if (!countdown) return <span className="text-neutral-400">-</span>;
           return (
             <CountdownBadge
               countdown={countdown}

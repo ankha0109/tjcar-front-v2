@@ -4,3 +4,4 @@ export { default as MongoliaIcon } from "./mongolia.svg";
 export { TugrigIcon } from "./TugrigIcon";
 export { CarIcon } from "./CarIcon";
 export { ShieldIcon } from "./ShieldIcon";
+export { ArrowIcon } from "./ArrowIcon";

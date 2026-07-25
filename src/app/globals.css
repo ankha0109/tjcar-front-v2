@@ -452,3 +452,185 @@ a {
     animation: none;
   }
 }
+
+/* Blog article body — Tiptap HTML from the admin panel.
+   Tailwind's typography plugin is not installed, so every tag is styled here. */
+.post-body {
+  color: #3f3f46;
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+
+:root[data-theme="dark"] .post-body {
+  color: #d4d4d8;
+}
+
+.post-body > *:first-child {
+  margin-top: 0;
+}
+
+.post-body p {
+  margin: 1.1em 0;
+}
+
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  color: #171717;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 1.9em 0 0.6em;
+}
+
+:root[data-theme="dark"] .post-body :is(h2, h3, h4) {
+  color: #fafafa;
+}
+
+.post-body h2 {
+  font-size: 1.4em;
+}
+
+.post-body h3 {
+  font-size: 1.18em;
+}
+
+.post-body h4 {
+  font-size: 1.05em;
+}
+
+.post-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.post-body a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.post-body strong {
+  color: #171717;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .post-body strong {
+  color: #fafafa;
+}
+
+.post-body ul,
+.post-body ol {
+  margin: 1.1em 0;
+  padding-left: 1.5em;
+}
+
+.post-body ul {
+  list-style: disc;
+}
+
+.post-body ol {
+  list-style: decimal;
+}
+
+.post-body li {
+  margin: 0.4em 0;
+}
+
+.post-body li::marker {
+  color: #a1a1aa;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5em 0;
+}
+
+.post-body figure {
+  margin: 1.5em 0;
+}
+
+.post-body figcaption {
+  color: #71717a;
+  font-size: 0.85em;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.post-body blockquote {
+  border-left: 3px solid var(--color-primary);
+  color: #52525b;
+  font-style: italic;
+  margin: 1.5em 0;
+  padding: 0.1em 0 0.1em 1.1em;
+}
+
+:root[data-theme="dark"] .post-body blockquote {
+  color: #a1a1aa;
+}
+
+.post-body code {
+  background: #f4f4f5;
+  border-radius: 0.3rem;
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+}
+
+:root[data-theme="dark"] .post-body code {
+  background: #27272a;
+}
+
+.post-body pre {
+  background: #18181b;
+  border-radius: 0.6rem;
+  color: #e4e4e7;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  padding: 1em 1.1em;
+}
+
+.post-body pre code {
+  background: none;
+  color: inherit;
+  font-size: 0.88em;
+  padding: 0;
+}
+
+.post-body hr {
+  border: 0;
+  border-top: 1px solid #e4e4e7;
+  margin: 2.2em 0;
+}
+
+:root[data-theme="dark"] .post-body hr {
+  border-top-color: #27272a;
+}
+
+.post-body table {
+  border-collapse: collapse;
+  display: block;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.post-body th,
+.post-body td {
+  border: 1px solid #e4e4e7;
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.post-body th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .post-body :is(th, td) {
+  border-color: #27272a;
+}
+
+:root[data-theme="dark"] .post-body th {
+  background: #18181b;
+}

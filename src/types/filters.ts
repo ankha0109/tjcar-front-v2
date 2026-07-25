@@ -73,7 +73,7 @@ export function filtersToQuery(
 }
 
 /**
- * Map UI `FilterValues` to the `GET /api/auctions` backend param names, which
+ * Map UI `FilterValues` to the `GET /api/japan` backend param names, which
  * differ from the `/featured` contract (`filtersToQuery`). Empty values are
  * omitted. Pagination (`page`, `per_page`) is added by the caller.
  */

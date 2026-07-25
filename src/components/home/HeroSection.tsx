@@ -41,7 +41,7 @@ export default function HeroSection() {
         <div className="hero-glow" />
       </div>
 
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-10 pt-12 md:gap-14 md:pb-16 md:pt-20 lg:grid-cols-12 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-10 pt-12 md:gap-14 md:pb-16 md:pt-20 lg:px-6 lg:grid-cols-12 lg:gap-8">
         {/* ── LEFT: editorial copy ───────────────────────── */}
         <div className="relative lg:col-span-6">
           <div className="hero-reveal" style={{ animationDelay: "0ms" }}>

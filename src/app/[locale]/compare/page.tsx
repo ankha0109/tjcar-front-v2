@@ -28,7 +28,7 @@ export default async function ComparePage({ params, searchParams }: PageProps) {
   const refs = parseCompareParam(items);
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8 md:py-12">
+    <section className="mx-auto w-full max-w-7xl px-4 py-8 md:py-12 lg:px-6">
       <h1 className="mb-6 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
         {t("title")}
       </h1>

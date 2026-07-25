@@ -7,7 +7,7 @@ export default async function ProcessTimeline() {
 
   return (
     <section className="border-b border-neutral-100 bg-neutral-50/60 dark:border-neutral-900 dark:bg-neutral-900/30">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
           <div>
             <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">

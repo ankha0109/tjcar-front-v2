@@ -98,7 +98,8 @@
       "korea": "Korea cars",
       "about": "About us",
       "ready": "In-stock cars",
-      "report": "Accident report"
+      "report": "Accident report",
+      "posts": "News & guides"
     },
     "phone": "+976 7511-5888",
     "hours": "Mon–Sat · 07:30–17:30",
@@ -229,6 +230,7 @@
     "company": {
       "heading": "Company",
       "about": "About",
+      "posts": "News & guides",
       "contact": "Contact",
       "terms": "Terms"
     },
@@ -526,6 +528,12 @@
       "compare": "Compare",
       "premium": "Premium",
       "mileageUnit": "km",
+      "drivetrain": {
+        "fwd": "FWD",
+        "rwd": "RWD",
+        "fourWd": "4WD",
+        "awd": "AWD"
+      },
       "source": {
         "japan": "JP",
         "korea": "KR",
@@ -628,6 +636,31 @@
       "description": "Auction grade, mileage, real photos, accident and flood history — everything we know, prepared as a PDF report.",
       "cta": "Order a report",
       "priceBadge": "20,000₮"
+    }
+  },
+  "homeServices": {
+    "eyebrow": "Services",
+    "heading": "From order to handover — four services",
+    "subheading": "Japanese and Korean auctions, in-stock cars in Mongolia, and vehicle reports — all in one place.",
+    "cta": "View details",
+    "ctaAria": "{service} — view details",
+    "items": {
+      "japan": {
+        "title": "Order from Japan",
+        "description": "We bid at Japanese auctions, inspect, and ship all the way to Mongolia."
+      },
+      "korea": {
+        "title": "Order from Korea",
+        "description": "Buy straight from Encar and take delivery in Mongolia within 14 days."
+      },
+      "report": {
+        "title": "Accident history report",
+        "description": "Accidents, mileage and auction grade — verified in one PDF report."
+      },
+      "garage": {
+        "title": "TJ Garage",
+        "description": "Inspected cars already in Mongolia, ready to drive away today."
+      }
     }
   },
   "homeV2": {
@@ -821,38 +854,28 @@
     "subheading": "Market notes, new models, buying tips — from Japan and Korea, written by our team.",
     "viewAll": "All articles",
     "readMore": "Read more",
-    "latest": "Latest",
-    "posts": {
-      "post1": {
-        "category": "Buying guide",
-        "date": "2026-04-12",
-        "title": "5 things to check before you buy",
-        "excerpt": "Drivetrain, mileage, accident history, auction report — the essentials to verify before any purchase."
-      },
-      "post2": {
-        "category": "Comparison",
-        "date": "2026-03-28",
-        "title": "Hybrid vs electric — which fits Mongolia?",
-        "excerpt": "Total cost of ownership, charging infrastructure, service availability — a side-by-side breakdown."
-      },
-      "post3": {
-        "category": "Market",
-        "date": "2026-02-15",
-        "title": "Japan's most-wanted brands in 2026",
-        "excerpt": "Toyota, Lexus, Subaru — a data-driven ranking based on last quarter's auction volume."
-      },
-      "post4": {
-        "category": "Costs",
-        "date": "2026-01-20",
-        "title": "Import duties and taxes, explained",
-        "excerpt": "Customs, VAT, age-based rates — how to estimate the real landed price before you bid."
-      },
-      "post5": {
-        "category": "Guide",
-        "date": "2025-12-10",
-        "title": "Korea or Japan — where to buy?",
-        "excerpt": "Pricing, condition, shipping times — a practical comparison of the two biggest markets."
-      }
+    "latest": "Latest"
+  },
+  "posts": {
+    "metadata": {
+      "title": "News & guides",
+      "description": "Market notes from Japan and Korea, buying tips and import guides."
+    },
+    "eyebrow": "News & guides",
+    "heading": "News & guides",
+    "subheading": "Market notes, new models, buying tips — from Japan and Korea, written by our team.",
+    "all": "All",
+    "empty": "No articles yet.",
+    "error": "Could not load articles. Please try again later.",
+    "readMore": "Read more",
+    "backToList": "All articles",
+    "category": {
+      "news": "News",
+      "tutorial": "Guide"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next"
     }
   },
   "about": {
@@ -1055,15 +1078,24 @@
     "errorRetry": "Try again"
   },
   "carDetail": {
+    "breadcrumb": {
+      "aria": "Breadcrumb",
+      "home": "Home"
+    },
     "countdown": {
       "label": "Auction starts in",
-      "scheduled": "Scheduled (UB)",
       "unknown": "Time not set",
       "started": "Started",
       "days": "days",
       "hours": "hrs",
       "mins": "min",
       "secs": "sec"
+    },
+    "schedule": {
+      "title": "Auction start time",
+      "japan": "Japan (GMT+9)",
+      "ulaanbaatar": "Ulaanbaatar (GMT+8)",
+      "notSet": "not set"
     },
     "landed": {
       "title": "Est. landed price",
@@ -1075,6 +1107,23 @@
         "Note: it is estimated from the average sold prices of cars with similar specifications.",
         "Placing a realistic, competitive bid based on this figure improves your chances of winning."
       ]
+    },
+    "rateInfo": {
+      "title": "About the rating",
+      "intro": "RATE is the overall condition grade the independent auction inspector gives the car — the higher the number, the better the condition.",
+      "note": "The grade is the inspector's judgment, so always confirm the details on the evaluation sheet before you decide.",
+      "grades": {
+        "S": "New or nearly new, very low mileage",
+        "6": "Almost new, virtually no wear",
+        "5": "Excellent, very clean",
+        "4_5": "Very good, minor wear",
+        "4": "Good, normal condition for its age",
+        "3_5": "Above average, may need minor repair",
+        "3": "Average, visible scratches and dents",
+        "2": "Worn, heavy wear or rust",
+        "R": "Accident / repair history (bodywork repaired)",
+        "RA": "Lightly repaired (minor accident)"
+      }
     },
     "verify": {
       "title": "Verify year by chassis number",
@@ -1141,13 +1190,17 @@
       "chassis": "Chassis",
       "equipment": "Equipment",
       "rate": "Rate",
+      "rateExt": "Exterior grade",
+      "rateInt": "Interior grade",
       "auction": "Auction",
       "auctionDate": "Auction date",
       "fullTitle": "Full specifications",
       "fuel": "Fuel",
       "seats": "Seats",
       "bodyType": "Body type",
-      "regMonth": "First registered"
+      "regMonth": "First registered",
+      "drivetrain": "Drivetrain",
+      "location": "Location"
     },
     "fuel": {
       "petrol": "Petrol",
@@ -1270,7 +1323,7 @@
       "premiumPhone": "7511-5888"
     },
     "evaluation": {
-      "title": "Auction evaluation sheet",
+      "title": "Evaluation sheet",
       "subtitle": "Official inspector grade for this vehicle",
       "viewFull": "Open full sheet",
       "ai": {
@@ -1294,12 +1347,11 @@
     },
     "priceHistory": {
       "title": "Comparable price history",
-      "subtitle": "Similar cars sold in the last 14 days",
-      "jpy": "JPY",
-      "mnt": "MNT",
-      "listTitle": "Recent sales",
+      "subtitle": "Landed price of recently sold cars with the same spec",
       "noData": "No data yet",
-      "demoBadge": "Demo data"
+      "colStartPrice": "Start price in Japan",
+      "colSoldPrice": "Sold price in Japan",
+      "colLandedPrice": "Landed price"
     }
   },
   "mobile": {

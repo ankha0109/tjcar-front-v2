@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Drawer } from "antd";
+import { Drawer, Typography } from "antd";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -10,6 +10,7 @@ import { useLandedPrice } from "@/hooks/useLandedPrice";
 import BrandButton from "@/components/ui/BrandButton";
 import CarBidForm from "./CarBidForm";
 import AuctionCountdown from "./AuctionCountdown";
+import AuctionSchedule, { type AuctionScheduleTimes } from "./AuctionSchedule";
 import { MINIMUM_BALANCE, BID_CUTOFF_HOURS, formatMnt } from "@/lib/bidConfig";
 import { parseJapanAuctionDate } from "@/utils/auctionTime";
 
@@ -23,8 +24,12 @@ type Props = {
   startPrice: number;
   status: string;
   auctionDate: string;
+  /** Japan + Ulaanbaatar clocks for {@link auctionDate}, formatted server-side. */
+  schedule: AuctionScheduleTimes | null;
   /** Auction house / venue (AUCTION). */
   auctionLocation: string;
+  /** Location town/region (TOWN) — often empty; shown only when present. */
+  town?: string;
   /** Lot number (LOT). */
   lot: string;
   /** Calculator inputs. */
@@ -34,6 +39,14 @@ type Props = {
   rate: string;
   /** Live JPY → MNT rate from /config. */
   jpyRate: number;
+  /** Quick-spec grid rendered at the top of the card, above a divider. */
+  quickSpecs?: React.ReactNode;
+  /**
+   * Secondary actions for the mobile sticky bar, right of the bid CTA (wishlist
+   * + compare on the Japan lot page). The `lg` layout puts those in the page's
+   * title header instead, so this slot is effectively mobile-only.
+   */
+  actions?: React.ReactNode;
 };
 
 /**
@@ -56,13 +69,17 @@ export default function CarBidSection(props: Props) {
     startPrice,
     status,
     auctionDate,
+    schedule,
     auctionLocation,
+    town,
     lot,
     chassis,
     engineSize,
     year,
     rate,
     jpyRate,
+    quickSpecs,
+    actions,
   } = props;
 
   const t = useTranslations("carDetail.bid");
@@ -91,27 +108,46 @@ export default function CarBidSection(props: Props) {
     enabled: showForm,
   });
 
-  // Auction meta (countdown + venue + lot) — always visible, even to guests.
-  const meta = (
-    <div className="flex flex-col gap-3.5">
-      <AuctionCountdown auctionDate={auctionDate} />
-      <dl className="grid grid-cols-2 gap-3 border-t border-neutral-100 pt-3 text-[13px] dark:border-neutral-800">
-        <div className="flex flex-col gap-0.5">
+  // Everything you need before bidding — both clocks, then venue/lot/town.
+  // Grouped inside the "join the auction" block rather than with the car specs:
+  // these describe the sale, not the car. Always visible, even to guests.
+  const auctionMeta = (
+    <div className="flex flex-col gap-3">
+      <AuctionSchedule schedule={schedule} />
+      {/* Same label/value recipe as the quick specs above: 11px uppercase
+          label, 13px semibold value, gap-0 + leading-normal, value truncates. */}
+      <dl className="grid grid-cols-2 gap-x-3 gap-y-4">
+        <div className="flex min-w-0 flex-col gap-0 leading-normal">
           <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
             {tSpecs("auction")}
           </dt>
-          <dd className="font-semibold text-neutral-900 dark:text-neutral-100">
-            {auctionLocation || "—"}
+          <dd className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+            {auctionLocation || "-"}
           </dd>
         </div>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex min-w-0 flex-col gap-0 leading-normal">
           <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
             {tSpecs("lot")}
           </dt>
-          <dd className="font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
-            {lot || "—"}
+          <dd className="flex items-center gap-1 text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+            <span className="truncate">{lot || "-"}</span>
+            {/* Bare antd copy control — the number keeps its own typography and
+                only the button comes from antd. Its tooltip ("Хуулбарлах" /
+                "Хуулсан") ships with the ConfigProvider locale, so mn/en/ru all
+                read correctly without extra message keys. */}
+            {lot ? <Typography.Text copyable={{ text: lot }} /> : null}
           </dd>
         </div>
+        {town && (
+          <div className="flex min-w-0 flex-col gap-0 leading-normal">
+            <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+              {tSpecs("location")}
+            </dt>
+            <dd className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+              {town}
+            </dd>
+          </div>
+        )}
       </dl>
     </div>
   );
@@ -183,29 +219,52 @@ export default function CarBidSection(props: Props) {
 
   return (
     <>
-      {/* Desktop — one card grouping countdown + venue/lot + the bid form. */}
+      {/* Desktop — one card: quick specs, then the join-the-auction block
+          (countdown, both clocks, venue/lot) and the bid form. */}
       <section className="hidden flex-col gap-4 rounded-2xl border border-neutral-200 p-4 lg:flex dark:border-neutral-800">
-        <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
-          {t("panelTitle")}
-        </h2>
-        {meta}
-        <div className="h-px bg-neutral-100 dark:bg-neutral-800" />
-        {renderBody()}
-      </section>
-
-      {/* Mobile — auction meta inline, plus a sticky bar that opens the form. */}
-      <div className="lg:hidden">
-        <section className="flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
+        {quickSpecs && (
+          <>
+            {quickSpecs}
+            <div className="h-px bg-neutral-100 dark:bg-neutral-800" />
+          </>
+        )}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
             {t("panelTitle")}
           </h2>
-          {meta}
+          {/* Countdown beside the title as a compact, understated timer. */}
+          <AuctionCountdown auctionDate={auctionDate} variant="inline" />
+        </div>
+        {auctionMeta}
+        {renderBody()}
+      </section>
+
+      {/* Mobile — same blocks inline (the form itself lives in the drawer the
+          sticky bar opens). */}
+      <div className="lg:hidden">
+        <section className="flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
+          {quickSpecs && (
+            <>
+              {quickSpecs}
+              <div className="h-px bg-neutral-100 dark:bg-neutral-800" />
+            </>
+          )}
+          <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
+            {t("panelTitle")}
+          </h2>
+          <AuctionCountdown auctionDate={auctionDate} />
+          {auctionMeta}
         </section>
 
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-100 bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
-          <BrandButton block size="large" onClick={() => setOpen(true)}>
+        <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-neutral-100 bg-white/95 px-4 md:pr-24 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
+          <BrandButton
+            size="large"
+            className="min-w-0 flex-1"
+            onClick={() => setOpen(true)}
+          >
             {t("cta")}
           </BrandButton>
+          {actions}
         </div>
 
         <Drawer

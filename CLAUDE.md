@@ -24,6 +24,20 @@ Keep `next/navigation` for `useSearchParams`, `notFound`, and for any redirect t
 - Client components: `const t = useTranslations("namespace");`
 - Use ICU placeholders for interpolation: `t("key", { name: "...", count: 3 })`.
 
+## Page container
+
+Every top-level page/section wrapper uses the SAME container so its edges line up with
+the header and footer:
+
+```
+mx-auto w-full max-w-7xl px-4 lg:px-6
+```
+
+- `DesktopHeader`, `DesktopFooter` and `MobileHeader` (`px-4`, no max width) follow it too —
+  changing the padding in one place means changing it everywhere.
+- Vertical padding is free (`py-8`, `pb-12 pt-6`, …); only the horizontal scale is fixed.
+- Car detail pages keep `px-0 lg:px-6` on purpose — the gallery is full-bleed on mobile.
+
 ## API and headers
 
 - Every API request includes `Accept-Language: <locale>` automatically:

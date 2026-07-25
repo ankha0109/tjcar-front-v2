@@ -83,8 +83,7 @@ export default async function EncarDetail({
   const colorLabel = colorKey ? t(`colors.${colorKey}`) : car.COLOR || undefined;
   const colorSwatch = car.COLOR ? getColorSwatch(car.COLOR) : null;
   const mileage = formatMileage(Number(car.MILEAGE) || undefined, tFmt);
-  // Encar displacement is plain cc (2998 → "2,998cc"); formatEngine expects the
-  // AJES unit, so don't reuse it here.
+  // Encar keeps its compact "2,998cc" style (vs formatEngine's "2,998 CC").
   const engV = Number(car.ENG_V) || 0;
   const engine = engV > 0 ? `${formatNumber(engV)}cc` : undefined;
   const transmission = formatTransmission(car.KPP, tFmt);
@@ -110,12 +109,12 @@ export default async function EncarDetail({
   ];
 
   const detailedRows: Array<{ label: string; value: string }> = [
-    { label: t("specs.grade"), value: car.GRADE || "—" },
-    { label: t("specs.bodyType"), value: car.KUZOV || "—" },
-    { label: t("specs.color"), value: colorLabel || "—" },
+    { label: t("specs.grade"), value: car.GRADE || "-" },
+    { label: t("specs.bodyType"), value: car.KUZOV || "-" },
+    { label: t("specs.color"), value: colorLabel || "-" },
     {
       label: t("specs.regMonth"),
-      value: encar?.yearMonth ? formatYearMonth(encar.yearMonth) : "—",
+      value: encar?.yearMonth ? formatYearMonth(encar.yearMonth) : "-",
     },
   ];
 
@@ -235,11 +234,11 @@ export default async function EncarDetail({
                 key={label}
                 className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900"
               >
-                <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+                <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                   {label}
                 </span>
                 <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-                  {value || "—"}
+                  {value || "-"}
                 </span>
               </div>
             ))}
@@ -295,7 +294,7 @@ export default async function EncarDetail({
           <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-neutral-100 bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="text-[10.5px] font-semibold uppercase text-neutral-400">
+                <span className="text-[11px] font-semibold uppercase text-neutral-400">
                   {t("encar.priceLabel")}
                 </span>
                 <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">

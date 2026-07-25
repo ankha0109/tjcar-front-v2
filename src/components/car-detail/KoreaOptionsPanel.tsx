@@ -47,7 +47,7 @@ export default async function KoreaOptionsPanel({ options }: Props) {
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white text-neutral-500 ring-1 ring-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-700">
                   <CategoryIcon category={group.category} />
                 </span>
-                <span className="text-[10.5px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
                   {localizeKoreaOptionCategory(group.category, locale)}
                 </span>
               </div>

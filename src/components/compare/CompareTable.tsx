@@ -22,7 +22,7 @@ type Props = {
 
 /**
  * Hand-rolled table (antd Table fights the group-section rows + sticky label
- * column). Unified rows: a value one source can't fill renders as "—"; rows
+ * column). Unified rows: a value one source can't fill renders as "-"; rows
  * empty for EVERY column are dropped, so a same-source comparison never shows
  * the other source's section.
  */
@@ -31,7 +31,7 @@ export default function CompareTable({ cars, onRemove }: Props) {
 
   const renderValue = (value: CompareValue) => {
     if (value === null || value === "") {
-      return <span className="text-neutral-300 dark:text-neutral-600">—</span>;
+      return <span className="text-neutral-300 dark:text-neutral-600">-</span>;
     }
     if (typeof value === "boolean") {
       return value ? t("compare.yes") : t("compare.no");

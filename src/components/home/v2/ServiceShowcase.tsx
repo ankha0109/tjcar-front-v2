@@ -70,7 +70,7 @@ export default function ServiceShowcase() {
   const ActiveIcon = service.Icon;
 
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-14 md:pt-20">
+    <section className="relative overflow-hidden px-4 pb-20 pt-14 md:pt-20 lg:px-6">
       {/* atmosphere */}
       <div
         aria-hidden

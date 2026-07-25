@@ -14,7 +14,7 @@ export default async function AdvantagesAndTrust() {
 
   return (
     <section className="border-b border-neutral-100 dark:border-neutral-900">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-7">
             <span className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">

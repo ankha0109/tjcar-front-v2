@@ -92,7 +92,7 @@ export default function HeroV2() {
         <div className="hero-glow" />
       </div>
 
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-14 pt-12 md:pt-16 lg:grid-cols-2 lg:gap-10 lg:pb-24 lg:pt-24">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-14 pt-12 md:pt-16 lg:px-6 lg:grid-cols-2 lg:gap-10 lg:pb-24 lg:pt-24">
         {/* copy */}
         <div className="relative">
           <div className="hero-reveal" style={reveal(0)}>

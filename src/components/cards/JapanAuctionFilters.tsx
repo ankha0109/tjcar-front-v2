@@ -1070,7 +1070,7 @@ function OptionList({
       <div className="-mx-1 max-h-[50vh] overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
-            —
+            -
           </div>
         ) : (
           filtered.map((o, i) => {
@@ -1125,7 +1125,7 @@ function RangeColumns({
           <div className="max-h-[45vh] overflow-y-auto rounded-lg border border-neutral-100 dark:border-neutral-800">
             {col.options.length === 0 ? (
               <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
-                —
+                -
               </div>
             ) : (
               col.options.map((o, i) => {

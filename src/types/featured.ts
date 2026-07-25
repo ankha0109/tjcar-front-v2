@@ -24,8 +24,16 @@ export type FeaturedCar = {
   MARKA_ID: string;
   MODEL_ID: string;
   AVG_PRICE: string;
-  /** Computed MNT price — present on `/featured`, ABSENT on `/auctions`. */
-  PRICE_MNT?: number;
+  /**
+   * Landed ("гар дээр ирэх") MNT price, computed server-side so no client call
+   * is needed. Present on `/featured`, `/compare`, `/japan/{id}` and
+   * `/japan/history`; ABSENT on the `/japan` list. Null when unpriceable.
+   *
+   * Basis differs by endpoint: sold `stats` rows price off their own FINISH,
+   * upcoming `main` lots off AVG_PRICE or the comparable average — see
+   * LandedPriceEstimator in the API.
+   */
+  PRICE_MNT?: number | null;
   AVG_STRING: string;
   MARKA_NAME: string;
   MODEL_NAME: string;

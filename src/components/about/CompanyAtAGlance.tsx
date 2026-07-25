@@ -33,7 +33,7 @@ export default async function CompanyAtAGlance() {
 
   return (
     <section className="border-b border-neutral-100 dark:border-neutral-900">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
         {/* Team */}
         <div>
           <div className="max-w-2xl">

@@ -337,6 +337,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
       labelKey: "howItWorks" as const,
       href: "/how-it-works",
     },
+    { key: "posts", labelKey: "nav.posts" as const, href: "/posts" },
   ];
 
   return (

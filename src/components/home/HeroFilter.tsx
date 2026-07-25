@@ -96,7 +96,7 @@ export default function HeroFilter({ filterOptions }: Props) {
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-10 md:pb-14">
+    <section className="mx-auto w-full max-w-7xl px-4 pb-10 md:pb-14 lg:px-6">
       <form
         onSubmit={handleSubmit}
         className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-[0_28px_56px_-32px_rgba(15,15,25,0.22)] dark:border-neutral-800 dark:bg-neutral-950"

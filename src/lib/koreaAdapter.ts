@@ -90,5 +90,6 @@ export function koreaListingToFixture(listing: KoreaListing): CarFixture {
     SERIAL: "",
     INFO: "",
     premium_images: null,
+    PRICE_MNT: null, // Korea pricing renders from EncarDetail's `encar` prop
   };
 }

@@ -246,7 +246,7 @@ export default function CarSearchSection({
 
   return (
     <section className="w-full bg-white dark:bg-neutral-950">
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 pb-6 pt-10 md:pb-8 md:pt-6 lg:grid-cols-10">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 pb-6 pt-10 md:pb-8 md:pt-6 lg:px-6 lg:grid-cols-10">
         {/* LEFT — 70% — featured brands + search bar */}
         <div className="lg:col-span-7">
           {/* Header — title + Japan/Korea segment */}

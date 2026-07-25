@@ -60,7 +60,7 @@ export default function EvaluationAiChat({
 
   const nextId = () => `eval-${idRef.current++}`;
   const suggested = (t.raw("suggested") as string[]) ?? [];
-  const dash = (v: string) => (v && v.trim() ? v : "—");
+  const dash = (v: string) => (v && v.trim() ? v : "-");
 
   const carPayload = {
     car_id: carId,
@@ -202,7 +202,13 @@ export default function EvaluationAiChat({
     setMessages((prev) => [
       ...prev,
       { id: nextId(), role: "user", content: q, createdAt: now },
-      { id: assistantId, role: "assistant", content: "", createdAt: now, pending: true },
+      {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+        createdAt: now,
+        pending: true,
+      },
     ]);
     setValue("");
     sendQuestion(q, assistantId);
@@ -259,10 +265,11 @@ export default function EvaluationAiChat({
         </div>
       </div>
 
-      {/* Messages */}
+      {/* Messages — taller on desktop so the card fills the same height as the
+          evaluation sheet beside it instead of leaving dead space below. */}
       <div
         ref={scrollRef}
-        className="max-h-[440px] min-h-[260px] flex-1 space-y-3 overflow-y-auto px-4 py-4"
+        className="max-h-110 min-h-65 flex-1 space-y-3 overflow-y-auto px-4 py-4 lg:max-h-120"
       >
         {messages.map((m) =>
           m.pending && !m.content ? (

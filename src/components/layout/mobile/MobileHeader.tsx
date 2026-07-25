@@ -10,6 +10,11 @@ import MobileDrawer from "./MobileDrawer";
 
 type Props = {
   title?: string;
+  /**
+   * Second line under {@link title}, muted and smaller — the car's grade on lot
+   * detail pages. Both lines still fit the 56px bar. Ignored without a title.
+   */
+  subtitle?: string;
   back?: { href: string };
   right?: ReactNode;
   customAction?: ReactNode;
@@ -53,6 +58,7 @@ function DefaultRight() {
 
 export default function MobileHeader({
   title,
+  subtitle,
   back,
   right,
   customAction,
@@ -109,15 +115,24 @@ export default function MobileHeader({
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-3 backdrop-blur-xl",
+          "sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
           "dark:border-neutral-900 dark:bg-neutral-950/95",
         )}
       >
         {leading}
         {title ? (
-          <h1 className="min-w-0 flex-1 truncate text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
-            {title}
-          </h1>
+          // Tight leading so title + subtitle stay inside the 56px bar. Both
+          // lines truncate: a long lot name must never push the actions out.
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-[15px] font-semibold leading-tight text-neutral-900 dark:text-neutral-100">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="truncate text-[11px] leading-tight text-neutral-500 dark:text-neutral-400">
+                {subtitle}
+              </p>
+            )}
+          </div>
         ) : (
           <div className="flex-1" />
         )}

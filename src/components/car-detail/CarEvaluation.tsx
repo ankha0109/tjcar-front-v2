@@ -17,32 +17,40 @@ type Props = {
 };
 
 /**
- * Full-width section that splits the auction evaluation sheet out of the photo
- * gallery: the sheet image (zoomable to full size) beside an AI assistant that
- * analyzes and explains it.
+ * Standalone full-width section closing the lot page: the auction evaluation
+ * sheet (zoomable to full size) beside an AI assistant that analyzes and
+ * explains it. Split out of the photo gallery — buyers lean on this sheet more
+ * than on any photo, so it gets the whole page width and a two-column layout
+ * where the sheet stays legible while the assistant reads alongside it.
  */
 export default function CarEvaluation({ image, car }: Props) {
   const t = useTranslations("carDetail.evaluation");
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="mt-6 px-4 lg:px-0">
-      <div className="mb-3">
-        <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
-          {t("title")}
-        </h2>
-        <p className="mt-0.5 text-[12px] text-neutral-500 dark:text-neutral-400">
-          {t("subtitle")}
-        </p>
+    <section className="mt-8 border-t border-neutral-200 px-4 pt-8 lg:mt-12 lg:px-0 lg:pt-10 dark:border-neutral-800">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 lg:mb-5">
+        <div className="min-w-0">
+          <h2 className="text-[17px] font-semibold tracking-tight text-neutral-900 lg:text-[20px] dark:text-neutral-100">
+            {t("title")}
+          </h2>
+          <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
+            {t("subtitle")}
+          </p>
+        </div>
+        {/* Mark legend — opens in a modal so it never crowds the sheet + AI chat. */}
+        <EvaluationGuide />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
+      {/* Two columns on desktop: the sheet takes the wider share so its marks
+          stay readable, the assistant stretches to the same height beside it. */}
+      <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-stretch lg:gap-6">
         {/* Evaluation sheet image */}
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label={t("viewFull")}
-          className="group relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+          className="group relative flex w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
         >
           {/* Full-size sheet — the marks must stay legible, so no w=320 here. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -50,7 +58,7 @@ export default function CarEvaluation({ image, car }: Props) {
             src={withImageSize(image, "original")}
             alt={t("title")}
             loading="lazy"
-            className="max-h-[520px] w-full object-contain"
+            className="max-h-130 w-full object-contain lg:max-h-160"
           />
           <span className="absolute right-2.5 bottom-2.5 rounded-full bg-black/45 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-sm transition group-hover:bg-black/60">
             {t("viewFull")}
@@ -69,9 +77,6 @@ export default function CarEvaluation({ image, car }: Props) {
           equip={car.EQUIP}
         />
       </div>
-
-      {/* Legend explaining the inspector's shorthand marks on the sheet. */}
-      <EvaluationGuide />
 
       <Lightbox
         open={open}

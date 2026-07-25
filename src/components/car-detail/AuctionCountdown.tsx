@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import {
-  formatUlaanbaatarTime,
-  parseJapanAuctionDate,
-} from "@/utils/auctionTime";
+import { useTranslations } from "next-intl";
+import { parseJapanAuctionDate } from "@/utils/auctionTime";
 
 type Props = {
   /** Auction start datetime string in Japan time (GMT+9). */
   auctionDate: string;
+  /**
+   * "boxes" (default) renders the prominent 4-segment timer; "inline" renders a
+   * compact, muted single-line countdown for tight spots like a card header.
+   */
+  variant?: "boxes" | "inline";
 };
 
 type Remaining = { days: number; hours: number; mins: number; secs: number };
@@ -29,13 +31,16 @@ function diff(target: number, now: number): Remaining | null {
 /**
  * Live countdown to the auction start ("Дуудлага худалдаа эхлэхэд"). The raw
  * AUCTION_DATE is Japan time (GMT+9); {@link parseJapanAuctionDate} anchors it so
- * the countdown is correct for any viewer, and the scheduled instant is shown in
- * Ulaanbaatar time. Client-only ticking (state stays null until mount) keeps
- * server and first client render in agreement — no hydration mismatch.
+ * the countdown is correct for any viewer. The scheduled instant itself is shown
+ * by {@link AuctionSchedule} (Japan + Ulaanbaatar clocks). Client-only ticking
+ * (state stays null until mount) keeps server and first client render in
+ * agreement — no hydration mismatch.
  */
-export default function AuctionCountdown({ auctionDate }: Props) {
+export default function AuctionCountdown({
+  auctionDate,
+  variant = "boxes",
+}: Props) {
   const t = useTranslations("carDetail.countdown");
-  const locale = useLocale();
   const target = parseJapanAuctionDate(auctionDate);
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -50,6 +55,46 @@ export default function AuctionCountdown({ auctionDate }: Props) {
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auctionDate]);
+
+  // Compact, understated single line — used in the bid card header on desktop.
+  if (variant === "inline") {
+    const cls =
+      "inline-flex items-center gap-1.5 text-[12px] font-medium text-neutral-500 dark:text-neutral-400";
+    if (!target) return <span className={cls}>{t("unknown")}</span>;
+    if (mounted && !remaining) return <span className={cls}>{t("started")}</span>;
+    return (
+      <span className={cls}>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="shrink-0"
+          aria-hidden
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </svg>
+        {mounted && remaining ? (
+          <span className="tabular-nums">
+            {remaining.days > 0 ? `${remaining.days} ${t("days")} ` : ""}
+            {String(remaining.hours).padStart(2, "0")}:
+            {String(remaining.mins).padStart(2, "0")}:
+            {String(remaining.secs).padStart(2, "0")}
+          </span>
+        ) : (
+          <span
+            className="inline-block h-3.5 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700"
+            aria-hidden
+          />
+        )}
+      </span>
+    );
+  }
 
   const label = (
     <div className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
@@ -101,13 +146,6 @@ export default function AuctionCountdown({ auctionDate }: Props) {
         // Pre-mount placeholder keeps layout stable before the timer starts.
         <div className="h-[54px] w-full animate-pulse rounded-lg bg-neutral-100 dark:bg-neutral-800" />
       )}
-      {/* Locale-dependent date string renders only after mount: toLocaleString's
-          output varies by runtime ICU data (server may fall back to English),
-          so rendering it on the server would break hydration. Height reserved to
-          avoid a layout shift when it fills in. */}
-      <div className="min-h-[15px] text-[11px] text-neutral-400 dark:text-neutral-500">
-        {mounted && `${t("scheduled")}: ${formatUlaanbaatarTime(target, locale)}`}
-      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default async function AboutHero() {
         <div className="hero-glow" />
       </div>
 
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-14 pt-12 md:gap-14 md:pb-20 md:pt-20 lg:grid-cols-12 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 pb-14 pt-12 md:gap-14 md:pb-20 md:pt-20 lg:px-6 lg:grid-cols-12 lg:gap-8">
         <div className="relative lg:col-span-6">
           <div className="hero-reveal" style={{ animationDelay: "0ms" }}>
             <span className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-neutral-600 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/60 dark:text-neutral-400">

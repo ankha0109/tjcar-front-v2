@@ -18,7 +18,7 @@ import {
 } from "@/utils/carFormat";
 
 /**
- * `null` renders as "—"; booleans render as the yes/no labels; `{ image }`
+ * `null` renders as "-"; booleans render as the yes/no labels; `{ image }`
  * renders as a clickable thumbnail (the evaluation sheet row).
  */
 export type CompareValue = string | boolean | { image: string } | null;
@@ -49,7 +49,7 @@ export type CompareSection = {
 
 /**
  * Unified row model for the mixed Japan/Korea table. Rows one source can't
- * fill stay null there and render as "—" (spec §5: unified rows over
+ * fill stay null there and render as "-" (spec §5: unified rows over
  * per-source sections). Existing `carDetail.specs.*` labels are reused;
  * compare-only rows live under `compare.rows.*`.
  */

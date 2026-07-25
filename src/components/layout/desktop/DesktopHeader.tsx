@@ -326,6 +326,11 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
       labelKey: "howItWorks" as const,
       href: "/how-it-works",
     },
+    {
+      key: "posts",
+      labelKey: "nav.posts" as const,
+      href: "/posts",
+    },
   ];
 
   const MAIN_NAV: {
@@ -356,7 +361,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
         )}
       >
         {/* Row 1 — primary (h-16) */}
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-1.5 px-4 md:gap-2">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-1.5 px-4 md:gap-2 lg:px-6">
           {/* Logo */}
           <Link
             href="/"

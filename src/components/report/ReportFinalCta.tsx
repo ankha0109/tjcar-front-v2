@@ -13,7 +13,7 @@ export default function ReportFinalCta() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-16 pt-4 md:px-8 md:pb-24">
+    <section className="mx-auto w-full max-w-7xl px-4 pb-16 pt-4 md:pb-24 lg:px-6">
       <div className="relative overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-950 px-6 py-12 text-center md:px-12 md:py-16 dark:border-neutral-800">
         <div
           aria-hidden="true"

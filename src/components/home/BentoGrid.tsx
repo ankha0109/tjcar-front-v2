@@ -110,7 +110,7 @@ export default function BentoGrid() {
   const t = useTranslations("homeBento");
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 md:pb-16 md:pt-10">
+    <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 md:pb-16 md:pt-10 lg:px-6">
       <div className="flex flex-col gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary/80">
           {t("eyebrow")}

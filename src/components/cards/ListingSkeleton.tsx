@@ -24,7 +24,7 @@ export default function ListingSkeleton({
     <section
       role="status"
       aria-busy="true"
-      className="mx-auto w-full max-w-7xl px-4 py-4 md:py-8"
+      className="mx-auto w-full max-w-7xl px-4 py-4 md:py-8 lg:px-6"
     >
       <span className="sr-only">Loading…</span>
       <div className="flex flex-col lg:flex-row lg:gap-6">

@@ -8,7 +8,7 @@ export default async function AboutCTA() {
 
   return (
     <section className="bg-white dark:bg-neutral-950">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
         <div className="rounded-2xl border border-neutral-200 bg-neutral-50/70 px-6 py-10 dark:border-neutral-800 dark:bg-neutral-900/40 md:px-10 md:py-12">
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="lg:col-span-7">

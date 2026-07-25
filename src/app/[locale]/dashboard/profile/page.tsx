@@ -26,10 +26,10 @@ export default async function ProfilePage({
       <section className="space-y-4">
         <SectionMast title={t("basicHeading")} />
         <div className="rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-          <Field label={t("name")} value={user?.name || "—"} />
-          <Field label={t("email")} value={user?.email || "—"} mono />
-          <Field label={t("userId")} value={user?.id || "—"} mono />
-          <Field label={t("createdAt")} value="—" last />
+          <Field label={t("name")} value={user?.name || "-"} />
+          <Field label={t("email")} value={user?.email || "-"} mono />
+          <Field label={t("userId")} value={user?.id || "-"} mono />
+          <Field label={t("createdAt")} value="-" last />
         </div>
       </section>
 

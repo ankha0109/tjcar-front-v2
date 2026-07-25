@@ -38,7 +38,7 @@ export default async function JapanPage({ params, searchParams }: PageProps) {
   const initialPage =
     pageResult.status === "fulfilled" ? pageResult.value : undefined;
   if (pageResult.status === "rejected") {
-    console.error("[Japan] /auctions fetch failed:", pageResult.reason);
+    console.error("[Japan] /japan fetch failed:", pageResult.reason);
   }
 
   const filterOptions =

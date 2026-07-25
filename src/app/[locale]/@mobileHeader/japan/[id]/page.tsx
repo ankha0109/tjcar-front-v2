@@ -14,6 +14,14 @@ export default async function MobileHeaderAuctionDetail({ params }: Props) {
   const device = await getDevice();
   if (device !== "mobile") return null;
   const lot = await getAuction(id);
-  const title = lot ? carTitle(auctionLotToFixture(lot)) : "";
-  return <MobileHeader back={{ href: "/japan" }} title={title} />;
+  // Grade rides as the header's second line, which is why the page body leaves
+  // it out of the phone quick-specs grid.
+  const car = lot ? auctionLotToFixture(lot) : null;
+  return (
+    <MobileHeader
+      back={{ href: "/japan" }}
+      title={car ? carTitle(car) : ""}
+      subtitle={car?.GRADE || undefined}
+    />
+  );
 }

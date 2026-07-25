@@ -22,7 +22,7 @@ export function formatMileage(
 
 export function formatEngine(engineCc: number | undefined): string | undefined {
   if (!engineCc) return undefined;
-  return `${(engineCc / 100).toFixed(1)}L`;
+  return `${engineCc.toLocaleString()} CC`;
 }
 
 export function formatTransmission(
@@ -38,4 +38,29 @@ export function formatTransmission(
   }
   if (code === "SEMI-AUTO") return t("transmission.semiAuto");
   return transmission;
+}
+
+/** Compact engine tile value: displacement + optional power, e.g. "2,500CC (128HP)". */
+export function formatEngineWithPower(
+  engineCc: number | undefined,
+  powerHp: number | undefined,
+): string | undefined {
+  const cc = engineCc ? `${engineCc.toLocaleString()}CC` : undefined;
+  const hp = powerHp ? `${powerHp.toLocaleString()}HP` : undefined;
+  if (cc && hp) return `${cc} (${hp})`;
+  return cc ?? hp;
+}
+
+export function formatDrivetrain(
+  drivetrain: string | undefined,
+  t: Translator,
+): string | undefined {
+  if (!drivetrain) return undefined;
+  // AJES layout codes → readable labels; MR/RR and anything unknown fall through raw.
+  const code = drivetrain.toUpperCase().replace(/\s+/g, "");
+  if (code === "FF") return t("drivetrain.fwd");
+  if (code === "FR") return t("drivetrain.rwd");
+  if (["4WD", "4", "F4", "R4"].includes(code)) return t("drivetrain.fourWd");
+  if (code === "AWD") return t("drivetrain.awd");
+  return drivetrain;
 }

@@ -121,7 +121,7 @@ export default function KoreaBrowser({
   }, [listings]);
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="mx-auto w-full max-w-7xl px-4 py-8 lg:px-6">
       <div className="flex flex-col lg:flex-row lg:gap-6">
         <KoreaFilters value={filters} onChange={setFilters} />
 

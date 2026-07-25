@@ -249,7 +249,7 @@ export default async function KoreaDetailExtras({
                   >
                     <div className="flex items-center justify-between gap-3 text-[12.5px]">
                       <span className="text-neutral-700 dark:text-neutral-300">
-                        {accident.date ?? "—"}
+                        {accident.date ?? "-"}
                       </span>
                       {accident.insurance_benefit != null && (
                         <span className="shrink-0 font-semibold tabular-nums text-amber-700 dark:text-amber-400">
@@ -327,7 +327,7 @@ function StatCell({
 }) {
   return (
     <div className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900">
-      <span className="text-[10.5px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+      <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
         {label}
       </span>
       <span className="text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">

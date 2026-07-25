@@ -16,6 +16,11 @@ type Props = {
    * local stock (`/cars/[id]`) stays wishlist-only.
    */
   enableCompare?: boolean;
+  /**
+   * "header" — detail-page title row: 36px round heart + labelled compare pill.
+   * "bar" — mobile sticky bid bar: both controls icon-only at 40px, no label.
+   */
+  variant?: "header" | "bar";
 };
 
 /**
@@ -23,10 +28,13 @@ type Props = {
  * title. The heart is wired to the shared wishlist (guest localStorage or the
  * account, via {@link useWishlist}); compare uses the device-local tray
  * ({@link useCompare}). Reuses the `car.card.wishlist` / `car.card.compare` labels.
+ * `variant="bar"` renders the same two controls icon-only for the mobile
+ * sticky bid bar, where there is no room for the compare label.
  */
 export default function CarActionButtons({
   item,
   enableCompare = false,
+  variant = "header",
 }: Props) {
   const t = useTranslations("car.card");
   const tc = useTranslations("compare");
@@ -35,6 +43,7 @@ export default function CarActionButtons({
   const wishlisted = isWishlisted(item.source, item.id);
   const { isCompared, toggle: toggleCompare } = useCompare();
   const compared = enableCompare && isCompared(item.source, item.id);
+  const bar = variant === "bar";
 
   return (
     <div className="flex shrink-0 items-center gap-2">
@@ -46,7 +55,8 @@ export default function CarActionButtons({
         aria-label={t("wishlist")}
         title={t("wishlist")}
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full border transition active:scale-95",
+          "flex items-center justify-center border transition active:scale-95",
+          bar ? "h-10 w-10 rounded-xl" : "h-9 w-9 rounded-full",
           wishlisted
             ? "border-rose-200 bg-rose-50 text-rose-500 dark:border-rose-900/50 dark:bg-rose-950/40"
             : "border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:text-rose-500 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700",
@@ -77,8 +87,13 @@ export default function CarActionButtons({
             }
           }}
           aria-pressed={compared}
+          aria-label={bar ? t("compare") : undefined}
+          title={bar ? t("compare") : undefined}
           className={cn(
-            "flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium transition active:scale-95",
+            "flex items-center gap-1.5 border text-[13px] font-medium transition active:scale-95",
+            bar
+              ? "h-10 w-10 justify-center rounded-xl"
+              : "h-9 rounded-full px-3.5",
             compared
               ? "border-neutral-900 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900"
               : "border-neutral-200 text-neutral-700 hover:border-neutral-300 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-700",
@@ -98,7 +113,7 @@ export default function CarActionButtons({
             <path d="M3 7h13l-3-3" />
             <path d="M21 17H8l3 3" />
           </svg>
-          <span>{t("compare")}</span>
+          {!bar && <span>{t("compare")}</span>}
         </button>
       )}
     </div>

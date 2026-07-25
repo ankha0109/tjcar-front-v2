@@ -1,112 +1,116 @@
-import type { CarFixture } from "@/lib/carFixtures";
+import { parseImages, type CarFixture } from "@/lib/carFixtures";
+import type { FeaturedCar } from "@/types/featured";
+import { decodeAuctionText } from "@/utils/auctionInfo";
 import { formatEngine } from "@/utils/carFormat";
 
-/** One comparable car that sold in the recent window. */
+/**
+ * One comparable car that sold recently. Prices are tugrik only — the site
+ * quotes every figure in ₮, so the yen the auction actually ran in is converted
+ * here and never leaves this module.
+ */
 export type ComparableSale = {
   /** ISO date (e.g. "2026-06-20"). */
   date: string;
-  /** Hammer price in Japanese yen. */
-  jpy: number;
-  /** Hammer price converted to Mongolian tugrik. */
+  /** Landed ("гар дээр ирэх") price in tugrik — the plotted series. */
   mnt: number;
+  /** Japan hammer price in tugrik. Context for the landed figure, not the plot. */
+  hammerMnt?: number;
+  /** Auction start (reserve) price in tugrik. */
+  startMnt?: number;
+  /** Inspector's overall auction rate, e.g. "4.5". */
+  rate?: string;
   year?: string;
   mileageKm?: number;
   grade?: string;
+  /** Photo of the sold car, shown in the chart tooltip. */
+  image?: string;
 };
 
 /**
- * Static placeholder conversion rate (incl. landed cost) used to derive the MNT
- * figure from JPY. The real value will come from the backend list once wired.
- * Tuned so a typical ¥850,000 hammer ≈ 60,000,000₮.
+ * Map raw AJES `stats` rows (`GET /japan/history`) into the trend chart's shape.
+ *
+ * Upstream orders newest-first; the chart runs left-to-right in time, so rows
+ * are reversed here.
+ *
+ * The plotted series is `PRICE_MNT`, the landed price the API computes per row
+ * from that sale's own hammer price — Japan fees, shipping and Mongolian duties
+ * included. It is NOT the yen hammer price at the exchange rate: those two are
+ * far apart, and the landed one is what a buyer actually pays. Rows the API
+ * could not price are dropped rather than fallen back to a Japan-side figure,
+ * which would put roughly half the real cost under a "гар дээр ирэх үнэ" label.
+ *
+ * `jpyRate` is the live JPY→MNT rate from `GET /config` and now only converts
+ * the Japan-side start/hammer prices shown as tooltip context. It degrades to 0
+ * when that call fails, which simply omits those two lines — the landed price
+ * arrives already in tugrik and does not depend on it.
  */
-const JPY_TO_MNT = 70.6;
+export function toComparableSales(
+  rows: FeaturedCar[],
+  jpyRate: number,
+): ComparableSale[] {
+  const toMnt = (jpy: number): number | undefined =>
+    jpy > 0 && jpyRate > 0 ? Math.round(jpy * jpyRate) : undefined;
 
-const FALLBACK_BASE_JPY = 850_000;
-const SALE_COUNT = 10;
-const WINDOW_DAYS = 14;
+  return rows
+    .map((row): ComparableSale | null => {
+      const landedMnt = Number(row.PRICE_MNT) || 0;
+      // AUCTION_DATE is "YYYY-MM-DD HH:MM:SS" — the date half is all we plot.
+      const date = (row.AUCTION_DATE ?? "").slice(0, 10);
+      if (!landedMnt || !date) return null;
 
-/** Deterministic string hash → 32-bit seed (so the same car always renders the same data). */
-function hashSeed(input: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < input.length; i++) {
-    h ^= input.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
+      return {
+        date,
+        mnt: landedMnt,
+        hammerMnt: toMnt(Number(row.FINISH) || 0),
+        startMnt: toMnt(Number(row.START) || 0),
+        rate: row.RATE || undefined,
+        year: row.YEAR || undefined,
+        mileageKm: Number(row.MILEAGE) || undefined,
+        grade: decodeAuctionText(row.GRADE) || undefined,
+        image: parseImages(row.IMAGES ?? "")[0],
+      };
+    })
+    .filter((sale) => sale !== null)
+    .reverse();
 }
-
-/** mulberry32 PRNG — deterministic, no Math.random (stable across server/client renders). */
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Round to the nearest `step` (keeps prices visually clean). */
-const roundTo = (value: number, step: number) => Math.round(value / step) * step;
 
 /**
- * Build a deterministic list of comparable sales over the last {@link WINDOW_DAYS}
- * days. STATIC placeholder — the production data will arrive from the backend as a
- * list keyed off the car's make/model/year/engine. Called from the server
- * component, so date math here is safe (no hydration mismatch).
+ * Short spec descriptor, e.g. "Toyota Prius · 2018 · 1,800 CC · ⭐ 4.5".
+ *
+ * The rate is spelled out because the history is filtered to it: a rate 5 car
+ * and a rate R one are worth very different money, and a chart that did not say
+ * which grade it was showing would read as "a rate 5 car goes for this".
  */
-export function getComparableSales(car: CarFixture): ComparableSale[] {
-  const baseJpy =
-    Number(car.AVG_PRICE) || Number(car.START) || FALLBACK_BASE_JPY;
-  const rng = mulberry32(hashSeed(car.ID || car.LOT || "tjcar"));
-  const baseMileage = Number(car.MILEAGE) || 0;
-
-  const today = new Date();
-  const sales: ComparableSale[] = [];
-
-  for (let i = 0; i < SALE_COUNT; i++) {
-    // Oldest first → spread offsets across the window (i=0 → 13 days ago, last → today).
-    const daysAgo = Math.round(
-      ((WINDOW_DAYS - 1) * (SALE_COUNT - 1 - i)) / (SALE_COUNT - 1),
-    );
-    const d = new Date(today);
-    d.setDate(d.getDate() - daysAgo);
-
-    const variation = (rng() - 0.5) * 0.24; // ±12%
-    const jpy = roundTo(baseJpy * (1 + variation), 1_000);
-    const mnt = roundTo(jpy * JPY_TO_MNT, 100_000);
-    const mileageKm = baseMileage
-      ? roundTo(baseMileage * (1 + (rng() - 0.5) * 0.3), 1_000)
-      : undefined;
-
-    sales.push({
-      date: d.toISOString().slice(0, 10),
-      jpy,
-      mnt,
-      year: car.YEAR || undefined,
-      mileageKm,
-      grade: car.GRADE || undefined,
-    });
-  }
-
-  return sales;
-}
-
-/** Short spec descriptor, e.g. "Toyota Prius · 2018 · 1.8L". */
 export function sameSpecLabel(car: CarFixture): string {
   const name = `${car.MARKA_NAME ?? ""} ${car.MODEL_NAME ?? ""}`.trim();
-  return [name, car.YEAR, formatEngine(Number(car.ENG_V) || undefined)]
+  return [
+    name,
+    car.YEAR,
+    formatEngine(Number(car.ENG_V) || undefined),
+    car.RATE ? `⭐ ${car.RATE}` : "",
+  ]
     .filter(Boolean)
     .join(" · ");
-}
-
-/** "850000" → "¥850,000". */
-export function formatJpy(value: number): string {
-  return `¥${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 /** "60000000" → "60,000,000₮". */
 export function formatMnt(value: number): string {
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}₮`;
+}
+
+/** Parse a date-only ISO string at UTC noon (avoids timezone day shifts). */
+function parseIsoDate(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, (m || 1) - 1, d || 1, 12));
+}
+
+/** Full sale-date label, e.g. "6 сарын 10" (mn) / "Jun 10" (en) / "10 июн." (ru). */
+export function formatSaleDate(iso: string, locale: string): string {
+  const [, m, d] = iso.split("-").map(Number);
+  if (locale === "mn") return `${m} сарын ${d}`;
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(parseIsoDate(iso));
 }

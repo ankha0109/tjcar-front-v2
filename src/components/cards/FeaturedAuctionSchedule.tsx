@@ -134,7 +134,7 @@ export default function FeaturedAuctionSchedule({
   }, [selected, days]);
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+    <section className="mx-auto w-full max-w-7xl px-4 py-8 lg:px-6">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-[22px] font-semibold text-neutral-900">

@@ -112,14 +112,14 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
 
   if (!catalog || brands.length === 0) {
     return (
-      <section className="mx-auto w-full max-w-7xl px-4 py-16">
+      <section className="mx-auto w-full max-w-7xl px-4 py-16 lg:px-6">
         <Empty description={t("unavailable")} />
       </section>
     );
   }
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:pt-10">
+    <section className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:pt-10 lg:px-6">
       {/* Heading */}
       <header className="mb-6">
         <h1 className="text-[24px] font-semibold tracking-tight text-neutral-900 md:text-[28px] dark:text-neutral-50">
