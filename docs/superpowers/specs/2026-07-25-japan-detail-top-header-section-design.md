@@ -63,7 +63,7 @@ Rejected alternatives:
 
   ```tsx
   {showTitleHeader && (
-    <header className="flex items-start justify-between gap-3 px-4 pb-6 lg:px-0">
+    <header className="flex items-start justify-between gap-3 px-4 pt-5 pb-6 lg:px-0 lg:pt-0">
       <div className="flex min-w-0 flex-col gap-1">
         <h1 className="text-2xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 lg:text-[28px]">
           {title}
@@ -83,7 +83,9 @@ Rejected alternatives:
   ```
 
   No divider under the section — separation is spacing only (`pb-6`). `px-4`
-  covers the narrow-desktop case, since `<article>` keeps `px-0 lg:px-6`.
+  covers the narrow-desktop case, since `<article>` keeps `px-0 lg:px-6`;
+  `pt-5 lg:pt-0` likewise, because `<article>`'s `lg:py-8` does not apply below
+  `lg` and the title would otherwise sit flush under the site header.
 - Info column keeps `gap-5`; it simply loses its first child.
 - Pass the bar actions into `CarBidSection`:
   `actions={<CarActionButtons item={wishlistItem} enableCompare variant="bar" />}`
