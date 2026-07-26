@@ -3,6 +3,9 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "@/i18n/navigation";
 
+/** How long to keep the page pinned to the top after a forward navigation. */
+const HOLD_TOP_MS = 800;
+
 /**
  * Puts a forward navigation back at the top of the page.
  *
@@ -56,7 +59,38 @@ export default function ScrollReset() {
     if (wasHistoryTraversal) return;
     // A `#hash` target is a legitimate non-zero position.
     if (window.location.hash) return;
-    if (window.scrollY > 0) window.scrollTo(0, 0);
+
+    // Checking once here is enough on desktop, where the browser's own scroll
+    // handling is synchronous and already done by the time this effect runs. iOS
+    // Safari scrolls asynchronously after the navigation commits — measured on a
+    // real iPhone as `y 0→151→217` over roughly half a second on a page entered
+    // at the top — so a single check sees 0, finds nothing to correct, and the
+    // page slides down afterwards. Hold the top across that window instead, and
+    // let go the instant the reader actually touches the page so this can never
+    // fight a real scroll.
+    let cancelled = false;
+    const release = () => {
+      cancelled = true;
+    };
+    const listen = { passive: true, once: true } as const;
+    window.addEventListener("touchstart", release, listen);
+    window.addEventListener("wheel", release, listen);
+    window.addEventListener("keydown", release, listen);
+
+    const deadline = performance.now() + HOLD_TOP_MS;
+    let frame = requestAnimationFrame(function hold() {
+      if (cancelled) return;
+      if (window.scrollY !== 0) window.scrollTo(0, 0);
+      if (performance.now() < deadline) frame = requestAnimationFrame(hold);
+    });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      window.removeEventListener("touchstart", release);
+      window.removeEventListener("wheel", release);
+      window.removeEventListener("keydown", release);
+    };
   }, [pathname]);
 
   return null;
