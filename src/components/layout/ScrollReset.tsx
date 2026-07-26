@@ -3,11 +3,17 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "@/i18n/navigation";
 
-/** How long to keep the page pinned to the top after a forward navigation. */
-const HOLD_TOP_MS = 800;
+/**
+ * How long to keep the page pinned to the top after a forward navigation.
+ * Measured on a real iPhone: iOS re-applied the outgoing page's offset once more
+ * *after* an 800ms window had closed, so the cap has to outlast the whole
+ * settling period. It is safe to be this generous because any genuine scroll
+ * gesture releases the hold immediately.
+ */
+const HOLD_TOP_MS = 2500;
 
 /** Build marker, so a diagnostic screenshot identifies which code is live. */
-export const SCROLL_RESET_BUILD = "reset@2";
+export const SCROLL_RESET_BUILD = "reset@3";
 
 /**
  * Reports to `ScrollDebugOverlay` when it is mounted, and costs one property
@@ -97,8 +103,12 @@ export default function ScrollReset() {
       cancelled = true;
       probe(`hold cancelled by ${event.type} @${Math.round(performance.now() - started)}ms`);
     };
+    // `touchmove`, deliberately not `touchstart`: a tap fires touchstart too, so
+    // releasing on it let the hold die the moment a finger landed anywhere —
+    // including the tap that opened the page. Only actual finger movement (or a
+    // wheel / key) means the reader is scrolling on purpose.
     const listen = { passive: true, once: true } as const;
-    window.addEventListener("touchstart", release, listen);
+    window.addEventListener("touchmove", release, listen);
     window.addEventListener("wheel", release, listen);
     window.addEventListener("keydown", release, listen);
 
@@ -123,7 +133,7 @@ export default function ScrollReset() {
     return () => {
       cancelled = true;
       cancelAnimationFrame(frame);
-      window.removeEventListener("touchstart", release);
+      window.removeEventListener("touchmove", release);
       window.removeEventListener("wheel", release);
       window.removeEventListener("keydown", release);
     };
