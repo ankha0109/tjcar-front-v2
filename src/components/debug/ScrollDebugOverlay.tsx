@@ -15,18 +15,23 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { SCROLL_RESET_BUILD } from "@/components/layout/ScrollReset";
 
 const FLAG = "scrolldebug";
-const MAX_LINES = 9;
+const MAX_LINES = 12;
 const SAMPLE_MS = 150;
-const WATCH_MS = 3000;
+/** Long enough to catch a scroll that lands well after the hold window ends. */
+const WATCH_MS = 6000;
 
-type Line = {
-  nav: "PUSH" | "POP" | "LOAD";
-  path: string;
-  traj: string;
-  maxY: number;
-};
+type Line =
+  | {
+      kind: "nav";
+      nav: "PUSH" | "POP" | "LOAD";
+      path: string;
+      traj: string;
+      maxY: number;
+    }
+  | { kind: "event"; text: string };
 
 export default function ScrollDebugOverlay() {
   const pathname = usePathname();
@@ -69,10 +74,25 @@ export default function ScrollDebugOverlay() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  // ── receive ScrollReset's own events ──
+  useEffect(() => {
+    if (!on) return;
+    const target = window as unknown as {
+      __scrollProbe?: (m: string) => void;
+    };
+    target.__scrollProbe = (text) =>
+      setLines((prev) =>
+        [...prev, { kind: "event" as const, text }].slice(-MAX_LINES),
+      );
+    return () => {
+      delete target.__scrollProbe;
+    };
+  }, [on]);
+
   // ── sample the scroll after every route change ──
   useEffect(() => {
     if (!on) return;
-    const nav: Line["nav"] = firstRun.current
+    const nav: "PUSH" | "POP" | "LOAD" = firstRun.current
       ? "LOAD"
       : isPop.current
         ? "POP"
@@ -91,9 +111,16 @@ export default function ScrollDebugOverlay() {
         document.documentElement.scrollHeight - window.innerHeight,
       );
       setLines((prev) =>
-        [...prev, { nav, path: pathname, traj: traj || "-", maxY }].slice(
-          -MAX_LINES,
-        ),
+        [
+          ...prev,
+          {
+            kind: "nav" as const,
+            nav,
+            path: pathname,
+            traj: traj || "-",
+            maxY,
+          },
+        ].slice(-MAX_LINES),
       );
     }, WATCH_MS);
 
@@ -106,12 +133,14 @@ export default function ScrollDebugOverlay() {
   if (!on) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[9999] p-1">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-9999 p-1">
       {/* Stays click-through so the bottom nav underneath is still tappable —
           navigating via those tabs is one of the flows being measured. */}
       <div className="rounded-md bg-black/85 px-2 py-1.5 font-mono text-[9px] leading-[1.45] text-lime-300">
         <div className="flex items-center justify-between gap-2 text-white">
-          <span>scroll probe · {env}</span>
+          <span>
+            probe · {SCROLL_RESET_BUILD} · {env}
+          </span>
           <button
             type="button"
             onClick={() => setLines([])}
@@ -121,6 +150,13 @@ export default function ScrollDebugOverlay() {
           </button>
         </div>
         {lines.map((l, i) => {
+          if (l.kind === "event") {
+            return (
+              <div key={i} className="text-sky-300">
+                · {l.text}
+              </div>
+            );
+          }
           const settled = l.traj.split("→").pop();
           const leaked = l.nav === "PUSH" && settled !== "0";
           return (

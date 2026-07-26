@@ -6,6 +6,19 @@ import { usePathname } from "@/i18n/navigation";
 /** How long to keep the page pinned to the top after a forward navigation. */
 const HOLD_TOP_MS = 800;
 
+/** Build marker, so a diagnostic screenshot identifies which code is live. */
+export const SCROLL_RESET_BUILD = "reset@2";
+
+/**
+ * Reports to `ScrollDebugOverlay` when it is mounted, and costs one property
+ * read otherwise. TEMPORARY — drop with the overlay.
+ */
+function probe(message: string) {
+  (window as unknown as { __scrollProbe?: (m: string) => void }).__scrollProbe?.(
+    message,
+  );
+}
+
 /**
  * Puts a forward navigation back at the top of the page.
  *
@@ -55,10 +68,19 @@ export default function ScrollReset() {
     const wasHistoryTraversal = fromHistory.current;
     fromHistory.current = false;
 
-    if (previous === null || previous === pathname) return;
-    if (wasHistoryTraversal) return;
+    if (previous === null || previous === pathname) {
+      probe(`skip first/same (${pathname})`);
+      return;
+    }
+    if (wasHistoryTraversal) {
+      probe(`skip pop (${pathname})`);
+      return;
+    }
     // A `#hash` target is a legitimate non-zero position.
-    if (window.location.hash) return;
+    if (window.location.hash) {
+      probe("skip hash");
+      return;
+    }
 
     // Checking once here is enough on desktop, where the browser's own scroll
     // handling is synchronous and already done by the time this effect runs. iOS
@@ -69,19 +91,33 @@ export default function ScrollReset() {
     // let go the instant the reader actually touches the page so this can never
     // fight a real scroll.
     let cancelled = false;
-    const release = () => {
+    const started = performance.now();
+    probe(`hold start y=${Math.round(window.scrollY)}`);
+    const release = (event: Event) => {
       cancelled = true;
+      probe(`hold cancelled by ${event.type} @${Math.round(performance.now() - started)}ms`);
     };
     const listen = { passive: true, once: true } as const;
     window.addEventListener("touchstart", release, listen);
     window.addEventListener("wheel", release, listen);
     window.addEventListener("keydown", release, listen);
 
-    const deadline = performance.now() + HOLD_TOP_MS;
+    let pins = 0;
+    let frames = 0;
+    const deadline = started + HOLD_TOP_MS;
     let frame = requestAnimationFrame(function hold() {
       if (cancelled) return;
-      if (window.scrollY !== 0) window.scrollTo(0, 0);
-      if (performance.now() < deadline) frame = requestAnimationFrame(hold);
+      frames++;
+      if (window.scrollY !== 0) {
+        pins++;
+        probe(`pin ${Math.round(window.scrollY)}→0 @${Math.round(performance.now() - started)}ms`);
+        window.scrollTo(0, 0);
+      }
+      if (performance.now() < deadline) {
+        frame = requestAnimationFrame(hold);
+      } else {
+        probe(`hold end frames=${frames} pins=${pins} y=${Math.round(window.scrollY)}`);
+      }
     });
 
     return () => {
