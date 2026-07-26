@@ -1,25 +1,7 @@
-"use client";
-
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import { useSession } from "next-auth/react";
 import { JapanIcon, KoreaIcon } from "@/components/icons";
 import { cn } from "@/utils";
-
-const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="11" cy="11" r="7" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-);
 
 const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -141,16 +123,13 @@ function CategoryTile({
   );
 }
 
-export default function MobileHome() {
-  const t = useTranslations("mobile.home");
-  const { data: session } = useSession();
-  const user = session?.user as
-    | { firstname?: string; lastname?: string }
-    | undefined;
-
-  const greeting = user
-    ? t("greeting", { name: `${user.firstname ?? ""}`.trim() || "🚗" })
-    : t("greetingGuest");
+/**
+ * Mobile landing page. Deliberately a server component: it is the root of the
+ * `/` segment, and nothing here needs the client — the tiles are static markup
+ * around locale-aware `Link`s.
+ */
+export default async function MobileHome() {
+  const t = await getTranslations("mobile.home");
 
   return (
     <div className="flex flex-col gap-5 px-4 pb-6 pt-3">
