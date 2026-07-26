@@ -95,7 +95,12 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
               },
             }}
           >
-            <App className="w-full mx-auto min-h-screen flex flex-col">
+            {/* No `min-h-screen` here: `DesktopShell`/`MobileShell` are this
+                div's only in-flow child and each already carries it, so a copy
+                on the wrapper only duplicates the constraint. Keep them in sync
+                if the unit ever changes (e.g. `min-h-dvh`) — the taller of the
+                two would otherwise win. */}
+            <App className="w-full mx-auto flex flex-col">
               {contextHolder}
               <AiChatProvider>{children}</AiChatProvider>
               <GuideModalRoot />
