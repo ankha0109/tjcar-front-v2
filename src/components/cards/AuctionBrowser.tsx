@@ -29,7 +29,6 @@ import {
   useAuctionsInfinite,
   type AuctionPage,
 } from "@/hooks/useAuctionsInfinite";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 type Props = {
   initialPage?: AuctionPage;
@@ -98,7 +97,10 @@ export default function AuctionBrowser({
   );
   const total = infinite.data?.pages[0]?.meta.total ?? 0;
 
-  useScrollRestoration(!!infinite.data);
+  // No manual scroll restoration here: SSR page 1 plus `useAuctionsInfinite`'s
+  // 5-minute cache means the list is back at full height on a back navigation,
+  // so the browser's own restoration lands the position exactly. A hand-rolled
+  // sessionStorage version fought it and won with a stale value instead.
 
   // ── Date strip (All + next 3 days) ──
   const RELATIVE_LABELS: Record<number, string> = {

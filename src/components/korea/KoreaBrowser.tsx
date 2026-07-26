@@ -26,7 +26,6 @@ import {
   useKoreaInfinite,
   type KoreaPage,
 } from "@/hooks/useKoreaInfinite";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 type Props = {
   initialPage?: KoreaPage;
@@ -86,7 +85,7 @@ export default function KoreaBrowser({
     [infinite.data],
   );
 
-  useScrollRestoration(!!infinite.data);
+  // Scroll restoration is the browser's job — see the note in `AuctionBrowser`.
 
   // Infinite-scroll sentinel
   const sentinelRef = useRef<HTMLDivElement | null>(null);
