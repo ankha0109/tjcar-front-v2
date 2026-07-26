@@ -9,7 +9,10 @@ import { usePathname } from "@/i18n/navigation";
  * Needed because Next's own reset bails out when the incoming page's segment
  * top is already inside the viewport (`topOfElementInViewport` in
  * `layout-router.js`), which is always true for offsets smaller than the sticky
- * header — so those small offsets used to survive into the new page.
+ * header — so those small offsets used to survive into the new page. Both the
+ * old handler and the `experimental.appNewScrollHandler` one carry the same
+ * bail-out (measured on 16.2.6: parking 19/40/64px leaked identically with the
+ * flag on), so this cannot be replaced by that flag.
  *
  * Back/forward is deliberately skipped: the browser restores those positions
  * itself (verified deep into the infinite auction list), and scrolling to top

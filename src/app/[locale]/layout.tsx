@@ -10,7 +10,9 @@ import { auth } from "@/auth";
 import DesktopShell from "@/components/layout/desktop/DesktopShell";
 import MobileShell from "@/components/layout/mobile/MobileShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
-import ScrollToTop from "@/components/layout/ScrollToTop";
+// TEMPORARY: disabled while trialling `experimental.appNewScrollHandler` on a
+// real device — restore both this import and the usage below if the trial fails.
+// import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
@@ -91,7 +93,7 @@ export default async function LocaleLayout({
                 <DesktopShell theme={theme}>{children}</DesktopShell>
               )}
               <AiChatWidget />
-              <ScrollToTop />
+              {/* <ScrollToTop /> */}
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
