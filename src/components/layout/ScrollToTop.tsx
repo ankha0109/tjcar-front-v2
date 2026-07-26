@@ -22,11 +22,18 @@ export default function ScrollToTop() {
   // Locale-stripped, so switching language keeps your place on the page.
   const pathname = usePathname();
   const lastPathname = useRef<string | null>(null);
-  const fromHistory = useRef(false);
+  // The URL the last popstate landed on, not a boolean. This effect only runs
+  // when the *pathname* changes, so a popstate that moved between two query
+  // states of the same page (going back over a filter change on /japan, or the
+  // iOS edge-swipe doing the same) never reaches it — a flag set there would
+  // stay set and silently suppress the reset on the next forward navigation.
+  // Comparing URLs makes the mark expire on its own: it can only ever match the
+  // entry it was recorded for.
+  const historyUrl = useRef<string | null>(null);
 
   useEffect(() => {
     const onPopState = () => {
-      fromHistory.current = true;
+      historyUrl.current = window.location.href;
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -35,17 +42,20 @@ export default function ScrollToTop() {
   useEffect(() => {
     const previous = lastPathname.current;
     lastPathname.current = pathname;
-    // Consume the flag either way, so a query-only popstate can't suppress the
-    // next real navigation.
-    const wasHistoryTraversal = fromHistory.current;
-    fromHistory.current = false;
+    const wasHistoryTraversal = historyUrl.current === window.location.href;
+    historyUrl.current = null;
 
     if (previous === null || previous === pathname) return;
     if (wasHistoryTraversal) return;
     // A `#hash` target is a legitimate non-zero position.
     if (window.location.hash) return;
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Instant, not smooth. Next resets the scroll itself a few milliseconds
+    // earlier (`disableSmoothScrollDuringRouteTransition` → `scrollTop = 0`),
+    // so the animation is invisible in the normal path — but in the path where
+    // Next bails, a smooth scroll is an animation that a late scroll settle can
+    // cancel mid-flight, which is exactly what this component exists to survive.
+    window.scrollTo({ top: 0 });
   }, [pathname]);
 
   return null;
