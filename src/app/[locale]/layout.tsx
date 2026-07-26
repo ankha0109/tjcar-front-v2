@@ -11,6 +11,8 @@ import DesktopShell from "@/components/layout/desktop/DesktopShell";
 import MobileShell from "@/components/layout/mobile/MobileShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import ScrollReset from "@/components/layout/ScrollReset";
+// TEMPORARY: iOS Safari scroll diagnostic, remove with the component.
+import ScrollDebugOverlay from "@/components/debug/ScrollDebugOverlay";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
@@ -92,6 +94,7 @@ export default async function LocaleLayout({
               )}
               <AiChatWidget />
               <ScrollReset />
+              <ScrollDebugOverlay />
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
