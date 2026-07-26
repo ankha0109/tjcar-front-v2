@@ -37,6 +37,7 @@ export default function ScrollDebugOverlay() {
   const pathname = usePathname();
   const [on, setOn] = useState(false);
   const [env, setEnv] = useState("");
+  const [geom, setGeom] = useState("");
   const [lines, setLines] = useState<Line[]>([]);
   const isPop = useRef(false);
   const firstRun = useRef(true);
@@ -73,6 +74,49 @@ export default function ScrollDebugOverlay() {
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
+
+  // ── live geometry: is the sticky header where it claims to be? ──
+  // `position: sticky` anchors to the LAYOUT viewport, while an iOS Safari with
+  // collapsing toolbars shows you the VISUAL viewport. When the two diverge the
+  // header paints away from the top edge even though its own rect says top=0, so
+  // print both and let the numbers say which it is.
+  useEffect(() => {
+    if (!on) return;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const header = document.querySelector("header");
+      const main = document.querySelector("main");
+      const vv = window.visualViewport;
+      const hr = header?.getBoundingClientRect();
+      const mr = main?.getBoundingClientRect();
+      setGeom(
+        [
+          `hdr top=${hr ? hr.top.toFixed(1) : "?"} h=${hr ? hr.height.toFixed(1) : "?"}`,
+          `pos=${header ? getComputedStyle(header).position : "?"}`,
+          `main top=${mr ? mr.top.toFixed(1) : "?"}`,
+          `vv off=${vv ? vv.offsetTop.toFixed(1) : "?"}/${vv ? vv.pageTop.toFixed(1) : "?"}`,
+          `vv h=${vv ? Math.round(vv.height) : "?"} ih=${window.innerHeight}`,
+          `y=${Math.round(window.scrollY)}`,
+        ].join(" · "),
+      );
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.visualViewport?.addEventListener("resize", schedule);
+    window.visualViewport?.addEventListener("scroll", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
+    };
+  }, [on]);
 
   // ── receive ScrollReset's own events ──
   useEffect(() => {
@@ -149,6 +193,7 @@ export default function ScrollDebugOverlay() {
             clear
           </button>
         </div>
+        <div className="text-fuchsia-300">{geom}</div>
         {lines.map((l, i) => {
           if (l.kind === "event") {
             return (

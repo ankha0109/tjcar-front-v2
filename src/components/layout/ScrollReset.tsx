@@ -13,7 +13,7 @@ import { usePathname } from "@/i18n/navigation";
 const HOLD_TOP_MS = 2500;
 
 /** Build marker, so a diagnostic screenshot identifies which code is live. */
-export const SCROLL_RESET_BUILD = "reset@3";
+export const SCROLL_RESET_BUILD = "reset@4";
 
 /**
  * Reports to `ScrollDebugOverlay` when it is mounted, and costs one property
@@ -107,10 +107,17 @@ export default function ScrollReset() {
     // releasing on it let the hold die the moment a finger landed anywhere —
     // including the tap that opened the page. Only actual finger movement (or a
     // wheel / key) means the reader is scrolling on purpose.
+    //
+    // `click` matters for a different reason: several pages scroll themselves in
+    // response to a button (`ReportHero`, `BrandsExplorer`, …). The click that
+    // started this navigation happened before these listeners existed, so the
+    // only clicks seen here are new ones, and after one the reader is clearly
+    // driving — stop holding rather than fight a `scrollIntoView`.
     const listen = { passive: true, once: true } as const;
     window.addEventListener("touchmove", release, listen);
     window.addEventListener("wheel", release, listen);
     window.addEventListener("keydown", release, listen);
+    window.addEventListener("click", release, listen);
 
     let pins = 0;
     let frames = 0;
@@ -134,6 +141,7 @@ export default function ScrollReset() {
       cancelled = true;
       cancelAnimationFrame(frame);
       window.removeEventListener("touchmove", release);
+      window.removeEventListener("click", release);
       window.removeEventListener("wheel", release);
       window.removeEventListener("keydown", release);
     };
