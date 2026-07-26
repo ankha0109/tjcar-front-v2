@@ -167,7 +167,15 @@ export default function MobileBottomNav() {
   return (
     <nav
       aria-label={t("aria")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgba(15,15,15,0.08)] dark:border-neutral-800 dark:bg-neutral-950/95"
+      data-app-chrome
+      // Hides downwards while the header hides upwards, on the same
+      // `<html data-scroll-dir>` signal. `translate-y-full` takes the safe-area
+      // padding with it, so nothing peeks out on a notched phone.
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgba(15,15,15,0.08)] dark:border-neutral-800 dark:bg-neutral-950/95",
+        "transition-transform duration-300 ease-out motion-reduce:transition-none",
+        "scroll-down:translate-y-full",
+      )}
     >
       <ul className="flex h-16 items-stretch">
         {NAV_ITEMS.map((item) => {

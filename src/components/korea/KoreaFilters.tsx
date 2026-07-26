@@ -277,12 +277,12 @@ export default function KoreaFilters({ value, onChange }: Props) {
       </div>
 
       {/* Desktop sidebar — lg+ */}
-      <aside className="hidden lg:sticky lg:top-4 lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
+      <aside className="hidden lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
         <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900">
           <div className="border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
             {header}
           </div>
-          <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-4">
+          <div className="max-h-[calc(100dvh-var(--header-h)-8rem)] overflow-y-auto px-4">
             {body}
           </div>
         </div>

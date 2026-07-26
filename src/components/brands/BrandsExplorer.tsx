@@ -132,7 +132,7 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr]">
         {/* LEVEL 1 — manufacturers */}
-        <aside className="rounded-2xl border border-neutral-200 bg-white p-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto dark:border-neutral-800 dark:bg-neutral-950">
+        <aside className="rounded-2xl border border-neutral-200 bg-white p-3 lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:max-h-[calc(100dvh-var(--header-h)-2rem)] lg:self-start lg:overflow-y-auto dark:border-neutral-800 dark:bg-neutral-950">
           <Input
             allowClear
             size="large"
@@ -176,7 +176,8 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
         </aside>
 
         {/* LEVEL 2 — models of the selected make */}
-        <div ref={modelsRef} className="scroll-mt-20">
+        {/* Offset for `scrollIntoView` comes from `html { scroll-padding-top }`. */}
+        <div ref={modelsRef}>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 pb-4 dark:border-neutral-800">
             <div className="flex items-center gap-3">
               <img

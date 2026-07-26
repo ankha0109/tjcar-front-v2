@@ -10,6 +10,7 @@ import { auth } from "@/auth";
 import DesktopShell from "@/components/layout/desktop/DesktopShell";
 import MobileShell from "@/components/layout/mobile/MobileShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
+import ScrollState from "@/components/layout/ScrollState";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
@@ -80,7 +81,22 @@ export default async function LocaleLayout({
     cookieStore.get(THEME_COOKIE)?.value === "dark" ? "dark" : "light";
 
   return (
-    <html lang={locale} data-theme={theme}>
+    <html
+      lang={locale}
+      data-theme={theme}
+      // Single source of truth for the fixed header's height. Set here rather
+      // than in CSS because the shell is picked from the device cookie, not a
+      // media query — a `@media` rule would guess wrong for a phone in a wide
+      // window and vice versa. `globals.css` carries the desktop value as a
+      // fallback. Mobile is exactly `h-14`: that height sits on the bordered
+      // element itself, so `border-box` folds the border into it. Desktop's
+      // `h-16` is on an inner row, so the header's own border adds a pixel.
+      style={
+        {
+          "--header-h": device === "mobile" ? "3.5rem" : "calc(4rem + 1px)",
+        } as React.CSSProperties
+      }
+    >
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AntdRegistry>
@@ -91,6 +107,7 @@ export default async function LocaleLayout({
                 <DesktopShell theme={theme}>{children}</DesktopShell>
               )}
               <AiChatWidget />
+              <ScrollState />
               <ScrollToTop />
             </AntdProvider>
           </AntdRegistry>

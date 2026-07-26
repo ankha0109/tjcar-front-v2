@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Badge, Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
@@ -296,18 +296,10 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
   const user = session?.user as CustomerUser | undefined;
   const { balance: liveBalance, currency: liveCurrency } = useWalletBalance();
 
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
 
   const { count: wishlistCount } = useWishlist();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 4);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const isPathActive = (href: string) => {
     const base = href.split("?")[0];
@@ -352,12 +344,18 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
 
   return (
     <>
+      {/*
+        Fixed, never hidden: on a desktop viewport the nav is worth its 65px and
+        there is no vertical space to reclaim. The background swap is driven by
+        `<html data-scrolled>` (see `ScrollState`) instead of React state, so
+        scrolling no longer re-renders this tree.
+      */}
       <header
+        data-app-chrome
         className={cn(
-          "sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-200",
-          scrolled
-            ? "border-neutral-200 bg-white/35 dark:border-neutral-800 dark:bg-neutral-950/95"
-            : "border-neutral-100 bg-white shadow-none dark:bg-neutral-950",
+          "fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-200",
+          "border-neutral-100 bg-white shadow-none dark:bg-neutral-950",
+          "scrolled:border-neutral-200 scrolled:bg-white/35 dark:scrolled:border-neutral-800 dark:scrolled:bg-neutral-950/95",
         )}
       >
         {/* Row 1 — primary (h-16) */}

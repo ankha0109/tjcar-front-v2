@@ -3,6 +3,16 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/*
+ * App chrome scroll state. `ScrollState` writes both attributes on <html> from a
+ * single rAF-throttled listener, so the fixed header, the bottom nav and anything
+ * else that reacts to scrolling stay in sync without re-rendering React.
+ *   scrolled:    page is off the very top — swap the header background
+ *   scroll-down: scrolling down past the reveal threshold — slide chrome away
+ */
+@custom-variant scrolled (html[data-scrolled] &);
+@custom-variant scroll-down (html[data-scroll-dir="down"] &);
+
 @theme {
   --color-primary: #f1472c;
   --color-secondary: #6a6a6a;
@@ -19,6 +29,18 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
+  /*
+   * Height of the fixed header, border included. The locale layout overrides this
+   * per device on <html> (mobile is shorter); this is the desktop fallback so the
+   * value is never missing. Everything that has to clear the header — the shells'
+   * top padding, sticky filter rails, anchor offsets — reads it from here.
+   */
+  --header-h: calc(4rem + 1px);
+}
+
+html {
+  /* Keeps `scrollIntoView()` targets from landing behind the fixed header. */
+  scroll-padding-top: calc(var(--header-h) + 1rem);
 }
 
 :root[data-theme="dark"] {

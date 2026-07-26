@@ -16,7 +16,10 @@ export default function DesktopShell({ theme, children }: Props) {
   return (
     <div className="flex flex-col min-h-dvh bg-white dark:bg-neutral-950">
       <DesktopHeader theme={theme} />
-      <main className="flex-1 flex flex-col">{children}</main>
+      {/* The header is `fixed`, so its height has to be reserved here. */}
+      <main className="flex-1 flex flex-col pt-(--header-h)">
+        {children}
+      </main>
       <DesktopFooter />
     </div>
   );

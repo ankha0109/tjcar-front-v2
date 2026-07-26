@@ -113,10 +113,19 @@ export default function MobileHeader({
 
   return (
     <>
+      {/*
+        Slides out of the way while scrolling down and comes straight back on the
+        first upward scroll — the direction comes from `<html data-scroll-dir>`
+        (see `ScrollState`), so this is a pure CSS transform with no React state
+        behind it. `MobileBottomNav` rides the same signal in the other direction.
+      */}
       <header
+        data-app-chrome
         className={cn(
-          "sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
+          "fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
           "dark:border-neutral-900 dark:bg-neutral-950/95",
+          "transition-transform duration-300 ease-out motion-reduce:transition-none",
+          "scroll-down:-translate-y-full",
         )}
       >
         {leading}
