@@ -114,18 +114,23 @@ export default function MobileHeader({
   return (
     <>
       {/*
-        Slides out of the way while scrolling down and comes straight back on the
-        first upward scroll — the direction comes from `<html data-scroll-dir>`
-        (see `ScrollState`), so this is a pure CSS transform with no React state
-        behind it. `MobileBottomNav` rides the same signal in the other direction.
+        TEMPORARY — plain always-visible header while the scroll behaviour is
+        being sorted out. `sticky` instead of `fixed`, so the bar keeps its 56px
+        in the flow (`MobileShell` drops its matching `pt` for as long as this
+        lasts), and no hide-on-scroll.
+
+        To restore: put back `fixed inset-x-0 top-0`, the `transition-transform`
+        line and `scroll-down:-translate-y-full` here, and re-add
+        `pt-(--header-h)` to `MobileShell`'s `<main>`. The slide came from
+        `<html data-scroll-dir>` (see `ScrollState`) — a pure CSS transform with
+        no React state behind it, which `MobileBottomNav` still rides in the
+        other direction.
       */}
       <header
         data-app-chrome
         className={cn(
-          "fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
+          "sticky top-0 z-50 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
           "dark:border-neutral-900 dark:bg-neutral-950/95",
-          "transition-transform duration-300 ease-out motion-reduce:transition-none",
-          "scroll-down:-translate-y-full",
         )}
       >
         {leading}
