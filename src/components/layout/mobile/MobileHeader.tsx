@@ -114,25 +114,23 @@ export default function MobileHeader({
   return (
     <>
       {/*
-        TEMPORARY — no positioning at all while the scroll behaviour is being
-        sorted out. The bar is an ordinary block at the top of the page: it takes
-        its 56px in the flow (`MobileShell` drops its matching `pt` for as long as
-        this lasts) and scrolls away with the content. Nothing here reacts to
-        scrolling.
+        Slides out of the way while scrolling down and comes straight back on the
+        first upward scroll — the direction comes from `<html data-scroll-dir>`
+        (see `ScrollState`), so this is a pure CSS transform with no React state
+        behind it. `MobileBottomNav` rides the same signal in the other direction.
 
-        To restore: put back `fixed inset-x-0 top-0 z-50`, `backdrop-blur-xl`, the
-        `transition-transform duration-300 ease-out motion-reduce:transition-none`
-        line and `scroll-down:-translate-y-full` here, and re-add
-        `pt-(--header-h)` to `MobileShell`'s `<main>`. The slide came from
-        `<html data-scroll-dir>` (see `ScrollState`) — a pure CSS transform with
-        no React state behind it, which `MobileBottomNav` still rides in the
-        other direction.
+        Being `fixed`, the bar holds no space in the flow: `MobileShell`'s
+        `<main>` reserves it with `pt-(--header-h)`, and `--header-h` is 3.5rem
+        on mobile (set on `<html>` in the locale layout) — exactly this `h-14`,
+        border folded in by `border-box`.
       */}
       <header
         data-app-chrome
         className={cn(
-          "flex h-14 items-center gap-2 border-b border-neutral-100 bg-white px-4",
-          "dark:border-neutral-900 dark:bg-neutral-950",
+          "fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
+          "dark:border-neutral-900 dark:bg-neutral-950/95",
+          "transition-transform duration-300 ease-out motion-reduce:transition-none",
+          "scroll-down:-translate-y-full",
         )}
       >
         {leading}
