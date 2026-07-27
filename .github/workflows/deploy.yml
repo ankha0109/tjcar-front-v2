@@ -31,6 +31,14 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      # Always build from scratch. `actions/checkout` gives a clean tree, so this
+      # is normally a no-op — it exists so a warm runner, a re-run on a cached
+      # workspace or a self-hosted runner can never reuse a stale `.next`
+      # (chunk hashes, RSC payloads and the compiler cache all live there, and a
+      # half-stale one ships client JS that no longer matches the server build).
+      - name: Clear Next build cache
+        run: rm -rf .next
+
       - name: Build (standalone)
         env:
           NODE_ENV: production

@@ -93,7 +93,7 @@ export default async function LocaleLayout({
               </AppShell>
               <AiChatWidget />
               <ScrollState />
-              {/* <ScrollToTop /> */}
+              <ScrollToTop />
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
