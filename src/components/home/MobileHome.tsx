@@ -1,242 +1,171 @@
-import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+import { getLocale, getTranslations } from "next-intl/server";
+import { HOME_SERVICES } from "@/components/home/servicesData";
+import { ArrowIcon } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
-import { JapanIcon, KoreaIcon } from "@/components/icons";
-import { cn } from "@/utils";
-
-const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-);
-
-const AboutIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M3 21h18" />
-    <path d="M5 21V7l7-4 7 4v14" />
-    <path d="M9 9h.01" />
-    <path d="M9 13h.01" />
-    <path d="M9 17h.01" />
-    <path d="M15 9h.01" />
-    <path d="M15 13h.01" />
-    <path d="M15 17h.01" />
-  </svg>
-);
-
-const CarTile = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-    <circle cx="7" cy="17" r="2" />
-    <path d="M9 17h6" />
-    <circle cx="17" cy="17" r="2" />
-  </svg>
-);
-
-const ShieldTile = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M20 13c0 5-3.5 7.5-7.7 8.95a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-);
-
-type CategoryProps = {
-  href: string;
-  label: string;
-  countLabel: string;
-  iconBg: string;
-  iconColor: string;
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  /** Render `Icon` as a full-bleed flag chip instead of a tinted mono icon. */
-  flag?: boolean;
-};
-
-function CategoryTile({
-  href,
-  label,
-  countLabel,
-  iconBg,
-  iconColor,
-  Icon,
-  flag = false,
-}: CategoryProps) {
-  return (
-    <Link
-      href={href}
-      className="group flex flex-col rounded-2xl border border-neutral-200/80 bg-white p-4 transition-colors active:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:active:bg-neutral-800"
-    >
-      {flag ? (
-        <Icon className="h-12 w-12" />
-      ) : (
-        <div
-          className={cn(
-            "flex h-12 w-12 items-center justify-center rounded-2xl",
-            iconBg,
-          )}
-        >
-          <Icon className={cn("h-7 w-7", iconColor)} />
-        </div>
-      )}
-      <div className="mt-7 text-[15px] font-semibold leading-tight text-neutral-900 dark:text-neutral-100">
-        {label}
-      </div>
-      {countLabel ? (
-        <div className="mt-1 text-[12px] leading-snug text-neutral-500 dark:text-neutral-400">
-          {countLabel}
-        </div>
-      ) : (
-        <div className="mt-1 h-[15px]" />
-      )}
-    </Link>
-  );
-}
+import { getLatestPosts } from "@/services/posts";
+import { formatPostDate, postDateTimeAttr } from "@/utils/postFormat";
+import { postImage } from "@/utils/postImage";
 
 /**
- * Mobile landing page. Deliberately a server component: it is the root of the
- * `/` segment, and nothing here needs the client — the tiles are static markup
- * around locale-aware `Link`s.
+ * Mobile landing page — reached only through the `tjcar-device` cookie split in
+ * `Home.tsx`, never through a breakpoint. Two sections, both derived from the
+ * desktop home: services and blog. No search form, no brand grid, no VIN panel;
+ * `MobileBottomNav` already carries /japan, /korea, /cars and /report.
+ *
+ * `MobileShell` reserves the fixed bottom nav on its own `<main>`
+ * (`pb-[calc(4rem+env(safe-area-inset-bottom))]`), so nothing here reserves it
+ * again — the `pb-6` below is plain breathing room.
  */
 export default async function MobileHome() {
-  const t = await getTranslations("mobile.home");
-
   return (
-    <div className="flex flex-col gap-5 px-4 pb-6 pt-3">
-      {/* Categories grid */}
-      <section className="flex flex-col gap-3">
-        <div className="grid grid-cols-2 gap-3">
-          <CategoryTile
-            href="/japan"
-            label={t("categories.japan")}
-            countLabel={t("categories.japanHint")}
-            iconBg=""
-            iconColor=""
-            Icon={JapanIcon}
-            flag
-          />
-          <CategoryTile
-            href="/korea"
-            label={t("categories.korea")}
-            countLabel={t("categories.koreaHint")}
-            iconBg=""
-            iconColor=""
-            Icon={KoreaIcon}
-            flag
-          />
-          <CategoryTile
-            href="/cars"
-            label={t("categories.ready")}
-            countLabel={t("categories.readyHint")}
-            iconBg="bg-amber-50 dark:bg-amber-950/40"
-            iconColor="text-amber-500 dark:text-amber-400"
-            Icon={CarTile}
-          />
-          <CategoryTile
-            href="/report"
-            label={t("categories.report")}
-            countLabel={t("categories.reportHint")}
-            iconBg="bg-violet-50 dark:bg-violet-950/40"
-            iconColor="text-violet-500 dark:text-violet-400"
-            Icon={ShieldTile}
-          />
-        </div>
-      </section>
-
-      {/* Quick links row */}
-      <section className="flex flex-col gap-3">
-        <h3 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
-          {t("quickTitle")}
-        </h3>
-        <div className="flex flex-col divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900">
-          <QuickLink
-            href="/how-it-works"
-            icon={<InfoIcon className="h-4 w-4 text-sky-500" />}
-            label={t("quick.howItWorks")}
-            hint={t("quick.howItWorksHint")}
-          />
-          <QuickLink
-            href="/about"
-            icon={<AboutIcon className="h-4 w-4 text-emerald-500" />}
-            label={t("quick.about")}
-            hint={t("quick.aboutHint")}
-          />
-        </div>
-      </section>
+    <div className="flex flex-col gap-8 px-4 pb-6 pt-4">
+      <MobileServices />
+      <MobileBlog />
     </div>
   );
 }
 
-function QuickLink({
-  href,
-  icon,
-  label,
-  hint,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  hint: string;
-}) {
+async function MobileServices() {
+  const t = await getTranslations("homeServices");
+
   return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 px-4 py-3 transition-colors active:bg-neutral-50 dark:active:bg-neutral-800"
-    >
-      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-50 dark:bg-neutral-800">
-        {icon}
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="text-[14px] font-semibold leading-tight text-neutral-900 dark:text-neutral-100">
-          {label}
-        </span>
-        <span className="text-[12px] text-neutral-500 dark:text-neutral-400">
-          {hint}
-        </span>
-      </span>
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="text-neutral-300 dark:text-neutral-600"
+    <section aria-labelledby="m-services-heading" className="flex flex-col gap-3">
+      {/* The desktop trio (eyebrow → 26px headline → subhead) is five lines of
+          chrome at this width. The eyebrow alone already names the section, so
+          it is promoted to the heading instead of being a micro-label. */}
+      <h2
+        id="m-services-heading"
+        className="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-100"
       >
-        <polyline points="9 18 15 12 9 6" />
-      </svg>
-    </Link>
+        {t("eyebrow")}
+      </h2>
+
+      <div className="grid grid-cols-2 gap-3">
+        {HOME_SERVICES.map(({ key, href, image }) => (
+          <Link
+            key={key}
+            href={href}
+            // Stays a light "product tile" in both themes, same call as the
+            // desktop section: the renders are white-based and the dissolve
+            // fades to white, so a dark surface would only look muddy.
+            className="flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-neutral-200 transition-colors active:bg-neutral-50 dark:ring-white/15"
+          >
+            {/* Square crop of a 4:5 render, anchored top. The desktop card
+                already dissolves its bottom 22–90% into white, so the square
+                loses nothing the desktop tile actually shows — and it keeps
+                both rows on one screen, which `aspect-4/5` would not. */}
+            <div className="relative aspect-square w-full overflow-hidden">
+              <Image
+                src={image}
+                alt=""
+                fill
+                quality={70}
+                placeholder="blur"
+                sizes="45vw"
+                className="object-cover object-top"
+              />
+              {/* One uniform dissolve for all four — no per-card tuning at this
+                  size. Final stop is white at alpha 0, never `transparent`:
+                  `transparent` is rgba(0,0,0,0) and smears a grey band. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[26%] bg-linear-to-t from-white from-20% via-white/55 via-60% to-white/0"
+              />
+            </div>
+
+            {/* Two lines reserved: "TJ Garage" is one line while "Осол аваар
+                шалгах репорт" is two, and a ragged bottom row reads as broken.
+                `z-10` is load-bearing, same as the desktop card: the `fill`
+                image above is absolutely positioned and would otherwise paint
+                over this statically-positioned span, clipping its first line
+                where the negative margin overlaps the frame. */}
+            <span className="z-10 -mt-2 line-clamp-2 min-h-[2.6em] px-3 pb-3 text-[13.5px] font-semibold leading-snug text-neutral-900">
+              {t(`items.${key}.title`)}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+async function MobileBlog() {
+  const [t, locale, posts] = await Promise.all([
+    getTranslations("homeBlog"),
+    getLocale(),
+    getLatestPosts(),
+  ]);
+
+  // Nothing published yet (or the API is down) — drop the whole strip, same as
+  // `BlogSection`. A null child adds no node, so the parent gap collapses.
+  if (posts.length === 0) return null;
+
+  return (
+    <section aria-labelledby="m-blog-heading" className="flex flex-col gap-2">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2
+          id="m-blog-heading"
+          className="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-100"
+        >
+          {t("eyebrow")}
+        </h2>
+        <Link
+          href="/posts"
+          className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-primary"
+        >
+          {t("viewAll")}
+          <ArrowIcon className="h-3 w-3" />
+        </Link>
+      </div>
+
+      <ul className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
+        {posts.map((post) => {
+          const cover = postImage(post.featured_image, "card");
+          const published = post.published_at ?? post.created_at;
+          const date = formatPostDate(published, locale);
+
+          return (
+            <li key={post.id}>
+              <Link
+                href={`/posts/${post.slug}`}
+                className="flex items-start gap-3 py-3 transition-colors active:bg-neutral-50 dark:active:bg-neutral-900"
+              >
+                <span className="relative h-18 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
+                  {cover ? (
+                    // `alt=""` — the title sits in the same link, so a second
+                    // announcement is noise. `unoptimized` because cdn.tjcar.mn
+                    // is not in `next.config.ts` remotePatterns; the `_w320`
+                    // variant from `postImage(_, "card")` is the real sizing.
+                    <Image
+                      src={cover}
+                      alt=""
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : null}
+                </span>
+
+                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="line-clamp-2 text-[14px] font-semibold leading-snug text-neutral-900 dark:text-neutral-100">
+                    {post.title}
+                  </span>
+                  {date ? (
+                    <time
+                      dateTime={postDateTimeAttr(published)}
+                      className="text-[11.5px] text-neutral-500"
+                    >
+                      {date}
+                    </time>
+                  ) : null}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

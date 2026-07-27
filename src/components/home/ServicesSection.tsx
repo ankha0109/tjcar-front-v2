@@ -1,15 +1,16 @@
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import garageImg from "../../../public/services/garage.webp";
-import japanImg from "../../../public/services/services_japan.webp";
-import koreaImg from "../../../public/services/services_korea.webp";
-import reportImg from "../../../public/services/report.webp";
+import { HOME_SERVICES, type ServiceKey } from "./servicesData";
 
-type Service = {
-  key: "japan" | "korea" | "report" | "garage";
-  href: string;
-  image: StaticImageData;
+// Every render is framed differently, so both knobs are per service rather
+// than one set of classes shared by all four cards. Tuned for THIS section's
+// `aspect-4/5` frame only — the mobile tiles crop square and don't use them,
+// which is why they live here and not in `servicesData`.
+const DEFAULT_IMAGE_TOP = "0%";
+const DEFAULT_FADE_HEIGHT = "20%";
+
+type Frame = {
   /** Where the render sits in the frame. Negative lifts it, so the card's own
       white shows under the artwork; positive drops it. Percent of the frame. */
   imageTop?: string;
@@ -18,43 +19,13 @@ type Service = {
   fadeHeight?: string;
 };
 
-// Every render is framed differently, so both knobs are per service rather
-// than one set of classes shared by all four cards.
-const DEFAULT_IMAGE_TOP = "0%";
-const DEFAULT_FADE_HEIGHT = "20%";
-
-// Country and branding live inside the rendered artwork, not as card chrome.
-const SERVICES: Service[] = [
+const DESKTOP_FRAME: Record<ServiceKey, Frame> = {
   // Podium renders: the cars end low, so lift them clear of the text block.
-  {
-    key: "japan",
-    href: "/japan",
-    image: japanImg,
-    imageTop: "-7%",
-    fadeHeight: "22%",
-  },
-  {
-    key: "korea",
-    href: "/korea",
-    image: koreaImg,
-    imageTop: "-7%",
-    fadeHeight: "22%",
-  },
-  {
-    key: "report",
-    href: "/report",
-    image: reportImg,
-    imageTop: "-3%",
-    fadeHeight: "90%",
-  },
-  {
-    key: "garage",
-    href: "/cars",
-    image: garageImg,
-    imageTop: "-10%",
-    fadeHeight: "50%",
-  },
-];
+  japan: { imageTop: "-7%", fadeHeight: "22%" },
+  korea: { imageTop: "-7%", fadeHeight: "22%" },
+  report: { imageTop: "-3%", fadeHeight: "90%" },
+  garage: { imageTop: "-10%", fadeHeight: "50%" },
+};
 
 function ChevronIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -96,7 +67,8 @@ export default async function ServicesSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {SERVICES.map(({ key, href, image, imageTop, fadeHeight }) => {
+        {HOME_SERVICES.map(({ key, href, image }) => {
+          const { imageTop, fadeHeight } = DESKTOP_FRAME[key];
           const title = t(`items.${key}.title`);
 
           return (
