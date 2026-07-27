@@ -11,8 +11,7 @@ import {
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import AntdProvider from "@/providers/AntdProvider";
 import { auth } from "@/auth";
-import DesktopShell from "@/components/layout/desktop/DesktopShell";
-import MobileShell from "@/components/layout/mobile/MobileShell";
+import AppShell from "@/components/layout/AppShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import ScrollState from "@/components/layout/ScrollState";
 // import ScrollToTop from "@/components/layout/ScrollToTop";
@@ -107,11 +106,9 @@ export default async function LocaleLayout({
           <ScrollToTopOnSamePage />
           <AntdRegistry>
             <AntdProvider session={session} locale={locale} theme={theme}>
-              {device === "mobile" ? (
-                <MobileShell header={mobileHeader}>{children}</MobileShell>
-              ) : (
-                <DesktopShell theme={theme}>{children}</DesktopShell>
-              )}
+              <AppShell theme={theme} mobileHeader={mobileHeader}>
+                {children}
+              </AppShell>
               <AiChatWidget />
               <ScrollState />
               {/* Temporarily off while the iOS Chrome scroll behaviour is being
