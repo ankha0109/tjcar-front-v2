@@ -3,7 +3,11 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import AntdProvider from "@/providers/AntdProvider";
 import { auth } from "@/auth";
@@ -11,10 +15,11 @@ import DesktopShell from "@/components/layout/desktop/DesktopShell";
 import MobileShell from "@/components/layout/mobile/MobileShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import ScrollState from "@/components/layout/ScrollState";
-import ScrollToTop from "@/components/layout/ScrollToTop";
+// import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
+import ScrollToTopOnSamePage from "@/utils/useScrollToTop";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -99,6 +104,7 @@ export default async function LocaleLayout({
     >
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <ScrollToTopOnSamePage />
           <AntdRegistry>
             <AntdProvider session={session} locale={locale} theme={theme}>
               {device === "mobile" ? (
@@ -108,7 +114,12 @@ export default async function LocaleLayout({
               )}
               <AiChatWidget />
               <ScrollState />
-              <ScrollToTop />
+              {/* Temporarily off while the iOS Chrome scroll behaviour is being
+                  investigated. With this disabled, forward navigations rely on
+                  Next's own reset alone, which bails when the incoming page's
+                  segment top is already inside the viewport — so small offsets
+                  (below the header height) will survive into the next page. */}
+              {/* <ScrollToTop /> */}
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
