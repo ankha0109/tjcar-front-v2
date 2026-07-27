@@ -14,7 +14,7 @@ import { auth } from "@/auth";
 import AppShell from "@/components/layout/AppShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
 import ScrollState from "@/components/layout/ScrollState";
-// import ScrollToTop from "@/components/layout/ScrollToTop";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
@@ -111,12 +111,7 @@ export default async function LocaleLayout({
               </AppShell>
               <AiChatWidget />
               <ScrollState />
-              {/* Temporarily off while the iOS Chrome scroll behaviour is being
-                  investigated. With this disabled, forward navigations rely on
-                  Next's own reset alone, which bails when the incoming page's
-                  segment top is already inside the viewport — so small offsets
-                  (below the header height) will survive into the next page. */}
-              {/* <ScrollToTop /> */}
+              <ScrollToTop />
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
