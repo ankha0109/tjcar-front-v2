@@ -114,12 +114,14 @@ export default function MobileHeader({
   return (
     <>
       {/*
-        TEMPORARY — plain always-visible header while the scroll behaviour is
-        being sorted out. `sticky` instead of `fixed`, so the bar keeps its 56px
-        in the flow (`MobileShell` drops its matching `pt` for as long as this
-        lasts), and no hide-on-scroll.
+        TEMPORARY — no positioning at all while the scroll behaviour is being
+        sorted out. The bar is an ordinary block at the top of the page: it takes
+        its 56px in the flow (`MobileShell` drops its matching `pt` for as long as
+        this lasts) and scrolls away with the content. Nothing here reacts to
+        scrolling.
 
-        To restore: put back `fixed inset-x-0 top-0`, the `transition-transform`
+        To restore: put back `fixed inset-x-0 top-0 z-50`, `backdrop-blur-xl`, the
+        `transition-transform duration-300 ease-out motion-reduce:transition-none`
         line and `scroll-down:-translate-y-full` here, and re-add
         `pt-(--header-h)` to `MobileShell`'s `<main>`. The slide came from
         `<html data-scroll-dir>` (see `ScrollState`) — a pure CSS transform with
@@ -129,8 +131,8 @@ export default function MobileHeader({
       <header
         data-app-chrome
         className={cn(
-          "sticky top-0 z-50 flex h-14 items-center gap-2 border-b border-neutral-100 bg-white/95 px-4 backdrop-blur-xl",
-          "dark:border-neutral-900 dark:bg-neutral-950/95",
+          "flex h-14 items-center gap-2 border-b border-neutral-100 bg-white px-4",
+          "dark:border-neutral-900 dark:bg-neutral-950",
         )}
       >
         {leading}
