@@ -24,8 +24,19 @@ import { usePathname } from "@/i18n/navigation";
  * real iPhone — the scrolling thread reverts each write before the next lands.
  * Writing every frame does hold. It costs nothing in practice: it only runs on
  * forward navigations and stops the moment the reader touches the page.
+ *
+ * The window has to outlast the slowest host, not the fastest. Safari settles
+ * within ~900ms, but every iOS browser is `WKWebView` — Chrome for iOS included,
+ * since Apple allows no other engine — and the host app moves the scroll view
+ * too: Chrome adjusts its `contentInset` as its own toolbars come back on
+ * navigation, which lands later than anything Safari does. 900ms fixed Safari
+ * and left Chrome broken; this is the value the previous iPhone debugging
+ * session arrived at, having measured a write arriving after an 800ms window had
+ * already closed. Length is not a cost here — a real scroll releases the hold
+ * immediately, so the only thing a long window changes is how long the page
+ * stays put for a reader who has not touched it yet.
  */
-const HOLD_TOP_MS = 900;
+const HOLD_TOP_MS = 2500;
 /**
  * How far a finger has to travel before it counts as a deliberate scroll. A
  * finger still resting on the screen after the tap emits `touchmove` without
