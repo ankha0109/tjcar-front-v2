@@ -115,6 +115,41 @@ a {
   }
 }
 
+/* Shiny text — a highlight band sweeps across the glyphs. The base colour is a
+   dimmed white so the pass reads as a shine, which means this only works on a
+   dark surface. */
+@keyframes shiny-text {
+  from {
+    background-position: 160% 50%;
+  }
+  to {
+    background-position: -60% 50%;
+  }
+}
+.shiny-text {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.82) 42%,
+    #ffffff 48%,
+    #a5f3fc 52%,
+    rgba(255, 255, 255, 0.82) 58%,
+    rgba(255, 255, 255, 0.82) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shiny-text 4.5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shiny-text {
+    background-image: none;
+    color: #fff;
+    animation: none;
+  }
+}
+
 /* ─── Home hero section ───────────────────────────────── */
 
 /* Atmospheric background — layered radial gradients form an
@@ -471,6 +506,72 @@ a {
   .hv-arc,
   .hv-float,
   .hv-pulse {
+    animation: none;
+  }
+}
+
+/* ─── Report landing ──────────────────────────────────── */
+
+/* Scroll reveal — [data-hidden] is added by JS only, so no-JS/bots
+   always get visible content. */
+.reveal {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal[data-hidden] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+/* Shiny text for light surfaces — same sweep as .shiny-text but with the
+   brand primary as the base colour, so it works on the white hero. */
+.shiny-text-primary {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-primary) 0%,
+    var(--color-primary) 42%,
+    #ff8f66 47%,
+    #ffcdb8 51%,
+    #ff8f66 55%,
+    var(--color-primary) 60%,
+    var(--color-primary) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shiny-text 4.5s linear infinite;
+}
+
+/* Compare-slider handle — finite attention pulse, stops on its own. */
+.cmp-handle {
+  animation: cmp-handle-pulse 2.4s ease-out 3;
+}
+@keyframes cmp-handle-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(241, 71, 44, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(241, 71, 44, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+  }
+  .reveal[data-hidden] {
+    opacity: 1;
+    transform: none;
+  }
+  .cmp-handle {
+    animation: none;
+  }
+  .shiny-text-primary {
+    background-image: none;
+    color: var(--color-primary);
     animation: none;
   }
 }

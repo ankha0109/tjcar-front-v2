@@ -3,13 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Collapse } from "antd";
 import ReportHeading from "./ReportHeading";
-
-const FAQ_KEYS = ["q1", "q2", "q3", "q4", "q5"] as const;
+import { REPORT_FAQ_KEYS } from "./reportFaqKeys";
 
 export default function ReportFAQ() {
   const t = useTranslations("reportLanding.faq");
 
-  const items = FAQ_KEYS.map((k) => ({
+  const items = REPORT_FAQ_KEYS.map((k) => ({
     key: k,
     label: (
       <span className="text-[15px] font-medium text-neutral-900 dark:text-neutral-100">
@@ -24,11 +23,9 @@ export default function ReportFAQ() {
   }));
 
   return (
-    <section className="mx-auto w-full max-w-3xl px-4 py-12 md:py-16 lg:px-6">
+    <section className="mx-auto w-full max-w-3xl px-4 py-14 md:py-20 lg:px-6">
       <ReportHeading
-        eyebrow={t("eyebrow")}
         heading={t("heading")}
-        align="center"
       />
 
       <Collapse
@@ -36,7 +33,7 @@ export default function ReportFAQ() {
         ghost
         items={items}
         defaultActiveKey={["q1"]}
-        className="mt-6 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-neutral-200 dark:[&_.ant-collapse-item]:border-neutral-800"
+        className="mt-8 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-neutral-200 dark:[&_.ant-collapse-item]:border-neutral-800"
       />
     </section>
   );

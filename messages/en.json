@@ -198,8 +198,14 @@
     "totalInAuction": "{count} cars currently in auction",
     "viewAll": "View all",
     "vin": {
-      "title": "Accident & history check",
-      "blurb": "Look up accident and history records by VIN or plate number.",
+      "badge": "Works for cars imported from Japan",
+      "title": "Accident history check",
+      "blurb": "Accident records, auction history and true mileage in one place — so you can buy with confidence.",
+      "points": {
+        "accident": "Accident history",
+        "mileage": "True mileage",
+        "report": "Inspection sheet"
+      },
       "placeholder": "VIN or plate number",
       "submit": "Check",
       "required": "Please enter a VIN or plate number"
@@ -1383,132 +1389,246 @@
   },
   "reportLanding": {
     "metadata": {
-      "title": "Auction Report",
-      "description": "The full Japanese auction history as a PDF report in 2 minutes. Mileage verification, accident records, high-quality photos. Only 20,000₮."
+      "title": "Accident & Mileage History Check",
+      "description": "Check a Japanese car's auction history, mileage records, original photos, auction sheet and accident/repair information by chassis number — and get a QR-verified PDF report.",
+      "ogTitle": "Check the car's real history in Japan",
+      "ogDescription": "Mileage records, auction photos, grades and available history — in one PDF, by chassis number.",
+      "ogAlt": "TJ CAR — Japanese auction history PDF report"
+    },
+    "jsonLd": {
+      "serviceName": "TJ CAR vehicle history check"
     },
     "hero": {
-      "eyebrow": "Auction Report",
-      "headingLine1": "The real history of a",
-      "headingAccent": "Japanese auction car",
-      "headingLine2": "in 2 minutes",
-      "subheading": "Just enter the lot or chassis number. We automatically gather how the car looked at the auction — mileage, accident records, water damage and original high-quality photos — into a single PDF report, with no human involvement.",
-      "inputPlaceholder": "Lot or chassis number",
-      "cta": "Get report",
-      "chips": {
-        "auto": "No human involvement",
-        "fast": "Ready in 2 minutes",
-        "price": "Only 20,000₮"
+      "eyebrow": "Check a Japanese car's history by chassis number",
+      "headingLine1": "Check",
+      "headingAccent": "real data",
+      "headingLine2": "from Japan — accidents, mileage and auction sheets",
+      "subheading": "We gather accurate information in one place — accident records, auction history, mileage and the auction sheet — to help you choose a reliable, verified car.",
+      "form": {
+        "label": "Chassis number",
+        "placeholder": "e.g. ZVW30-1234567",
+        "helper": "Enter the chassis number exactly — letters and digits, no spaces.",
+        "modePlate": "Plate number",
+        "modeVin": "Chassis number (VIN)",
+        "plateLabel": "Plate number",
+        "platePlaceholder": "e.g. 1234УБН",
+        "plateHelper": "Enter the plate number without spaces or dashes.",
+        "submit": "Check car history",
+        "secondaryCta": "View sample report",
+        "errors": {
+          "required": "Please enter the chassis number.",
+          "invalidChars": "Use Latin letters and digits only.",
+          "tooShort": "The chassis number looks too short. Please double-check it.",
+          "plateFormat": "Enter the plate as 4 digits + 3 letters, e.g. 1234УБН."
+        }
+      },
+      "badges": {
+        "price": "20,000₮ / per car",
+        "time": "About 5 minutes",
+        "format": "PDF report + QR verification"
+      },
+      "trustNote": "We search your chassis number across available Japanese auction records and compile everything found into a single PDF.",
+      "disclaimer": "The amount of information depends on the records available for the specific car. The report does not replace a technical inspection."
+    },
+    "trustRow": {
+      "items": {
+        "price": {
+          "label": "Per car",
+          "value": "20,000₮"
+        },
+        "time": {
+          "label": "Average time",
+          "value": "~5 min"
+        },
+        "pdf": {
+          "label": "Deliverable",
+          "value": "Illustrated PDF"
+        },
+        "qr": {
+          "label": "Verification",
+          "value": "QR code"
+        }
       }
+    },
+    "compare": {
+      "eyebrow": "Visual proof",
+      "heading": "It may look fine outside — the history can differ",
+      "subheading": "What damage the car had at the Japanese auction never makes it into the listing.",
+      "labelBefore": "Current condition",
+      "labelAfter": "Earlier photo from Japan",
+      "hint": "Drag to compare",
+      "sliderAria": "Slider comparing the current condition with the earlier photo from Japan",
+      "altBefore": "Side view of a silver Toyota Prius after repairs",
+      "altAfter": "Silver Toyota Prius with front-end damage at a Japanese auction"
+    },
+    "features": {
+      "eyebrow": "What's inside",
+      "heading": "What information do you get?",
+      "subheading": "Don't rely only on today's listing photos and the displayed odometer — compare the car's earlier records from Japan.",
+      "items": {
+        "km": {
+          "title": "Mileage history",
+          "body": "Mileage is recorded every time the car enters a Japanese auction, and we show you the full log. It is key evidence to compare against the mileage at import into Mongolia."
+        },
+        "photos": {
+          "title": "Auction-day photos",
+          "body": "See how the car looked before arriving in Mongolia — front, rear and other available angles."
+        },
+        "grade": {
+          "title": "Grade & condition notes",
+          "body": "We show the most recent auction sheet from when the car was sold. The auction sheet carries the car's full inspection and condition report."
+        },
+        "participation": {
+          "title": "Auction participation history",
+          "body": "When and at which auction the car was listed, with LOT numbers, grades and mileage at the time."
+        },
+        "status": {
+          "title": "Sold / unsold records",
+          "body": "How many times the car was re-listed and whether each listing ended in a sale."
+        },
+        "qr": {
+          "title": "Report verification",
+          "body": "A report number and QR link let you confirm the PDF report is genuine. We keep your report on file for years."
+        }
+      }
+    },
+    "why": {
+      "eyebrow": "Why check",
+      "heading": "A listing alone is not enough",
+      "subheading": "To price a used car and judge its risks correctly, you need its earlier records — not just its current look and the seller's description.",
+      "reasons": {
+        "r1": {
+          "title": "Mileage affects wear and price",
+          "body": "A car showing less than its true mileage may sell at an inflated price and mislead your maintenance planning. Comparing mileage by date makes suspicious drops and gaps easier to notice."
+        },
+        "r2": {
+          "title": "Repaired areas may not be visible",
+          "body": "Quality paint and body work can be invisible in ordinary photos. Earlier photos and the auction sheet give you an extra source to compare against."
+        },
+        "r3": {
+          "title": "Auction grades reflect that moment",
+          "body": "Grades, marks and notes help you understand the car's condition when it entered the auction in Japan. Grading systems vary by auction house, so view them together with the original sheet and photos."
+        },
+        "r4": {
+          "title": "Multiple listings reveal changes",
+          "body": "If a car was auctioned several times, you can compare mileage, grades, photos and status across dates. Multiple listings alone are not a bad sign."
+        }
+      },
+      "quote": "The report is not meant to make the final decision for you — it helps you ask the right questions before buying."
+    },
+    "pdfPreview": {
+      "eyebrow": "Sample report",
+      "heading": "What information is inside the report?",
+      "subheading": "Every report covers these 4 core sections",
+      "pages": {
+        "summary": {
+          "title": "Vehicle details & mileage timeline",
+          "caption": "Manufacturer, model, year, chassis number, engine details and the recorded mileage history in one place."
+        },
+        "history": {
+          "title": "Details of every auction entry",
+          "caption": "Auction house, LOT number, grade, mileage, status and the real photos from each date."
+        },
+        "sheet": {
+          "title": "Original Japanese auction sheet",
+          "caption": "When available, the original Japanese-language auction sheet with the vehicle diagram and marks is attached."
+        },
+        "verify": {
+          "title": "QR code & report number",
+          "caption": "Every report has a unique number and can be verified via QR code or a web link."
+        }
+      },
+      "note": "The number of pages and amount of information differ per car — cars with a rich history get longer PDFs, others shorter.",
+      "cta": "Open a sample PDF report",
+      "viewerTitle": "Sample PDF report",
+      "openInNewTab": "Open in a new tab"
     },
     "steps": {
       "eyebrow": "How it works",
-      "heading": "3 steps, 2 minutes",
-      "subheading": "Everything is automatic. You only enter the number.",
+      "heading": "Just 3 steps",
+      "stepLabel": "Step {n}",
+      "payMethod": "Pay with QPay",
       "items": {
-        "input": {
-          "step": "01",
-          "title": "Enter the number",
-          "body": "Type the lot or chassis number and run the search."
+        "enter": {
+          "title": "Enter the chassis number",
+          "body": "Enter the full chassis number without mistakes. Example: ZVW30-1234567."
         },
-        "collect": {
-          "step": "02",
-          "title": "The system collects data",
-          "body": "Auction archive, mileage check, accident records and photos are merged automatically."
+        "pay": {
+          "title": "Pay for the report",
+          "body": "A single car's report costs 20,000₮."
         },
-        "ready": {
-          "step": "03",
-          "title": "PDF is ready",
-          "body": "Your full report is ready to download within 2 minutes."
+        "receive": {
+          "title": "Get your PDF report",
+          "body": "The system compiles the available records into an illustrated PDF with QR verification."
         }
       }
     },
-    "contents": {
-      "eyebrow": "What's in the report",
-      "heading": "Everything you need to decide",
-      "subheading": "Based on real Japanese auction data.",
+    "audience": {
+      "eyebrow": "Who it's for",
+      "heading": "Always check the car in these cases",
       "items": {
-        "km": {
-          "title": "Mileage verification",
-          "body": "We verify the real mileage against the auction record."
-        },
-        "accident": {
-          "title": "Accident records",
-          "body": "Repairs, collisions and damage history shown clearly."
-        },
-        "water": {
-          "title": "Water damage",
-          "body": "Detects cars with flood or water damage."
-        },
-        "photos": {
-          "title": "High-quality photos",
-          "body": "Original high-resolution photos from the auction."
-        },
-        "history": {
-          "title": "Auction history",
-          "body": "How many times it went to auction, at what price and grade."
-        },
-        "grade": {
-          "title": "Grade",
-          "body": "Exterior and interior grades and overall score."
-        }
-      }
-    },
-    "sample": {
-      "eyebrow": "Sample report",
-      "heading": "Here's what it looks like",
-      "body": "All the information delivered clearly, in one tidy PDF.",
-      "points": {
-        "p1": "Core specs and VIN / chassis",
-        "p2": "Mileage check and grade sheet",
-        "p3": "Accident and damage markers",
-        "p4": "Gallery of original photos"
-      }
-    },
-    "pricing": {
-      "eyebrow": "Pricing",
-      "heading": "One report — one price",
-      "price": "20,000₮",
-      "period": "/ report",
-      "cta": "Order report",
-      "note": "No extra fees. Ready in 2 minutes once paid.",
-      "includes": {
-        "i1": "Mileage check and verification",
-        "i2": "Accident and water-damage check",
-        "i3": "Original high-quality photos",
-        "i4": "Auction history and grade",
-        "i5": "PDF download"
+        "a1": "Before buying a Japanese car already in Mongolia",
+        "a2": "When the listing's mileage or description raises doubts",
+        "a3": "When you need the car's earlier photos and grades",
+        "a4": "When choosing between several similar cars",
+        "a5": "If you're a dealer who wants to show buyers transparent information",
+        "a6": "When you want to keep your own car's history from Japan"
       }
     },
     "faq": {
       "eyebrow": "FAQ",
-      "heading": "Questions & answers",
+      "heading": "Frequently asked questions",
       "items": {
         "q1": {
-          "q": "How fast is the report ready?",
-          "a": "Usually within 2 minutes after you enter the number."
+          "q": "What is a chassis number?",
+          "a": "The chassis (frame) number consists of the car's body/model code and a unique serial — e.g. ZVW30-1234567 or AWS210-1234567 for Japanese cars. You'll find it in the registration certificate, on the body plate or in the listing."
         },
         "q2": {
-          "q": "What number should I enter?",
-          "a": "The Japanese auction lot number or the car's chassis (chassis/VIN) number."
+          "q": "What does the report include?",
+          "a": "Depending on the records found: vehicle details, mileage history, auction dates, auction houses, LOT numbers, grades, statuses, photos from Japan, the auction sheet and QR verification."
         },
         "q3": {
-          "q": "Is it checked by a person?",
-          "a": "No. The system gathers and compiles everything automatically, so no human involvement is needed."
+          "q": "Does the report prove 100% whether the car had an accident?",
+          "a": "No. The report is based on available Japanese auction and related records. If an accident or repair was never recorded, it may not appear. We recommend combining it with a professional body and technical inspection."
         },
         "q4": {
-          "q": "How much does it cost?",
-          "a": "One report is 20,000₮. No hidden fees."
+          "q": "If nothing is found, does that mean the car is accident-free?",
+          "a": "No. It only means no matching records were found in the sources used. It is not a conclusion of “no accidents”, “no repairs” or “genuine mileage”."
         },
         "q5": {
-          "q": "Where does the data come from?",
-          "a": "It is based on Japanese auction archives and original grading data."
+          "q": "How is mileage checked?",
+          "a": "We show the mileage recorded at the car's auction entries on different dates in order — whether it grew over time, dropped below an earlier record or disagrees between records."
+        },
+        "q6": {
+          "q": "Does a mileage discrepancy always mean tampering?",
+          "a": "Not necessarily. A drop or mismatch is a warning sign, but recording errors and other causes exist. Ask the seller for an explanation and verify with diagnostics and other documents."
+        },
+        "q7": {
+          "q": "What is an auction sheet?",
+          "a": "The original sheet created when a car enters an auction: key details, mileage, equipment, grade, a body diagram and marks for found damage and repairs. Structure and grading methods vary by auction house."
+        },
+        "q8": {
+          "q": "What does the “unsold” status mean?",
+          "a": "It means the car wasn't sold at that particular auction. On its own, this is not a judgment about the car's quality."
+        },
+        "q9": {
+          "q": "Does the report show the car's current technical condition?",
+          "a": "No. The report shows historical records. Repairs made after arriving in Mongolia and the current condition of the engine, battery, running gear and electronics should be checked separately with professional diagnostics."
+        },
+        "q10": {
+          "q": "Do photos and auction sheets appear for every car?",
+          "a": "No. Photos, auction sheets and the number of records depend on what was found for that specific car — report length differs per car."
         }
       }
     },
     "finalCta": {
-      "heading": "Know the history before you buy",
-      "subheading": "2 minutes and 20,000₮ clears every doubt.",
-      "cta": "Get report"
+      "heading": "Check the history first, not just the price",
+      "subheading": "A 20,000₮ report won't remove every risk of buying a used car, but it adds information you can know before deciding.",
+      "cta": "Check car history",
+      "priceNote": "After entering a valid chassis number, you pay and the PDF report is generated from the available records."
+    },
+    "footerNote": {
+      "text": "TJ CAR reports are based on available Japanese auction and related historical records. Data availability differs per car; the absence of records is not a guarantee of no accidents, no repairs or unchanged mileage. Have the car professionally inspected before purchase."
     }
   },
   "japanBrands": {

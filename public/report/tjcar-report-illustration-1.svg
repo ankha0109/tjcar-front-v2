@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="895" height="1067" viewBox="0 0 895 1067" fill="none">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="photoBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7F8FA"/>
+      <stop offset="1" stop-color="#ECEFF2"/>
+    </linearGradient>
+    <linearGradient id="carBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8D949B"/>
+      <stop offset="1" stop-color="#5F666D"/>
+    </linearGradient>
+    <clipPath id="paperClip"><rect x="0" y="0" width="895" height="1067"/></clipPath>
+  </defs>
+<g transform="translate(-30 -24)">
+    <rect x="30" y="24" width="895" height="1067" fill="white"/>    <!-- Header -->
+    <g transform="translate(62 54)">
+
+      <svg x="0" y="0" width="290" height="72" viewBox="0 0 280 70" xmlns="http://www.w3.org/2000/svg">
+        <defs><style>.cls-1{fill:#f15025;}</style></defs>
+        <path d="M96.48,39.53a3.93,3.93,0,0,0,4.12,3.27c1.8,0,3.51-1.11,3.51-2.78V27.16H97.54V20.55h13.8V40c0,6.29-5.51,9.84-11,9.84-5,0-9.92-2.78-10.74-8.9Z" fill="#000"/>
+        <path d="M144.23,43.37a11.63,11.63,0,0,1-10.41,6.49c-5.67,0-11.38-3.31-11.38-9.88V30c0-6.53,5.71-9.88,11.51-9.88a10.72,10.72,0,0,1,10.16,6.66l-6,2.4c-2-3.59-8.41-2.77-8.41.82V40c0,3.47,6.53,4.45,8.12.45Z" fill="#000"/>
+        <path d="M171.21,49.45h-7.84l-1.87-5.8h-7.72L152,49.45h-7.84l10.08-28.9h6.65ZM159.74,37.16l-2-8.45h-.2l-2.13,8.45Z" fill="#000"/>
+        <path d="M181.82,40.26h-1.3v9.19h-7.39V20.55h11.55c6,0,10.57,2.74,10.73,9.51,0,5.35-2.16,8.37-5.67,9.47l7.88,9.92h-9.11Zm3-6.28a3.31,3.31,0,1,0,0-6.61h-4.28V34Z" fill="#000"/>
+        <polygon points="206.92 20.55 214.27 20.55 214.27 42.23 226.02 42.23 226.02 49.45 206.92 49.45 206.92 20.55" fill="#000"/>
+        <polygon points="228.92 20.55 236.27 20.55 236.27 42.23 248.02 42.23 248.02 49.45 228.92 49.45 228.92 20.55" fill="#000"/>
+        <path d="M271.77,43.37a11.63,11.63,0,0,1-10.41,6.49C255.69,49.86,250,46.55,250,40V30c0-6.53,5.71-9.88,11.51-9.88a10.72,10.72,0,0,1,10.16,6.66l-6,2.4c-2-3.59-8.41-2.77-8.41.82V40c0,3.47,6.53,4.45,8.13.45Z" fill="#000"/>
+        <polygon class="cls-1" points="42.06 9.94 42.06 17.27 37.07 14.37 33.91 12.53 33.91 12.53 30.75 14.37 25.72 17.3 25.72 50.03 19.4 46.35 19.4 20.97 8.23 27.46 8.23 20.13 19.4 13.64 25.72 9.96 30.75 7.04 33.91 5.21 33.91 5.2 33.91 5.21 37.07 7.04 42.06 9.94"/>
+        <polygon class="cls-1" points="37.07 15.79 37.07 62.96 33.91 64.8 30.75 62.96 14.55 53.54 8.23 49.87 8.23 37.76 14.55 34.09 14.55 46.21 30.75 55.63 30.75 15.79 33.91 13.95 37.07 15.79"/>
+        <polygon class="cls-1" points="53.27 31.74 53.27 23.79 48.38 20.95 48.38 49.05 53.27 46.21 53.27 42.36 59.59 38.68 59.59 49.87 53.27 53.54 48.38 56.39 42.06 60.06 42.06 9.94 48.38 13.61 53.27 16.45 59.59 20.13 59.59 28.07 53.27 31.74"/>
+        <polygon points="85.13 27.45 85.13 49.45 77.75 49.45 77.75 27.45 70.07 27.45 70.07 20.51 92.81 20.51 92.81 27.45 85.13 27.45" fill="#000"/>
+      </svg>
+
+      <g transform="translate(0 82)" font-family="Inter,Arial,sans-serif">
+        <text x="0" y="0" font-size="15" font-weight="700" fill="#111827">Репорт огноо:</text>
+        <rect x="118" y="-13" width="150" height="10" rx="5" fill="#D5D9DD"/>
+      </g>
+
+      <!-- right contact block -->
+      <g transform="translate(661 8)">
+        <rect x="0" y="0" width="170" height="10" rx="5" fill="#D5D9DD"/>
+        <rect x="34" y="24" width="136" height="10" rx="5" fill="#D5D9DD"/>
+        <rect x="65" y="48" width="105" height="10" rx="5" fill="#D5D9DD"/>
+      </g>
+    </g>
+
+    <!-- Main title -->
+    <text x="62" y="195" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="800" fill="#111827">TOYOTA C-HR, ZYX10-2035427</text>
+    <rect x="62" y="219" width="831" height="4" rx="2" fill="#F04A2F"/>
+
+    <!-- Vehicle image card -->
+    <g transform="translate(62 248)">
+      <rect width="350" height="265" rx="16" fill="url(#photoBg)" stroke="#E1E5E8" stroke-width="2"/>
+      <rect x="18" y="18" width="314" height="229" rx="12" fill="#E7EAED"/>
+
+      <!-- garage backdrop -->
+      <path d="M18 176H332" stroke="#D1D6DA" stroke-width="2"/>
+      <path d="M84 18V247M157 18V247M230 18V247" stroke="#D7DBDE" stroke-width="2"/>
+      <rect x="238" y="31" width="76" height="58" rx="10" fill="#F7F8F9" stroke="#D4D9DD"/>
+
+      <!-- stylized car -->
+      <g transform="translate(48 91)">
+        <ellipse cx="128" cy="105" rx="116" ry="16" fill="#C8CDD1" opacity=".65"/>
+        <path d="M26 78C35 55 54 40 81 34L154 27C183 27 204 38 222 56L249 67C259 71 266 80 266 91V101H8V92C8 84 14 79 26 78Z" fill="url(#carBody)"/>
+        <path d="M82 37L111 18H170L207 55H65L82 37Z" fill="#AEB5BB"/>
+        <path d="M114 22H166L195 53H84L114 22Z" fill="#4E5963"/>
+        <path d="M22 76H50M221 68H248" stroke="#D7DBDE" stroke-width="5" stroke-linecap="round"/>
+        <path d="M55 68H213" stroke="#7B838A" stroke-width="2"/>
+        <circle cx="68" cy="100" r="24" fill="#30363B"/>
+        <circle cx="68" cy="100" r="11" fill="#BFC5CA"/>
+        <circle cx="213" cy="100" r="24" fill="#30363B"/>
+        <circle cx="213" cy="100" r="11" fill="#BFC5CA"/>
+        <path d="M14 95H44M238 95H263" stroke="#F4F5F6" stroke-width="4" stroke-linecap="round"/>
+      </g>
+
+      <!-- small badge -->
+      <g transform="translate(259 38)">
+        <circle cx="22" cy="22" r="20" fill="#FFFFFF" stroke="#DDE2E5"/>
+        <path d="M14 23L20 29L31 15" stroke="#F04A2F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <!-- Specification table -->
+    <g transform="translate(430 248)" font-family="Inter,Arial,sans-serif">
+      <rect width="463" height="265" rx="16" fill="#FFFFFF" stroke="#DFE3E6" stroke-width="2"/>
+      <rect x="0" y="0" width="218" height="265" rx="16" fill="#F4F6F8"/>
+      <path d="M218 0V265" stroke="#DDE2E5" stroke-width="2"/>
+
+      <!-- rows -->
+      <g stroke="#DDE2E5" stroke-width="1.5">
+        <path d="M0 44H463"/>
+        <path d="M0 88H463"/>
+        <path d="M0 132H463"/>
+        <path d="M0 176H463"/>
+        <path d="M0 220H463"/>
+      </g>
+
+      <g font-size="16" fill="#111827">
+        <text x="16" y="28" font-weight="700">Үйлдвэрлэгч</text>
+        <text x="234" y="28">TOYOTA</text>
+
+        <text x="16" y="72" font-weight="700">Модел</text>
+        <text x="234" y="72">C-HR</text>
+
+        <text x="16" y="116" font-weight="700">Үйлдвэрлэсэн он</text>
+        <text x="234" y="116">2017</text>
+
+        <text x="16" y="160" font-weight="700">Арлын дугаар</text>
+        <text x="234" y="160">ZYX10-2035427</text>
+
+        <text x="16" y="204" font-weight="700">Мотор</text>
+        <text x="234" y="204">1800 см3</text>
+
+        <text x="16" y="248" font-weight="700">Гүйлт</text>
+        <text x="234" y="248">48,000 km</text>
+      </g>
+    </g>
+
+    <!-- Section title -->
+    <text x="62" y="586" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="800" fill="#111827">Км гүйлтийн түүх</text>
+    <rect x="62" y="610" width="831" height="4" rx="2" fill="#F04A2F"/>
+
+    <!-- Mileage table -->
+    <g transform="translate(62 638)" font-family="Inter,Arial,sans-serif">
+      <rect width="831" height="415" rx="16" fill="#FFFFFF" stroke="#DFE3E6" stroke-width="2"/>
+      <rect width="831" height="46" rx="16" fill="#F3F5F7"/>
+      <rect y="30" width="831" height="16" fill="#F3F5F7"/>
+      <path d="M492 0V415" stroke="#DDE2E5" stroke-width="2"/>
+
+      <!-- horizontal rules -->
+      <g stroke="#E1E5E8" stroke-width="1.5">
+        <path d="M0 46H831"/>
+        <path d="M0 83H831"/>
+        <path d="M0 120H831"/>
+        <path d="M0 157H831"/>
+        <path d="M0 194H831"/>
+        <path d="M0 231H831"/>
+        <path d="M0 268H831"/>
+        <path d="M0 305H831"/>
+        <path d="M0 342H831"/>
+        <path d="M0 379H831"/>
+      </g>
+
+      <g font-size="16" fill="#111827">
+        <text x="16" y="30" font-weight="700">Огноо</text>
+        <text x="508" y="30" font-weight="700">Гүйлт /km/</text>
+
+        <text x="16" y="72">2017</text>
+        <text x="508" y="72">—</text>
+
+        <text x="16" y="109">2021-04-24 13:53</text>
+        <text x="508" y="109">47,000 km</text>
+
+        <text x="16" y="146">2021-05-15 14:28</text>
+        <text x="508" y="146">47,000 km</text>
+
+        <text x="16" y="183">2021-05-22 15:18</text>
+        <text x="508" y="183">47,000 km</text>
+
+        <text x="16" y="220">2021-05-29 14:40</text>
+        <text x="508" y="220">47,000 km</text>
+
+        <text x="16" y="257">2021-06-05 14:12</text>
+        <text x="508" y="257">47,000 km</text>
+
+        <text x="16" y="294">2021-06-12 14:13</text>
+        <text x="508" y="294">47,000 km</text>
+
+        <text x="16" y="331">2021-06-19 14:01</text>
+        <text x="508" y="331">47,000 km</text>
+
+        <text x="16" y="368">2021-06-25 11:03</text>
+        <text x="508" y="368">48,000 km</text>
+
+        <text x="16" y="405">2021-07-02 15:14</text>
+        <text x="508" y="405">48,000 km</text>
+      </g>
+    </g>
+  </g>
+</svg>

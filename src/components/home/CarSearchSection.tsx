@@ -53,6 +53,9 @@ const SEARCH_BEAM_COLOR: BorderBeamGradient = [
   { color: "#95de64", percent: 100 },
 ];
 
+// The three things the report actually answers — shown as chips under the blurb.
+const REPORT_POINTS = ["accident", "mileage", "report"] as const;
+
 // Curated "popular" makes shown with logos in the featured grid. Nine each so
 // the grid reads as 5×2 with the "all" card filling the tenth cell. Japan
 // reuses the shared `TOP_JAPAN_MAKES` ranking (see `@/lib/brand`).
@@ -441,30 +444,42 @@ export default function CarSearchSection({
           </div>
         </div>
 
-        {/* RIGHT — 30% — VIN / accident check */}
-        <aside className="relative flex min-h-110 flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-blue-950/10 lg:col-span-3 lg:min-h-0 dark:ring-white/10">
-          {/* Background scene — damaged-car inspection report */}
-          <img
-            src="/images/tjreport_bg2.webp"
-            alt=""
+        {/* RIGHT — 30% — VIN / accident check. Deep-navy panel lit only by two
+            blurred glows (no background photo). */}
+        <aside className="relative flex min-h-110 flex-col overflow-hidden rounded-2xl bg-[#05122e] p-6 shadow-sm ring-1 ring-white/10 md:p-7 lg:col-span-3 lg:min-h-0">
+          {/* Ambient glows — the only "scenery" left in the panel */}
+          <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center select-none"
+            className="pointer-events-none absolute -top-24 -right-20 h-60 w-60 rounded-full bg-blue-500/25 blur-3xl"
           />
-          {/* Legibility overlays — deep navy, strongest at top (heading) and bottom (form) */}
-          <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#05122e]/95 via-[#05122e]/35 to-[#020a1f]/95" />
-          <div className="pointer-events-none absolute inset-0 bg-linear-to-tr from-[#05122e]/70 via-transparent to-transparent" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-28 -left-24 h-60 w-60 rounded-full bg-cyan-400/15 blur-3xl"
+          />
 
-          <div className="relative flex flex-1 flex-col p-6 md:p-7">
-            <div className="flex items-start gap-4">
-              <div>
-                <h3 className="text-xl font-semibold text-white">
-                  {t("vin.title")}
-                </h3>
-                <p className="mt-1.5 text-[12.5px] leading-relaxed text-blue-100/80">
-                  {t("vin.blurb")}
-                </p>
-              </div>
-            </div>
+          <div className="relative flex flex-1 flex-col">
+            {/* <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-blue-100 ring-1 ring-white/15 ring-inset">
+              <ShieldIcon className="h-3.5 w-3.5 shrink-0" />
+              {t("vin.badge")}
+            </span> */}
+
+            <h3 className="shiny-text mt-4 text-2xl leading-snug font-semibold">
+              {t("vin.title")}
+            </h3>
+            <p className="mt-2 text-[12.5px] leading-relaxed text-blue-100/75">
+              {t("vin.blurb")}
+            </p>
+
+            <ul className="mt-4 flex flex-wrap gap-1.5">
+              {REPORT_POINTS.map((key) => (
+                <li
+                  key={key}
+                  className="rounded-full bg-white/6 px-2.5 py-1 text-[11.5px] font-medium text-blue-50/90 ring-1 ring-white/10 ring-inset"
+                >
+                  {t(`vin.points.${key}`)}
+                </li>
+              ))}
+            </ul>
 
             <Form
               form={vinForm}

@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="794" height="1123" viewBox="0 0 794 1123" fill="none">
+  <defs>
+    <style>
+      .font { font-family: Inter, Arial, sans-serif; }
+      .ink { fill: #111827; }
+      .gray { fill: #D3D7DB; }
+      .gray2 { fill: #E5E8EB; }
+      .soft { fill: #F3F5F7; }
+      .line { stroke: #D7DBDF; stroke-width: 1.4; }
+      .thin { stroke: #E1E4E7; stroke-width: 1.1; }
+      .orange { fill: #F15025; }
+    </style>
+  </defs>
+
+  <!-- A4 paper -->
+  <rect width="794" height="1123" fill="#FFFFFF"/>
+
+  <!-- Standard TJ CAR header -->
+  <g transform="translate(32 24)">
+    <svg x="0" y="0" width="238" height="60" viewBox="0 0 280 70" xmlns="http://www.w3.org/2000/svg">
+      <defs><style>.cls-1{fill:#f15025;}</style></defs>
+      <path d="M96.48,39.53a3.93,3.93,0,0,0,4.12,3.27c1.8,0,3.51-1.11,3.51-2.78V27.16H97.54V20.55h13.8V40c0,6.29-5.51,9.84-11,9.84-5,0-9.92-2.78-10.74-8.9Z"/>
+      <path d="M144.23,43.37a11.63,11.63,0,0,1-10.41,6.49c-5.67,0-11.38-3.31-11.38-9.88V30c0-6.53,5.71-9.88,11.51-9.88a10.72,10.72,0,0,1,10.16,6.66l-6,2.4c-2-3.59-8.41-2.77-8.41.82V40c0,3.47,6.53,4.45,8.12.45Z"/>
+      <path d="M171.21,49.45h-7.84l-1.87-5.8h-7.72L152,49.45h-7.84l10.08-28.9h6.65ZM159.74,37.16l-2-8.45h-.2l-2.13,8.45Z"/>
+      <path d="M181.82,40.26h-1.3v9.19h-7.39V20.55h11.55c6,0,10.57,2.74,10.73,9.51,0,5.35-2.16,8.37-5.67,9.47l7.88,9.92h-9.11Zm3-6.28a3.31,3.31,0,1,0,0-6.61h-4.28V34Z"/>
+      <polygon points="206.92 20.55 214.27 20.55 214.27 42.23 226.02 42.23 226.02 49.45 206.92 49.45 206.92 20.55"/>
+      <polygon points="228.92 20.55 236.27 20.55 236.27 42.23 248.02 42.23 248.02 49.45 228.92 49.45 228.92 20.55"/>
+      <path d="M271.77,43.37a11.63,11.63,0,0,1-10.41,6.49C255.69,49.86,250,46.55,250,40V30c0-6.53,5.71-9.88,11.51-9.88a10.72,10.72,0,0,1,10.16,6.66l-6,2.4c-2-3.59-8.41-2.77-8.41.82V40c0,3.47,6.53,4.45,8.13.45Z"/>
+      <polygon class="cls-1" points="42.06 9.94 42.06 17.27 37.07 14.37 33.91 12.53 30.75 14.37 25.72 17.3 25.72 50.03 19.4 46.35 19.4 20.97 8.23 27.46 8.23 20.13 19.4 13.64 25.72 9.96 30.75 7.04 33.91 5.21 37.07 7.04 42.06 9.94"/>
+      <polygon class="cls-1" points="37.07 15.79 37.07 62.96 33.91 64.8 30.75 62.96 14.55 53.54 8.23 49.87 8.23 37.76 14.55 34.09 14.55 46.21 30.75 55.63 30.75 15.79 33.91 13.95 37.07 15.79"/>
+      <polygon class="cls-1" points="53.27 31.74 53.27 23.79 48.38 20.95 48.38 49.05 53.27 46.21 53.27 42.36 59.59 38.68 59.59 49.87 53.27 53.54 48.38 56.39 42.06 60.06 42.06 9.94 48.38 13.61 53.27 16.45 59.59 20.13 59.59 28.07 53.27 31.74"/>
+      <polygon points="85.13 27.45 85.13 49.45 77.75 49.45 77.75 27.45 70.07 27.45 70.07 20.51 92.81 20.51 92.81 27.45 85.13 27.45"/>
+    </svg>
+
+    <g transform="translate(600 7)">
+      <rect width="130" height="9" rx="4.5" class="gray"/>
+      <rect x="28" y="23" width="102" height="9" rx="4.5" class="gray"/>
+      <rect x="56" y="46" width="74" height="9" rx="4.5" class="gray"/>
+    </g>
+  </g>
+
+  <!-- Page heading -->
+  <text x="32" y="121" class="font ink" font-size="27" font-weight="800">Дуудлага худалдааны үнэлгээний хуудас</text>
+  <rect x="32" y="139" width="730" height="4" rx="2" class="orange"/>
+
+  <!-- Auction sheet card -->
+  <g transform="translate(32 168)">
+    <rect width="730" height="910" rx="12" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+
+    <!-- Japanese title placeholder -->
+    <rect x="271" y="18" width="188" height="15" rx="7.5" class="gray"/>
+    <rect x="305" y="44" width="120" height="10" rx="5" class="gray2"/>
+
+    <!-- Dense top form -->
+    <g transform="translate(14 72)">
+      <rect width="702" height="300" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+
+      <!-- lot block -->
+      <rect x="0" y="0" width="112" height="104" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect x="8" y="8" width="26" height="7" rx="3.5" class="gray2"/>
+      <text x="56" y="70" class="font ink" font-size="27" font-weight="700" text-anchor="middle">3582</text>
+
+      <!-- top info -->
+      <rect x="112" y="0" width="520" height="104" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect x="632" y="0" width="70" height="104" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+
+      <path d="M230 0V104M352 0V104M492 0V104M580 0V104" class="line"/>
+      <path d="M112 46H632M112 76H632M632 52H702" class="line"/>
+
+      <g class="font ink">
+        <rect x="120" y="8" width="78" height="7" rx="3.5" class="gray2"/>
+        <text x="170" y="38" font-size="18" font-weight="800">2017</text>
+
+        <rect x="238" y="8" width="58" height="7" rx="3.5" class="gray2"/>
+        <text x="272" y="38" font-size="18" font-weight="800">1800</text>
+
+        <rect x="360" y="8" width="74" height="7" rx="3.5" class="gray2"/>
+        <text x="404" y="38" font-size="17" font-weight="800">DAA-ZYX10</text>
+
+        <rect x="500" y="8" width="50" height="7" rx="3.5" class="gray2"/>
+        <text x="536" y="39" font-size="24" font-weight="800">4</text>
+
+        <text x="641" y="39" font-size="26" font-weight="700">4</text>
+
+        <rect x="120" y="53" width="44" height="7" rx="3.5" class="gray2"/>
+        <text x="177" y="71" font-size="24" font-weight="800">C-HR</text>
+
+        <rect x="238" y="53" width="48" height="7" rx="3.5" class="gray2"/>
+        <rect x="238" y="84" width="95" height="8" rx="4" class="gray"/>
+
+        <rect x="360" y="53" width="52" height="7" rx="3.5" class="gray2"/>
+        <text x="360" y="94" font-size="18" font-weight="800">Hybrid G</text>
+
+        <text x="500" y="69" font-size="12" font-weight="700">2WD</text>
+        <text x="500" y="93" font-size="12" font-weight="700">4WD</text>
+      </g>
+
+      <!-- middle rows -->
+      <path d="M0 104H702M0 136H702M0 170H702M0 204H702M0 238H702M0 270H702" class="line"/>
+      <path d="M112 104V300M214 104V300M312 104V300M418 104V300M520 104V300M618 104V300" class="line"/>
+
+      <g class="font ink">
+        <rect x="8" y="113" width="48" height="7" rx="3.5" class="gray2"/>
+        <text x="67" y="129" font-size="18" font-weight="800">47,453</text>
+        <rect x="222" y="113" width="42" height="7" rx="3.5" class="gray2"/>
+        <text x="270" y="129" font-size="18" font-weight="800">FAT</text>
+        <rect x="320" y="113" width="42" height="7" rx="3.5" class="gray2"/>
+        <text x="364" y="129" font-size="18" font-weight="800">AAC</text>
+
+        <rect x="8" y="146" width="76" height="7" rx="3.5" class="gray2"/>
+        <rect x="120" y="146" width="68" height="8" rx="4" class="gray"/>
+        <rect x="222" y="146" width="70" height="8" rx="4" class="gray"/>
+        <rect x="320" y="146" width="78" height="8" rx="4" class="gray"/>
+        <rect x="426" y="146" width="76" height="8" rx="4" class="gray"/>
+
+        <rect x="8" y="180" width="54" height="7" rx="3.5" class="gray2"/>
+        <rect x="120" y="180" width="72" height="8" rx="4" class="gray"/>
+        <rect x="222" y="180" width="60" height="8" rx="4" class="gray"/>
+        <rect x="320" y="180" width="86" height="8" rx="4" class="gray"/>
+        <rect x="426" y="180" width="64" height="8" rx="4" class="gray"/>
+
+        <rect x="8" y="214" width="66" height="7" rx="3.5" class="gray2"/>
+        <rect x="120" y="214" width="70" height="8" rx="4" class="gray"/>
+        <rect x="222" y="214" width="72" height="8" rx="4" class="gray"/>
+        <rect x="320" y="214" width="78" height="8" rx="4" class="gray"/>
+        <rect x="426" y="214" width="82" height="8" rx="4" class="gray"/>
+
+        <rect x="8" y="247" width="70" height="7" rx="3.5" class="gray2"/>
+        <rect x="120" y="247" width="54" height="8" rx="4" class="gray"/>
+        <rect x="222" y="247" width="80" height="8" rx="4" class="gray"/>
+        <rect x="320" y="247" width="66" height="8" rx="4" class="gray"/>
+
+        <rect x="8" y="280" width="82" height="7" rx="3.5" class="gray2"/>
+        <rect x="120" y="280" width="100" height="8" rx="4" class="gray"/>
+        <text x="480" y="291" font-size="17" font-weight="800">ZYX10-2035427</text>
+      </g>
+    </g>
+
+    <!-- Options / remarks left -->
+    <g transform="translate(14 388)">
+      <rect width="348" height="232" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect width="348" height="34" class="soft"/>
+      <rect x="10" y="11" width="112" height="10" rx="5" class="gray"/>
+
+      <g transform="translate(12 52)">
+        <rect width="220" height="10" rx="5" class="gray"/>
+        <rect y="28" width="284" height="10" rx="5" class="gray"/>
+        <rect y="56" width="254" height="10" rx="5" class="gray"/>
+        <rect y="84" width="300" height="10" rx="5" class="gray"/>
+        <rect y="112" width="210" height="10" rx="5" class="gray"/>
+        <rect y="154" width="118" height="9" rx="4.5" class="gray2"/>
+        <rect y="180" width="276" height="9" rx="4.5" class="gray2"/>
+      </g>
+    </g>
+
+    <!-- Equipment / status right -->
+    <g transform="translate(372 388)">
+      <rect width="344" height="232" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect width="344" height="34" class="soft"/>
+      <rect x="10" y="11" width="104" height="10" rx="5" class="gray"/>
+
+      <g transform="translate(12 52)">
+        <circle cx="8" cy="8" r="8" class="gray"/>
+        <rect x="26" y="3" width="178" height="10" rx="5" class="gray"/>
+        <circle cx="8" cy="38" r="8" class="gray"/>
+        <rect x="26" y="33" width="230" height="10" rx="5" class="gray"/>
+        <circle cx="8" cy="68" r="8" class="gray"/>
+        <rect x="26" y="63" width="198" height="10" rx="5" class="gray"/>
+        <circle cx="8" cy="98" r="8" class="gray"/>
+        <rect x="26" y="93" width="246" height="10" rx="5" class="gray"/>
+        <circle cx="8" cy="128" r="8" class="gray"/>
+        <rect x="26" y="123" width="210" height="10" rx="5" class="gray"/>
+      </g>
+    </g>
+
+    <!-- Handwritten notes -->
+    <g transform="translate(14 632)">
+      <rect width="348" height="248" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect width="348" height="34" class="soft"/>
+      <rect x="10" y="11" width="126" height="10" rx="5" class="gray"/>
+
+      <g transform="translate(14 52)">
+        <path d="M0 0H314M0 34H314M0 68H314M0 102H314M0 136H314M0 170H314" stroke="#E5E8EB" stroke-width="1.2" stroke-dasharray="5 5"/>
+        <path d="M12 17C46 5 74 27 108 14C139 2 169 22 203 10" stroke="#B9BFC6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M24 51C61 36 94 61 131 45C161 33 191 53 225 40" stroke="#B9BFC6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M10 85C47 70 82 96 118 80C151 67 180 88 214 74" stroke="#B9BFC6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M28 119C65 104 99 127 137 113" stroke="#B9BFC6" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- Vehicle top-view diagram -->
+    <g transform="translate(372 632)">
+      <rect width="344" height="248" fill="#FFFFFF" stroke="#D7DBDF" stroke-width="1.5"/>
+      <rect width="344" height="34" class="soft"/>
+      <rect x="10" y="11" width="92" height="10" rx="5" class="gray"/>
+
+      <g transform="translate(67 43)" stroke="#AEB4BD" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M62 14H132L146 42V160L132 190H62L48 160V42L62 14Z"/>
+        <path d="M62 30H132L138 58H56L62 30Z"/>
+        <path d="M56 141H138L132 176H62L56 141Z"/>
+        <path d="M48 61H24V138H48"/>
+        <path d="M146 61H170V138H146"/>
+        <circle cx="24" cy="81" r="19"/>
+        <circle cx="24" cy="123" r="19"/>
+        <circle cx="170" cy="81" r="19"/>
+        <circle cx="170" cy="123" r="19"/>
+        <path d="M55 71H139M55 132H139" stroke-dasharray="5 5"/>
+        <path d="M72 8L65 0H129L122 8"/>
+        <path d="M71 196L64 205H130L123 196"/>
+      </g>
+
+      <g class="font" fill="#A3AAB2" font-size="13" font-weight="700">
+        <text x="46" y="128">A1</text>
+        <text x="285" y="128">A1</text>
+        <text x="162" y="72">W1</text>
+        <text x="162" y="232">A1</text>
+      </g>
+    </g>
+  </g>
+</svg>

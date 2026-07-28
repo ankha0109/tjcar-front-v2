@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import ReportJsonLd from "@/components/report/ReportJsonLd";
 import ReportHero from "@/components/report/ReportHero";
+import ReportCompare from "@/components/report/ReportCompare";
+import ReportFeatures from "@/components/report/ReportFeatures";
+import ReportWhy from "@/components/report/ReportWhy";
+import ReportPdfPreview from "@/components/report/ReportPdfPreview";
 import ReportSteps from "@/components/report/ReportSteps";
-import ReportContents from "@/components/report/ReportContents";
-import ReportSample from "@/components/report/ReportSample";
-import ReportPricing from "@/components/report/ReportPricing";
+import ReportAudience from "@/components/report/ReportAudience";
 import ReportFAQ from "@/components/report/ReportFAQ";
-import ReportFinalCta from "@/components/report/ReportFinalCta";
 
 export async function generateMetadata({
   params,
@@ -21,6 +23,20 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      type: "website",
+      images: [
+        {
+          url: "/images/tjreport_bg.webp",
+          width: 1254,
+          height: 1254,
+          alt: t("ogAlt"),
+        },
+      ],
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -34,13 +50,15 @@ export default async function ReportPage({
 
   return (
     <>
+      <ReportJsonLd locale={locale} />
       <ReportHero />
+      <ReportCompare />
+      <ReportFeatures />
+      <ReportWhy />
+      <ReportPdfPreview />
       <ReportSteps />
-      <ReportContents />
-      <ReportSample />
-      <ReportPricing />
+      <ReportAudience />
       <ReportFAQ />
-      <ReportFinalCta />
     </>
   );
 }
