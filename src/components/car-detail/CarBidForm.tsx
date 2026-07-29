@@ -146,7 +146,9 @@ export default function CarBidForm({
                 return Number(value) > startPrice
                   ? Promise.resolve()
                   : Promise.reject(
-                      new Error(t("belowMinJpy", { min: formatJpy(startPrice) })),
+                      new Error(
+                        t("belowMinJpy", { min: formatJpy(startPrice) }),
+                      ),
                     );
               }
               return Number(value) > minAmount
@@ -176,11 +178,21 @@ export default function CarBidForm({
 
       {/* Minimum / start-price hint. */}
       <div className="mb-4 flex items-center gap-1.5 text-[12px] text-neutral-500 dark:text-neutral-400">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
           <circle cx="12" cy="12" r="10" />
           <path d="M12 16v-4M12 8h.01" />
         </svg>
-        <span className="tabular-nums">
+        <span>
           {isJpy
             ? t("startPriceHelp", { min: formatJpy(startPrice) })
             : t("minPriceHelp", { min: formatMnt(minAmount) })}
@@ -193,7 +205,7 @@ export default function CarBidForm({
           <span className="text-neutral-500 dark:text-neutral-400">
             {t("approxMnt")}
           </span>
-          <span className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+          <span className="text-[15px] font-bold text-neutral-900 dark:text-neutral-100">
             ≈ {formatMnt(bidPrice * jpyRate)}
           </span>
         </div>
@@ -209,7 +221,7 @@ export default function CarBidForm({
               </span>
               {t("advanceLabel", { percent: tier.percent })}
             </span>
-            <span className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+            <span className="text-[15px] font-bold text-neutral-900 dark:text-neutral-100">
               {formatMnt(advance)}
             </span>
           </div>
@@ -217,7 +229,7 @@ export default function CarBidForm({
             <span className="text-neutral-500 dark:text-neutral-400">
               {t("remainderLabel")}
             </span>
-            <span className="font-semibold tabular-nums text-neutral-700 dark:text-neutral-300">
+            <span className="font-semibold text-neutral-700 dark:text-neutral-300">
               {formatMnt(remainder)}
             </span>
           </div>

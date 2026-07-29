@@ -61,7 +61,7 @@ export default function ListingSkeleton({
             <Skeleton className="h-8 w-24 shrink-0 rounded-lg" />
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: count }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
@@ -77,7 +77,7 @@ function CardSkeleton() {
   return (
     <div className="overflow-hidden rounded-xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900">
       <Skeleton className="aspect-4/3 w-full rounded-none" />
-      <div className="flex flex-col gap-3 p-3.5">
+      <div className="flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-3.5">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1 space-y-1.5">
             <Skeleton className="h-3.5 w-3/4" />
@@ -86,18 +86,24 @@ function CardSkeleton() {
           <Skeleton className="h-7 w-7 shrink-0 rounded-lg" />
         </div>
 
-        <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-neutral-50/70 px-3 py-2.5 ring-1 ring-neutral-100 dark:bg-neutral-800/60 dark:ring-neutral-800">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="hidden h-4 w-4 rounded-full sm:block" />
               <Skeleton className="h-3 flex-1" />
             </div>
           ))}
         </div>
 
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-2.5 w-16" />
-          <Skeleton className="h-5 w-20 rounded-full" />
+        {/* Lot + auction slot, then the touch-side action buttons (those overlay
+            the photo on hover devices). */}
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
+          <Skeleton className="h-2.5 w-14" />
+          <Skeleton className="h-5 w-24 rounded-full" />
+          <div className="ml-auto flex shrink-0 gap-1.5 pointer-fine:hidden">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-10 w-10 rounded-full" />
+          </div>
         </div>
       </div>
     </div>

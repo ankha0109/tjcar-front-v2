@@ -47,7 +47,7 @@ export default async function CompanyStory() {
               key={key}
               className="rounded-xl border border-neutral-200 bg-white px-4 py-4 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-700 md:px-5 md:py-5"
             >
-              <div className="text-2xl font-semibold tabular-nums tracking-tight text-neutral-900 md:text-[28px] dark:text-neutral-100">
+              <div className="text-2xl font-semibold tracking-tight text-neutral-900 md:text-[28px] dark:text-neutral-100">
                 {t(`stats.${key}.value`)}
               </div>
               <div className="mt-1 text-[12.5px] text-neutral-500 dark:text-neutral-400">

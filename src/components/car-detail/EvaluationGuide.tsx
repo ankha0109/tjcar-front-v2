@@ -9,16 +9,35 @@ import { useTranslations } from "next-intl";
  * them. Descriptions are localized under `carDetail.evaluationGuide.marks.*`.
  */
 const MARK_CODES = [
-  "A1", "A2", "A3",
-  "E1", "E2", "E3",
-  "U1", "U2", "U3",
-  "W1", "W2", "W3",
-  "S1", "S2",
-  "C1", "C2",
-  "P", "H", "XX",
-  "B1", "B2", "B3",
-  "Y1", "Y2", "Y3",
-  "X1", "R", "RX", "G",
+  "A1",
+  "A2",
+  "A3",
+  "E1",
+  "E2",
+  "E3",
+  "U1",
+  "U2",
+  "U3",
+  "W1",
+  "W2",
+  "W3",
+  "S1",
+  "S2",
+  "C1",
+  "C2",
+  "P",
+  "H",
+  "XX",
+  "B1",
+  "B2",
+  "B3",
+  "Y1",
+  "Y2",
+  "Y3",
+  "X1",
+  "R",
+  "RX",
+  "G",
 ] as const;
 
 /**
@@ -71,7 +90,7 @@ export default function EvaluationGuide() {
         <ul className="grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
           {MARK_CODES.map((code) => (
             <li key={code} className="flex items-start gap-2.5">
-              <span className="mt-px inline-flex min-w-[30px] justify-center rounded-md bg-neutral-900 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-white dark:bg-neutral-700">
+              <span className="mt-px inline-flex min-w-[30px] justify-center rounded-md bg-neutral-900 px-1.5 py-0.5 text-[11px] font-bold text-white dark:bg-neutral-700">
                 {code}
               </span>
               <span className="text-[12.5px] leading-snug text-neutral-600 dark:text-neutral-300">

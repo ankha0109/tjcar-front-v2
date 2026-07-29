@@ -88,7 +88,10 @@ export default function CompareTable({ cars, onRemove }: Props) {
         <thead>
           <tr>
             <th
-              className={cn(labelCellClass, "z-20 w-36 bg-white dark:bg-neutral-950")}
+              className={cn(
+                labelCellClass,
+                "z-20 w-36 bg-white dark:bg-neutral-950",
+              )}
             />
             {cars.map((car) => (
               <th
@@ -126,7 +129,7 @@ export default function CompareTable({ cars, onRemove }: Props) {
                     </p>
                   )}
                   {car.priceMnt != null && (
-                    <p className="mt-1 text-[13px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                    <p className="mt-1 text-[13px] font-bold text-neutral-900 dark:text-neutral-100">
                       {formatMnt(car.priceMnt)}
                     </p>
                   )}

@@ -67,7 +67,7 @@ function labelValue(value: number, locale: string): string {
  * text is stroked with the page background and painted stroke-first.
  */
 const LABEL_CLASS =
-  "fill-neutral-500 tabular-nums [paint-order:stroke] [stroke-width:3px] [stroke:var(--background)] dark:fill-neutral-400";
+  "fill-neutral-500 [paint-order:stroke] [stroke-width:3px] [stroke:var(--background)] dark:fill-neutral-400";
 
 /**
  * Comparable sold-car price trend, so a bidder can size up a competitive offer
@@ -207,14 +207,12 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                             {row.year && <span>{row.year}</span>}
                             {/* The "км" suffix labels itself, so no <dt> needed. */}
                             {formatMileage(row.mileageKm, tCard) && (
-                              <span className="tabular-nums">
-                                {formatMileage(row.mileageKm, tCard)}
-                              </span>
+                              <span>{formatMileage(row.mileageKm, tCard)}</span>
                             )}
                           </div>
                         </div>
                         {row.rate && (
-                          <span className="shrink-0 rounded-lg bg-neutral-100 px-2.5 py-1 text-[18px] font-bold leading-none tabular-nums text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100">
+                          <span className="shrink-0 rounded-lg bg-neutral-100 px-2.5 py-1 text-[18px] font-bold leading-none text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100">
                             {row.rate}
                           </span>
                         )}
@@ -229,7 +227,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                             <dt className="text-neutral-500 dark:text-neutral-400">
                               {t("colStartPrice")}
                             </dt>
-                            <dd className="tabular-nums text-neutral-700 dark:text-neutral-300">
+                            <dd className="text-neutral-700 dark:text-neutral-300">
                               {formatMnt(row.startMnt)}
                             </dd>
                           </div>
@@ -239,7 +237,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                             <dt className="text-neutral-500 dark:text-neutral-400">
                               {t("colSoldPrice")}
                             </dt>
-                            <dd className="tabular-nums text-neutral-700 dark:text-neutral-300">
+                            <dd className="text-neutral-700 dark:text-neutral-300">
                               {formatMnt(row.hammerMnt)}
                             </dd>
                           </div>
@@ -248,7 +246,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                           <dt className="text-neutral-500 dark:text-neutral-400">
                             {t("colLandedPrice")}
                           </dt>
-                          <dd className="font-semibold tabular-nums text-primary">
+                          <dd className="font-semibold text-primary">
                             {formatMnt(row.mnt)}
                           </dd>
                         </div>

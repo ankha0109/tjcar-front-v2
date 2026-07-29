@@ -25,7 +25,7 @@ export default async function ReportFinalCta() {
             className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.06)_1px,transparent_0)] [background-size:22px_22px]"
           />
           <div className="relative">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11.5px] font-medium tabular-nums text-white/85 backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11.5px] font-medium text-white/85 backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               {tb("price")}
             </span>
@@ -36,7 +36,9 @@ export default async function ReportFinalCta() {
               {t("subheading")}
             </p>
             <div className="mt-8 flex justify-center">
-              <ReportCtaButton targetId="report-check">{t("cta")}</ReportCtaButton>
+              <ReportCtaButton targetId="report-check">
+                {t("cta")}
+              </ReportCtaButton>
             </div>
             <p className="mx-auto mt-5 max-w-md text-[12px] leading-relaxed text-white/45">
               {t("priceNote")}

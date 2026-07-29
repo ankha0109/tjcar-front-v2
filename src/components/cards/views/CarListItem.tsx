@@ -7,7 +7,7 @@ import { CarItem } from "@/types/car";
 import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { getGradeInfo } from "@/utils/auctionGrade";
 import { withImageSize } from "@/utils/auctionImage";
-import { getCountdown } from "@/utils/carCountdown";
+import { getAuctionMoment } from "@/utils/auctionMoment";
 import {
   formatEngine,
   formatMileage,
@@ -17,17 +17,17 @@ import { cn } from "@/utils";
 import { CardActions } from "../shared/CardActions";
 import { CountdownBadge } from "../shared/CountdownBadge";
 import {
-  PREMIUM_CARD_RING_CLASSES,
+  PREMIUM_CARD_BORDER_CLASSES,
   PremiumBadge,
   isPremiumCar,
 } from "../shared/PremiumBadge";
 import {
   ColorDot,
-  IconCalendar,
-  IconEngine,
-  IconGauge,
-  IconSteering,
-  IconTransmission,
+  DriveIcon,
+  EngineIcon,
+  MileageIcon,
+  TransmissionIcon,
+  YearIcon,
 } from "../shared/SpecIcons";
 
 export default function CarListItem({
@@ -53,7 +53,7 @@ export default function CarListItem({
   const transmissionLabel = formatTransmission(car.transmission, t);
   const mileageLabel = formatMileage(car.mileageKm, t);
   const engineLabel = formatEngine(car.engineCc);
-  const countdown = getCountdown(car.auction?.date);
+  const moment = getAuctionMoment(car.auction?.date, car.source);
 
   const grade = getGradeInfo(car.auction?.grade);
   const gradeDescription = grade ? t(`grade.description.${grade.tier}`) : null;
@@ -65,7 +65,7 @@ export default function CarListItem({
       className={cn(
         "group relative flex flex-col gap-3 overflow-hidden rounded-xl border bg-white p-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(15,15,15,0.18),0_2px_4px_-2px_rgba(15,15,15,0.06)] sm:flex-row dark:bg-neutral-900",
         isPremium
-          ? PREMIUM_CARD_RING_CLASSES
+          ? PREMIUM_CARD_BORDER_CLASSES
           : "border-neutral-200/80 hover:border-neutral-300 dark:border-neutral-800 dark:hover:border-neutral-700",
       )}
     >
@@ -87,15 +87,14 @@ export default function CarListItem({
         {isPremium && (
           <PremiumBadge size="sm" className="absolute left-2 top-2" />
         )}
-        <CardActions car={car} disableCompare={disableCompare} />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-[15px] font-medium text-neutral-500 dark:text-neutral-100">
+            <h3 className="truncate text-[15px] font-medium text-neutral-500 dark:text-neutral-400">
               {car.marka}{" "}
-              <span className="font-semibold text-neutral-900 dark:text-neutral-400">
+              <span className="font-semibold text-neutral-900 dark:text-neutral-100">
                 {car.model}
               </span>
             </h3>
@@ -108,7 +107,7 @@ export default function CarListItem({
           {grade && (
             <span
               className={cn(
-                "shrink-0 inline-flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[12px] font-bold tabular-nums leading-none ring-1",
+                "shrink-0 inline-flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[12px] font-bold leading-none ring-1",
                 grade.classes.badgeBg,
                 grade.classes.badgeRing,
                 grade.classes.badgeText,
@@ -123,26 +122,29 @@ export default function CarListItem({
         {/* Inline spec row with icons */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-neutral-700 dark:text-neutral-200">
           {car.year && (
-            <SpecInline icon={<IconCalendar />} value={car.year} />
+            <SpecInline icon={<YearIcon size={14} />} value={car.year} />
           )}
           {mileageLabel && (
-            <SpecInline icon={<IconGauge />} value={mileageLabel} />
+            <SpecInline icon={<MileageIcon size={14} />} value={mileageLabel} />
           )}
           {engineLabel && (
-            <SpecInline icon={<IconEngine />} value={engineLabel} />
+            <SpecInline icon={<EngineIcon size={14} />} value={engineLabel} />
           )}
           {transmissionLabel && (
-            <SpecInline icon={<IconTransmission />} value={transmissionLabel} />
+            <SpecInline
+              icon={<TransmissionIcon size={14} />}
+              value={transmissionLabel}
+            />
           )}
           {car.color && (
             <SpecInline
-              icon={<ColorDot color={car.color} />}
+              icon={<ColorDot color={car.color} size={12} />}
               value={<span className="capitalize">{car.color}</span>}
             />
           )}
           {car.drivetrain && (
             <SpecInline
-              icon={<IconSteering />}
+              icon={<DriveIcon size={14} />}
               value={t(`drive.${car.drivetrain === "LHD" ? "lhd" : "rhd"}`)}
             />
           )}
@@ -153,34 +155,40 @@ export default function CarListItem({
             {car.auction?.lot && (
               <span className="text-neutral-500 dark:text-neutral-400">
                 {t("lotLabel")}{" "}
-                <span className="font-semibold tabular-nums text-neutral-800 dark:text-neutral-200">
+                <span className="font-semibold text-neutral-800 dark:text-neutral-200">
                   #{car.auction.lot}
                 </span>
               </span>
             )}
-            <CountdownBadge
-              countdown={countdown}
-              rawDate={car.auction?.date}
-              source={car.source}
-            />
+            <CountdownBadge moment={moment} />
           </div>
 
-          {!hidePrice && (
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-                {t("avgPriceLabel")}
-              </span>
-              <div className="flex items-center gap-0.5">
-                <TugrigIcon
-                  size={14}
-                  className="text-neutral-900 dark:text-neutral-100"
-                />
-                <p className="text-[15px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
-                  {mntPrice}
-                </p>
+          {/* Inline, never over the photo: on touch an image overlay competes
+              with the row's own detail link. */}
+          <div className="flex items-center gap-3">
+            {!hidePrice && (
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+                  {t("avgPriceLabel")}
+                </span>
+                <div className="flex items-center gap-0.5">
+                  <TugrigIcon
+                    size={14}
+                    className="text-neutral-900 dark:text-neutral-100"
+                  />
+                  <p className="text-[15px] font-bold text-neutral-900 dark:text-neutral-100">
+                    {mntPrice}
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+            <CardActions
+              car={car}
+              disableCompare={disableCompare}
+              visibility="always"
+              absolute={false}
+            />
+          </div>
         </div>
       </div>
     </article>

@@ -61,7 +61,8 @@ export default function AuctionCountdown({
     const cls =
       "inline-flex items-center gap-1.5 text-[12px] font-medium text-neutral-500 dark:text-neutral-400";
     if (!target) return <span className={cls}>{t("unknown")}</span>;
-    if (mounted && !remaining) return <span className={cls}>{t("started")}</span>;
+    if (mounted && !remaining)
+      return <span className={cls}>{t("started")}</span>;
     return (
       <span className={cls}>
         <svg
@@ -80,7 +81,7 @@ export default function AuctionCountdown({
           <path d="M12 7v5l3 2" />
         </svg>
         {mounted && remaining ? (
-          <span className="tabular-nums">
+          <span>
             {remaining.days > 0 ? `${remaining.days} ${t("days")} ` : ""}
             {String(remaining.hours).padStart(2, "0")}:
             {String(remaining.mins).padStart(2, "0")}:
@@ -133,7 +134,7 @@ export default function AuctionCountdown({
               key={s.unit}
               className="flex flex-1 flex-col items-center rounded-lg bg-neutral-900 px-1 py-2 dark:bg-neutral-800"
             >
-              <span className="text-xl font-bold leading-none tabular-nums text-white">
+              <span className="text-xl font-bold leading-none text-white">
                 {String(s.value).padStart(2, "0")}
               </span>
               <span className="mt-1 text-[9px] font-medium uppercase tracking-wide text-neutral-400">

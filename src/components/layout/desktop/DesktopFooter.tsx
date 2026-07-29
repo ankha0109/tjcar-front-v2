@@ -15,7 +15,14 @@ const FacebookIcon = (props: IconProps) => (
 );
 
 const InstagramIcon = (props: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden {...props}>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    aria-hidden
+    {...props}
+  >
     <rect x="3" y="3" width="18" height="18" rx="5" />
     <circle cx="12" cy="12" r="4" />
     <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
@@ -73,7 +80,11 @@ const SOCIAL_LINKS: ReadonlyArray<{
   key: "facebook" | "instagram" | "youtube" | "tiktok";
   Icon: ComponentType<IconProps>;
 }> = [
-  { href: "https://www.facebook.com/tjcar.llc", key: "facebook", Icon: FacebookIcon },
+  {
+    href: "https://www.facebook.com/tjcar.llc",
+    key: "facebook",
+    Icon: FacebookIcon,
+  },
   { href: "https://instagram.com", key: "instagram", Icon: InstagramIcon },
   { href: "https://youtube.com", key: "youtube", Icon: YoutubeIcon },
   { href: "https://tiktok.com", key: "tiktok", Icon: TiktokIcon },
@@ -110,7 +121,7 @@ export default function DesktopFooter() {
             <span className="text-[13px] font-medium text-neutral-500">
               {tr("rates.usd")}
             </span>
-            <span className="text-sm font-semibold tabular-nums text-white">
+            <span className="text-sm font-semibold text-white">
               {formatRate(EXCHANGE_RATES.USD.value)}
             </span>
             <span className="text-xs text-neutral-500">₮</span>
@@ -121,7 +132,7 @@ export default function DesktopFooter() {
             <span className="text-[13px] font-medium text-neutral-500">
               {tr("rates.jpy")}
             </span>
-            <span className="text-sm font-semibold tabular-nums text-white">
+            <span className="text-sm font-semibold text-white">
               {formatRate(EXCHANGE_RATES.JPY.value)}
             </span>
             <span className="text-xs text-neutral-500">₮</span>

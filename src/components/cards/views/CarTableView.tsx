@@ -9,7 +9,7 @@ import { CarItem } from "@/types/car";
 import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { getGradeInfo } from "@/utils/auctionGrade";
 import { withImageSize } from "@/utils/auctionImage";
-import { getCountdown } from "@/utils/carCountdown";
+import { getAuctionMoment } from "@/utils/auctionMoment";
 import { formatEngine, formatMileage } from "@/utils/carFormat";
 import { cn } from "@/utils";
 import { CardActions } from "../shared/CardActions";
@@ -45,9 +45,7 @@ export default function CarTableView({
         dataIndex: "year",
         key: "year",
         width: 70,
-        render: (year: string | undefined) => (
-          <span className="tabular-nums">{year ?? "-"}</span>
-        ),
+        render: (year: string | undefined) => year ?? "-",
       },
       {
         title: tCol("mileage"),
@@ -55,11 +53,7 @@ export default function CarTableView({
         key: "mileage",
         width: 105,
         responsive: ["sm"],
-        render: (_, car) => (
-          <span className="tabular-nums">
-            {formatMileage(car.mileageKm, t) ?? "-"}
-          </span>
-        ),
+        render: (_, car) => formatMileage(car.mileageKm, t) ?? "-",
       },
       {
         title: tCol("engine"),
@@ -67,9 +61,7 @@ export default function CarTableView({
         key: "engine",
         width: 70,
         responsive: ["lg"],
-        render: (cc: number | undefined) => (
-          <span className="tabular-nums">{formatEngine(cc) ?? "-"}</span>
-        ),
+        render: (cc: number | undefined) => formatEngine(cc) ?? "-",
       },
       {
         title: tCol("color"),
@@ -114,19 +106,13 @@ export default function CarTableView({
       {
         title: tCol("time"),
         key: "time",
-        width: 115,
+        // Wide enough for the longest pill, "Нөгөөдөр"-class day word + HH:mm.
+        width: 150,
         responsive: ["sm"],
         render: (_, car) => {
-          const countdown = getCountdown(car.auction?.date);
-          if (!countdown) return <span className="text-neutral-400">-</span>;
-          return (
-            <CountdownBadge
-              countdown={countdown}
-              rawDate={car.auction?.date}
-              source={car.source}
-              size="sm"
-            />
-          );
+          const moment = getAuctionMoment(car.auction?.date, car.source);
+          if (!moment) return <span className="text-neutral-400">-</span>;
+          return <CountdownBadge moment={moment} size="sm" />;
         },
       },
       {
@@ -181,9 +167,7 @@ export default function CarTableView({
             : undefined
         }
         rowClassName={(car) =>
-          isPremiumCar(car.auction?.type)
-            ? "featured-car-row-premium"
-            : ""
+          isPremiumCar(car.auction?.type) ? "featured-car-row-premium" : ""
         }
       />
     </div>
@@ -230,7 +214,11 @@ function CarNameCell({
               {car.model}
             </span>
           </div>
-          {isPremium && <PremiumBadge size="sm" />}
+          {/* Below `sm` the name column is too narrow to carry both; the amber
+              row tint already marks the lot as premium there. */}
+          {isPremium && (
+            <PremiumBadge size="sm" className="hidden sm:inline-flex" />
+          )}
         </div>
         {car.grade && (
           <div className="truncate text-[11px] text-neutral-500 dark:text-neutral-400">
@@ -250,7 +238,7 @@ function PriceCell({ car }: { car: CarItem }) {
         size={13}
         className="text-neutral-900 dark:text-neutral-100"
       />
-      <span className="text-[14px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+      <span className="text-[14px] font-bold text-neutral-900 dark:text-neutral-100">
         {mntPrice}
       </span>
     </div>

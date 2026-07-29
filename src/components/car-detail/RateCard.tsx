@@ -57,7 +57,16 @@ export default function RateCard({ rate, label }: Props) {
           aria-label={t("title")}
           className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
             <path d="M12 17h.01" />
@@ -67,7 +76,7 @@ export default function RateCard({ rate, label }: Props) {
 
       <div
         className={cn(
-          "text-[22px] font-extrabold leading-tight tabular-nums",
+          "text-[22px] font-extrabold leading-tight",
           isRepaired
             ? "text-red-600 dark:text-red-500"
             : "text-emerald-600 dark:text-emerald-400",
@@ -100,7 +109,7 @@ export default function RateCard({ rate, label }: Props) {
               >
                 <span
                   className={cn(
-                    "mt-px inline-flex min-w-9 justify-center rounded-md px-1.5 py-0.5 text-[12px] font-bold tabular-nums text-white",
+                    "mt-px inline-flex min-w-9 justify-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white",
                     repaired
                       ? "bg-red-600 dark:bg-red-600"
                       : "bg-neutral-900 dark:bg-neutral-700",

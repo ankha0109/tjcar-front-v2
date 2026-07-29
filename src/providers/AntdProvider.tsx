@@ -5,6 +5,7 @@ import { App, ConfigProvider, message, theme as antdTheme } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import GuideModalRoot from "@/components/modal/GuideModalRoot";
+import PremiumInfoModalRoot from "@/components/modal/PremiumInfoModalRoot";
 import mn_MN from "antd/locale/mn_MN";
 import en_US from "antd/locale/en_US";
 import ru_RU from "antd/locale/ru_RU";
@@ -104,6 +105,7 @@ const AntdProvider: React.FC<AntdProviderProps> = ({
               {contextHolder}
               <AiChatProvider>{children}</AiChatProvider>
               <GuideModalRoot />
+              <PremiumInfoModalRoot />
               <WishlistSyncGate />
             </App>
           </ConfigProvider>

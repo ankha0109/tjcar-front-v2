@@ -1,3 +1,4 @@
+import { decodeAuctionText } from "@/utils/auctionInfo";
 import { FeaturedCar } from "./featured";
 
 export type CarSource = "japan" | "korea" | "china";
@@ -55,7 +56,11 @@ export function fromFeaturedCar(
     source,
     marka: car.MARKA_NAME,
     model: car.MODEL_NAME,
-    grade: car.GRADE || undefined,
+    // AJES entity-encodes GRADE the same way it does INFO, so a raw trim like
+    // "HVX&#65406;&#65438;" would otherwise print verbatim on the card.
+    grade: car.GRADE
+      ? decodeAuctionText(car.GRADE).trim() || undefined
+      : undefined,
     year: car.YEAR || undefined,
     images,
     price: {

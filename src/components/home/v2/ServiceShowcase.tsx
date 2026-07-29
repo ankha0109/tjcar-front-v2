@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useState, type CSSProperties, type SVGProps } from "react";
+import {
+  useCallback,
+  useState,
+  type CSSProperties,
+  type SVGProps,
+} from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/utils";
@@ -26,7 +31,10 @@ function ArrowIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function ChevronIcon({ dir, ...props }: { dir: "left" | "right" } & SVGProps<SVGSVGElement>) {
+function ChevronIcon({
+  dir,
+  ...props
+}: { dir: "left" | "right" } & SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -37,14 +45,22 @@ function ChevronIcon({ dir, ...props }: { dir: "left" | "right" } & SVGProps<SVG
       strokeLinejoin="round"
       {...props}
     >
-      <polyline points={dir === "left" ? "15 18 9 12 15 6" : "9 18 15 12 9 6"} />
+      <polyline
+        points={dir === "left" ? "15 18 9 12 15 6" : "9 18 15 12 9 6"}
+      />
     </svg>
   );
 }
 
 function LockIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      {...props}
+    >
       <rect x="5" y="11" width="14" height="9" rx="2" />
       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
     </svg>
@@ -60,7 +76,11 @@ export default function ServiceShowcase() {
     (index: number, el?: HTMLButtonElement | null) => {
       const next = (index + count) % count;
       setActive(next);
-      el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      el?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
     },
     [count],
   );
@@ -125,8 +145,12 @@ export default function ServiceShowcase() {
                     d={d}
                     pathLength={1}
                     className={isActive ? "sc-line-active" : "sc-line"}
-                    style={isActive ? undefined : { animationDelay: `${i * 70}ms` }}
-                    stroke={isActive ? "var(--color-primary)" : "rgba(241,71,44,0.25)"}
+                    style={
+                      isActive ? undefined : { animationDelay: `${i * 70}ms` }
+                    }
+                    stroke={
+                      isActive ? "var(--color-primary)" : "rgba(241,71,44,0.25)"
+                    }
                     strokeWidth={isActive ? 2.4 : 1.2}
                     strokeLinecap="round"
                   />
@@ -246,7 +270,7 @@ export default function ServiceShowcase() {
                   className="sc-stat rounded-xl border border-neutral-200/70 bg-white/70 px-3 py-3 dark:border-neutral-800 dark:bg-neutral-900/50"
                   style={{ "--i": idx } as CSSProperties}
                 >
-                  <div className="font-mono text-[17px] font-semibold tabular-nums tracking-tight text-neutral-900 dark:text-neutral-50">
+                  <div className="font-mono text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
                     {t(`services.${key}.${mk}.value`)}
                   </div>
                   <div className="mt-0.5 text-[11px] leading-tight text-neutral-500 dark:text-neutral-400">

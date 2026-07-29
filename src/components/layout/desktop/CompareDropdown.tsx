@@ -87,7 +87,7 @@ export default function CompareDropdown() {
                     {item.year ? ` · ${item.year}` : ""}
                   </p>
                   {item.priceMnt > 0 && (
-                    <p className="text-[12px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                    <p className="text-[12px] text-neutral-500 dark:text-neutral-400">
                       {formatMnt(item.priceMnt)}
                     </p>
                   )}
@@ -139,7 +139,10 @@ export default function CompareDropdown() {
         </div>
       )}
     >
-      <span className="inline-flex shrink-0 cursor-pointer" title={th("compare")}>
+      <span
+        className="inline-flex shrink-0 cursor-pointer"
+        title={th("compare")}
+      >
         {trigger}
       </span>
     </Dropdown>

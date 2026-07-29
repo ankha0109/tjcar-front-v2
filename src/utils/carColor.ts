@@ -71,7 +71,9 @@ const KOREAN_COLOR_KEY: Record<string, string> = {
 
 const CANONICAL_SWATCH: Record<string, ColorSwatch> = {
   white: { bg: "#ffffff", ring: true },
-  pearl: { bg: "#f3efe6", ring: true },
+  // Pearl is a pearlescent *white*, not cream — it has to read as white at the
+  // 10–12px the swatches render at.
+  pearl: { bg: "#fbfaf6", ring: true },
   black: { bg: "#161616" },
   gray: { bg: "#7c8088" },
   silver: { bg: "#cdd2d8" },
@@ -85,6 +87,8 @@ const CANONICAL_SWATCH: Record<string, ColorSwatch> = {
   orange: { bg: "#d97a2b" },
   purple: { bg: "#6d4a9e" },
   gold: { bg: "#c4a24d" },
+  wine: { bg: "#7b2233" },
+  ivory: { bg: "#f6f0e2", ring: true },
 };
 
 /** Canonical key for a Korean (Encar) color name, or null when unmapped. */
@@ -92,8 +96,35 @@ export function colorNameKey(name: string): string | null {
   return KOREAN_COLOR_KEY[name.trim()] ?? null;
 }
 
+const UNKNOWN_SWATCH: ColorSwatch = { bg: "#9ca3af" };
+
+const lookup = (key: string): ColorSwatch | undefined =>
+  COLOR_SWATCH[key] ?? CANONICAL_SWATCH[key];
+
+/**
+ * Paint swatch for a raw colour string.
+ *
+ * AJES writes `COLOR` free-form — `"PEARL"`, `"PEARL 2"`, `"PEARL WHITE"`,
+ * `"D GREEN"`, `"GRAY 2"` — so an exact-match table alone drops most of the
+ * feed onto the unknown grey. Failing that, the variant digits are stripped and
+ * the words are read right to left: English colour names put the base colour
+ * last, so "pearl white" is white and "d green" is green.
+ */
 export function getColorSwatch(name: string): ColorSwatch {
   const koreanKey = colorNameKey(name);
   if (koreanKey) return CANONICAL_SWATCH[koreanKey];
-  return COLOR_SWATCH[name.trim().toLowerCase()] ?? { bg: "#9ca3af" };
+
+  const cleaned = name.trim().toLowerCase();
+  const exact = lookup(cleaned);
+  if (exact) return exact;
+
+  const words = cleaned
+    .replace(/\d+/g, " ")
+    .split(/[^\p{L}]+/u)
+    .filter(Boolean);
+  for (let i = words.length - 1; i >= 0; i--) {
+    const hit = lookup(words[i]);
+    if (hit) return hit;
+  }
+  return UNKNOWN_SWATCH;
 }

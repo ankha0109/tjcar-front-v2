@@ -70,7 +70,7 @@ export default function AuctionSchedule({ schedule }: Props) {
           </span>
           {/* One "2026/07/25 07:08" line, kept at the panel's headline size —
                 the auction start is the number the page is built around. */}
-          <span className="truncate text-[18px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+          <span className="truncate text-[18px] font-bold text-neutral-900 dark:text-neutral-100">
             {zone.value.date} {zone.value.time}
           </span>
         </div>

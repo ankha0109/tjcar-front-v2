@@ -88,7 +88,10 @@ export default function HeroV2() {
 
   return (
     <section className="relative isolate overflow-hidden">
-      <div aria-hidden className="hero-bg pointer-events-none absolute inset-0 -z-10">
+      <div
+        aria-hidden
+        className="hero-bg pointer-events-none absolute inset-0 -z-10"
+      >
         <div className="hero-glow" />
       </div>
 
@@ -151,7 +154,7 @@ export default function HeroV2() {
           >
             {(["s1", "s2", "s3"] as const).map((s) => (
               <div key={s}>
-                <dt className="font-mono text-[20px] font-semibold tabular-nums tracking-tight text-neutral-900 dark:text-neutral-50">
+                <dt className="font-mono text-[20px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
                   {t(`${s}.value`)}
                 </dt>
                 <dd className="text-[12px] text-neutral-500 dark:text-neutral-400">

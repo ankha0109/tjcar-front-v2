@@ -1,7 +1,7 @@
 "use client";
 
-import { Button, DatePicker, Drawer, Input, Select, Space, Tag } from "antd";
-import { useMemo, useRef, useState } from "react";
+import { Button, DatePicker, Drawer, Input, Select, Tag } from "antd";
+import { Children, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import {
@@ -135,12 +135,12 @@ function ColorSwatch({ name }: { name: string }) {
   );
 }
 
-type FieldSection = "vehicle" | "auction" | "specs" | "advanced";
-
+// One flat list — no collapse, no group headings. Array order is the panel
+// order AND the mobile pill order, so the fields buyers filter by first (car,
+// then year / mileage / auction house) lead.
 type FieldDef = {
   key: string;
   label: string;
-  section: FieldSection;
   active: boolean;
   summary: string | null;
   control: React.ReactNode;
@@ -328,33 +328,18 @@ export default function JapanAuctionFilters({
     [value.mileageFrom],
   );
 
-  const vehicleCount =
-    (value.marka ? 1 : 0) + (value.model ? 1 : 0) + (value.chassis ? 1 : 0);
-  const auctionCount = (value.rate ? 1 : 0) + (value.lot ? 1 : 0);
-  const specsCount =
-    (value.color ? 1 : 0) +
-    (value.engVFrom != null ? 1 : 0) +
-    (value.engVTo != null ? 1 : 0);
-  const advancedCount =
-    (value.yearFrom != null ? 1 : 0) +
-    (value.yearTo != null ? 1 : 0) +
-    (value.mileageFrom != null ? 1 : 0) +
-    (value.mileageTo != null ? 1 : 0) +
-    (value.location ? 1 : 0);
-  const totalCount = vehicleCount + auctionCount + specsCount + advancedCount;
   const hasFilters = !isFiltersEmpty(value);
 
   const fields: FieldDef[] = [
     {
       key: "marka",
       label: t("placeholders.marka"),
-      section: "vehicle",
       active: !!value.marka,
       summary: value.marka,
       clear: () => setMarka(null),
       control: (
         <Select
-          placeholder={t("placeholders.marka")}
+          placeholder={t("examples.marka")}
           allowClear
           showSearch
           options={markaOptions}
@@ -376,13 +361,12 @@ export default function JapanAuctionFilters({
     {
       key: "model",
       label: t("placeholders.model"),
-      section: "vehicle",
       active: !!value.model,
       summary: value.model,
       clear: () => setModel(null),
       control: (
         <Select
-          placeholder={t("placeholders.model")}
+          placeholder={t("examples.model")}
           allowClear
           showSearch
           options={modelOptions}
@@ -404,13 +388,12 @@ export default function JapanAuctionFilters({
     {
       key: "chassis",
       label: t("placeholders.chassis"),
-      section: "vehicle",
       active: !!value.chassis,
       summary: value.chassis,
       clear: () => set("chassis", null),
       control: (
         <Select
-          placeholder={t("placeholders.chassis")}
+          placeholder={t("examples.chassis")}
           allowClear
           showSearch
           options={chassisOptions}
@@ -430,15 +413,109 @@ export default function JapanAuctionFilters({
       },
     },
     {
+      key: "year",
+      label: t("year.label"),
+      active: value.yearFrom != null || value.yearTo != null,
+      summary: rangeSummary(value.yearFrom, value.yearTo, (n) => String(n)),
+      clear: () => onChange({ ...value, yearFrom: null, yearTo: null }),
+      control: (
+        <RangePair>
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={yearFromOptions}
+            value={value.yearFrom ?? undefined}
+            onChange={(v) => set("yearFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={yearToOptions}
+            value={value.yearTo ?? undefined}
+            onChange={(v) => set("yearTo", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+        </RangePair>
+      ),
+      mobile: {
+        type: "range",
+        from: { options: yearFromOptions, value: value.yearFrom, onChange: (v) => set("yearFrom", v), placeholder: t("year.fromPlaceholder") },
+        to: { options: yearToOptions, value: value.yearTo, onChange: (v) => set("yearTo", v), placeholder: t("year.toPlaceholder") },
+      },
+    },
+    {
+      key: "mileage",
+      label: t("mileage.label"),
+      active: value.mileageFrom != null || value.mileageTo != null,
+      summary: rangeSummary(value.mileageFrom, value.mileageTo, formatKm),
+      clear: () => onChange({ ...value, mileageFrom: null, mileageTo: null }),
+      control: (
+        <RangePair>
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={mileageFromOptions}
+            value={value.mileageFrom ?? undefined}
+            onChange={(v) => set("mileageFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={mileageToOptions}
+            value={value.mileageTo ?? undefined}
+            onChange={(v) => set("mileageTo", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+        </RangePair>
+      ),
+      mobile: {
+        type: "range",
+        from: { options: mileageFromOptions, value: value.mileageFrom, onChange: (v) => set("mileageFrom", v), placeholder: t("mileage.minPlaceholder") },
+        to: { options: mileageToOptions, value: value.mileageTo, onChange: (v) => set("mileageTo", v), placeholder: t("mileage.maxPlaceholder") },
+      },
+    },
+    {
+      key: "location",
+      label: t("location.label"),
+      active: !!value.location,
+      summary: value.location,
+      clear: () => set("location", null),
+      control: (
+        <Select
+          placeholder={t("examples.location")}
+          allowClear
+          showSearch
+          options={locationOptions}
+          value={value.location ?? undefined}
+          onChange={(v) => set("location", v ?? null)}
+          variant="filled"
+          loading={optionsLoading}
+          style={{ width: "100%" }}
+          optionFilterProp="label"
+        />
+      ),
+      mobile: {
+        type: "single",
+        options: locationOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
+        value: value.location,
+        onSelect: (v) => set("location", v),
+      },
+    },
+    {
       key: "rate",
       label: t("placeholders.rate"),
-      section: "auction",
       active: !!value.rate,
       summary: value.rate,
       clear: () => set("rate", null),
       control: (
         <Select
-          placeholder={t("placeholders.rate")}
+          placeholder={t("examples.rate")}
           allowClear
           options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
           value={value.rate ?? undefined}
@@ -456,14 +533,13 @@ export default function JapanAuctionFilters({
     },
     {
       key: "lot",
-      label: "LOT №",
-      section: "auction",
+      label: t("lot.label"),
       active: !!value.lot,
       summary: value.lot || null,
       clear: () => set("lot", ""),
       control: (
         <Input
-          placeholder="LOT №"
+          placeholder={t("lot.label")}
           allowClear
           prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
           value={value.lot}
@@ -471,18 +547,17 @@ export default function JapanAuctionFilters({
           variant="filled"
         />
       ),
-      mobile: { type: "text", value: value.lot, onChange: (v) => set("lot", v), placeholder: "LOT №" },
+      mobile: { type: "text", value: value.lot, onChange: (v) => set("lot", v), placeholder: t("lot.label") },
     },
     {
       key: "date",
       label: t("auctionDate.label"),
-      section: "auction",
       active: !!value.date,
       summary: value.date,
       clear: () => set("date", null),
       control: (
         <DatePicker
-          placeholder={t("auctionDate.placeholder")}
+          placeholder={t("examples.date")}
           allowClear
           value={value.date ? dayjs(value.date) : null}
           onChange={(d) => set("date", d ? d.format("YYYY-MM-DD") : null)}
@@ -495,19 +570,18 @@ export default function JapanAuctionFilters({
         type: "date",
         value: value.date,
         onChange: (v) => set("date", v),
-        placeholder: t("auctionDate.placeholder"),
+        placeholder: t("examples.date"),
       },
     },
     {
       key: "color",
       label: t("color.label"),
-      section: "specs",
       active: !!value.color,
       summary: value.color,
       clear: () => set("color", null),
       control: (
         <Select
-          placeholder={t("color.placeholder")}
+          placeholder={t("examples.color")}
           allowClear
           showSearch
           options={colorOptions}
@@ -533,31 +607,30 @@ export default function JapanAuctionFilters({
     {
       key: "engine",
       label: t("engV.label"),
-      section: "specs",
       active: value.engVFrom != null || value.engVTo != null,
       summary: rangeSummary(value.engVFrom, value.engVTo, formatCc),
       clear: () => onChange({ ...value, engVFrom: null, engVTo: null }),
       control: (
-        <Space.Compact block>
+        <RangePair>
           <Select
-            placeholder={t("engV.fromPlaceholder")}
+            placeholder={t("examples.select")}
             allowClear
             options={engVFromOptions}
             value={value.engVFrom ?? undefined}
             onChange={(v) => set("engVFrom", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
+            style={{ width: "100%" }}
           />
           <Select
-            placeholder={t("engV.toPlaceholder")}
+            placeholder={t("examples.select")}
             allowClear
             options={engVToOptions}
             value={value.engVTo ?? undefined}
             onChange={(v) => set("engVTo", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
+            style={{ width: "100%" }}
           />
-        </Space.Compact>
+        </RangePair>
       ),
       mobile: {
         type: "range",
@@ -565,108 +638,11 @@ export default function JapanAuctionFilters({
         to: { options: engVToOptions, value: value.engVTo, onChange: (v) => set("engVTo", v), placeholder: t("engV.toPlaceholder") },
       },
     },
-    {
-      key: "year",
-      label: t("year.label"),
-      section: "advanced",
-      active: value.yearFrom != null || value.yearTo != null,
-      summary: rangeSummary(value.yearFrom, value.yearTo, (n) => String(n)),
-      clear: () => onChange({ ...value, yearFrom: null, yearTo: null }),
-      control: (
-        <Space.Compact block>
-          <Select
-            placeholder={t("year.fromPlaceholder")}
-            allowClear
-            options={yearFromOptions}
-            value={value.yearFrom ?? undefined}
-            onChange={(v) => set("yearFrom", v ?? null)}
-            variant="filled"
-            style={{ width: "50%" }}
-          />
-          <Select
-            placeholder={t("year.toPlaceholder")}
-            allowClear
-            options={yearToOptions}
-            value={value.yearTo ?? undefined}
-            onChange={(v) => set("yearTo", v ?? null)}
-            variant="filled"
-            style={{ width: "50%" }}
-          />
-        </Space.Compact>
-      ),
-      mobile: {
-        type: "range",
-        from: { options: yearFromOptions, value: value.yearFrom, onChange: (v) => set("yearFrom", v), placeholder: t("year.fromPlaceholder") },
-        to: { options: yearToOptions, value: value.yearTo, onChange: (v) => set("yearTo", v), placeholder: t("year.toPlaceholder") },
-      },
-    },
-    {
-      key: "mileage",
-      label: t("mileage.label"),
-      section: "advanced",
-      active: value.mileageFrom != null || value.mileageTo != null,
-      summary: rangeSummary(value.mileageFrom, value.mileageTo, formatKm),
-      clear: () => onChange({ ...value, mileageFrom: null, mileageTo: null }),
-      control: (
-        <Space.Compact block>
-          <Select
-            placeholder={t("mileage.minPlaceholder")}
-            allowClear
-            options={mileageFromOptions}
-            value={value.mileageFrom ?? undefined}
-            onChange={(v) => set("mileageFrom", v ?? null)}
-            variant="filled"
-            style={{ width: "50%" }}
-          />
-          <Select
-            placeholder={t("mileage.maxPlaceholder")}
-            allowClear
-            options={mileageToOptions}
-            value={value.mileageTo ?? undefined}
-            onChange={(v) => set("mileageTo", v ?? null)}
-            variant="filled"
-            style={{ width: "50%" }}
-          />
-        </Space.Compact>
-      ),
-      mobile: {
-        type: "range",
-        from: { options: mileageFromOptions, value: value.mileageFrom, onChange: (v) => set("mileageFrom", v), placeholder: t("mileage.minPlaceholder") },
-        to: { options: mileageToOptions, value: value.mileageTo, onChange: (v) => set("mileageTo", v), placeholder: t("mileage.maxPlaceholder") },
-      },
-    },
-    {
-      key: "location",
-      label: t("location.label"),
-      section: "advanced",
-      active: !!value.location,
-      summary: value.location,
-      clear: () => set("location", null),
-      control: (
-        <Select
-          placeholder={t("location.placeholder")}
-          allowClear
-          showSearch
-          options={locationOptions}
-          value={value.location ?? undefined}
-          onChange={(v) => set("location", v ?? null)}
-          variant="filled"
-          loading={optionsLoading}
-          style={{ width: "100%" }}
-          optionFilterProp="label"
-        />
-      ),
-      mobile: {
-        type: "single",
-        options: locationOptions.map((o) => ({ value: o.value, label: o.label, searchText: o.value })),
-        value: value.location,
-        onSelect: (v) => set("location", v),
-      },
-    },
   ];
 
-  const sectionFields = (s: FieldSection) =>
-    fields.filter((f) => f.section === s);
+  // One per field with anything set — a from–to range counts once, matching the
+  // chip row rather than the raw number of bounds.
+  const totalCount = fields.filter((f) => f.active).length;
 
   const activeField = fields.find((f) => f.key === openField) ?? null;
 
@@ -718,43 +694,12 @@ export default function JapanAuctionFilters({
   };
 
   const body = (
-    <div className="divide-y divide-neutral-100">
-      <Section title={t("sections.vehicle")} defaultOpen activeCount={vehicleCount}>
-        {sectionFields("vehicle").map((f) => (
-          <Field key={f.key} label={f.label}>
-            {f.control}
-          </Field>
-        ))}
-      </Section>
-      <Section title={t("sections.auction")} defaultOpen activeCount={auctionCount}>
-        {sectionFields("auction").map((f) => (
-          <Field key={f.key} label={f.label}>
-            {f.control}
-          </Field>
-        ))}
-      </Section>
-      <Section
-        title={t("sections.specs")}
-        defaultOpen={specsCount > 0}
-        activeCount={specsCount}
-      >
-        {sectionFields("specs").map((f) => (
-          <Field key={f.key} label={f.label}>
-            {f.control}
-          </Field>
-        ))}
-      </Section>
-      <Section
-        title={t("sections.advanced")}
-        defaultOpen={advancedCount > 0}
-        activeCount={advancedCount}
-      >
-        {sectionFields("advanced").map((f) => (
-          <Field key={f.key} label={f.label}>
-            {f.control}
-          </Field>
-        ))}
-      </Section>
+    <div className="space-y-3 py-4">
+      {fields.map((f) => (
+        <Field key={f.key} label={f.label}>
+          {f.control}
+        </Field>
+      ))}
     </div>
   );
 
@@ -789,14 +734,14 @@ export default function JapanAuctionFilters({
       </div>
 
       {/* Desktop sidebar — visible at lg+ */}
-      <aside className="hidden lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
+      <aside className="tj-filters hidden lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
         <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900">
           <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900">
                 <FilterIcon className="h-3.5 w-3.5" />
               </span>
-              <span className="text-[13px] font-semibold text-neutral-900">
+              <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
                 {t("title")}
               </span>
               {totalCount > 0 && (
@@ -809,7 +754,7 @@ export default function JapanAuctionFilters({
               type="text"
               onClick={() => onChange({ ...EMPTY_FILTERS, date: value.date })}
               disabled={!hasFilters}
-              className="h-auto! p-0! border-0! bg-transparent! text-[11px]! font-medium! text-neutral-500! hover:text-neutral-900! hover:bg-transparent! disabled:cursor-not-allowed! disabled:text-neutral-300! disabled:hover:text-neutral-300!"
+              className="h-auto! p-0! border-0! bg-transparent! text-[11px]! font-medium! text-neutral-500! hover:text-neutral-900! hover:bg-transparent! disabled:cursor-not-allowed! disabled:text-neutral-300! disabled:hover:text-neutral-300! dark:text-neutral-400! dark:hover:text-neutral-100! dark:disabled:text-neutral-600! dark:disabled:hover:text-neutral-600!"
             >
               {t("clear")}
             </Button>
@@ -827,8 +772,9 @@ export default function JapanAuctionFilters({
         placement="bottom"
         size="auto"
         title={activeField?.label}
+        rootClassName="tj-filters"
         styles={{
-          header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
+          header: { padding: "16px 20px" },
           body: { padding: "20px" },
           footer: { padding: 16 },
           section: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
@@ -1155,44 +1101,20 @@ function RangeColumns({
   );
 }
 
-function Section({
-  title,
-  defaultOpen,
-  activeCount,
-  children,
-}: {
-  title: string;
-  defaultOpen?: boolean;
-  activeCount?: number;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(!!defaultOpen);
+/* Two controls of a from–to pair. A real gap (not `Space.Compact`) keeps the
+   two filled boxes readable as separate inputs. */
+function RangePair({ children }: { children: React.ReactNode }) {
+  const [from, to] = Children.toArray(children);
   return (
-    <div className="py-1">
-      <Button
-        type="text"
-        onClick={() => setOpen((o) => !o)}
-        block
-        className="flex! w-full! h-auto! items-center! justify-between! py-3! px-0! text-left! border-0! bg-transparent! hover:bg-transparent!"
+    <div className="flex items-center gap-2">
+      <div className="min-w-0 flex-1">{from}</div>
+      <span
+        aria-hidden
+        className="shrink-0 text-neutral-400 dark:text-neutral-500"
       >
-        <span className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase text-neutral-700">
-            {title}
-          </span>
-          {!!activeCount && activeCount > 0 && (
-            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-neutral-900 px-1 text-[10px] font-semibold text-white">
-              {activeCount}
-            </span>
-          )}
-        </span>
-        <ChevronIcon
-          className={cn(
-            "h-3.5 w-3.5 text-neutral-400 transition-transform duration-200",
-            open && "rotate-180",
-          )}
-        />
-      </Button>
-      {open && <div className="space-y-3 pb-3">{children}</div>}
+        –
+      </span>
+      <div className="min-w-0 flex-1">{to}</div>
     </div>
   );
 }
@@ -1206,7 +1128,7 @@ function Field({
 }) {
   return (
     <div>
-      <div className="mb-1 text-[10.5px] font-medium uppercase text-neutral-500">
+      <div className="mb-1 text-[13px] font-normal text-neutral-600 dark:text-neutral-400">
         {label}
       </div>
       {children}

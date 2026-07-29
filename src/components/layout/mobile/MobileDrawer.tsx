@@ -384,7 +384,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
                 <div className="text-[11.5px] uppercase text-neutral-400 dark:text-neutral-500">
                   {t("menu.balanceLabel")}
                 </div>
-                <div className="text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+                <div className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                   {formatBalance(liveBalance, liveCurrency)}
                 </div>
               </div>
@@ -400,7 +400,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <DollarIcon className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-[12px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+                <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100">
                   {t("topbar.rates.usd")} {formatRate(EXCHANGE_RATES.USD.value)}
                 </span>
                 <span className="text-[11px] text-neutral-400">₮</span>
@@ -408,7 +408,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
               <span className="h-3 w-px bg-neutral-200 dark:bg-neutral-800" />
               <div className="flex items-center gap-1.5">
                 <YenIcon className="h-3.5 w-3.5 text-rose-500 dark:text-rose-400" />
-                <span className="text-[12px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+                <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100">
                   {t("topbar.rates.jpy")} {formatRate(EXCHANGE_RATES.JPY.value)}
                 </span>
                 <span className="text-[11px] text-neutral-400">₮</span>

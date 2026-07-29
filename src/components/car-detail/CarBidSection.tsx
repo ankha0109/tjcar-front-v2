@@ -129,7 +129,7 @@ export default function CarBidSection(props: Props) {
           <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
             {tSpecs("lot")}
           </dt>
-          <dd className="flex items-center gap-1 text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+          <dd className="flex items-center gap-1 text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
             <span className="truncate">{lot || "-"}</span>
             {/* Bare antd copy control — the number keeps its own typography and
                 only the button comes from antd. Its tooltip ("Хуулбарлах" /
@@ -181,7 +181,9 @@ export default function CarBidSection(props: Props) {
         t("guestTitle"),
         t("guestBody"),
         <>
-          <Link href={`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`}>
+          <Link
+            href={`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`}
+          >
             <BrandButton size="middle">{t("login")}</BrandButton>
           </Link>
           <span className="text-[12px] text-neutral-400">{t("or")}</span>

@@ -42,7 +42,16 @@ export default function LandedPriceCard({ priceMnt }: Props) {
           aria-label={t("infoTitle")}
           className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
             <path d="M12 17h.01" />
@@ -52,7 +61,7 @@ export default function LandedPriceCard({ priceMnt }: Props) {
 
       <div>
         {average > 0 ? (
-          <div className="text-[22px] font-extrabold leading-tight tabular-nums text-neutral-900 dark:text-neutral-100">
+          <div className="text-[22px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
             {formatMnt(average)}
           </div>
         ) : (

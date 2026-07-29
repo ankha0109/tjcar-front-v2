@@ -24,7 +24,8 @@ export default async function KoreaDetailExtras({
   if (!inspection && !insurance) return null;
 
   const accidentTotal =
-    (insurance?.my_accident_count ?? 0) + (insurance?.other_accident_count ?? 0);
+    (insurance?.my_accident_count ?? 0) +
+    (insurance?.other_accident_count ?? 0);
   const insuranceClean =
     accidentTotal === 0 &&
     (insurance?.total_loss_count ?? 0) === 0 &&
@@ -252,7 +253,7 @@ export default async function KoreaDetailExtras({
                         {accident.date ?? "-"}
                       </span>
                       {accident.insurance_benefit != null && (
-                        <span className="shrink-0 font-semibold tabular-nums text-amber-700 dark:text-amber-400">
+                        <span className="shrink-0 font-semibold text-amber-700 dark:text-amber-400">
                           {formatKrw(accident.insurance_benefit)}
                         </span>
                       )}
@@ -260,7 +261,7 @@ export default async function KoreaDetailExtras({
                     {(accident.part_cost != null ||
                       accident.labor_cost != null ||
                       accident.painting_cost != null) && (
-                      <div className="text-[11px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                      <div className="text-[11px] text-neutral-500 dark:text-neutral-400">
                         {[
                           accident.part_cost != null
                             ? `${t("insurance.parts")} ${formatKrw(accident.part_cost)}`
@@ -283,7 +284,6 @@ export default async function KoreaDetailExtras({
           )}
         </section>
       )}
-
     </>
   );
 }
@@ -330,11 +330,11 @@ function StatCell({
       <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
         {label}
       </span>
-      <span className="text-[13px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+      <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
         {value}
       </span>
       {sub && (
-        <span className="text-[11px] tabular-nums text-neutral-500 dark:text-neutral-400">
+        <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
           {sub}
         </span>
       )}

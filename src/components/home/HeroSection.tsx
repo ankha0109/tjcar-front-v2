@@ -127,14 +127,14 @@ export default function HeroSection() {
             style={{ animationDelay: "560ms" }}
           >
             <span className="inline-flex items-baseline gap-1">
-              <span className="text-[14px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+              <span className="text-[14px] font-bold text-neutral-900 dark:text-neutral-100">
                 {t("stats.cars")}
               </span>{" "}
               <span>{t("stats.carsLabel")}</span>
             </span>
             <span className="h-3 w-px bg-neutral-200 dark:bg-neutral-800" />
             <span className="inline-flex items-baseline gap-1">
-              <span className="text-[14px] font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+              <span className="text-[14px] font-bold text-neutral-900 dark:text-neutral-100">
                 {t("stats.years")}
               </span>{" "}
               <span>{t("stats.yearsLabel")}</span>

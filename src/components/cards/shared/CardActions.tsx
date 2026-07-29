@@ -22,6 +22,12 @@ type Props = {
   /** Absolute overlay positioning by default. Set false for inline placement. */
   absolute?: boolean;
   /**
+   * Extra classes on the wrapper. Cards use it to overlay the buttons on the
+   * photo only where hovering exists (`pointer-fine:absolute …`) and leave them
+   * in the card body on touch, where an overlay competes with the card's link.
+   */
+  className?: string;
+  /**
    * Hide the compare toggle even for a comparable source — for cards whose
    * `source` doesn't match the id's real upstream (e.g. FeaturedAuctionSchedule
    * labels AJES rows "korea", so a compare fetch would 404).
@@ -34,6 +40,7 @@ export function CardActions({
   visibility = "hover",
   absolute = true,
   disableCompare = false,
+  className,
 }: Props) {
   const t = useTranslations("car.card");
   const tc = useTranslations("compare");
@@ -56,6 +63,7 @@ export function CardActions({
         absolute && "absolute right-2.5 top-2.5 z-10",
         visibility === "hover" &&
           "pointer-fine:opacity-0 transition-opacity duration-200 pointer-fine:group-hover:opacity-100 focus-within:opacity-100",
+        className,
       )}
     >
       <Tooltip title={t("wishlist")} placement="bottom" mouseEnterDelay={0.2}>

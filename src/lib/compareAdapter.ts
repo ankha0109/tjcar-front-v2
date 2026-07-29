@@ -9,7 +9,7 @@ import type { FeaturedCar } from "@/types/featured";
 import type { KoreaListing } from "@/types/korea";
 import { koreaListingToCarItem } from "@/lib/koreaAdapter";
 import { withImageSize } from "@/utils/auctionImage";
-import { formatAuctionTime } from "@/utils/carCountdown";
+import { getAuctionMoment } from "@/utils/auctionMoment";
 import {
   CURRENCY_SYMBOL,
   formatEngine,
@@ -131,7 +131,10 @@ const carPhoto = (images: string[]): string | undefined =>
 const evaluationSheet = (images: string[]): CompareValue =>
   images.length > 1 ? { image: images[0] } : null;
 
-function formatMoney(amount: number | undefined, currency: string): string | null {
+function formatMoney(
+  amount: number | undefined,
+  currency: string,
+): string | null {
   if (!amount || !Number.isFinite(amount)) return null;
   const symbol = CURRENCY_SYMBOL[currency as keyof typeof CURRENCY_SYMBOL];
   return `${amount.toLocaleString()} ${symbol ?? currency}`;
@@ -167,7 +170,8 @@ function japanValues(
       ? tCard(`drive.${item.drivetrain === "LHD" ? "lhd" : "rhd"}`)
       : null,
     auctionName: orDash(item.auction?.name),
-    auctionDate: formatAuctionTime(item.auction?.date, "japan"),
+    auctionDate:
+      getAuctionMoment(item.auction?.date, "japan")?.fullLabel ?? null,
     lot: item.auction?.lot ? `#${item.auction.lot}` : null,
     rate: orDash(item.auction?.grade),
     equipment: orDash(car.EQUIP),
@@ -196,8 +200,7 @@ function koreaValues(
     priceOriginal: formatMoney(car.price_krw ?? undefined, "KRW"),
     priceUsd: null,
     avgPrice: null,
-    priceMnt:
-      item.price.mnt > 0 ? `${item.price.mnt.toLocaleString()}₮` : null,
+    priceMnt: item.price.mnt > 0 ? `${item.price.mnt.toLocaleString()}₮` : null,
     mileage: formatMileage(item.mileageKm, tCard) ?? null,
     engine: formatEngine(item.engineCc) ?? null,
     transmission: formatTransmission(item.transmission, tCard) ?? null,

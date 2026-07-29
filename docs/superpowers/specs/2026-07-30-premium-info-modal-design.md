@@ -16,11 +16,23 @@ premium car's detail page.
 Make the badge itself the entry point: clicking it opens a modal that explains
 Premium membership and links to the top-up page.
 
-### `PremiumInfoModal` (new)
+### `PremiumInfoModalRoot` (new)
 
-`src/components/cards/shared/PremiumInfoModal.tsx` — antd `Modal`,
+`src/components/modal/PremiumInfoModalRoot.tsx` — antd `Modal`,
 `footer={null}`, `centered`, `destroyOnHidden`, `width="min(460px, 92vw)"`.
-Props: `open`, `onClose`.
+
+It is mounted **once**, in `AntdProvider` beside `GuideModalRoot`, and owns its
+own `open` state. `PremiumBadge` opens it by dispatching through
+`src/components/modal/premiumInfoBus.ts` (`openPremiumInfo()`), mirroring the
+existing `guideBus` pattern.
+
+The modal cannot be a child of the badge. React portals bubble events through
+the **React tree**, not the DOM, so a `Modal` rendered under `PremiumBadge`
+sends every click inside it — the close button, the mask, the CTA — up to the
+card's `<Link>`, which navigates to the car. This was observed, not theorised:
+the first implementation opened correctly but navigated away the moment the
+user closed the modal. Mounting the modal outside every card removes the
+parent `<Link>` from its React ancestry entirely.
 
 Content, top to bottom:
 
@@ -45,8 +57,8 @@ visitors who click it are redirected to `/{locale}/auth/login` by the
 
 ### `PremiumBadge` changes
 
-The rendered element becomes a `<button type="button">` holding its own
-`useState(false)`, and renders `<PremiumInfoModal>` alongside the chip.
+The rendered element becomes a `<button type="button">` whose click calls
+`openPremiumInfo()`. The badge holds no state.
 
 The click handler calls `preventDefault()` and `stopPropagation()` before
 opening. This is mandatory, not defensive: every call site nests the badge
@@ -74,23 +86,34 @@ Benefits (mn):
 
 ## Alternatives rejected
 
-- **Route the click through the existing `openGuide` bus**
-  (`src/components/modal/guideBus.ts`). It renders through `modal.confirm`
-  with `title: null` and `footer: null`, which fights the structured
-  title/list/CTA layout this needs, and it would push the benefit JSX into the
-  badge.
-- **Render the modal only while open** (`{open && <PremiumInfoModal …/>}`).
-  Unnecessary: antd's `Modal` portals nothing until `open` first flips true,
-  so an always-mounted instance per badge costs nothing and keeps the exit
-  animation.
+- **Reuse the existing `openGuide` bus** (`src/components/modal/guideBus.ts`).
+  The right shape — a dedicated root plus a dispatch — but the wrong renderer:
+  `GuideModalRoot` draws through `modal.confirm` with `title: null` and
+  `footer: null`, which fights the structured title/list/CTA layout, and it
+  would push the benefit JSX into the badge. `premiumInfoBus` copies the
+  pattern, not the component.
+- **Keep the modal inside `PremiumBadge` and stop propagation on a wrapper.**
+  Only covers the children this code renders; antd owns the mask and the close
+  button, so their clicks would still reach the card `<Link>`.
 - **Build `/dashboard/wallet` in the same change.** The top-up flow needs its
   own backend contract review and spec.
 
 ## Verification
 
-- Click the badge on a card in the Japan and Korea listings, the list view,
-  and the table view: the modal opens and the card does **not** navigate.
-- The lede shows `2,000,000₮` in all three locales.
-- The CTA lands on `/{locale}/dashboard/wallet` (or the login page when
-  signed out).
-- Keyboard: the badge is tabbable and opens on Enter/Space.
+Driven in headless Chrome over CDP against the dev server, with real mouse and
+key events:
+
+- Badge click opens the modal and the listing does **not** navigate — grid,
+  list and table views (the table row uses `onRowClick` rather than a `<Link>`,
+  so both nesting mechanisms are covered).
+- Open → close repeated three times on one page stays on `/mn/japan`; mask
+  click and the X button close without navigating.
+- The lede renders `2,000,000₮` and the CTA resolves to
+  `/{locale}/dashboard/wallet` in all of `mn`, `en`, `ru`.
+- Signed out, the CTA lands on `/mn/auth/login` via the `/dashboard/*` guard.
+- The badge is focusable and opens the modal on Enter.
+
+Known, pre-existing: Escape does not close this modal. It does not close
+`SampleReportModal` either — in this app only the imperative `modal.confirm`
+path (`GuideModalRoot`) registers antd v6's Escape handler. Out of scope here;
+fixing it belongs in a change that covers every declarative `<Modal>`.

@@ -51,7 +51,7 @@ export default async function KoreaOptionsPanel({ options }: Props) {
                   {localizeKoreaOptionCategory(group.category, locale)}
                 </span>
               </div>
-              <span className="text-[11px] font-medium tabular-nums text-neutral-400 dark:text-neutral-500">
+              <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
                 {group.items.length}
               </span>
             </div>

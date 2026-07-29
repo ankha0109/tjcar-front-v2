@@ -6,7 +6,7 @@ import CarCard from "@/components/cards/CarCard";
 import { useWishlist } from "@/hooks/useWishlist";
 import { wishlistItemToCarItem } from "@/lib/wishlist";
 import { wishlistHref, wishlistKey } from "@/types/wishlist";
-import { getCountdown } from "@/utils/carCountdown";
+import { getAuctionMoment } from "@/utils/auctionMoment";
 
 /**
  * The saved-car list itself — guests read the localStorage store, signed-in
@@ -55,9 +55,10 @@ export default function WishlistBoard() {
           </div>
         ) : null
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => {
-            const ended = getCountdown(item.auctionDate)?.passed ?? false;
+            const ended =
+              getAuctionMoment(item.auctionDate, item.source)?.kind === "past";
             return (
               <Link
                 key={wishlistKey(item.source, item.id)}

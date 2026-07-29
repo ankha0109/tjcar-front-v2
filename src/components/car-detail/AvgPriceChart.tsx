@@ -66,7 +66,7 @@ export default function AvgPriceChart({ avgString, jpyRate }: Props) {
             {t("unit")} · {jpyValues.length}
           </p>
         </div>
-        <div className="text-right text-xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+        <div className="text-right text-xl font-bold text-neutral-900 dark:text-neutral-100">
           {formatMnt(mean)}
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function AvgPriceChart({ avgString, jpyRate }: Props) {
                 const mnt = payload[0].payload.mnt as number;
                 return (
                   <div className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-[12px] shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
-                    <div className="tabular-nums font-semibold text-neutral-900 dark:text-neutral-100">
+                    <div className="font-semibold text-neutral-900 dark:text-neutral-100">
                       {formatMnt(mnt)}
                     </div>
                   </div>

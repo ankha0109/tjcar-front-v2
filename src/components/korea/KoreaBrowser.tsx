@@ -18,14 +18,8 @@ import KoreaFilters, {
 } from "@/components/korea/KoreaFilters";
 import { koreaListingToCarItem } from "@/lib/koreaAdapter";
 import { type CarItem } from "@/types/car";
-import {
-  type KoreaFilterValues,
-  koreaFiltersToQuery,
-} from "@/types/korea";
-import {
-  useKoreaInfinite,
-  type KoreaPage,
-} from "@/hooks/useKoreaInfinite";
+import { type KoreaFilterValues, koreaFiltersToQuery } from "@/types/korea";
+import { useKoreaInfinite, type KoreaPage } from "@/hooks/useKoreaInfinite";
 
 type Props = {
   initialPage?: KoreaPage;
@@ -149,7 +143,7 @@ export default function KoreaBrowser({
             <>
               <div className="mt-6">
                 {viewMode === "grid" && (
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                     {items.map((car) => (
                       <Link
                         key={car.id}

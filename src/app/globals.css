@@ -576,6 +576,53 @@ a {
   }
 }
 
+/* Auction filter rail (`JapanAuctionFilters`, desktop panel + mobile drawer).
+   antd's `filled` variant is built for a page background: a 4 % fill and a 25 %
+   placeholder disappear on the panel's white card, so the inputs read as empty
+   gaps. Re-point the three tokens the variant is generated from — antd v6 always
+   emits them as CSS variables, so re-pointing them covers Select, Input and
+   DatePicker at once, and only inside the panel.
+   The override has to land ON the controls, not on the panel wrapper: antd v6
+   stamps its `css-var-*` class onto every component root, so each control
+   declares the token variables on itself and an inherited value from an
+   ancestor would never win. These rules are also unlayered on purpose — antd's
+   own CSS ships in `@layer antd` (see `StyleProvider layer`), so unlayered wins
+   over it regardless of specificity. */
+.tj-filters :is(.ant-select, .ant-input, .ant-input-affix-wrapper, .ant-picker) {
+  --ant-color-fill-tertiary: #eceef2;
+  --ant-color-fill-secondary: #e2e5eb;
+  --ant-color-text-placeholder: #5b6470;
+}
+:root[data-theme="dark"]
+  .tj-filters
+  :is(.ant-select, .ant-input, .ant-input-affix-wrapper, .ant-picker) {
+  --ant-color-fill-tertiary: rgba(255, 255, 255, 0.08);
+  --ant-color-fill-secondary: rgba(255, 255, 255, 0.13);
+  --ant-color-text-placeholder: #9ba1aa;
+}
+
+/* A hairline edge on top of the fill: the box still reads as a control when a
+   value is selected and the placeholder is gone. */
+.tj-filters
+  :is(
+    .ant-select-filled,
+    .ant-input-filled,
+    .ant-input-affix-wrapper-filled,
+    .ant-picker-filled
+  ) {
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+}
+:root[data-theme="dark"]
+  .tj-filters
+  :is(
+    .ant-select-filled,
+    .ant-input-filled,
+    .ant-input-affix-wrapper-filled,
+    .ant-picker-filled
+  ) {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
 /* Blog article body — Tiptap HTML from the admin panel.
    Tailwind's typography plugin is not installed, so every tag is styled here. */
 .post-body {

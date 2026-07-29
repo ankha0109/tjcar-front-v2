@@ -33,7 +33,7 @@ export default async function ProcessTimeline() {
           {STEPS.map((key, idx) => (
             <li key={key} className="relative flex gap-4 md:flex-col md:gap-3">
               <div className="flex shrink-0 md:relative">
-                <span className="relative z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white text-[13px] font-semibold tabular-nums text-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100">
+                <span className="relative z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white text-[13px] font-semibold text-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100">
                   {idx + 1}
                 </span>
                 {/* vertical connector on mobile, except last */}

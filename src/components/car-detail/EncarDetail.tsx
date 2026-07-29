@@ -58,7 +58,9 @@ const FUEL_KEYS = new Set([
 ]);
 
 function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(
+    value,
+  );
 }
 
 /** "202012" → "2020.12" */
@@ -80,7 +82,9 @@ export default async function EncarDetail({
   // Encar photos are all car photos — no auction evaluation sheet to split off.
   const images = parseImages(car.IMAGES);
   const colorKey = car.COLOR ? colorNameKey(car.COLOR) : null;
-  const colorLabel = colorKey ? t(`colors.${colorKey}`) : car.COLOR || undefined;
+  const colorLabel = colorKey
+    ? t(`colors.${colorKey}`)
+    : car.COLOR || undefined;
   const colorSwatch = car.COLOR ? getColorSwatch(car.COLOR) : null;
   const mileage = formatMileage(Number(car.MILEAGE) || undefined, tFmt);
   // Encar keeps its compact "2,998cc" style (vs formatEngine's "2,998 CC").
@@ -180,13 +184,13 @@ export default async function EncarDetail({
               <div className="text-[11px] font-semibold uppercase text-neutral-400">
                 {t("encar.priceLabel")}
               </div>
-              <div className="mt-1 text-4xl font-extrabold leading-none tabular-nums text-emerald-400">
+              <div className="mt-1 text-4xl font-extrabold leading-none text-emerald-400">
                 {priceMain
                   ? `₮${formatNumber(priceMain)}`
                   : `₩${formatNumber(priceSub ?? 0)}`}
               </div>
               {priceMain && priceSub ? (
-                <div className="mt-1.5 text-[13px] tabular-nums text-neutral-400">
+                <div className="mt-1.5 text-[13px] text-neutral-400">
                   ₩{formatNumber(priceSub)}
                 </div>
               ) : null}
@@ -195,7 +199,7 @@ export default async function EncarDetail({
                   <span className="text-neutral-400">
                     {t("encar.newPriceLabel")}
                   </span>
-                  <span className="tabular-nums text-neutral-300">
+                  <span className="text-neutral-300">
                     ₩{formatNumber(encar.newPriceKrw)}
                   </span>
                 </div>
@@ -297,7 +301,7 @@ export default async function EncarDetail({
                 <span className="text-[11px] font-semibold uppercase text-neutral-400">
                   {t("encar.priceLabel")}
                 </span>
-                <span className="text-base font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
+                <span className="text-base font-bold text-neutral-900 dark:text-neutral-100">
                   {priceMain
                     ? `₮${formatNumber(priceMain)}`
                     : `₩${formatNumber(priceSub ?? 0)}`}

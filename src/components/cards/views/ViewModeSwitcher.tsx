@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "antd";
-import { cn } from "@/utils";
+import { ConfigProvider, Segmented } from "antd";
+import type { ThemeConfig } from "antd";
 import type { ViewMode } from "./viewMode";
 
 type Props = {
@@ -10,64 +10,76 @@ type Props = {
   labels: { grid: string; list: string; table: string };
 };
 
+// The rail has to line up with `ScheduleTabList` next to it: tinted track,
+// 4px padding around 32px tiles, dark selected pill. `size="large"` makes the
+// label 32px tall (controlHeightLG 40 − 2 × trackPadding) and reads
+// `borderRadiusLG` for the track, `borderRadius` for the item AND the sliding
+// thumb — the thumb has no semantic class of its own, so its colour and radius
+// can only come from tokens.
+const SEGMENTED_THEME: ThemeConfig = {
+  components: {
+    Segmented: {
+      trackBg: "rgba(250, 250, 250, 0.7)", // neutral-50/70
+      trackPadding: 4,
+      borderRadiusLG: 16, // track — rounded-2xl
+      borderRadius: 12, // item + thumb — rounded-xl
+      itemColor: "#737373", // neutral-500
+      // Hover only lifts the tile to white, it does NOT darken the icon: the
+      // pointer sits on the tile the thumb is sliding towards, antd drops the
+      // white hover layer for the length of that slide, and a neutral-900 icon
+      // on the neutral-900 thumb would blink out of sight every click.
+      itemHoverColor: "#737373",
+      itemHoverBg: "#ffffff",
+      itemActiveBg: "#ffffff",
+      itemSelectedBg: "#171717", // neutral-900
+      itemSelectedColor: "#ffffff",
+    },
+  },
+};
+
 export default function ViewModeSwitcher({ value, onChange, labels }: Props) {
   return (
-    <div
-      role="radiogroup"
-      aria-label={labels.grid}
-      className="inline-flex items-center gap-0.5 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-1"
-    >
-      <ModeButton
-        active={value === "grid"}
-        onClick={() => onChange("grid")}
-        label={labels.grid}
-        icon={<GridIcon />}
+    <ConfigProvider theme={SEGMENTED_THEME}>
+      <Segmented<ViewMode>
+        size="large"
+        value={value}
+        onChange={onChange}
+        className="border border-neutral-200/80"
+        classNames={{
+          // Preflight renders the icons as blocks, so the label centres them
+          // itself; px-2 keeps every tile a ~32px square.
+          label: "flex items-center justify-center px-2",
+        }}
+        options={[
+          {
+            value: "grid",
+            tooltip: labels.grid,
+            label: <IconLabel icon={<GridIcon />} label={labels.grid} />,
+          },
+          {
+            value: "list",
+            tooltip: labels.list,
+            label: <IconLabel icon={<ListIcon />} label={labels.list} />,
+          },
+          {
+            value: "table",
+            tooltip: labels.table,
+            label: <IconLabel icon={<TableIcon />} label={labels.table} />,
+          },
+        ]}
       />
-      <ModeButton
-        active={value === "list"}
-        onClick={() => onChange("list")}
-        label={labels.list}
-        icon={<ListIcon />}
-      />
-      <ModeButton
-        active={value === "table"}
-        onClick={() => onChange("table")}
-        label={labels.table}
-        icon={<TableIcon />}
-      />
-    </div>
+    </ConfigProvider>
   );
 }
 
-function ModeButton({
-  active,
-  onClick,
-  label,
-  icon,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  icon: React.ReactNode;
-}) {
+// Icon-only tiles would leave the radio input without an accessible name, so
+// each one carries its label visually hidden.
+function IconLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <Button
-      type="text"
-      shape="circle"
-      role="radio"
-      aria-checked={active}
-      aria-label={label}
-      title={label}
-      onClick={onClick}
-      className={cn(
-        "rounded-xl! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!",
-        active
-          ? "bg-neutral-900! text-white! hover:bg-neutral-900!"
-          : "text-neutral-500! hover:bg-white! hover:text-neutral-900!",
-      )}
-    >
+    <>
       {icon}
-    </Button>
+      <span className="sr-only">{label}</span>
+    </>
   );
 }
 

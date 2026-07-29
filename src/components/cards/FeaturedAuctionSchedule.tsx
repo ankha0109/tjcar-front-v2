@@ -23,11 +23,7 @@ import {
   ScheduleDayDrawer,
   ScheduleTabList,
 } from "@/components/cards/views/scheduleTabs";
-import {
-  FilterOptions,
-  FilterValues,
-  filtersToQuery,
-} from "@/types/filters";
+import { FilterOptions, FilterValues, filtersToQuery } from "@/types/filters";
 import { FeaturedCar } from "@/types/featured";
 import { fromFeaturedCar } from "@/types/car";
 import { cn } from "@/utils";
@@ -141,9 +137,7 @@ export default function FeaturedAuctionSchedule({
             {t("title")}
           </h2>
           <p className="mt-1 text-[13px] text-neutral-500">
-            {activeDayLabel
-              ? activeDayLabel
-              : t("subtitleDefault")}
+            {activeDayLabel ? activeDayLabel : t("subtitleDefault")}
           </p>
         </div>
         <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium uppercase text-neutral-400">
@@ -155,7 +149,9 @@ export default function FeaturedAuctionSchedule({
           ) : (
             <span className="h-1 w-1 rounded-full bg-neutral-400" />
           )}
-          {isFetching ? t("updating") : t("totalCars", { count: filteredCars.length })}
+          {isFetching
+            ? t("updating")
+            : t("totalCars", { count: filteredCars.length })}
         </span>
       </div>
 
@@ -237,7 +233,7 @@ export default function FeaturedAuctionSchedule({
               )}
             >
               {viewMode === "grid" && (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                   {filteredCars.map((car) => (
                     <Link
                       key={car.ID}
@@ -245,7 +241,10 @@ export default function FeaturedAuctionSchedule({
                       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                     >
                       {/* Rows are AJES lots labeled "korea" — the compare fetch would 404. */}
-                      <CarCard car={fromFeaturedCar(car, "korea")} disableCompare />
+                      <CarCard
+                        car={fromFeaturedCar(car, "korea")}
+                        disableCompare
+                      />
                     </Link>
                   ))}
                 </div>
@@ -258,14 +257,19 @@ export default function FeaturedAuctionSchedule({
                       href={`/korea/${car.ID}`}
                       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                     >
-                      <CarListItem car={fromFeaturedCar(car, "korea")} disableCompare />
+                      <CarListItem
+                        car={fromFeaturedCar(car, "korea")}
+                        disableCompare
+                      />
                     </Link>
                   ))}
                 </div>
               )}
               {viewMode === "table" && (
                 <CarTableView
-                  cars={filteredCars.map((car) => fromFeaturedCar(car, "korea"))}
+                  cars={filteredCars.map((car) =>
+                    fromFeaturedCar(car, "korea"),
+                  )}
                   onRowClick={(car) => router.push(`/korea/${car.id}`)}
                   disableCompare
                 />

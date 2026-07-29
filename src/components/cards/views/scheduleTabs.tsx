@@ -127,9 +127,7 @@ export function DayTab({
         )}
       </span>
       <span className="inline-flex items-baseline gap-1">
-        <span className="text-[12.5px] font-bold leading-none tabular-nums">
-          {day}
-        </span>
+        <span className="text-[12.5px] font-bold leading-none">{day}</span>
         <span
           className={cn(
             "whitespace-nowrap text-[8.5px] font-medium uppercase leading-none",
@@ -157,7 +155,7 @@ function CountBadge({ value, isActive }: { value: number; isActive: boolean }) {
   return (
     <span
       className={cn(
-        "rounded-full px-1 text-[9px] font-semibold leading-3.5 tabular-nums",
+        "rounded-full px-1 text-[9px] font-semibold leading-3.5",
         isActive
           ? "bg-white/20 text-current dark:bg-neutral-900/15"
           : "bg-primary/10 text-primary",
@@ -370,12 +368,12 @@ function DrawerRow({
             {topLabel}
           </span>
         )}
-        <span className="truncate text-[13.5px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+        <span className="truncate text-[13.5px] font-semibold text-neutral-900 dark:text-neutral-100">
           {label}
         </span>
       </span>
       {count != null && !isEmpty && (
-        <span className="rounded-full bg-primary/10 px-1.5 text-[10.5px] font-semibold leading-4.5 tabular-nums text-primary">
+        <span className="rounded-full bg-primary/10 px-1.5 text-[10.5px] font-semibold leading-4.5 text-primary">
           {count}
         </span>
       )}

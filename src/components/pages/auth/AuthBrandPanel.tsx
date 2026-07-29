@@ -86,7 +86,7 @@ const AuthBrandPanel = ({ heading, subheading, benefits }: Props) => {
         </div>
         <div className="mt-5 flex items-center gap-6 border-t border-white/10 pt-5">
           <div>
-            <div className="text-[20px] font-bold tabular-nums text-white">
+            <div className="text-[20px] font-bold text-white">
               {th("stats.cars")}
             </div>
             <div className="text-[12px] text-neutral-400">
@@ -95,7 +95,7 @@ const AuthBrandPanel = ({ heading, subheading, benefits }: Props) => {
           </div>
           <span className="h-8 w-px bg-white/10" />
           <div>
-            <div className="text-[20px] font-bold tabular-nums text-white">
+            <div className="text-[20px] font-bold text-white">
               {th("stats.years")}
             </div>
             <div className="text-[12px] text-neutral-400">
