@@ -481,6 +481,21 @@
       "loadErrorTitle": "Could not load the list",
       "loadErrorBody": "Check your connection and refresh the page."
     },
+    "bidDetail": {
+      "title": "Bid detail",
+      "description": "The bid and its progress history.",
+      "sentAt": "Sent: {date}",
+      "viewCar": "View car details",
+      "startPrice": "Start price: {price}",
+      "operator": "Assigned agent: {name} · {phone}",
+      "timelineHeading": "Progress history",
+      "timelineEmpty": "No entries yet",
+      "backToList": "Back to the list",
+      "notFoundTitle": "Bid not found",
+      "notFoundBody": "This bid was removed or does not belong to you.",
+      "loadErrorTitle": "Could not load",
+      "loadErrorBody": "Check your connection and refresh the page."
+    },
     "profile": {
       "title": "Profile",
       "description": "Personal info and preferences.",

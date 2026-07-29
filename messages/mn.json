@@ -481,6 +481,21 @@
       "loadErrorTitle": "Жагсаалт ачаалж чадсангүй",
       "loadErrorBody": "Сүлжээгээ шалгаад хуудсаа шинэчилнэ үү."
     },
+    "bidDetail": {
+      "title": "Саналын дэлгэрэнгүй",
+      "description": "Санал болон түүний явцын түүх.",
+      "sentAt": "Илгээсэн: {date}",
+      "viewCar": "Машины мэдээлэл үзэх",
+      "startPrice": "Эхлэх үнэ: {price}",
+      "operator": "Хариуцсан ажилтан: {name} · {phone}",
+      "timelineHeading": "Явцын түүх",
+      "timelineEmpty": "Бүртгэл алга",
+      "backToList": "Жагсаалт руу буцах",
+      "notFoundTitle": "Санал олдсонгүй",
+      "notFoundBody": "Энэ санал устсан эсвэл танд хамаарахгүй байна.",
+      "loadErrorTitle": "Ачаалж чадсангүй",
+      "loadErrorBody": "Сүлжээгээ шалгаад хуудсаа шинэчилнэ үү."
+    },
     "profile": {
       "title": "Профайл",
       "description": "Хувийн мэдээлэл болон тохиргоо.",
