@@ -45,7 +45,7 @@ export default function BidList() {
 
       {query.isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : null}
 
-      {query.isError ? (
+      {query.isError && !query.data ? (
         <EmptyState title={t("loadErrorTitle")} description={t("loadErrorBody")} />
       ) : null}
 

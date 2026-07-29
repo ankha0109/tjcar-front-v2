@@ -21,7 +21,7 @@ export default function BidDetail({ id }: { id: string }) {
     return <Skeleton active paragraph={{ rows: 6 }} />;
   }
 
-  if (query.isError) {
+  if (query.isError && !query.data) {
     const notFound =
       query.error instanceof ApiError && query.error.status === 404;
 
