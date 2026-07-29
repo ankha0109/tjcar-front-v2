@@ -1,9 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { auth } from "@/auth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardStats from "@/components/dashboard/DashboardStats";
 import EmptyState from "@/components/dashboard/EmptyState";
 import SectionMast from "@/components/dashboard/SectionMast";
-import StatCard from "@/components/dashboard/StatCard";
 import { Link } from "@/i18n/navigation";
 
 export default async function DashboardIndex({
@@ -17,12 +17,6 @@ export default async function DashboardIndex({
 
   const session = await auth();
   const firstName = session?.user?.name?.trim().split(" ")[0] || t("guestName");
-
-  // TODO: wire APIs for personal counts (bids/reports)
-  const stats = {
-    bids: { count: 0, pending: 0 },
-    reports: { count: 0 },
-  };
 
   const QUICK_ACTIONS = [
     {
@@ -49,20 +43,9 @@ export default async function DashboardIndex({
         description={t("subtitle")}
       />
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard
-            label={t("stats.bidsLabel")}
-            value={stats.bids.count}
-            hint={t("stats.bidsHint", { count: stats.bids.pending })}
-            href="/dashboard/bids"
-          />
-          <StatCard
-            label={t("stats.reportsLabel")}
-            value={stats.reports.count}
-            hint={t("stats.reportsHint")}
-            href="/dashboard/reports"
-          />
-        </section>
+      {/* Client island: the counts are per-customer and change as bids settle,
+          so they are fetched rather than rendered into the server payload. */}
+      <DashboardStats />
 
         <section className="space-y-4">
           <SectionMast
