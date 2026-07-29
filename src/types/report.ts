@@ -52,8 +52,18 @@ export type QpayInvoice = {
   /** base64 PNG WITHOUT the `data:image/png;base64,` prefix. */
   qr_image: string;
   qPay_shortUrl: string;
-  /** One entry per bank app — render as deep links on mobile. */
-  urls: Array<{ name: string; description: string; link: string }>;
+  /**
+   * One entry per bank app. `link` is a custom-scheme deep link
+   * (`khanbank://q?...`) so it only ever resolves on a phone with that app
+   * installed — never render these on desktop. `description` is the bank's
+   * Mongolian name, `name` the English one; `logo` is an absolute qpay.mn URL.
+   */
+  urls: Array<{
+    name: string;
+    description: string;
+    link: string;
+    logo?: string;
+  }>;
 };
 
 /** POST /plates/search — Autobox lookup by licence plate. */
@@ -61,13 +71,42 @@ export type PlateSearchResult = {
   imported_date: string | null;
   mark_name: string | null;
   model_name: string | null;
-  /** The VIN to feed into the report search. */
+  /**
+   * Model/modification code, NOT a chassis number — Autobox returns e.g.
+   * "AXAH54" here. Do not feed it to the report search.
+   */
   modification_vin_no: string | null;
+  /** The full chassis number ("AXAH544005101") — this is what the VIN search wants. */
   cabin_no: string | null;
   build_year: string | null;
   build_month: string | null;
   car_plate: string;
 };
+
+/**
+ * Rebuilds the dash-separated chassis number JPStat expects ("AXAH54-4005101").
+ *
+ * Autobox splits it across two fields and hands back the halves glued together:
+ * `modification_vin_no` is the model code ("AXAH54") and `cabin_no` is that same
+ * code plus the serial ("AXAH544005101"). JPStat only resolves the dashed form,
+ * so subtract the prefix and join the two with a dash — v1 did exactly this in
+ * ReportSearch.js, and both the search and the purchase must send the same
+ * string or the duplicate-report check misses and the customer pays twice.
+ *
+ * Returns null when Autobox gave us neither field.
+ */
+export function plateChassisNo(car: PlateSearchResult): string | null {
+  const cabin = car.cabin_no?.trim() || null;
+  const model = car.modification_vin_no?.trim() || null;
+
+  if (!cabin) return model;
+  // Already dashed (some Autobox rows come through that way) — leave it alone.
+  if (cabin.includes("-")) return cabin;
+  if (model && cabin.startsWith(model) && cabin.length > model.length) {
+    return `${model}-${cabin.slice(model.length)}`;
+  }
+  return cabin;
+}
 
 /** POST /reports/search — JPStat demo lookup by VIN. */
 export type VinSearchResult = {

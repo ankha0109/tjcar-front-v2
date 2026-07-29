@@ -1668,7 +1668,8 @@
     "phase": {
       "awaiting-payment": {
         "title": "Waiting for payment",
-        "body": "Scan the QR below with your banking app. The report starts building as soon as the payment clears."
+        "body": "Scan the QR below with your banking app. The report starts building as soon as the payment clears.",
+        "bodyApp": "Pick your banking app below to pay. The report starts building as soon as the payment clears."
       },
       "payment-detected": {
         "title": "Payment received",
@@ -1684,6 +1685,14 @@
       }
     },
     "working": "Working…",
+    "payWithApp": "Pay with your banking app",
+    "banksMore": "Show {count} more banks",
+    "banksLess": "Show fewer",
+    "showQr": "Pay with a QR code",
+    "scanQr": "Scan the QR with your banking app",
+    "checkPayment": "Check payment",
+    "paymentNotSeen": "No payment yet. If you have just paid, check again in a few seconds.",
+    "paymentCheckFailed": "Could not check right now. Check your connection and try again.",
     "qrUnavailable": "No payment QR found. Please contact us for help.",
     "download": "Download PDF",
     "openInTab": "Open in new tab",

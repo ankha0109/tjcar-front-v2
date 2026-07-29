@@ -8,7 +8,11 @@ import { Button, Skeleton } from "antd";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError } from "@/services/Api";
 import { createReport, searchPlate, searchVin } from "@/services/reports";
-import { isExistingReport, type VinSearchResult } from "@/types/report";
+import {
+  isExistingReport,
+  plateChassisNo,
+  type VinSearchResult,
+} from "@/types/report";
 
 type Props = {
   /** Effective price in MNT, resolved server-side from GET /config. */
@@ -19,7 +23,17 @@ type Props = {
 };
 
 type LookupOutcome =
-  | { kind: "found"; car: VinSearchResult; plateNo?: string }
+  | {
+      kind: "found";
+      car: VinSearchResult;
+      /**
+       * The exact string the search was run with. The purchase must reuse it
+       * rather than JPStat's `car.vin`: the backend re-queries JPStat with the
+       * stored `vin` when it builds the PDF, and matches duplicates against it.
+       */
+      chassis: string;
+      plateNo?: string;
+    }
   | { kind: "owned"; reportId: string };
 
 /**
@@ -47,14 +61,16 @@ export default function ReportLookup({ price, plate, vin }: Props) {
       let chassis = vin;
       let plateNo: string | undefined;
 
-      // Plate entry resolves to a VIN first; Autobox is the only thing that
-      // knows the mapping, and the report itself is always keyed by VIN.
+      // Plate entry resolves to a chassis number first; Autobox is the only
+      // thing that knows the mapping, and the report itself is always keyed by
+      // that number. `plateChassisNo` reassembles the dashed form JPStat wants.
       if (!chassis && plate) {
         const car = await searchPlate(plate);
-        if (!car.modification_vin_no) {
+        const chassisNo = plateChassisNo(car);
+        if (!chassisNo) {
           throw new ApiError(422, t("errors.plateNoVin"));
         }
-        chassis = car.modification_vin_no;
+        chassis = chassisNo;
         plateNo = car.car_plate;
       }
 
@@ -66,7 +82,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
         return { kind: "owned", reportId: res.report_id };
       }
 
-      return { kind: "found", car: res.data, plateNo };
+      return { kind: "found", car: res.data, chassis, plateNo };
     },
   });
 
@@ -88,9 +104,9 @@ export default function ReportLookup({ price, plate, vin }: Props) {
   const purchase = useMutation({
     mutationFn: async () => {
       if (lookup.data?.kind !== "found") throw new Error("no car");
-      const { car, plateNo } = lookup.data;
+      const { car, chassis, plateNo } = lookup.data;
       return createReport({
-        vin: car.vin,
+        vin: chassis,
         car_data: { ...car },
         ...(plateNo ? { plate_no: plateNo } : {}),
       });

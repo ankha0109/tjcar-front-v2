@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import ReportStatus from "@/components/report/ReportStatus";
+import { getDevice } from "@/lib/device";
 
 export async function generateMetadata({
   params,
@@ -32,9 +33,14 @@ export default async function ReportDetailPage({
   const { locale, uuid } = await params;
   setRequestLocale(locale);
 
+  // The QPay bank deep links are phone-only, so the panel needs the real
+  // device (`tjcar-device` cookie, phone UA) — a breakpoint would offer dead
+  // links to anyone on a narrow desktop window.
+  const device = await getDevice();
+
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16 lg:px-6">
-      <ReportStatus uuid={uuid} />
+      <ReportStatus uuid={uuid} isMobile={device === "mobile"} />
     </main>
   );
 }
