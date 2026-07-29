@@ -326,7 +326,7 @@ Open `http://localhost:2500/mn/dashboard/reports` and click a row. Expected: it 
 
 - [ ] **Step 6: Old paths are 404 (expected, by design)**
 
-Open `http://localhost:2500/mn/reports/check`. Expected: 404. The spec deliberately adds no redirect — those pages shipped days ago and are `noindex`. If this turns out to matter in production, a `/:locale/reports/:path*` → `/:locale/report/:path*` rule in `next.config.ts` is the fix, but it is **not** part of this plan.
+Open `http://localhost:2500/mn/reports/check`. Expected: 404. The spec deliberately adds no redirect — those pages shipped under two hours earlier (commit `1771cc7`, 2026-07-29 20:18) and are `noindex`. If this turns out to matter in production, a `/:locale/reports/:path*` → `/:locale/report/:path*` rule in `next.config.ts` is the fix, but it is **not** part of this plan.
 
 - [ ] **Step 7: Mobile bottom nav stays highlighted through the flow**
 

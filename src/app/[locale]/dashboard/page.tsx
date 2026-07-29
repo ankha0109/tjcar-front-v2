@@ -38,7 +38,7 @@ export default async function DashboardIndex({
     {
       title: t("quickActions.report.title"),
       description: t("quickActions.report.description"),
-      href: "/reports/check",
+      href: "/report/check",
     },
   ];
 

@@ -37,7 +37,7 @@ type LookupOutcome =
   | { kind: "owned"; reportId: string };
 
 /**
- * Runs the plate → VIN → report chain behind /reports/check and turns it into
+ * Runs the plate → VIN → report chain behind /report/check and turns it into
  * a buy decision.
  *
  * Two backend behaviours shape this component:
@@ -90,7 +90,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
   // Back does not bounce the customer into the buy screen again.
   useEffect(() => {
     if (lookup.data?.kind === "owned") {
-      router.replace(`/reports/${lookup.data.reportId}`);
+      router.replace(`/report/${lookup.data.reportId}`);
     }
   }, [lookup.data, router]);
 
@@ -111,7 +111,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
         ...(plateNo ? { plate_no: plateNo } : {}),
       });
     },
-    onSuccess: ({ report_id }) => router.push(`/reports/${report_id}`),
+    onSuccess: ({ report_id }) => router.push(`/report/${report_id}`),
   });
 
   // Reached without a search term (bookmark, stray link) — the query is
@@ -217,7 +217,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
         ) : (
           <Link
             href={`/auth/login?callbackUrl=${encodeURIComponent(
-              `/reports/check?${plate ? `plate=${plate}` : `vin=${vin}`}`,
+              `/report/check?${plate ? `plate=${plate}` : `vin=${vin}`}`,
             )}`}
           >
             <Button
