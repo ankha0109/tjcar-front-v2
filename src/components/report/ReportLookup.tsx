@@ -37,7 +37,7 @@ type LookupOutcome =
   | { kind: "owned"; reportId: string };
 
 /**
- * Runs the plate → VIN → report chain behind /reports/check and turns it into
+ * Runs the plate → VIN → report chain behind /report/check and turns it into
  * a buy decision.
  *
  * Two backend behaviours shape this component:
@@ -217,7 +217,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
         ) : (
           <Link
             href={`/auth/login?callbackUrl=${encodeURIComponent(
-              `/reports/check?${plate ? `plate=${plate}` : `vin=${vin}`}`,
+              `/report/check?${plate ? `plate=${plate}` : `vin=${vin}`}`,
             )}`}
           >
             <Button

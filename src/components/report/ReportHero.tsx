@@ -111,7 +111,7 @@ export default function ReportHero() {
 
   /**
    * The hero only validates and hands off — the lookup itself runs on
-   * /reports/check so the result is refreshable and shareable, and so the
+   * /report/check so the result is refreshable and shareable, and so the
    * plate → VIN → report chain has somewhere to show its intermediate states.
    */
   function handleSubmit(e: React.FormEvent) {
@@ -122,7 +122,7 @@ export default function ReportHero() {
 
     const query = mode === "plate" ? { plate: value } : { vin: value };
     startTransition(() => {
-      router.push({ pathname: "/reports/check", query });
+      router.push({ pathname: "/report/check", query });
     });
   }
 
