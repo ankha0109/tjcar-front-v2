@@ -56,7 +56,7 @@ export default function ReportStatus({
           {t("loginBody")}
         </p>
         <Link
-          href={`/auth/login?callbackUrl=${encodeURIComponent(`/reports/${uuid}`)}`}
+          href={`/auth/login?callbackUrl=${encodeURIComponent(`/report/${uuid}`)}`}
           className="mt-5 inline-block"
         >
           <Button type="primary" size="large" className="min-h-11! rounded-xl!">

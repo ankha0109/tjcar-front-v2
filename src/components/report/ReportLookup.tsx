@@ -90,7 +90,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
   // Back does not bounce the customer into the buy screen again.
   useEffect(() => {
     if (lookup.data?.kind === "owned") {
-      router.replace(`/reports/${lookup.data.reportId}`);
+      router.replace(`/report/${lookup.data.reportId}`);
     }
   }, [lookup.data, router]);
 
@@ -111,7 +111,7 @@ export default function ReportLookup({ price, plate, vin }: Props) {
         ...(plateNo ? { plate_no: plateNo } : {}),
       });
     },
-    onSuccess: ({ report_id }) => router.push(`/reports/${report_id}`),
+    onSuccess: ({ report_id }) => router.push(`/report/${report_id}`),
   });
 
   // Reached without a search term (bookmark, stray link) — the query is

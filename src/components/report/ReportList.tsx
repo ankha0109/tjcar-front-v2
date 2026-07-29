@@ -81,7 +81,7 @@ function ReportRow({ report }: { report: Report }) {
   return (
     <li>
       <Link
-        href={`/reports/${report.uuid}`}
+        href={`/report/${report.uuid}`}
         className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 transition-colors hover:border-primary/50 dark:border-neutral-800 dark:bg-neutral-900"
       >
         <div className="min-w-0">
