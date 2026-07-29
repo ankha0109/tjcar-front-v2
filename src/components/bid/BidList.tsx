@@ -30,6 +30,11 @@ export default function BidList() {
 
   const bids = query.data?.data ?? [];
   const total = query.data?.meta.total ?? 0;
+  // A background refetch (refetchOnWindowFocus) can fail after a successful
+  // load without clearing `data`. Only treat it as a hard error when there is
+  // no last-known-good page to fall back on; otherwise "loaded, zero rows"
+  // still belongs to the empty state below, not blank space.
+  const showLoadError = query.isError && !query.data;
 
   return (
     <div className="space-y-4">
@@ -45,11 +50,11 @@ export default function BidList() {
 
       {query.isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : null}
 
-      {query.isError && !query.data ? (
+      {showLoadError ? (
         <EmptyState title={t("loadErrorTitle")} description={t("loadErrorBody")} />
       ) : null}
 
-      {!query.isLoading && !query.isError && bids.length === 0 ? (
+      {!query.isLoading && !showLoadError && bids.length === 0 ? (
         <EmptyState
           title={t("emptyTitle")}
           description={t("emptyDescription")}
