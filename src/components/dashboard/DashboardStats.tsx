@@ -48,13 +48,13 @@ export default function DashboardStats() {
     <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <StatCard
         label={t("stats.bidsLabel")}
-        value={bids?.requests ?? 0}
+        value={bids?.requests ?? "—"}
         hint={t("stats.bidsHint", { count: bids?.requests_pending ?? 0 })}
         href="/dashboard/bids"
       />
       <StatCard
         label={t("stats.reportsLabel")}
-        value={reportCount.data?.meta.total ?? 0}
+        value={reportCount.data?.meta.total ?? "—"}
         hint={t("stats.reportsHint")}
         href="/dashboard/reports"
       />

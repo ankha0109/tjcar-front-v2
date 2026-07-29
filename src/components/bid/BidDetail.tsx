@@ -21,10 +21,6 @@ export default function BidDetail({ id }: { id: string }) {
   const query = useBid(id);
   const [editing, setEditing] = useState(false);
 
-  if (query.isLoading) {
-    return <Skeleton active paragraph={{ rows: 6 }} />;
-  }
-
   if (query.isError && !query.data) {
     const notFound =
       query.error instanceof ApiError && query.error.status === 404;
@@ -38,7 +34,13 @@ export default function BidDetail({ id }: { id: string }) {
     );
   }
 
-  const bid = query.data!;
+  if (!query.data) {
+    // Covers initial load and the offline-paused state (networkMode: 'online'
+    // pauses the fetch, so isPending is true but isFetching/isLoading are false).
+    return <Skeleton active paragraph={{ rows: 6 }} />;
+  }
+
+  const bid = query.data;
   const car = fromFeaturedCar(bid.car_data);
   const title = [car.marka, car.model, car.year].filter(Boolean).join(" ");
   const logs = bid.bid_logs ?? [];
