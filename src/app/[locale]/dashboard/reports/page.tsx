@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import EmptyState from "@/components/dashboard/EmptyState";
 import SectionMast from "@/components/dashboard/SectionMast";
+import ReportList from "@/components/report/ReportList";
 
 export default async function ReportsPage({
   params,
@@ -14,18 +14,14 @@ export default async function ReportsPage({
 
   return (
     <>
-      <DashboardHeader
-        title={t("title")}
-        description={t("description")}
-      />
+      <DashboardHeader title={t("title")} description={t("description")} />
 
       <section className="space-y-4">
         <SectionMast title={t("listHeading")} />
-        <EmptyState
-          title={t("emptyTitle")}
-          description={t("emptyDescription")}
-          cta={{ label: t("emptyCta"), href: "/reports/check" }}
-        />
+        {/* Client component: reports settle from unpaid → paid → downloadable
+            while the page is open, so the list refetches rather than being
+            rendered once on the server. It also owns the empty state. */}
+        <ReportList />
       </section>
     </>
   );

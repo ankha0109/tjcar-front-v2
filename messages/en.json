@@ -500,7 +500,10 @@
       "listHeading": "Created reports",
       "emptyTitle": "No reports yet",
       "emptyDescription": "Enter a VIN to run an accident and history check.",
-      "emptyCta": "New report"
+      "emptyCta": "New report",
+      "loadErrorTitle": "Could not load the list",
+      "loadErrorBody": "Check your connection and refresh the page.",
+      "preparing": "Preparing"
     }
   },
   "car": {
@@ -1119,14 +1122,14 @@
       "intro": "RATE is the overall condition grade the independent auction inspector gives the car — the higher the number, the better the condition.",
       "note": "The grade is the inspector's judgment, so always confirm the details on the evaluation sheet before you decide.",
       "grades": {
-        "S": "New or nearly new, very low mileage",
-        "6": "Almost new, virtually no wear",
-        "5": "Excellent, very clean",
-        "4_5": "Very good, minor wear",
-        "4": "Good, normal condition for its age",
-        "3_5": "Above average, may need minor repair",
-        "3": "Average, visible scratches and dents",
         "2": "Worn, heavy wear or rust",
+        "3": "Average, visible scratches and dents",
+        "4": "Good, normal condition for its age",
+        "5": "Excellent, very clean",
+        "6": "Almost new, virtually no wear",
+        "S": "New or nearly new, very low mileage",
+        "4_5": "Very good, minor wear",
+        "3_5": "Above average, may need minor repair",
         "R": "Accident / repair history (bodywork repaired)",
         "RA": "Lightly repaired (minor accident)"
       }
@@ -1492,30 +1495,6 @@
         }
       }
     },
-    "why": {
-      "eyebrow": "Why check",
-      "heading": "A listing alone is not enough",
-      "subheading": "To price a used car and judge its risks correctly, you need its earlier records — not just its current look and the seller's description.",
-      "reasons": {
-        "r1": {
-          "title": "Mileage affects wear and price",
-          "body": "A car showing less than its true mileage may sell at an inflated price and mislead your maintenance planning. Comparing mileage by date makes suspicious drops and gaps easier to notice."
-        },
-        "r2": {
-          "title": "Repaired areas may not be visible",
-          "body": "Quality paint and body work can be invisible in ordinary photos. Earlier photos and the auction sheet give you an extra source to compare against."
-        },
-        "r3": {
-          "title": "Auction grades reflect that moment",
-          "body": "Grades, marks and notes help you understand the car's condition when it entered the auction in Japan. Grading systems vary by auction house, so view them together with the original sheet and photos."
-        },
-        "r4": {
-          "title": "Multiple listings reveal changes",
-          "body": "If a car was auctioned several times, you can compare mileage, grades, photos and status across dates. Multiple listings alone are not a bad sign."
-        }
-      },
-      "quote": "The report is not meant to make the final decision for you — it helps you ask the right questions before buying."
-    },
     "pdfPreview": {
       "eyebrow": "Sample report",
       "heading": "What information is inside the report?",
@@ -1647,5 +1626,69 @@
     "viewAllInAuctions": "All {brand} listings",
     "noModels": "No models found",
     "unavailable": "Catalogue is temporarily unavailable. Please try again."
+  },
+  "reportCheck": {
+    "metaTitle": "Check vehicle history",
+    "metaDescription": "Look up auction and damage history by VIN.",
+    "noInputTitle": "Nothing to look up",
+    "noInputBody": "Enter a licence plate or VIN and search again.",
+    "foundTitle": "Vehicle found",
+    "notFoundTitle": "No information found",
+    "tryAgain": "Search again",
+    "priceLabel": "Report price",
+    "buy": "Get the report",
+    "loginToBuy": "Log in to buy",
+    "fields": {
+      "name": "Vehicle",
+      "vin": "VIN",
+      "company": "Make",
+      "model": "Model",
+      "year": "Date"
+    },
+    "errors": {
+      "plateNoVin": "No VIN is registered for this plate. Try entering the VIN directly.",
+      "missingInput": "Search input is missing.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "reportStatus": {
+    "metaTitle": "My report",
+    "loginTitle": "Please log in",
+    "loginBody": "Log in to your account to view this report.",
+    "login": "Log in",
+    "notFoundTitle": "Report not found",
+    "notFoundBody": "This report does not exist, or you do not have access to it.",
+    "backToList": "My reports",
+    "fields": {
+      "vin": "VIN",
+      "price": "Price",
+      "status": "Status",
+      "createdAt": "Created"
+    },
+    "phase": {
+      "awaiting-payment": {
+        "title": "Waiting for payment",
+        "body": "Scan the QR below with your banking app. The report starts building as soon as the payment clears."
+      },
+      "payment-detected": {
+        "title": "Payment received",
+        "body": "Payment confirmed. Waiting for the report to start building."
+      },
+      "generating": {
+        "title": "Building your report",
+        "body": "Fetching the vehicle history and rendering the PDF. This can take a few minutes."
+      },
+      "ready": {
+        "title": "Your report is ready",
+        "body": "Download the PDF below, or open it in a new tab."
+      }
+    },
+    "working": "Working…",
+    "qrUnavailable": "No payment QR found. Please contact us for help.",
+    "download": "Download PDF",
+    "openInTab": "Open in new tab",
+    "previewTitle": "Report preview",
+    "stalledTitle": "This is taking longer than usual",
+    "stalledBody": "Your report is taking longer than normal to build. Your payment is safe — we are looking into it and will follow up shortly. Message us on chat if you need it sooner."
   }
 }

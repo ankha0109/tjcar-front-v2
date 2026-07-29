@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { BorderBeam, Button, Input, Segmented } from "antd";
 import type { BorderBeamGradient } from "antd";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/utils";
 import SampleReportModal from "./SampleReportModal";
 import soyombo from "../../../public/images/32px-Soyombo_red.png";
@@ -83,6 +84,8 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function ReportHero() {
   const t = useTranslations("reportLanding.hero");
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [mode, setMode] = useState<SearchMode>("plate");
   const [value, setValue] = useState("");
   const [error, setError] = useState<SearchError>(null);
@@ -106,16 +109,21 @@ export default function ReportHero() {
     setError(null);
   }
 
+  /**
+   * The hero only validates and hands off — the lookup itself runs on
+   * /reports/check so the result is refreshable and shareable, and so the
+   * plate → VIN → report chain has somewhere to show its intermediate states.
+   */
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const err = validate(mode, value);
     setError(err);
     if (err) return;
-    // TODO: wire to the /reports lookup endpoint + payment (20,000₮).
-    // No backend yet — for now we guide the user through the order steps.
-    document
-      .getElementById("report-steps")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const query = mode === "plate" ? { plate: value } : { vin: value };
+    startTransition(() => {
+      router.push({ pathname: "/reports/check", query });
+    });
   }
 
   return (
@@ -239,6 +247,7 @@ export default function ReportHero() {
                   variant="solid"
                   size="large"
                   htmlType="submit"
+                  loading={isPending}
                   className="min-h-12! w-full rounded-xl! px-6! font-semibold! sm:w-auto"
                 >
                   {t("form.submit")}
