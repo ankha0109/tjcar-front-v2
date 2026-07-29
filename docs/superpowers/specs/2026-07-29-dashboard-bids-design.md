@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-29
 **Status:** approved, ready for implementation plan
-**Repos:** `tjcar-front-v2` (bulk) + `tjcar-api-v2` (four backend changes)
+**Repos:** `tjcar-front-v2` (bulk) + `tjcar-api-v2` (three backend changes)
 
 ## Problem
 
@@ -76,13 +76,13 @@ Pending-only (not Pending + Processing) because the dashboard copy already reads
 "{count} хүлээгдэж байна" in all three locales; this keeps that text truthful and
 untouched. It is deliberately a different number from the `active` tab's total.
 
-### 4. Eager-load `bidLogs.user` on `GET /bids/{id}`
+### Operator on bid logs — no change needed
 
-`BidLogResource` emits an operator block via `whenLoaded('user')`, but
-`BidController@show` loads `['user:id,name,phone', 'bidLogs']` — never
-`bidLogs.user`. The operator name is therefore unreachable and the timeline can
-never attribute a status change. Change the eager-load to
-`['user:id,name,phone', 'bidLogs.user:id,name,phone']`.
+`BidLogResource` emits an operator block via `whenLoaded('user')` and
+`BidController@show` never eager-loads `bidLogs.user`, which looks like a gap.
+It is not: `CustomerBidLog` declares `protected $with = ['user']`, so every log
+carries its operator automatically. The timeline can attribute status changes
+today. A test pins this rather than changing code.
 
 ### Backend tests
 
@@ -96,7 +96,7 @@ Extend the existing Pest files — no new test files:
   - price edit is rejected (422) when `car_data` has no `AUCTION_DATE`.
   - price edit still succeeds for a `Pending` bid on a distant auction (the
     existing happy-path test must keep passing).
-  - `show` exposes the operator on a bid log.
+  - `show` exposes the operator on a bid log (pins the `$with` behaviour).
 - `tests/Feature/Customer/StatsTest.php` — `requests_pending` counts only
   `Pending`.
 
