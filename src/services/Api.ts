@@ -110,6 +110,11 @@ const Api = () => {
       body: unknown,
       options: RequestOptions = {},
     ) => request<T>(url, { ...options, method: "PUT", body }),
+    patch: <T = unknown>(
+      url: string,
+      body: unknown,
+      options: RequestOptions = {},
+    ) => request<T>(url, { ...options, method: "PATCH", body }),
     delete: <T = unknown>(url: string, options: RequestOptions = {}) =>
       request<T>(url, { ...options, method: "DELETE" }),
   };
