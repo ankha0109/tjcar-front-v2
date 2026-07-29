@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: false,
   images: {
+    // Next-ийн image optimizer-ийг бүрэн унтраав: /_next/image дамжуулалт,
+    // srcset үүсгэлт байхгүй — зургууд эх URL-аараа шууд ачаална.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

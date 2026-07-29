@@ -4,7 +4,6 @@ import ReportJsonLd from "@/components/report/ReportJsonLd";
 import ReportHero from "@/components/report/ReportHero";
 import ReportCompare from "@/components/report/ReportCompare";
 import ReportFeatures from "@/components/report/ReportFeatures";
-import ReportWhy from "@/components/report/ReportWhy";
 import ReportPdfPreview from "@/components/report/ReportPdfPreview";
 import ReportSteps from "@/components/report/ReportSteps";
 import ReportAudience from "@/components/report/ReportAudience";
@@ -54,7 +53,6 @@ export default async function ReportPage({
       <ReportHero />
       <ReportCompare />
       <ReportFeatures />
-      <ReportWhy />
       <ReportPdfPreview />
       <ReportSteps />
       <ReportAudience />
