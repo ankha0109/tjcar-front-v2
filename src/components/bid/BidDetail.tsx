@@ -1,6 +1,7 @@
 "use client";
 
-import { Skeleton } from "antd";
+import { useState } from "react";
+import { Button, Skeleton } from "antd";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import EmptyState from "@/components/dashboard/EmptyState";
@@ -9,6 +10,8 @@ import { useBid } from "@/hooks/useBids";
 import { formatJpy } from "@/lib/bidConfig";
 import { ApiError } from "@/services/Api";
 import { fromFeaturedCar } from "@/types/car";
+import { isBidEditable } from "@/types/bid";
+import BidPriceEditModal from "./BidPriceEditModal";
 import BidStatusTag from "./BidStatusTag";
 import BidTimeline from "./BidTimeline";
 import { formatBidPrice } from "./BidRow";
@@ -16,6 +19,7 @@ import { formatBidPrice } from "./BidRow";
 export default function BidDetail({ id }: { id: string }) {
   const t = useTranslations("dashboard.bidDetail");
   const query = useBid(id);
+  const [editing, setEditing] = useState(false);
 
   if (query.isLoading) {
     return <Skeleton active paragraph={{ rows: 6 }} />;
@@ -75,6 +79,11 @@ export default function BidDetail({ id }: { id: string }) {
           <p className="text-[12px] text-neutral-500">
             {t("startPrice", { price: formatJpy(bid.start_price) })}
           </p>
+          {isBidEditable(bid) ? (
+            <Button size="small" onClick={() => setEditing(true)}>
+              {t("editPrice")}
+            </Button>
+          ) : null}
         </div>
       </div>
 
@@ -92,6 +101,14 @@ export default function BidDetail({ id }: { id: string }) {
           <EmptyState title={t("timelineEmpty")} />
         )}
       </section>
+
+      {editing ? (
+        <BidPriceEditModal
+          bid={bid}
+          open={editing}
+          onClose={() => setEditing(false)}
+        />
+      ) : null}
     </div>
   );
 }

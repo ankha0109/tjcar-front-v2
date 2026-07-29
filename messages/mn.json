@@ -351,16 +351,25 @@
         "rate": "Үнэлгээ",
         "lot": "Лот"
       },
-      "title": "Шүүлтүүр",
-      "sections": {
-        "main": "Үндсэн",
-        "auction": "Дуудлага",
-        "specs": "Үзүүлэлт"
+      "examples": {
+        "marka": "Toyota, Honda…",
+        "model": "Prius, Aqua…",
+        "chassis": "ZVW30, NHP10…",
+        "rate": "4, 4.5, 5…",
+        "lot": "20139",
+        "color": "White, Black…",
+        "location": "USS Yokohama, JU Tokyo…",
+        "date": "YYYY-MM-DD",
+        "select": "Сонгох"
       },
+      "title": "Шүүлтүүр",
       "clear": "Цэвэрлэх",
       "active": "Идэвхтэй",
       "done": "Болсон",
       "search": "Хайх",
+      "lot": {
+        "label": "LOT дугаар"
+      },
       "year": {
         "label": "Үйлдвэрлэсэн он",
         "hint": "Машины үйлдвэрлэгдсэн оны хязгаар",
@@ -370,12 +379,11 @@
       "mileage": {
         "label": "Явсан гүйлт",
         "hint": "Километрийн хязгаар",
-        "minPlaceholder": "Хамгийн бага",
-        "maxPlaceholder": "Хамгийн их"
+        "minPlaceholder": "Доод",
+        "maxPlaceholder": "Дээд"
       },
       "color": {
-        "label": "Өнгө",
-        "placeholder": "Өнгө сонгох"
+        "label": "Өнгө"
       },
       "engV": {
         "label": "Хөдөлгүүрийн багтаамж (cc)",
@@ -383,13 +391,11 @@
         "toPlaceholder": "Дээд"
       },
       "auctionDate": {
-        "label": "Дуудлагын огноо",
-        "placeholder": "Огноо сонгох"
+        "label": "Дуудлагын огноо"
       },
       "location": {
         "label": "Auction байршил",
-        "hint": "Дуудлагын зах зээлийн байршил",
-        "placeholder": "Байршил сонгох"
+        "hint": "Дуудлагын зах зээлийн байршил"
       }
     },
     "schedule": {
@@ -487,6 +493,7 @@
       "sentAt": "Илгээсэн: {date}",
       "viewCar": "Машины мэдээлэл үзэх",
       "startPrice": "Эхлэх үнэ: {price}",
+      "editPrice": "Үнэ засах",
       "operator": "Хариуцсан ажилтан: {name} · {phone}",
       "timelineHeading": "Явцын түүх",
       "timelineEmpty": "Бүртгэл алга",
@@ -495,6 +502,20 @@
       "notFoundBody": "Энэ санал устсан эсвэл танд хамаарахгүй байна.",
       "loadErrorTitle": "Ачаалж чадсангүй",
       "loadErrorBody": "Сүлжээгээ шалгаад хуудсаа шинэчилнэ үү."
+    },
+    "bidEdit": {
+      "title": "Саналын үнэ засах",
+      "priceLabel": "Шинэ үнэ",
+      "currentPrice": "Одоогийн үнэ: {price}",
+      "required": "Үнээ оруулна уу",
+      "mustBePositive": "Үнэ 0-ээс их байх ёстой",
+      "submit": "Хадгалах",
+      "cancel": "Болих",
+      "ok": "Ойлголоо",
+      "successTitle": "Үнэ шинэчлэгдлээ",
+      "successBody": "Таны шинэ үнийг хүлээн авлаа.",
+      "errorTitle": "Үнэ шинэчлэгдсэнгүй",
+      "errorFallback": "Дахин оролдоно уу."
     },
     "profile": {
       "title": "Профайл",

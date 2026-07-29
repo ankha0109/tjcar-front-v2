@@ -351,16 +351,25 @@
         "rate": "Оценка",
         "lot": "Лот"
       },
-      "title": "Фильтры",
-      "sections": {
-        "main": "Основное",
-        "auction": "Аукцион",
-        "specs": "Характеристики"
+      "examples": {
+        "marka": "Toyota, Honda…",
+        "model": "Prius, Aqua…",
+        "chassis": "ZVW30, NHP10…",
+        "rate": "4, 4.5, 5…",
+        "lot": "20139",
+        "color": "White, Black…",
+        "location": "USS Yokohama, JU Tokyo…",
+        "date": "YYYY-MM-DD",
+        "select": "Выбрать"
       },
+      "title": "Фильтры",
       "clear": "Очистить",
       "active": "Активный",
       "done": "Готово",
       "search": "Поиск",
+      "lot": {
+        "label": "Номер лота"
+      },
       "year": {
         "label": "Год выпуска",
         "hint": "Диапазон лет выпуска",
@@ -374,8 +383,7 @@
         "maxPlaceholder": "Макс"
       },
       "color": {
-        "label": "Цвет",
-        "placeholder": "Выберите цвет"
+        "label": "Цвет"
       },
       "engV": {
         "label": "Объём двигателя (cc)",
@@ -383,13 +391,11 @@
         "toPlaceholder": "До"
       },
       "auctionDate": {
-        "label": "Дата аукциона",
-        "placeholder": "Выберите дату"
+        "label": "Дата аукциона"
       },
       "location": {
         "label": "Площадка аукциона",
-        "hint": "Место проведения аукциона",
-        "placeholder": "Выберите площадку"
+        "hint": "Место проведения аукциона"
       }
     },
     "schedule": {
@@ -487,6 +493,7 @@
       "sentAt": "Отправлено: {date}",
       "viewCar": "Смотреть автомобиль",
       "startPrice": "Стартовая цена: {price}",
+      "editPrice": "Изменить цену",
       "operator": "Ответственный: {name} · {phone}",
       "timelineHeading": "История обработки",
       "timelineEmpty": "Записей пока нет",
@@ -495,6 +502,20 @@
       "notFoundBody": "Эта ставка удалена или принадлежит другому пользователю.",
       "loadErrorTitle": "Не удалось загрузить",
       "loadErrorBody": "Проверьте соединение и обновите страницу."
+    },
+    "bidEdit": {
+      "title": "Изменить цену ставки",
+      "priceLabel": "Новая цена",
+      "currentPrice": "Текущая цена: {price}",
+      "required": "Укажите цену",
+      "mustBePositive": "Цена должна быть больше 0",
+      "submit": "Сохранить",
+      "cancel": "Отмена",
+      "ok": "Понятно",
+      "successTitle": "Цена обновлена",
+      "successBody": "Ваша новая цена принята.",
+      "errorTitle": "Цена не обновлена",
+      "errorFallback": "Попробуйте ещё раз."
     },
     "profile": {
       "title": "Профиль",
