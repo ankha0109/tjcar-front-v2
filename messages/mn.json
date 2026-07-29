@@ -353,10 +353,9 @@
       },
       "title": "Шүүлтүүр",
       "sections": {
-        "vehicle": "Машин",
+        "main": "Үндсэн",
         "auction": "Дуудлага",
-        "specs": "Үзүүлэлт",
-        "advanced": "Нэмэлт"
+        "specs": "Үзүүлэлт"
       },
       "clear": "Цэвэрлэх",
       "active": "Идэвхтэй",
@@ -472,14 +471,15 @@
     "bids": {
       "title": "Миний саналууд",
       "description": "Илгээсэн саналуудыг хянах, удирдах.",
-      "activeHeading": "Идэвхтэй саналууд",
-      "activeEmptyTitle": "Идэвхтэй санал алга",
-      "activeEmptyDescription": "Дуудлагаас машин сонгож саналаа илгээж эхлээрэй.",
-      "activeEmptyCta": "Дуудлага үзэх",
-      "historyHeading": "Түүх",
-      "historySubheading": "Өмнө илгээсэн саналууд.",
-      "historyEmptyTitle": "Түүхэн санал алга",
-      "historyEmptyDescription": "Илгээсэн санал бүр энд хадгалагдана."
+      "listHeading": "Илгээсэн саналууд",
+      "tabAll": "Бүгд",
+      "tabActive": "Идэвхтэй",
+      "tabClosed": "Дууссан",
+      "emptyTitle": "Санал алга",
+      "emptyDescription": "Дуудлагаас машин сонгож саналаа илгээж эхлээрэй.",
+      "emptyCta": "Дуудлага үзэх",
+      "loadErrorTitle": "Жагсаалт ачаалж чадсангүй",
+      "loadErrorBody": "Сүлжээгээ шалгаад хуудсаа шинэчилнэ үү."
     },
     "profile": {
       "title": "Профайл",
@@ -509,9 +509,7 @@
   "car": {
     "card": {
       "noImage": "Зураг байхгүй",
-      "today": "Өнөөдөр",
-      "tomorrow": "Маргааш",
-      "daysLeft": "{days} хоног",
+      "live": "LIVE",
       "specs": {
         "year": "Он",
         "mileage": "Явсан",
@@ -536,6 +534,7 @@
       "wishlist": "Хадгалах",
       "compare": "Харьцуулах",
       "premium": "Premium",
+      "timeTba": "Цаг тодорхойгүй",
       "mileageUnit": "км",
       "drivetrain": {
         "fwd": "Урдын дугуй",
@@ -569,6 +568,17 @@
           "unknown": "Үнэлгээ тодорхойгүй."
         }
       }
+    },
+    "premiumInfo": {
+      "badgeAria": "Premium — дэлгэрэнгүй",
+      "title": "Premium хэрэглэгч",
+      "lede": "Дансаа {amount} ба түүнээс дээш дүнгээр цэнэглэснээр та Premium хэрэглэгч болно.",
+      "benefitsTitle": "Premium болсноор",
+      "benefit1": "Японы хамгийн том USS Auction-ы мэдээлэл, зургийг бүрэн харах",
+      "benefit2": "Дуудлага худалдаанд үнийн санал тавьж оролцох",
+      "benefit3": "Шинжээчийн үнэлгээний хуудсыг дэлгэрэнгүй үзэх",
+      "benefit4": "Мэргэжлийн зөвлөгөө, дэмжлэг авах",
+      "cta": "Данс цэнэглэх"
     }
   },
   "homeHero": {

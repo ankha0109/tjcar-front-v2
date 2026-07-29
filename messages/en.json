@@ -353,10 +353,9 @@
       },
       "title": "Filters",
       "sections": {
-        "vehicle": "Vehicle",
+        "main": "Main",
         "auction": "Auction",
-        "specs": "Specs",
-        "advanced": "Advanced"
+        "specs": "Specs"
       },
       "clear": "Clear",
       "active": "Active",
@@ -471,15 +470,16 @@
     },
     "bids": {
       "title": "My bids",
-      "description": "Track and manage your bids.",
-      "activeHeading": "Active bids",
-      "activeEmptyTitle": "No active bids",
-      "activeEmptyDescription": "Pick a car from an auction and submit a bid to get started.",
-      "activeEmptyCta": "Browse auctions",
-      "historyHeading": "History",
-      "historySubheading": "Bids you've sent before.",
-      "historyEmptyTitle": "No past bids",
-      "historyEmptyDescription": "Every bid you send will be archived here."
+      "description": "Track and manage the bids you have sent.",
+      "listHeading": "Sent bids",
+      "tabAll": "All",
+      "tabActive": "Active",
+      "tabClosed": "Closed",
+      "emptyTitle": "No bids yet",
+      "emptyDescription": "Pick a car from the auction and send your first bid.",
+      "emptyCta": "Browse auctions",
+      "loadErrorTitle": "Could not load the list",
+      "loadErrorBody": "Check your connection and refresh the page."
     },
     "profile": {
       "title": "Profile",
@@ -509,9 +509,7 @@
   "car": {
     "card": {
       "noImage": "No image",
-      "today": "Today",
-      "tomorrow": "Tomorrow",
-      "daysLeft": "{days} days",
+      "live": "LIVE",
       "specs": {
         "year": "Year",
         "mileage": "Mileage",
@@ -536,6 +534,7 @@
       "wishlist": "Save",
       "compare": "Compare",
       "premium": "Premium",
+      "timeTba": "Time TBA",
       "mileageUnit": "km",
       "drivetrain": {
         "fwd": "FWD",
@@ -569,6 +568,17 @@
           "unknown": "Grade not specified."
         }
       }
+    },
+    "premiumInfo": {
+      "badgeAria": "Premium — learn more",
+      "title": "Premium membership",
+      "lede": "Top your account up to {amount} or more and you become a Premium customer.",
+      "benefitsTitle": "What Premium unlocks",
+      "benefit1": "Full data and photos from USS, Japan's largest auction",
+      "benefit2": "Place bids and take part in the auctions",
+      "benefit3": "Open the inspector's full evaluation sheet",
+      "benefit4": "Expert advice and support",
+      "cta": "Top up account"
     }
   },
   "homeHero": {
