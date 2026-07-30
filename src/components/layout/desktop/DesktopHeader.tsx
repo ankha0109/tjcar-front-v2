@@ -81,21 +81,6 @@ const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-);
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -312,11 +297,6 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
       key: "about",
       labelKey: "nav.about" as const,
       href: "/about",
-    },
-    {
-      key: "howItWorks",
-      labelKey: "howItWorks" as const,
-      href: "/how-it-works",
     },
     {
       key: "posts",
@@ -687,15 +667,6 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                 leading={<SparkleIcon className="h-4 w-4 text-violet-500" />}
               >
                 {t("tjcarAi")}
-              </DrawerLink>
-              <DrawerLink
-                href="/how-it-works"
-                onClick={() => setMobileOpen(false)}
-                leading={<InfoIcon className="h-4 w-4 text-sky-500" />}
-              >
-                <span className="text-sky-600 dark:text-sky-400">
-                  {t("howItWorks")}
-                </span>
               </DrawerLink>
             </DrawerSection>
           </div>

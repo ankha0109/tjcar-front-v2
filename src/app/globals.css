@@ -358,8 +358,25 @@ a {
   animation: globe-chip-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Auth image panel — settles out of a slight over-zoom on load */
+@keyframes auth-image-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.auth-image-in {
+  opacity: 0;
+  animation: auth-image-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-reveal,
+  .auth-image-in,
   .globe-svg,
   .globe-dots,
   .globe-pin,
@@ -510,10 +527,10 @@ a {
   }
 }
 
-/* ─── Report landing ──────────────────────────────────── */
+/* ─── Landing pages — /report, /about ─────────────────── */
 
 /* Scroll reveal — [data-hidden] is added by JS only, so no-JS/bots
-   always get visible content. */
+   always get visible content. Driven by `@/components/ui/Reveal`. */
 .reveal {
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
@@ -542,6 +559,107 @@ a {
   background-clip: text;
   color: transparent;
   animation: shiny-text 4.5s linear infinite;
+}
+
+/* Rotating headline word (/about hero). Every word shares one grid cell, so
+   the line is as wide as the longest of them and nothing below it shifts as
+   they swap. Each is visible for a third of the cycle; the negative delays
+   stagger them without needing a fill-mode, and the whole set is inert for
+   screen readers apart from the first word (see `AboutHero`). */
+.flip-words {
+  display: grid;
+  justify-items: start;
+  perspective: 600px;
+}
+.flip-words > .flip-word {
+  position: relative;
+  grid-area: 1 / 1;
+  animation: flip-word 6.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  /* i=0 → -6.6s (≡ 0), i=1 → -4.4s, i=2 → -2.2s */
+  animation-delay: calc(var(--flip-i) * 2.2s - 6.6s);
+}
+/* A word owns a third of the cycle (33.3%), but its fade-out runs past that to
+   37% so the next word — which starts entering at 33.3% — is already on the way
+   in. Without the overlap the line goes blank for ~350ms on every swap.
+   The exit segment is explicitly `linear`: under the house easeOutQuint the
+   opacity collapses to ~0.03 by the hand-off point and the overlap buys
+   nothing. Entry keeps the quint so the incoming word snaps into place. */
+@keyframes flip-word {
+  0% {
+    opacity: 0;
+    transform: translateY(0.45em) rotateX(-80deg);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  4%,
+  29% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    animation-timing-function: linear;
+  }
+  37%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.45em) rotateX(80deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-words > .flip-word {
+    animation: none;
+    opacity: 0;
+  }
+  .flip-words > .flip-word:first-child {
+    opacity: 1;
+  }
+}
+
+/* Photo marquee (/about — customers). The track holds the photo list TWICE,
+   so translating it by exactly -50% lands the second copy where the first
+   started and the loop is seamless. One copy must therefore be at least as
+   wide as the clipping box, or a gap opens on the right — see `AboutCustomers`,
+   which repeats the list enough times to cover that. Linear on purpose: any
+   easing would visibly stutter at the wrap. */
+.marquee {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration, 60s) linear infinite;
+}
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Guarded so a tap on a touch device can't leave the strip parked. */
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  /* A frozen strip would strand the photos past the right edge, so hand the
+     scrolling back to the user. Beats the Tailwind `overflow-hidden` on the
+     element because unlayered rules outrank the utilities layer. */
+  .marquee {
+    overflow-x: auto;
+  }
 }
 
 /* Compare-slider handle — finite attention pulse, stops on its own. */

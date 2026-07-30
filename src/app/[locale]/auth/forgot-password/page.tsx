@@ -1,7 +1,6 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import RegisterFormContent from "@/components/pages/RegisterForm";
+import ForgotPasswordFormContent from "@/components/pages/ForgotPasswordForm";
 import { getDevice } from "@/lib/device";
 
 export async function generateMetadata({
@@ -10,23 +9,19 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "auth.register" });
+  const t = await getTranslations({ locale, namespace: "auth.forgotPassword" });
   return {
     title: t("title"),
     description: t("metaDescription"),
   };
 }
 
-const Register = async () => {
+const ForgotPassword = async () => {
   // Same reasoning as the login page: a `hidden` panel still downloads its
   // image, so phones — which never show it — skip rendering it altogether.
   const device = await getDevice();
 
-  return (
-    <Suspense fallback={null}>
-      <RegisterFormContent withImagePanel={device !== "mobile"} />
-    </Suspense>
-  );
+  return <ForgotPasswordFormContent withImagePanel={device !== "mobile"} />;
 };
 
-export default Register;
+export default ForgotPassword;

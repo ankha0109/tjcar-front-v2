@@ -14,36 +14,40 @@ import type { BorderBeamGradient } from "antd";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
+import { useKoreaModels } from "@/hooks/useKoreaModels";
 import { TOP_JAPAN_MAKES, brandLogoUrl, norm } from "@/lib/brand";
 import {
   EMPTY_FILTERS,
+  MILEAGE_STEPS,
   RATE_OPTIONS,
   YEAR_OPTIONS,
   filtersToQuery,
   type FilterOptions,
   type FilterValues,
 } from "@/types/filters";
+import {
+  EMPTY_KOREA_FILTERS,
+  FEATURED_KOREA_BRANDS,
+  KOREA_BRANDS,
+  KOREA_FUELS,
+  KOREA_TRANSMISSIONS,
+  koreaBrand,
+  koreaFiltersToQuery,
+  type KoreaFilterValues,
+} from "@/types/korea";
 
 type Tab = "japan" | "korea";
 
 type Props = {
   /** Real brand names for the Japan (AJES) auction, from `/filters`. */
   japanBrands?: string[];
-  /** Korea brands — backend not wired yet, falls back to `DEMO_KOREA_BRANDS`. */
-  koreaBrands?: string[];
   filterOptions?: FilterOptions;
 };
 
-// Base for the per-make cards + advanced search (the auction browser).
-const VIEW_ALL_HREF: Record<Tab, string> = {
-  japan: "/japan",
-  korea: "/korea",
-};
-
-// The "view all" card opens the manufacturers explorer (Japan only for now).
+// The "view all" card opens that tab's manufacturers explorer.
 const BROWSE_ALL_HREF: Record<Tab, string> = {
   japan: "/japan/brands",
-  korea: "/korea",
+  korea: "/korea/brands",
 };
 
 // Brand-blue gradient for the search form's BorderBeam (Ocean preset).
@@ -58,87 +62,63 @@ const REPORT_POINTS = ["accident", "mileage", "report"] as const;
 
 // Curated "popular" makes shown with logos in the featured grid. Nine each so
 // the grid reads as 5×2 with the "all" card filling the tenth cell. Japan
-// reuses the shared `TOP_JAPAN_MAKES` ranking (see `@/lib/brand`).
-const FEATURED_MAKES: Record<Tab, string[]> = {
-  japan: [...TOP_JAPAN_MAKES],
-  korea: [
-    "Hyundai",
-    "Kia",
-    "Genesis",
-    "Samsung",
-    "SsangYong",
-    "Chevrolet",
-    "Renault",
-    "BMW",
-    "Audi",
-  ],
-};
+// reuses the shared `TOP_JAPAN_MAKES` ranking (see `@/lib/brand`); Korea uses
+// `FEATURED_KOREA_BRANDS` (see `@/types/korea`), whose entries carry the
+// backend brand *slug* — `/korea` only accepts those.
 
-// Demo brand list for Korea while its backend feed is not yet available.
-const DEMO_KOREA_BRANDS = [
-  "Hyundai",
-  "Kia",
-  "Genesis",
-  "Samsung",
-  "SsangYong",
-  "Chevrolet",
-  "Mercedes-Benz",
-  "BMW",
-  "Audi",
-  "Volkswagen",
-  "Toyota",
-  "Lexus",
-  "Honda",
-  "Land Rover",
-  "Volvo",
-  "Mini",
-  "Porsche",
-  "Jaguar",
-  "Tesla",
-  "Renault",
-  "Peugeot",
-  "Ford",
-  "Cadillac",
-  "Lincoln",
-  "Bentley",
-  "Maserati",
-  "Ferrari",
-  "Lamborghini",
-];
+// `car.card.transmission` keys are camelCase (semi-auto → semiAuto); cvt has none.
+const TRANSMISSION_LABEL_KEYS: Record<string, string | null> = {
+  auto: "auto",
+  manual: "manual",
+  "semi-auto": "semiAuto",
+  cvt: null,
+};
 
 function formatCount(n: number) {
   return new Intl.NumberFormat("en-US").format(n);
 }
 
-export default function CarSearchSection({
-  japanBrands,
-  koreaBrands,
-  filterOptions,
-}: Props) {
+export default function CarSearchSection({ japanBrands, filterOptions }: Props) {
   const t = useTranslations("homeSearch");
   const tf = useTranslations("featured.filters");
+  const tk = useTranslations("korea");
+  const tFuel = useTranslations("carDetail.fuel");
+  const tTrans = useTranslations("car.card.transmission");
   const router = useRouter();
 
   const [tab, setTab] = useState<Tab>("japan");
   const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
+  const [koreaFilters, setKoreaFilters] =
+    useState<KoreaFilterValues>(EMPTY_KOREA_FILTERS);
   const [vinForm] = Form.useForm<{ vin: string }>();
 
-  const brands = useMemo<string[]>(() => {
-    if (tab === "japan") return japanBrands ?? [];
-    return koreaBrands && koreaBrands.length ? koreaBrands : DEMO_KOREA_BRANDS;
-  }, [tab, japanBrands, koreaBrands]);
-
-  // Resolve each curated featured make to its real brand value (for the link)
-  // while keeping the nicely-cased curated label (for the logo + caption).
+  // Each tab links into its own browser with that browser's query contract:
+  // `/japan` reads `marka`, `/korea` reads a `brand` slug (see `@/types/korea`).
   const featuredMakes = useMemo(() => {
-    const byNorm = new Map(brands.map((b) => [norm(b), b]));
-    return FEATURED_MAKES[tab].map((name) => ({
-      value: byNorm.get(norm(name)) ?? name,
-      label: name,
-    }));
-  }, [brands, tab]);
-
-  const viewAllHref = VIEW_ALL_HREF[tab];
+    if (tab === "korea") {
+      return FEATURED_KOREA_BRANDS.map((slug) => {
+        const brand = koreaBrand(slug);
+        return {
+          key: slug,
+          href: `/korea?brand=${slug}`,
+          label: brand?.label ?? slug,
+          logo: brand?.logo ?? brand?.label ?? slug,
+        };
+      });
+    }
+    // Resolve each curated make to the real `/filters` brand value (for the
+    // link) while keeping the nicely-cased curated label (logo + caption).
+    const byNorm = new Map((japanBrands ?? []).map((b) => [norm(b), b]));
+    return TOP_JAPAN_MAKES.map((name) => {
+      const value = byNorm.get(norm(name)) ?? name;
+      return {
+        key: value,
+        href: `/japan?marka=${encodeURIComponent(value)}`,
+        label: name,
+        logo: name,
+      };
+    });
+  }, [japanBrands, tab]);
 
   const setFilter = <K extends keyof FilterValues>(
     key: K,
@@ -150,6 +130,15 @@ export default function CarSearchSection({
 
   const setModel = (model: string | null) =>
     setFilters((prev) => ({ ...prev, model, chassis: null }));
+
+  const setKorea = <K extends keyof KoreaFilterValues>(
+    key: K,
+    v: KoreaFilterValues[K],
+  ) => setKoreaFilters((prev) => ({ ...prev, [key]: v }));
+
+  // A Korea model only means anything inside its brand — switching clears it.
+  const setKoreaMake = (make: string | null) =>
+    setKoreaFilters((prev) => ({ ...prev, make, model: null }));
 
   const markaOptions = useMemo(
     () => (filterOptions?.markas ?? []).map((v) => ({ value: v, label: v })),
@@ -191,29 +180,85 @@ export default function CarSearchSection({
     }));
   }, [filterOptions?.chassis, filters.model, filters.marka, modelToMarka]);
 
-  const yearFromOptions = useMemo(
-    () =>
-      YEAR_OPTIONS.filter(
-        (y) => filters.yearTo == null || y <= filters.yearTo,
-      ).map((y) => ({ value: y, label: String(y) })),
-    [filters.yearTo],
-  );
-
-  const yearToOptions = useMemo(
-    () =>
-      YEAR_OPTIONS.filter(
-        (y) => filters.yearFrom == null || y >= filters.yearFrom,
-      ).map((y) => ({ value: y, label: String(y) })),
-    [filters.yearFrom],
-  );
-
   const rateOptions = useMemo(
     () => RATE_OPTIONS.map((r) => ({ value: r, label: r })),
     [],
   );
 
+  // ── Korea tab — its own catalogue (`/korea/models`) and its own vocabulary;
+  // chassis / rate / lot are AJES-only and have no Korea counterpart.
+  const koreaModels = useKoreaModels(koreaFilters.make);
+
+  const koreaBrandOptions = useMemo(
+    () => KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label })),
+    [],
+  );
+
+  const koreaModelOptions = useMemo(
+    () =>
+      (koreaModels.data ?? []).map((m) => ({
+        value: m.name,
+        label: `${m.english ?? m.name} (${formatCount(m.count)})`,
+      })),
+    [koreaModels.data],
+  );
+
+  const fuelOptions = useMemo(
+    () => KOREA_FUELS.map((f) => ({ value: f, label: tFuel(f) })),
+    [tFuel],
+  );
+
+  const transmissionOptions = useMemo(
+    () =>
+      KOREA_TRANSMISSIONS.map((tr) => {
+        const key = TRANSMISSION_LABEL_KEYS[tr];
+        return { value: tr, label: key ? tTrans(key) : tr.toUpperCase() };
+      }),
+    [tTrans],
+  );
+
+  const mileageToOptions = useMemo(
+    () =>
+      MILEAGE_STEPS.filter((m) => m > 0).map((m) => ({
+        value: m,
+        label: formatCount(m),
+      })),
+    [],
+  );
+
+  // The year row is shared by both tabs — it reads/writes the active tab's state.
+  const yearFrom = tab === "korea" ? koreaFilters.yearFrom : filters.yearFrom;
+  const yearTo = tab === "korea" ? koreaFilters.yearTo : filters.yearTo;
+  const setYearFrom = (v: number | null) =>
+    tab === "korea" ? setKorea("yearFrom", v) : setFilter("yearFrom", v);
+  const setYearTo = (v: number | null) =>
+    tab === "korea" ? setKorea("yearTo", v) : setFilter("yearTo", v);
+
+  const yearFromOptions = useMemo(
+    () =>
+      YEAR_OPTIONS.filter((y) => yearTo == null || y <= yearTo).map((y) => ({
+        value: y,
+        label: String(y),
+      })),
+    [yearTo],
+  );
+
+  const yearToOptions = useMemo(
+    () =>
+      YEAR_OPTIONS.filter((y) => yearFrom == null || y >= yearFrom).map((y) => ({
+        value: y,
+        label: String(y),
+      })),
+    [yearFrom],
+  );
+
   const onAdvancedSubmit = () => {
-    const q = filtersToQuery(filters);
+    // Each browser parses a different param set — Japan `marka/model/chassis…`,
+    // Korea `brand/model/min_year…` — so the query is built per tab.
+    const q =
+      tab === "korea"
+        ? koreaFiltersToQuery(koreaFilters)
+        : filtersToQuery(filters);
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(q)) params.set(k, String(v));
     const qs = params.toString();
@@ -267,14 +312,14 @@ export default function CarSearchSection({
 
           {/* Featured brands — 5×2 grid (9 brands + view-all) */}
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {featuredMakes.map(({ value, label }) => (
+            {featuredMakes.map(({ key, href, label, logo }) => (
               <Link
-                key={value}
-                href={`${viewAllHref}?marka=${encodeURIComponent(value)}`}
+                key={key}
+                href={href}
                 className="group flex items-center gap-2.5 rounded-xl border border-neutral-100 bg-white p-2.5 transition-all hover:border-neutral-300 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-600"
               >
                 <img
-                  src={brandLogoUrl(label)}
+                  src={brandLogoUrl(logo)}
                   alt={label}
                   loading="lazy"
                   width={28}
@@ -320,74 +365,152 @@ export default function CarSearchSection({
                   requiredMark={false}
                 >
                   <div className="[&_.ant-input-affix-wrapper-filled]:bg-white! [&_.ant-input-filled]:bg-white! [&_.ant-input::placeholder]:text-neutral-500! [&_.ant-select-filled]:bg-white! [&_.ant-select-placeholder]:text-neutral-500!">
-                    {/* Row 1 — marka · model · chassis */}
+                    {/* Row 1 — Japan: marka · model · chassis
+                                Korea: brand · model · fuel */}
                     <div className="grid grid-cols-1 gap-x-3 sm:grid-cols-3">
-                      <Form.Item
-                        label={tf("placeholders.marka")}
-                        className="mb-3! sm:mb-0!"
-                      >
-                        <Select
-                          placeholder={tf("placeholders.marka")}
-                          allowClear
-                          showSearch
-                          size="large"
-                          variant="filled"
-                          options={markaOptions}
-                          value={filters.marka ?? undefined}
-                          onChange={(v) => setMarka(v ?? null)}
-                          optionFilterProp="label"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label={tf("placeholders.model")}
-                        className="mb-3! sm:mb-0!"
-                      >
-                        <Select
-                          placeholder={tf("placeholders.model")}
-                          allowClear
-                          showSearch
-                          size="large"
-                          variant="filled"
-                          options={modelOptions}
-                          value={filters.model ?? undefined}
-                          onChange={(v) => setModel(v ?? null)}
-                          optionFilterProp="label"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label={tf("placeholders.chassis")}
-                        className="mb-3! sm:mb-0!"
-                      >
-                        <Select
-                          placeholder={tf("placeholders.chassis")}
-                          allowClear
-                          showSearch
-                          size="large"
-                          variant="filled"
-                          options={chassisOptions}
-                          value={filters.chassis ?? undefined}
-                          onChange={(v) => setFilter("chassis", v ?? null)}
-                          optionFilterProp="label"
-                        />
-                      </Form.Item>
+                      {tab === "japan" ? (
+                        <>
+                          <Form.Item
+                            label={tf("placeholders.marka")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={tf("placeholders.marka")}
+                              allowClear
+                              showSearch
+                              size="large"
+                              variant="filled"
+                              options={markaOptions}
+                              value={filters.marka ?? undefined}
+                              onChange={(v) => setMarka(v ?? null)}
+                              optionFilterProp="label"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label={tf("placeholders.model")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={tf("placeholders.model")}
+                              allowClear
+                              showSearch
+                              size="large"
+                              variant="filled"
+                              options={modelOptions}
+                              value={filters.model ?? undefined}
+                              onChange={(v) => setModel(v ?? null)}
+                              optionFilterProp="label"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label={tf("placeholders.chassis")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={tf("placeholders.chassis")}
+                              allowClear
+                              showSearch
+                              size="large"
+                              variant="filled"
+                              options={chassisOptions}
+                              value={filters.chassis ?? undefined}
+                              onChange={(v) => setFilter("chassis", v ?? null)}
+                              optionFilterProp="label"
+                            />
+                          </Form.Item>
+                        </>
+                      ) : (
+                        <>
+                          <Form.Item
+                            label={tf("placeholders.marka")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={tf("placeholders.marka")}
+                              allowClear
+                              showSearch
+                              size="large"
+                              variant="filled"
+                              options={koreaBrandOptions}
+                              value={koreaFilters.make ?? undefined}
+                              onChange={(v) => setKoreaMake(v ?? null)}
+                              optionFilterProp="label"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label={tf("placeholders.model")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={
+                                koreaFilters.make
+                                  ? tf("placeholders.model")
+                                  : tk("filters.modelNeedsBrand")
+                              }
+                              allowClear
+                              showSearch
+                              size="large"
+                              variant="filled"
+                              options={koreaModelOptions}
+                              value={koreaFilters.model ?? undefined}
+                              onChange={(v) => setKorea("model", v ?? null)}
+                              disabled={!koreaFilters.make}
+                              loading={koreaModels.isLoading}
+                              optionFilterProp="label"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label={tk("filters.fuel")}
+                            className="mb-3! sm:mb-0!"
+                          >
+                            <Select
+                              placeholder={tk("filters.fuel")}
+                              allowClear
+                              size="large"
+                              variant="filled"
+                              options={fuelOptions}
+                              value={koreaFilters.fuel ?? undefined}
+                              onChange={(v) => setKorea("fuel", v ?? null)}
+                            />
+                          </Form.Item>
+                        </>
+                      )}
                     </div>
 
-                    {/* Row 2 — rate · year · lot · submit */}
+                    {/* Row 2 — Japan: rate · year · lot · submit
+                                Korea: transmission · year · mileage · submit */}
                     <div className="grid grid-cols-1 gap-x-3 sm:mt-4 sm:grid-cols-[1fr_1.6fr_1fr_auto] sm:items-end">
-                      <Form.Item
-                        label={tf("placeholders.rate")}
-                        className="mb-3! sm:mb-0!"
-                      >
-                        <Select
-                          placeholder={tf("placeholders.rate")}
-                          allowClear
-                          size="large"
-                          variant="filled"
-                          options={rateOptions}
-                          value={filters.rate ?? undefined}
-                          onChange={(v) => setFilter("rate", v ?? null)}
-                        />
-                      </Form.Item>
+                      {tab === "japan" ? (
+                        <Form.Item
+                          label={tf("placeholders.rate")}
+                          className="mb-3! sm:mb-0!"
+                        >
+                          <Select
+                            placeholder={tf("placeholders.rate")}
+                            allowClear
+                            size="large"
+                            variant="filled"
+                            options={rateOptions}
+                            value={filters.rate ?? undefined}
+                            onChange={(v) => setFilter("rate", v ?? null)}
+                          />
+                        </Form.Item>
+                      ) : (
+                        <Form.Item
+                          label={tk("filters.transmission")}
+                          className="mb-3! sm:mb-0!"
+                        >
+                          <Select
+                            placeholder={tk("filters.transmission")}
+                            allowClear
+                            size="large"
+                            variant="filled"
+                            options={transmissionOptions}
+                            value={koreaFilters.transmission ?? undefined}
+                            onChange={(v) => setKorea("transmission", v ?? null)}
+                          />
+                        </Form.Item>
+                      )}
                       <Form.Item
                         label={tf("year.label")}
                         className="mb-3! sm:mb-0!"
@@ -399,8 +522,8 @@ export default function CarSearchSection({
                             size="large"
                             variant="filled"
                             options={yearFromOptions}
-                            value={filters.yearFrom ?? undefined}
-                            onChange={(v) => setFilter("yearFrom", v ?? null)}
+                            value={yearFrom ?? undefined}
+                            onChange={(v) => setYearFrom(v ?? null)}
                             style={{ width: "50%" }}
                           />
                           <Select
@@ -409,26 +532,44 @@ export default function CarSearchSection({
                             size="large"
                             variant="filled"
                             options={yearToOptions}
-                            value={filters.yearTo ?? undefined}
-                            onChange={(v) => setFilter("yearTo", v ?? null)}
+                            value={yearTo ?? undefined}
+                            onChange={(v) => setYearTo(v ?? null)}
                             style={{ width: "50%" }}
                           />
                         </Space.Compact>
                       </Form.Item>
-                      <Form.Item
-                        label={tf("placeholders.lot")}
-                        className="mb-3! sm:mb-0!"
-                      >
-                        <Input
-                          placeholder={tf("placeholders.lot")}
-                          size="large"
-                          variant="filled"
-                          allowClear
-                          value={filters.lot}
-                          onChange={(e) => setFilter("lot", e.target.value)}
-                        />
-                      </Form.Item>
+                      {tab === "japan" ? (
+                        <Form.Item
+                          label={tf("placeholders.lot")}
+                          className="mb-3! sm:mb-0!"
+                        >
+                          <Input
+                            placeholder={tf("placeholders.lot")}
+                            size="large"
+                            variant="filled"
+                            allowClear
+                            value={filters.lot}
+                            onChange={(e) => setFilter("lot", e.target.value)}
+                          />
+                        </Form.Item>
+                      ) : (
+                        <Form.Item
+                          label={tf("mileage.label")}
+                          className="mb-3! sm:mb-0!"
+                        >
+                          <Select
+                            placeholder={tf("mileage.maxPlaceholder")}
+                            allowClear
+                            size="large"
+                            variant="filled"
+                            options={mileageToOptions}
+                            value={koreaFilters.mileageTo ?? undefined}
+                            onChange={(v) => setKorea("mileageTo", v ?? null)}
+                          />
+                        </Form.Item>
+                      )}
                       <Button
+                        htmlType="submit"
                         color="default"
                         variant="solid"
                         size="large"

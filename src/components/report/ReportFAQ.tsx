@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Collapse } from "antd";
-import ReportHeading from "./ReportHeading";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { REPORT_FAQ_KEYS } from "./reportFaqKeys";
 
 export default function ReportFAQ() {
@@ -24,7 +24,7 @@ export default function ReportFAQ() {
 
   return (
     <section className="mx-auto w-full max-w-3xl px-4 py-14 md:py-20 lg:px-6">
-      <ReportHeading
+      <SectionHeading
         heading={t("heading")}
       />
 

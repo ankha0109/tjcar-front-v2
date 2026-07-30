@@ -112,7 +112,7 @@ export default function HeroSection() {
               </span>
             </Link>
             <Link
-              href="/how-it-works"
+              href="/about"
               className="group inline-flex h-12 items-center gap-2 rounded-full border border-neutral-300 bg-white/70 px-5 text-[14px] font-semibold text-neutral-900 backdrop-blur transition-all duration-300 hover:border-neutral-900 hover:bg-white dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-100 dark:hover:border-neutral-100 dark:hover:bg-neutral-900"
             >
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 text-neutral-700 transition-colors group-hover:border-neutral-900 group-hover:text-neutral-900 dark:border-neutral-600 dark:text-neutral-300 dark:group-hover:border-neutral-100 dark:group-hover:text-neutral-100">

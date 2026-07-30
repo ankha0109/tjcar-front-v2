@@ -43,19 +43,32 @@ export function MailIcon(props: IconProps) {
   );
 }
 
+export function KeyIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...strokeBase} {...props}>
+      <circle cx="7.5" cy="15.5" r="4.5" />
+      <path d="m10.7 12.3 8.3-8.3" />
+      <path d="m16.5 6.5 2.5 2.5" />
+      <path d="m19 4 2 2" />
+    </svg>
+  );
+}
+
+export function AlertIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...strokeBase} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8v5" />
+      <path d="M12 16.5h.01" />
+    </svg>
+  );
+}
+
 export function ArrowIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...strokeBase} {...props}>
       <line x1="5" y1="12" x2="19" y2="12" />
       <polyline points="12 5 19 12 12 19" />
-    </svg>
-  );
-}
-
-export function CheckIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" {...strokeBase} strokeWidth={2.5} {...props}>
-      <polyline points="20 6 9 17 4 12" />
     </svg>
   );
 }

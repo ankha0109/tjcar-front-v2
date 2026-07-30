@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import ReportHeading from "./ReportHeading";
-import Reveal from "./Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/ui/Reveal";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 
@@ -97,7 +97,7 @@ export default async function ReportFeatures() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] [background:radial-gradient(60%_70%_at_50%_0%,rgba(241,71,44,0.06),transparent_70%)]"
       />
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
-        <ReportHeading
+        <SectionHeading
           heading={t("heading")}
           subheading={t("subheading")}
         />

@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import AboutHero from "@/components/about/AboutHero";
-import CompanyStory from "@/components/about/CompanyStory";
-import ServicesList from "@/components/about/ServicesList";
-import ProcessTimeline from "@/components/about/ProcessTimeline";
-import AdvantagesAndTrust from "@/components/about/AdvantagesAndTrust";
-import CompanyAtAGlance from "@/components/about/CompanyAtAGlance";
-import AboutCTA from "@/components/about/AboutCTA";
+import AboutServices from "@/components/about/AboutServices";
+import AboutStory from "@/components/about/AboutStory";
+import AboutTeam from "@/components/about/AboutTeam";
+import AboutGallery from "@/components/about/AboutGallery";
+import AboutCustomers from "@/components/about/AboutCustomers";
+
+type PageProps = {
+  params: Promise<{ locale: string }>;
+};
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "about.metadata" });
   return {
@@ -21,16 +22,18 @@ export async function generateMetadata({
   };
 }
 
-export default async function AboutPage() {
+export default async function AboutPage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <>
       <AboutHero />
-      <CompanyStory />
-      <ServicesList />
-      <ProcessTimeline />
-      <AdvantagesAndTrust />
-      <CompanyAtAGlance />
-      <AboutCTA />
+      <AboutServices />
+      <AboutStory />
+      <AboutTeam />
+      <AboutGallery />
+      <AboutCustomers />
     </>
   );
 }

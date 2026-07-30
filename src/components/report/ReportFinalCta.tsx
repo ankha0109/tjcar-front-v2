@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import ReportCtaButton from "./ReportCtaButton";
-import Reveal from "./Reveal";
+import Reveal from "@/components/ui/Reveal";
 
 /** §5.10 final CTA banner + the §11 footer disclaimer small print. */
 export default async function ReportFinalCta() {

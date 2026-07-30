@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import ReportHeading from "./ReportHeading";
-import Reveal from "./Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/ui/Reveal";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 
@@ -57,7 +57,7 @@ export default async function ReportSteps() {
 
   return (
     <section id="report-steps" className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
-      <ReportHeading heading={t("heading")} />
+      <SectionHeading heading={t("heading")} />
 
       <Reveal className="mt-10 md:mt-12">
         <div className="relative overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-50 p-6 md:p-10 dark:border-neutral-800 dark:bg-neutral-900/60">

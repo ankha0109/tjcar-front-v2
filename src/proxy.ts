@@ -9,6 +9,17 @@ const intlMiddleware = createIntlMiddleware(routing);
 
 const PROTECTED_SEGMENTS = ["/dashboard"];
 
+/**
+ * The password-reset mail links to the API, which 302s to
+ * `{FRONT_URL}/reset-password/{token}?email=…` — a path fixed in the backend
+ * and, unlike everything else we serve, carrying no locale prefix. Send it on
+ * to the real page rather than teach next-intl about a second auth location.
+ */
+const BARE_RESET_PATH = "/reset-password/";
+
+/** Set by next-intl on every localised response; `Api.ts` reads it too. */
+const LOCALE_COOKIE = "NEXT_LOCALE";
+
 function resolveDevice(req: NextRequest): Device {
   const override = req.nextUrl.searchParams.get("view");
   if (override === "mobile" || override === "desktop") return override;
@@ -37,6 +48,19 @@ export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   const pathWithoutLocale = stripLocale(pathname);
   const locale = getLocaleFromPath(pathname);
+
+  if (pathname.startsWith(BARE_RESET_PATH)) {
+    // `localeDetection: false` means next-intl would drop everyone on `mn`
+    // here, so honour the language the user was actually browsing in.
+    const cookieLocale = req.cookies.get(LOCALE_COOKIE)?.value ?? "";
+    const target = (routing.locales as readonly string[]).includes(cookieLocale)
+      ? cookieLocale
+      : routing.defaultLocale;
+
+    return NextResponse.redirect(
+      new URL(`/${target}/auth${pathname}${req.nextUrl.search}`, req.url),
+    );
+  }
 
   const isProtected = PROTECTED_SEGMENTS.some(
     (seg) =>

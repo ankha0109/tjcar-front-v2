@@ -192,6 +192,16 @@ export const KOREA_TRANSMISSIONS = [
   "cvt",
 ] as const;
 
+/**
+ * Full-KRW steps for the price range filter (`min_price` / `max_price`).
+ * Coarse at the top because Encar's volume sits under ₩50M — the same
+ * shape as `MILEAGE_STEPS` / `ENG_V_STEPS` on the Japan side.
+ */
+export const KRW_PRICE_STEPS = [
+  5_000_000, 10_000_000, 15_000_000, 20_000_000, 30_000_000, 40_000_000,
+  50_000_000, 70_000_000, 100_000_000, 150_000_000, 200_000_000,
+] as const;
+
 export type KoreaFilterValues = {
   /** Brand slug from KOREA_BRANDS (the backend rejects anything else). */
   make: string | null;

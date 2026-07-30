@@ -61,9 +61,6 @@ export default async function ServicesSection() {
         >
           {t("heading")}
         </h2>
-        <p className="max-w-2xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14px] dark:text-neutral-400">
-          {t("subheading")}
-        </p>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

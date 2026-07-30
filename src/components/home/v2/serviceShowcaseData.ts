@@ -8,7 +8,6 @@ import {
   IconAbout,
   IconBrands,
   IconDashboard,
-  IconHowItWorks,
   IconJapan,
   IconKorea,
   IconReady,
@@ -35,7 +34,6 @@ export const SHOWCASE_SERVICES: ShowcaseService[] = [
   { key: "ready", href: "/garage", Icon: IconReady, photo: readyImg },
   { key: "report", href: "/report", Icon: IconReport, photo: reportImg },
   { key: "brands", href: "/japan/brands", Icon: IconBrands },
-  { key: "howItWorks", href: "/how-it-works", Icon: IconHowItWorks },
   { key: "about", href: "/about", Icon: IconAbout },
   { key: "dashboard", href: "/dashboard", Icon: IconDashboard },
 ];

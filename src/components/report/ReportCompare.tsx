@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import ReportHeading from "./ReportHeading";
+import SectionHeading from "@/components/ui/SectionHeading";
 import CompareSlider from "./CompareSlider";
-import Reveal from "./Reveal";
+import Reveal from "@/components/ui/Reveal";
 import compareClean from "../../../public/report/compare-clean2.png";
 import compareDamaged from "../../../public/report/compare-damaged2.png";
 
@@ -11,7 +11,7 @@ export default async function ReportCompare() {
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
-      <ReportHeading
+      <SectionHeading
         heading={t("heading")}
         subheading={t("subheading")}
       />

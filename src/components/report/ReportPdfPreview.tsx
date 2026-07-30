@@ -5,7 +5,7 @@ import Image, { type StaticImageData } from "next/image";
 import { useTranslations } from "next-intl";
 import useEmblaCarousel from "embla-carousel-react";
 import { cn } from "@/utils";
-import ReportHeading from "./ReportHeading";
+import SectionHeading from "@/components/ui/SectionHeading";
 import SampleReportModal from "./SampleReportModal";
 
 type PageKey = "summary" | "history" | "sheet" | "verify";
@@ -299,7 +299,7 @@ export default function ReportPdfPreview() {
       className="scroll-mt-20 border-y border-neutral-200/70 bg-neutral-50/60 dark:border-neutral-800/70 dark:bg-neutral-900/40"
     >
       <div className="mx-auto w-full max-w-7xl px-4 py-14 md:py-20 lg:px-6">
-        <ReportHeading heading={t("heading")} subheading={t("subheading")} />
+        <SectionHeading heading={t("heading")} subheading={t("subheading")} />
 
         {/* desktop grid */}
         <div className="mt-10 hidden gap-6 md:grid md:grid-cols-4 md:mt-12">

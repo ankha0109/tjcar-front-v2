@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import ReportHeading from "./ReportHeading";
-import Reveal from "./Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/ui/Reveal";
 
 const AUDIENCE_KEYS = ["a1", "a2", "a3", "a4", "a5", "a6"] as const;
 
@@ -48,7 +48,7 @@ export default async function ReportAudience() {
                 {t("eyebrow")}
               </p>
 
-              <ReportHeading align="left" heading={t("heading")} />
+              <SectionHeading align="left" heading={t("heading")} />
 
               {/* Verified-stamp motif — anchors the column beside the list. */}
               <span

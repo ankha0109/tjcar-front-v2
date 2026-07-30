@@ -1,13 +1,19 @@
 "use client";
 
-import { Button, Drawer, InputNumber, Select, Space, Tag } from "antd";
-import { useState } from "react";
+import { Select, Tag } from "antd";
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import FilterShell, {
+  RangePair,
+  rangeSummary,
+  type FieldDef,
+} from "@/components/cards/filterShell";
 import {
   EMPTY_KOREA_FILTERS,
   KOREA_BRANDS,
   KOREA_FUELS,
   KOREA_TRANSMISSIONS,
+  KRW_PRICE_STEPS,
   isKoreaFiltersEmpty,
   koreaBrandLabel,
   type KoreaFilterValues,
@@ -36,28 +42,16 @@ const TRANSMISSION_LABEL_KEYS: Record<string, string | null> = {
   cvt: null,
 };
 
-function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-    </svg>
-  );
-}
-
+/**
+ * Korea's filter sidebar. Layout, pills and the mobile drawer all come from the
+ * shared `FilterShell`; only the fields below are Korea's own — brand slugs and
+ * model groups from Encar, KRW prices, and no auction-house/rate/lot concepts.
+ */
 export default function KoreaFilters({ value, onChange }: Props) {
   const t = useTranslations("featured.filters");
   const tk = useTranslations("korea");
   const tFuel = useTranslations("carDetail.fuel");
   const tTrans = useTranslations("car.card.transmission");
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const models = useKoreaModels(value.make);
 
@@ -73,65 +67,121 @@ export default function KoreaFilters({ value, onChange }: Props) {
     onChange({ ...value, make: v, model: null });
   };
 
-  const modelOptions = (models.data ?? []).map((m) => ({
-    value: m.name,
-    label: `${modelLabel(m)} (${formatKm(m.count)})`,
-  }));
-  const fuelOptions = KOREA_FUELS.map((f) => ({
-    value: f,
-    label: tFuel(f),
-  }));
-  const transmissionOptions = KOREA_TRANSMISSIONS.map((tr) => {
-    const key = TRANSMISSION_LABEL_KEYS[tr];
-    return { value: tr, label: key ? tTrans(key) : tr.toUpperCase() };
-  });
+  const brandOptions = useMemo(
+    () => KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label })),
+    [],
+  );
 
-  const yearFromOptions = YEAR_OPTIONS.filter(
-    (y) => value.yearTo == null || y <= value.yearTo,
-  ).map((y) => ({ value: y, label: String(y) }));
-  const yearToOptions = YEAR_OPTIONS.filter(
-    (y) => value.yearFrom == null || y >= value.yearFrom,
-  ).map((y) => ({ value: y, label: String(y) }));
-  const mileageToOptions = MILEAGE_STEPS.filter((m) => m > 0).map((m) => ({
-    value: m,
-    label: formatKm(m),
-  }));
+  const modelOptions = useMemo(
+    () =>
+      (models.data ?? []).map((m) => ({
+        value: m.name,
+        label: `${modelLabel(m)} (${formatKm(m.count)})`,
+      })),
+    [models.data],
+  );
 
-  const totalCount =
-    (value.make ? 1 : 0) +
-    (value.model ? 1 : 0) +
-    (value.yearFrom != null ? 1 : 0) +
-    (value.yearTo != null ? 1 : 0) +
-    (value.priceFrom != null ? 1 : 0) +
-    (value.priceTo != null ? 1 : 0) +
-    (value.mileageTo != null ? 1 : 0) +
-    (value.fuel ? 1 : 0) +
-    (value.transmission ? 1 : 0);
-  const hasFilters = !isKoreaFiltersEmpty(value);
+  const fuelOptions = useMemo(
+    () => KOREA_FUELS.map((f) => ({ value: f, label: tFuel(f) })),
+    [tFuel],
+  );
 
-  const body = (
-    <div className="space-y-3 py-2">
-      <Field label={t("placeholders.marka")}>
+  const transmissionOptions = useMemo(
+    () =>
+      KOREA_TRANSMISSIONS.map((tr) => {
+        const key = TRANSMISSION_LABEL_KEYS[tr];
+        return { value: tr, label: key ? tTrans(key) : tr.toUpperCase() };
+      }),
+    [tTrans],
+  );
+
+  const yearFromOptions = useMemo(
+    () =>
+      YEAR_OPTIONS.filter((y) => value.yearTo == null || y <= value.yearTo).map(
+        (y) => ({ value: y, label: String(y) }),
+      ),
+    [value.yearTo],
+  );
+
+  const yearToOptions = useMemo(
+    () =>
+      YEAR_OPTIONS.filter(
+        (y) => value.yearFrom == null || y >= value.yearFrom,
+      ).map((y) => ({ value: y, label: String(y) })),
+    [value.yearFrom],
+  );
+
+  const priceFromOptions = useMemo(
+    () =>
+      KRW_PRICE_STEPS.filter(
+        (p) => value.priceTo == null || p <= value.priceTo,
+      ).map((p) => ({ value: p, label: formatKrw(p) })),
+    [value.priceTo],
+  );
+
+  const priceToOptions = useMemo(
+    () =>
+      KRW_PRICE_STEPS.filter(
+        (p) => value.priceFrom == null || p >= value.priceFrom,
+      ).map((p) => ({ value: p, label: formatKrw(p) })),
+    [value.priceFrom],
+  );
+
+  // Encar exposes an upper bound only — there is no `min_mileage` param.
+  const mileageToOptions = useMemo(
+    () => MILEAGE_STEPS.filter((m) => m > 0).map((m) => ({
+      value: m,
+      label: formatKm(m),
+    })),
+    [],
+  );
+
+  const selectedModel = (models.data ?? []).find((m) => m.name === value.model);
+
+  const fields: FieldDef[] = [
+    {
+      key: "make",
+      label: t("placeholders.marka"),
+      active: !!value.make,
+      summary: value.make ? koreaBrandLabel(value.make) : null,
+      clear: () => setMake(null),
+      control: (
         <Select
           placeholder={t("placeholders.marka")}
           allowClear
           showSearch
-          optionFilterProp="label"
-          options={KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label }))}
+          options={brandOptions}
           value={value.make ?? undefined}
           onChange={(v) => setMake(v ?? null)}
           variant="filled"
           style={{ width: "100%" }}
+          optionFilterProp="label"
         />
-      </Field>
-      <Field label={t("placeholders.model")}>
+      ),
+      mobile: {
+        type: "single",
+        options: brandOptions.map((o) => ({
+          value: o.value,
+          label: o.label,
+          searchText: o.label,
+        })),
+        value: value.make,
+        onSelect: (v) => setMake(v),
+      },
+    },
+    {
+      key: "model",
+      label: t("placeholders.model"),
+      active: !!value.model,
+      summary: selectedModel ? modelLabel(selectedModel) : value.model,
+      clear: () => set("model", null),
+      control: (
         <Select
           placeholder={
             value.make ? t("placeholders.model") : tk("filters.modelNeedsBrand")
           }
           allowClear
           showSearch
-          optionFilterProp="label"
           options={modelOptions}
           value={value.model ?? undefined}
           onChange={(v) => set("model", v ?? null)}
@@ -139,55 +189,115 @@ export default function KoreaFilters({ value, onChange }: Props) {
           loading={models.isLoading}
           variant="filled"
           style={{ width: "100%" }}
+          optionFilterProp="label"
         />
-      </Field>
-      <Field label={t("year.label")}>
-        <Space.Compact block>
+      ),
+      mobile: {
+        type: "single",
+        options: modelOptions.map((o) => ({
+          value: o.value,
+          label: o.label,
+          searchText: o.label,
+        })),
+        value: value.model,
+        onSelect: (v) => set("model", v),
+      },
+    },
+    {
+      key: "year",
+      label: t("year.label"),
+      active: value.yearFrom != null || value.yearTo != null,
+      summary: rangeSummary(value.yearFrom, value.yearTo, (n) => String(n)),
+      clear: () => onChange({ ...value, yearFrom: null, yearTo: null }),
+      control: (
+        <RangePair>
           <Select
-            placeholder={t("year.fromPlaceholder")}
+            placeholder={t("examples.select")}
             allowClear
             options={yearFromOptions}
             value={value.yearFrom ?? undefined}
             onChange={(v) => set("yearFrom", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
+            style={{ width: "100%" }}
           />
           <Select
-            placeholder={t("year.toPlaceholder")}
+            placeholder={t("examples.select")}
             allowClear
             options={yearToOptions}
             value={value.yearTo ?? undefined}
             onChange={(v) => set("yearTo", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
+            style={{ width: "100%" }}
           />
-        </Space.Compact>
-      </Field>
-      <Field label={tk("price.label")}>
-        <Space.Compact block>
-          <InputNumber
-            placeholder={tk("price.fromPlaceholder")}
-            min={0}
+        </RangePair>
+      ),
+      mobile: {
+        type: "range",
+        from: {
+          options: yearFromOptions,
+          value: value.yearFrom,
+          onChange: (v) => set("yearFrom", v),
+          placeholder: t("year.fromPlaceholder"),
+        },
+        to: {
+          options: yearToOptions,
+          value: value.yearTo,
+          onChange: (v) => set("yearTo", v),
+          placeholder: t("year.toPlaceholder"),
+        },
+      },
+    },
+    {
+      key: "price",
+      label: tk("price.label"),
+      active: value.priceFrom != null || value.priceTo != null,
+      summary: rangeSummary(value.priceFrom, value.priceTo, formatKrw),
+      clear: () => onChange({ ...value, priceFrom: null, priceTo: null }),
+      control: (
+        <RangePair>
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={priceFromOptions}
             value={value.priceFrom ?? undefined}
-            onChange={(v) => set("priceFrom", (v as number | null) ?? null)}
+            onChange={(v) => set("priceFrom", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
-            formatter={(v) => (v ? formatKrw(Number(v)) : "")}
-            parser={(v) => Number((v ?? "").replace(/[^0-9]/g, ""))}
+            style={{ width: "100%" }}
           />
-          <InputNumber
-            placeholder={tk("price.toPlaceholder")}
-            min={0}
+          <Select
+            placeholder={t("examples.select")}
+            allowClear
+            options={priceToOptions}
             value={value.priceTo ?? undefined}
-            onChange={(v) => set("priceTo", (v as number | null) ?? null)}
+            onChange={(v) => set("priceTo", v ?? null)}
             variant="filled"
-            style={{ width: "50%" }}
-            formatter={(v) => (v ? formatKrw(Number(v)) : "")}
-            parser={(v) => Number((v ?? "").replace(/[^0-9]/g, ""))}
+            style={{ width: "100%" }}
           />
-        </Space.Compact>
-      </Field>
-      <Field label={t("mileage.label")}>
+        </RangePair>
+      ),
+      mobile: {
+        type: "range",
+        from: {
+          options: priceFromOptions,
+          value: value.priceFrom,
+          onChange: (v) => set("priceFrom", v),
+          placeholder: tk("price.fromPlaceholder"),
+        },
+        to: {
+          options: priceToOptions,
+          value: value.priceTo,
+          onChange: (v) => set("priceTo", v),
+          placeholder: tk("price.toPlaceholder"),
+        },
+      },
+    },
+    {
+      key: "mileage",
+      label: t("mileage.label"),
+      active: value.mileageTo != null,
+      summary: rangeSummary(null, value.mileageTo, formatKm),
+      clear: () => set("mileageTo", null),
+      control: (
         <Select
           placeholder={t("mileage.maxPlaceholder")}
           allowClear
@@ -197,8 +307,24 @@ export default function KoreaFilters({ value, onChange }: Props) {
           variant="filled"
           style={{ width: "100%" }}
         />
-      </Field>
-      <Field label={tk("filters.fuel")}>
+      ),
+      mobile: {
+        type: "range",
+        to: {
+          options: mileageToOptions,
+          value: value.mileageTo,
+          onChange: (v) => set("mileageTo", v),
+          placeholder: t("mileage.maxPlaceholder"),
+        },
+      },
+    },
+    {
+      key: "fuel",
+      label: tk("filters.fuel"),
+      active: !!value.fuel,
+      summary: value.fuel ? tFuel(value.fuel) : null,
+      clear: () => set("fuel", null),
+      control: (
         <Select
           placeholder={tk("filters.fuel")}
           allowClear
@@ -208,8 +334,28 @@ export default function KoreaFilters({ value, onChange }: Props) {
           variant="filled"
           style={{ width: "100%" }}
         />
-      </Field>
-      <Field label={tk("filters.transmission")}>
+      ),
+      mobile: {
+        type: "single",
+        options: fuelOptions.map((o) => ({
+          value: o.value,
+          label: o.label,
+          searchText: o.label,
+        })),
+        value: value.fuel,
+        onSelect: (v) => set("fuel", v),
+      },
+    },
+    {
+      key: "transmission",
+      label: tk("filters.transmission"),
+      active: !!value.transmission,
+      summary: value.transmission
+        ? (transmissionOptions.find((o) => o.value === value.transmission)
+            ?.label ?? value.transmission)
+        : null,
+      clear: () => set("transmission", null),
+      control: (
         <Select
           placeholder={tk("filters.transmission")}
           allowClear
@@ -219,90 +365,26 @@ export default function KoreaFilters({ value, onChange }: Props) {
           variant="filled"
           style={{ width: "100%" }}
         />
-      </Field>
-    </div>
-  );
-
-  const header = (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-900 text-white">
-          <FilterIcon className="h-3.5 w-3.5" />
-        </span>
-        <span className="text-[13px] font-semibold text-neutral-900">
-          {t("title")}
-        </span>
-        {totalCount > 0 && (
-          <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
-            {totalCount}
-          </span>
-        )}
-      </div>
-      <Button
-        type="text"
-        onClick={() => onChange({ ...EMPTY_KOREA_FILTERS })}
-        disabled={!hasFilters}
-        className="!text-[11px] !font-medium !text-neutral-500"
-      >
-        {t("clear")}
-      </Button>
-    </div>
-  );
+      ),
+      mobile: {
+        type: "single",
+        options: transmissionOptions.map((o) => ({
+          value: o.value,
+          label: o.label,
+          searchText: o.label,
+        })),
+        value: value.transmission,
+        onSelect: (v) => set("transmission", v),
+      },
+    },
+  ];
 
   return (
-    <>
-      {/* Mobile trigger — below lg */}
-      <div className="mb-3 flex items-center gap-2 lg:hidden">
-        <Button
-          onClick={() => setMobileOpen(true)}
-          icon={<FilterIcon className="h-3.5 w-3.5" />}
-          className="!h-9 !shrink-0"
-        >
-          {t("title")}
-          {totalCount > 0 && (
-            <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-white">
-              {totalCount}
-            </span>
-          )}
-        </Button>
-        {hasFilters && (
-          <Button
-            type="text"
-            onClick={() => onChange({ ...EMPTY_KOREA_FILTERS })}
-            className="!text-neutral-500"
-          >
-            {t("clear")}
-          </Button>
-        )}
-      </div>
-
-      {/* Desktop sidebar — lg+ */}
-      <aside className="hidden lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:block lg:w-[280px] lg:shrink-0 lg:self-start">
-        <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-          <div className="border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
-            {header}
-          </div>
-          <div className="max-h-[calc(100dvh-var(--header-h)-8rem)] overflow-y-auto px-4">
-            {body}
-          </div>
-        </div>
-      </aside>
-
-      {/* Mobile drawer */}
-      <Drawer
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        placement="left"
-        size="default"
-        title={header}
-        styles={{
-          header: { padding: "16px 20px", borderBottom: "1px solid #f5f5f5" },
-          body: { padding: "4px 20px" },
-        }}
-      >
-        {body}
-      </Drawer>
-    </>
+    <FilterShell
+      fields={fields}
+      hasFilters={!isKoreaFiltersEmpty(value)}
+      onClearAll={() => onChange({ ...EMPTY_KOREA_FILTERS })}
+    />
   );
 }
 
@@ -350,7 +432,7 @@ export function KoreaFilterChips({ value, onChange }: Props) {
   if (value.priceFrom != null || value.priceTo != null)
     chips.push({
       key: "price",
-      label: `${value.priceFrom != null ? formatKrw(value.priceFrom) : "$…"} – ${value.priceTo != null ? formatKrw(value.priceTo) : "$…"}`,
+      label: `${value.priceFrom != null ? formatKrw(value.priceFrom) : "…"} – ${value.priceTo != null ? formatKrw(value.priceTo) : "…"}`,
       onRemove: () => onChange({ ...value, priceFrom: null, priceTo: null }),
     });
   if (value.mileageTo != null)
@@ -377,7 +459,8 @@ export function KoreaFilterChips({ value, onChange }: Props) {
   if (chips.length === 0) return null;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+    // Desktop only — below `lg` the same state is already visible in the pills.
+    <div className="mt-3 hidden flex-wrap items-center gap-1.5 lg:flex">
       <span className="text-[11px] font-medium uppercase text-neutral-400">
         {t("active")}
       </span>
@@ -397,23 +480,6 @@ export function KoreaFilterChips({ value, onChange }: Props) {
           {c.label}
         </Tag>
       ))}
-    </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div className="mb-1 text-[10.5px] font-medium uppercase text-neutral-500">
-        {label}
-      </div>
-      {children}
     </div>
   );
 }

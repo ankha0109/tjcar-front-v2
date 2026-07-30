@@ -77,21 +77,6 @@ const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-);
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -332,11 +317,6 @@ export default function MobileDrawer({ open, onClose }: Props) {
 
   const FEATURED = [
     { key: "about", labelKey: "nav.about" as const, href: "/about" },
-    {
-      key: "howItWorks",
-      labelKey: "howItWorks" as const,
-      href: "/how-it-works",
-    },
     { key: "posts", labelKey: "nav.posts" as const, href: "/posts" },
   ];
 

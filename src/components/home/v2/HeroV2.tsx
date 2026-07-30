@@ -140,7 +140,7 @@ export default function HeroV2() {
               </span>
             </Link>
             <Link
-              href="/how-it-works"
+              href="/about"
               className="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-5 py-3 text-[13.5px] font-medium text-neutral-700 transition-colors hover:border-primary hover:text-primary dark:border-neutral-800 dark:text-neutral-200"
             >
               <PlayIcon className="h-3 w-3 text-primary" />
