@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import BrandsExplorer from "@/components/brands/BrandsExplorer";
+import JapanBrandsExplorer from "@/components/brands/JapanBrandsExplorer";
 import { norm } from "@/lib/brand";
 import { getBrandsCatalog } from "@/services/filters";
 
@@ -45,5 +45,5 @@ export default async function JapanBrandsPage({
   const initialMake =
     (makeParam && resolve(makeParam)) ?? resolve("Toyota") ?? brands[0] ?? "";
 
-  return <BrandsExplorer catalog={catalog} initialMake={initialMake} />;
+  return <JapanBrandsExplorer catalog={catalog} initialMake={initialMake} />;
 }

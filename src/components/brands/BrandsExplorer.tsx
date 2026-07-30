@@ -3,58 +3,83 @@
 import { useMemo, useRef, useState } from "react";
 import { Empty, Input } from "antd";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { groupByInitial } from "@/lib/alphabet";
-import { TOP_JAPAN_MAKES, brandLogoUrl, norm } from "@/lib/brand";
-import type { BrandsCatalog } from "@/services/filters";
+import { brandLogoUrl } from "@/lib/brand";
+
+/** One manufacturer row. `key` is the identity the adapter round-trips through
+ *  the URL and its hrefs; `label` is what the user reads; `logo` overrides the
+ *  name handed to `brandLogoUrl` when the CDN slug differs from the label. */
+export type BrandItem = { key: string; label: string; logo?: string };
+
+/** One model tile. `value` goes into the listing href, `label` is displayed,
+ *  `count` is the live listing count (omitted when the source has none). */
+export type ModelItem = { value: string; label: string; count?: number };
 
 type Props = {
-  catalog?: BrandsCatalog;
-  /** Resolved real brand name to show selected on first render (e.g. "TOYOTA"). */
-  initialMake: string;
+  brands: BrandItem[];
+  /** Brand keys pinned above the A–Z list, in the order given. */
+  featuredKeys: string[];
+  /** Currently selected brand key — always resolved by the adapter. */
+  selected: string;
+  onSelect: (key: string) => void;
+  models: ModelItem[];
+  modelsLoading?: boolean;
+  /** "All {brand} listings" target. */
+  brandHref: (key: string) => string;
+  modelHref: (brand: string, model: string) => string;
+  namespace: "japanBrands" | "koreaBrands";
 };
 
-const auctionHref = (make: string, model?: string) =>
-  model
-    ? `/japan?marka=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`
-    : `/japan?marka=${encodeURIComponent(make)}`;
+const formatCount = (n: number) => new Intl.NumberFormat("en-US").format(n);
 
-export default function BrandsExplorer({ catalog, initialMake }: Props) {
-  const t = useTranslations("japanBrands");
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
+const byLabel = <T extends { label: string }>(items: T[]) =>
+  [...items].sort((a, b) => a.label.localeCompare(b.label));
+
+export default function BrandsExplorer({
+  brands,
+  featuredKeys,
+  selected,
+  onSelect,
+  models,
+  modelsLoading,
+  brandHref,
+  modelHref,
+  namespace,
+}: Props) {
+  const t = useTranslations(namespace);
   const modelsRef = useRef<HTMLDivElement>(null);
-
-  const brands = useMemo(() => catalog?.brands ?? [], [catalog]);
-
-  // Selection follows the `?make=` query param (shareable / reload-safe), with
-  // the server-resolved `initialMake` as the fallback.
-  const selected = useMemo(() => {
-    const q = params.get("make");
-    if (q) {
-      const match = brands.find((b) => norm(b) === norm(q));
-      if (match) return match;
-    }
-    return initialMake;
-  }, [params, brands, initialMake]);
-
   const [filter, setFilter] = useState("");
   const q = filter.trim().toLowerCase();
 
-  // Level 1 — featured makes first (curated order), then the rest A–Z.
-  const featured = useMemo(() => {
-    const byNorm = new Map(brands.map((b) => [norm(b), b]));
-    return TOP_JAPAN_MAKES.map((n) => byNorm.get(norm(n))).filter(
-      (b): b is string => Boolean(b),
-    );
-  }, [brands]);
+  const byKey = useMemo(
+    () => new Map(brands.map((b) => [b.key, b])),
+    [brands],
+  );
+  const selectedLabel = byKey.get(selected)?.label ?? selected;
+  const selectedLogo = byKey.get(selected)?.logo ?? selectedLabel;
 
-  const featuredSet = useMemo(() => new Set(featured), [featured]);
+  // Level 1 — featured makes first (curated order), then the rest A–Z.
+  const featured = useMemo(
+    () =>
+      featuredKeys
+        .map((k) => byKey.get(k))
+        .filter((b): b is BrandItem => Boolean(b)),
+    [featuredKeys, byKey],
+  );
+
+  const featuredSet = useMemo(
+    () => new Set(featured.map((b) => b.key)),
+    [featured],
+  );
 
   const restGroups = useMemo(
-    () => groupByInitial(brands.filter((b) => !featuredSet.has(b)), (b) => b),
+    () =>
+      groupByInitial(
+        byLabel(brands.filter((b) => !featuredSet.has(b.key))),
+        (b) => b.label,
+      ),
     [brands, featuredSet],
   );
 
@@ -62,8 +87,8 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
     () =>
       q
         ? groupByInitial(
-            brands.filter((b) => b.toLowerCase().includes(q)),
-            (b) => b,
+            byLabel(brands.filter((b) => b.label.toLowerCase().includes(q))),
+            (b) => b.label,
           )
         : [],
     [brands, q],
@@ -71,28 +96,25 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
 
   // Level 2 — selected make's models, grouped by first letter.
   const modelGroups = useMemo(
-    () => groupByInitial(catalog?.modelsByBrand[selected] ?? [], (m) => m),
-    [catalog, selected],
+    () => groupByInitial(byLabel(models), (m) => m.label),
+    [models],
   );
-  const modelCount = catalog?.modelsByBrand[selected]?.length ?? 0;
 
-  const selectMake = (make: string) => {
-    router.replace(`${pathname}?make=${encodeURIComponent(make)}`, {
-      scroll: false,
-    });
+  const selectBrand = (key: string) => {
+    onSelect(key);
     // On narrow screens the models live below the list — bring them into view.
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       modelsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
-  const renderMakeRow = (brand: string) => {
-    const active = brand === selected;
+  const renderBrandRow = (brand: BrandItem) => {
+    const active = brand.key === selected;
     return (
       <button
-        key={brand}
+        key={brand.key}
         type="button"
-        onClick={() => selectMake(brand)}
+        onClick={() => selectBrand(brand.key)}
         aria-current={active}
         className={`group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors ${
           active
@@ -101,19 +123,21 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
         }`}
       >
         <img
-          src={brandLogoUrl(brand)}
+          src={brandLogoUrl(brand.logo ?? brand.label)}
           alt=""
           loading="lazy"
           width={22}
           height={22}
           className="h-5.5 w-5.5 shrink-0 object-contain"
         />
-        <span className="truncate text-[13.5px] font-medium">{brand}</span>
+        <span className="truncate text-[13.5px] font-medium">
+          {brand.label}
+        </span>
       </button>
     );
   };
 
-  if (!catalog || brands.length === 0) {
+  if (brands.length === 0) {
     return (
       <section className="mx-auto w-full max-w-7xl px-4 py-16 lg:px-6">
         <Empty description={t("unavailable")} />
@@ -125,7 +149,7 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
     <section className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:pt-10 lg:px-6">
       {/* Heading */}
       <header className="mb-6">
-        <h1 className="text-[24px] font-semibold tracking-tight text-neutral-900 md:text-[28px] dark:text-neutral-50">
+        <h1 className="text-[24px] font-semibold text-neutral-900 md:text-[28px] dark:text-neutral-50">
           {t("title")}
         </h1>
         <p className="mt-1.5 text-[13.5px] text-neutral-500 dark:text-neutral-400">
@@ -155,7 +179,7 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
               filteredGroups.map((g) => (
                 <div key={g.letter} className="mb-1">
                   <LetterHeader letter={g.letter} />
-                  {g.items.map(renderMakeRow)}
+                  {g.items.map(renderBrandRow)}
                 </div>
               ))
             )
@@ -164,14 +188,14 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
               {featured.length > 0 && (
                 <div className="mb-2">
                   <SectionLabel>★ {t("featuredLabel")}</SectionLabel>
-                  {featured.map(renderMakeRow)}
+                  {featured.map(renderBrandRow)}
                 </div>
               )}
               <SectionLabel>{t("allLabel")}</SectionLabel>
               {restGroups.map((g) => (
                 <div key={g.letter} className="mb-1">
                   <LetterHeader letter={g.letter} />
-                  {g.items.map(renderMakeRow)}
+                  {g.items.map(renderBrandRow)}
                 </div>
               ))}
             </>
@@ -184,7 +208,7 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 pb-4 dark:border-neutral-800">
             <div className="flex items-center gap-3">
               <img
-                src={brandLogoUrl(selected)}
+                src={brandLogoUrl(selectedLogo)}
                 alt=""
                 width={36}
                 height={36}
@@ -192,22 +216,30 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
               />
               <div>
                 <h2 className="text-[18px] font-semibold text-neutral-900 dark:text-neutral-50">
-                  {t("modelsTitle", { brand: selected })}
+                  {t("modelsTitle", { brand: selectedLabel })}
                 </h2>
                 <p className="text-[12.5px] text-neutral-400">
-                  {t("modelCount", { count: modelCount })}
+                  {modelsLoading
+                    ? t("modelsLoading")
+                    : t("modelCount", { count: models.length })}
                 </p>
               </div>
             </div>
             <Link
-              href={auctionHref(selected)}
+              href={brandHref(selected)}
               className="text-[13px] font-semibold text-primary hover:underline"
             >
-              {t("viewAllInAuctions", { brand: selected })}
+              {t("viewAllInAuctions", { brand: selectedLabel })}
             </Link>
           </div>
 
-          {modelGroups.length === 0 ? (
+          {modelsLoading ? (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Skeleton key={i} className="h-9.5 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : modelGroups.length === 0 ? (
             <Empty description={t("noModels")} className="py-12" />
           ) : (
             <div className="space-y-6">
@@ -221,12 +253,17 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
                     {g.items.map((model) => (
                       <Link
-                        key={model}
-                        href={auctionHref(selected, model)}
-                        className="truncate rounded-lg border border-neutral-100 bg-white px-3 py-2 text-[13px] font-medium text-neutral-700 transition-colors hover:border-primary hover:text-primary dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300"
-                        title={model}
+                        key={model.value}
+                        href={modelHref(selected, model.value)}
+                        className="flex items-center justify-between gap-2 rounded-lg border border-neutral-100 bg-white px-3 py-2 text-[13px] font-medium text-neutral-700 transition-colors hover:border-primary hover:text-primary dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300"
+                        title={model.label}
                       >
-                        {model}
+                        <span className="truncate">{model.label}</span>
+                        {model.count != null && (
+                          <span className="shrink-0 text-[11.5px] font-normal text-neutral-400">
+                            {formatCount(model.count)}
+                          </span>
+                        )}
                       </Link>
                     ))}
                   </div>
@@ -242,7 +279,7 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-2.5 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">
+    <div className="px-2.5 pb-1 pt-2 text-[11px] font-semibold uppercase text-neutral-400">
       {children}
     </div>
   );
