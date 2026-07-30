@@ -399,7 +399,7 @@
     },
     "schedule": {
       "tomorrow": "Tomorrow",
-      "dayAfter": "Day after tomorrow",
+      "groupByDay": "Group by day",
       "title": "Featured cars",
       "subtitleDefault": "Auctions in the next 7 days",
       "updating": "Updating",

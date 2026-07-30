@@ -1,153 +1,119 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Drawer } from "antd";
+import { ConfigProvider, Drawer, Segmented } from "antd";
+import { SEGMENTED_THEME } from "./segmentedTheme";
 import { cn } from "@/utils";
 
-// Segmented date rail: calendar-style two-line tiles inside one rounded
-// container. Matches ViewModeSwitcher's rail exactly (border + tinted bg +
-// p-1 + 32px inner buttons) so the two controls read as one aligned system.
-export function ScheduleTabList({ children }: { children: React.ReactNode }) {
+export type ScheduleDayOption = {
+  key: string; // "YYYY-MM-DD"
+  date: string; // "07/29"
+  subLabel?: string; // relative label — only ever set for tomorrow
+  count?: number;
+};
+
+// Date rail: a caption plus one antd Segmented holding "all" and the upcoming
+// days. Shares `SEGMENTED_THEME` with ViewModeSwitcher so the two controls
+// standing next to each other read as one system.
+export function ScheduleDaySegmented({
+  label,
+  selected,
+  onSelect,
+  allLabel,
+  allCount,
+  allUnit,
+  days,
+}: {
+  label: string;
+  selected: string; // "all" | "YYYY-MM-DD"
+  onSelect: (key: string) => void;
+  allLabel: string;
+  allCount?: number;
+  allUnit?: string;
+  days: ScheduleDayOption[];
+}) {
   return (
-    <div
-      role="tablist"
-      className="inline-flex items-stretch gap-0.5 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-1 dark:border-neutral-800 dark:bg-neutral-900/40"
-    >
-      {children}
+    <div className="flex min-w-0 items-center gap-2.5">
+      <span className="shrink-0 text-[12px] font-medium text-neutral-500">
+        {label}
+      </span>
+      {/* The Segmented keeps its natural width and scrolls instead of
+          wrapping — the thumb is positioned from offsetLeft, so a wrapped
+          track would leave it stranded on the first row. */}
+      <div className="min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ConfigProvider theme={SEGMENTED_THEME}>
+          <Segmented<string>
+            size="large"
+            value={selected}
+            onChange={onSelect}
+            className="border border-neutral-200/80"
+            classNames={{ label: "flex items-center justify-center px-2.5" }}
+            options={[
+              {
+                value: "all",
+                tooltip:
+                  allCount != null && allUnit
+                    ? `${allCount} ${allUnit}`
+                    : undefined,
+                label: (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="text-[12.5px]/none font-bold">
+                      {allLabel}
+                    </span>
+                    {allCount != null && (
+                      <CountBadge
+                        value={allCount}
+                        isActive={selected === "all"}
+                      />
+                    )}
+                  </span>
+                ),
+              },
+              ...days.map((d) => ({
+                value: d.key,
+                label: <DayLabel day={d} isActive={selected === d.key} />,
+              })),
+            ]}
+          />
+        </ConfigProvider>
+      </div>
     </div>
   );
 }
 
-// h-8 keeps the tile the same height as ViewModeSwitcher's buttons; the two
-// text lines stay readable by dropping to micro sizes with leading-none.
-const TILE_BASE =
-  "group! relative! inline-flex! h-8! shrink-0! flex-col! items-center! justify-center! gap-[3px]! rounded-xl! border-0! px-2.5! transition-all! duration-150! focus:outline-none! focus-visible:ring-2! focus-visible:ring-primary/40!";
-
-const TILE_INACTIVE =
-  "bg-transparent! text-neutral-800! hover:bg-white! hover:shadow-sm! dark:text-neutral-100! dark:hover:bg-neutral-800!";
-
-const TILE_ACTIVE =
-  "bg-neutral-900! text-white! shadow-sm! dark:bg-white! dark:text-neutral-900!";
-
-export function AllTab({
-  isActive,
-  onClick,
-  label,
-  count,
-  unit,
-}: {
-  isActive: boolean;
-  onClick: () => void;
-  label: string;
-  count?: number;
-  unit?: string;
-}) {
-  return (
-    <Button
-      type="text"
-      role="tab"
-      aria-selected={isActive}
-      onClick={onClick}
-      title={count != null && unit ? `${count} ${unit}` : undefined}
-      className={cn(
-        TILE_BASE,
-        "min-w-12!",
-        isActive ? TILE_ACTIVE : TILE_INACTIVE,
-      )}
-    >
-      <span className="inline-flex items-center gap-1.5">
-        <span className="text-[12.5px] font-bold">{label}</span>
-        {count != null && <CountBadge value={count} isActive={isActive} />}
-      </span>
-    </Button>
-  );
-}
-
-export function DayTab({
-  isActive,
-  onClick,
-  topLabel,
+// Only tomorrow gets a sub-label, and it sits on the same baseline as the date
+// instead of stacking above it — one tall tile in a row of short ones would
+// drop its own date below the line every other tile shares.
+function DayLabel({
   day,
-  month,
-  count,
-  emptyLabel,
-  weekend,
-  highlight,
+  isActive,
 }: {
+  day: ScheduleDayOption;
   isActive: boolean;
-  onClick: () => void;
-  topLabel: string;
-  day: string;
-  month: string;
-  count?: number;
-  emptyLabel?: string;
-  weekend?: boolean;
-  highlight?: boolean;
 }) {
-  const showCount = count != null;
-  const isEmpty = showCount && count === 0;
+  const isEmpty = day.count === 0;
   return (
-    <Button
-      type="text"
-      role="tab"
-      aria-selected={isActive}
-      onClick={onClick}
+    <span
       className={cn(
-        TILE_BASE,
-        "min-w-14!",
-        isActive ? TILE_ACTIVE : TILE_INACTIVE,
-        !isActive && isEmpty && "opacity-50!",
+        "inline-flex items-baseline gap-1.5",
+        !isActive && isEmpty && "opacity-45",
       )}
     >
-      <span className="inline-flex items-center gap-1 leading-none">
-        {highlight && (
-          <span
-            className={cn(
-              "h-1 w-1 shrink-0 rounded-full",
-              isActive ? "bg-current opacity-70" : "bg-primary",
-            )}
-          />
-        )}
+      {day.subLabel && (
         <span
           className={cn(
-            "whitespace-nowrap text-[9px] font-semibold uppercase leading-none tracking-wide",
-            weekend
-              ? isActive
-                ? "text-rose-300 dark:text-rose-500"
-                : "text-rose-500"
-              : isActive
-                ? "opacity-60"
-                : "text-neutral-400 dark:text-neutral-500",
+            "whitespace-nowrap text-[9px]/none font-semibold uppercase",
+            isActive ? "opacity-65" : "text-neutral-400",
           )}
         >
-          {topLabel}
+          {day.subLabel}
         </span>
-        {showCount && !isEmpty && (
-          <CountBadge value={count} isActive={isActive} />
-        )}
-      </span>
-      <span className="inline-flex items-baseline gap-1">
-        <span className="text-[12.5px] font-bold leading-none">{day}</span>
-        <span
-          className={cn(
-            "whitespace-nowrap text-[8.5px] font-medium uppercase leading-none",
-            isActive ? "opacity-55" : "text-neutral-400 dark:text-neutral-500",
-          )}
-        >
-          {month}
-        </span>
-        {showCount && isEmpty && (
-          <span
-            className={cn(
-              "text-[8.5px] font-medium leading-none",
-              isActive ? "opacity-60" : "text-neutral-400",
-            )}
-          >
-            {emptyLabel}
-          </span>
-        )}
-      </span>
-    </Button>
+      )}
+      <span className="text-[12.5px]/none font-bold">{day.date}</span>
+      {day.count != null && !isEmpty && (
+        <CountBadge value={day.count} isActive={isActive} />
+      )}
+    </span>
   );
 }
 
@@ -155,10 +121,8 @@ function CountBadge({ value, isActive }: { value: number; isActive: boolean }) {
   return (
     <span
       className={cn(
-        "rounded-full px-1 text-[9px] font-semibold leading-3.5",
-        isActive
-          ? "bg-white/20 text-current dark:bg-neutral-900/15"
-          : "bg-primary/10 text-primary",
+        "rounded-full px-1 text-[9px]/3.5 font-semibold",
+        isActive ? "bg-white/20 text-current" : "bg-primary/10 text-primary",
       )}
     >
       {value}
@@ -197,17 +161,8 @@ export function EmptyState({
   );
 }
 
-export type ScheduleDayOption = {
-  key: string; // "YYYY-MM-DD"
-  topLabel: string; // relative label ("Маргааш") or dow ("Sat")
-  day: string; // "04"
-  month: string; // "Jul"
-  weekend?: boolean;
-  count?: number;
-};
-
-// Mobile replacement for ScheduleTabList: a rail-styled trigger that opens a
-// bottom drawer of day options. Parents gate it behind `sm:hidden`; the
+// Mobile replacement for ScheduleDaySegmented: a rail-styled trigger that opens
+// a bottom drawer of day options. Parents gate it behind `sm:hidden`; the
 // component itself has no breakpoint knowledge.
 export function ScheduleDayDrawer({
   selected,
@@ -233,7 +188,9 @@ export function ScheduleDayDrawer({
     selected === "all"
       ? allLabel
       : activeDay
-        ? `${activeDay.topLabel} · ${activeDay.day} ${activeDay.month}`
+        ? activeDay.subLabel
+          ? `${activeDay.subLabel} · ${activeDay.date}`
+          : activeDay.date
         : selected;
 
   const pick = (key: string) => {
@@ -291,9 +248,8 @@ export function ScheduleDayDrawer({
               key={d.key}
               isActive={selected === d.key}
               onClick={() => pick(d.key)}
-              label={`${d.day} ${d.month}`}
-              topLabel={d.topLabel}
-              weekend={d.weekend}
+              label={d.date}
+              topLabel={d.subLabel}
               count={d.count}
               emptyLabel={emptyLabel}
             />
@@ -309,7 +265,6 @@ function DrawerRow({
   onClick,
   label,
   topLabel,
-  weekend,
   count,
   emptyLabel,
 }: {
@@ -317,7 +272,6 @@ function DrawerRow({
   onClick: () => void;
   label: string;
   topLabel?: string;
-  weekend?: boolean;
   count?: number;
   emptyLabel?: string;
 }) {
@@ -357,14 +311,7 @@ function DrawerRow({
       </span>
       <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
         {topLabel && (
-          <span
-            className={cn(
-              "shrink-0 text-[10px] font-semibold uppercase tracking-wide",
-              weekend
-                ? "text-rose-500"
-                : "text-neutral-400 dark:text-neutral-500",
-            )}
-          >
+          <span className="shrink-0 text-[10px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
             {topLabel}
           </span>
         )}

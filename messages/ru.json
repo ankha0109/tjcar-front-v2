@@ -399,7 +399,7 @@
     },
     "schedule": {
       "tomorrow": "Завтра",
-      "dayAfter": "Послезавтра",
+      "groupByDay": "По дням",
       "title": "Избранные автомобили",
       "subtitleDefault": "Аукционы на ближайшие 7 дней",
       "updating": "Обновление",

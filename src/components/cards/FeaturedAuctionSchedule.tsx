@@ -17,11 +17,9 @@ import JapanAuctionFilters, {
   JapanAuctionFilterChips,
 } from "@/components/cards/JapanAuctionFilters";
 import {
-  AllTab,
-  DayTab,
   EmptyState,
   ScheduleDayDrawer,
-  ScheduleTabList,
+  ScheduleDaySegmented,
 } from "@/components/cards/views/scheduleTabs";
 import { FilterOptions, FilterValues, filtersToQuery } from "@/types/filters";
 import { FeaturedCar } from "@/types/featured";
@@ -67,11 +65,6 @@ export default function FeaturedAuctionSchedule({
     document.cookie = `${VIEW_MODE_COOKIE}=${next}; path=/; max-age=${VIEW_MODE_COOKIE_MAX_AGE}; SameSite=Lax`;
   };
 
-  const RELATIVE_LABELS: Record<number, string> = {
-    1: t("tomorrow"),
-    2: t("dayAfter"),
-  };
-
   useEffect(() => {
     const next = serializeFilters(filters);
     if (next === lastPushedRef.current) return;
@@ -87,20 +80,17 @@ export default function FeaturedAuctionSchedule({
   const cars = initialCars;
   const isFetching = isPending;
 
+  // Only tomorrow carries a relative sub-label; the rest are bare MM/DD so the
+  // rail stays compact.
   const days = useMemo(() => {
     const today = dayjs().startOf("day");
     return Array.from({ length: DAYS_AHEAD }, (_, i) => {
       const offset = i + 1;
       const d = today.add(offset, "day");
-      const dow = d.day();
       return {
         key: d.format("YYYY-MM-DD"),
-        topLabel: RELATIVE_LABELS[offset] ?? d.format("ddd"),
-        day: d.format("DD"),
-        month: d.format("MMM"),
-        full: d.format("YYYY-MM-DD"),
-        isWeekend: dow === 0 || dow === 6,
-        isHighlighted: offset <= 2,
+        date: d.format("MM/DD"),
+        subLabel: offset === 1 ? t("tomorrow") : undefined,
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,6 +106,11 @@ export default function FeaturedAuctionSchedule({
     return m;
   }, [cars]);
 
+  const dayOptions = useMemo(
+    () => days.map((d) => ({ ...d, count: countsByDate.get(d.key) ?? 0 })),
+    [days, countsByDate],
+  );
+
   const filteredCars = useMemo(() => {
     if (selected === "all") return cars;
     return cars.filter(
@@ -126,7 +121,8 @@ export default function FeaturedAuctionSchedule({
   const activeDayLabel = useMemo(() => {
     if (selected === "all") return null;
     const day = days.find((d) => d.key === selected);
-    return day ? `${day.topLabel} · ${day.full}` : null;
+    if (!day) return null;
+    return day.subLabel ? `${day.subLabel} · ${day.key}` : day.key;
   }, [selected, days]);
 
   return (
@@ -170,45 +166,21 @@ export default function FeaturedAuctionSchedule({
                 onSelect={setSelected}
                 allLabel={t("all")}
                 allCount={cars.length}
-                days={days.map((d) => ({
-                  key: d.key,
-                  topLabel: d.topLabel,
-                  day: d.day,
-                  month: d.month,
-                  weekend: d.isWeekend,
-                  count: countsByDate.get(d.key) ?? 0,
-                }))}
+                days={dayOptions}
                 title={t("pickDay")}
                 emptyLabel={t("empty")}
               />
             </div>
-            <div className="hidden min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:block lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
-              <ScheduleTabList>
-                <AllTab
-                  isActive={selected === "all"}
-                  onClick={() => setSelected("all")}
-                  label={t("all")}
-                  count={cars.length}
-                  unit={t("carsUnit")}
-                />
-                {days.map((day) => {
-                  const count = countsByDate.get(day.key) ?? 0;
-                  return (
-                    <DayTab
-                      key={day.key}
-                      isActive={selected === day.key}
-                      onClick={() => setSelected(day.key)}
-                      topLabel={day.topLabel}
-                      day={day.day}
-                      month={day.month}
-                      count={count}
-                      emptyLabel={t("empty")}
-                      weekend={day.isWeekend}
-                      highlight={day.isHighlighted}
-                    />
-                  );
-                })}
-              </ScheduleTabList>
+            <div className="hidden min-w-0 flex-1 pb-3 sm:block">
+              <ScheduleDaySegmented
+                label={t("groupByDay")}
+                selected={selected}
+                onSelect={setSelected}
+                allLabel={t("all")}
+                allCount={cars.length}
+                allUnit={t("carsUnit")}
+                days={dayOptions}
+              />
             </div>
             <div className="shrink-0">
               <ViewModeSwitcher

@@ -17,11 +17,9 @@ import JapanAuctionFilters, {
   JapanAuctionFilterChips,
 } from "@/components/cards/JapanAuctionFilters";
 import {
-  AllTab,
-  DayTab,
   EmptyState,
   ScheduleDayDrawer,
-  ScheduleTabList,
+  ScheduleDaySegmented,
 } from "@/components/cards/views/scheduleTabs";
 import { FilterOptions, FilterValues, filtersToQuery } from "@/types/filters";
 import { fromFeaturedCar, type CarItem } from "@/types/car";
@@ -102,25 +100,17 @@ export default function AuctionBrowser({
   // so the browser's own restoration lands the position exactly. A hand-rolled
   // sessionStorage version fought it and won with a stale value instead.
 
-  // ── Date strip (All + next 3 days) ──
-  const RELATIVE_LABELS: Record<number, string> = {
-    1: tSchedule("tomorrow"),
-    2: tSchedule("dayAfter"),
-  };
-
+  // ── Date strip (All + next 5 days). Only tomorrow carries a relative
+  //    sub-label; the rest are bare MM/DD so the rail stays compact. ──
   const days = useMemo(() => {
     const today = dayjs().startOf("day");
     return Array.from({ length: DAYS_AHEAD }, (_, i) => {
       const offset = i + 1;
       const d = today.add(offset, "day");
-      const dow = d.day();
       return {
         key: d.format("YYYY-MM-DD"),
-        topLabel: RELATIVE_LABELS[offset] ?? d.format("ddd"),
-        day: d.format("DD"),
-        month: d.format("MMM"),
-        isWeekend: dow === 0 || dow === 6,
-        isHighlighted: offset <= 2,
+        date: d.format("MM/DD"),
+        subLabel: offset === 1 ? tSchedule("tomorrow") : undefined,
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,36 +166,18 @@ export default function AuctionBrowser({
                 selected={selected}
                 onSelect={setSelected}
                 allLabel={tSchedule("all")}
-                days={days.map((d) => ({
-                  key: d.key,
-                  topLabel: d.topLabel,
-                  day: d.day,
-                  month: d.month,
-                  weekend: d.isWeekend,
-                }))}
+                days={days}
                 title={tSchedule("pickDay")}
               />
             </div>
-            <div className="hidden min-w-0 flex-1 -mx-4 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:block lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
-              <ScheduleTabList>
-                <AllTab
-                  isActive={selected === "all"}
-                  onClick={() => setSelected("all")}
-                  label={tSchedule("all")}
-                />
-                {days.map((day) => (
-                  <DayTab
-                    key={day.key}
-                    isActive={selected === day.key}
-                    onClick={() => setSelected(day.key)}
-                    topLabel={day.topLabel}
-                    day={day.day}
-                    month={day.month}
-                    weekend={day.isWeekend}
-                    highlight={day.isHighlighted}
-                  />
-                ))}
-              </ScheduleTabList>
+            <div className="hidden min-w-0 flex-1 pb-3 sm:block">
+              <ScheduleDaySegmented
+                label={tSchedule("groupByDay")}
+                selected={selected}
+                onSelect={setSelected}
+                allLabel={tSchedule("all")}
+                days={days}
+              />
             </div>
             <div className="shrink-0">
               <ViewModeSwitcher
