@@ -54,21 +54,24 @@ export default function BrandsExplorer({ catalog, initialMake }: Props) {
   const featuredSet = useMemo(() => new Set(featured), [featured]);
 
   const restGroups = useMemo(
-    () => groupByInitial(brands.filter((b) => !featuredSet.has(b))),
+    () => groupByInitial(brands.filter((b) => !featuredSet.has(b)), (b) => b),
     [brands, featuredSet],
   );
 
   const filteredGroups = useMemo(
     () =>
       q
-        ? groupByInitial(brands.filter((b) => b.toLowerCase().includes(q)))
+        ? groupByInitial(
+            brands.filter((b) => b.toLowerCase().includes(q)),
+            (b) => b,
+          )
         : [],
     [brands, q],
   );
 
   // Level 2 — selected make's models, grouped by first letter.
   const modelGroups = useMemo(
-    () => groupByInitial(catalog?.modelsByBrand[selected] ?? []),
+    () => groupByInitial(catalog?.modelsByBrand[selected] ?? [], (m) => m),
     [catalog, selected],
   );
   const modelCount = catalog?.modelsByBrand[selected]?.length ?? 0;
