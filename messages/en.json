@@ -1717,6 +1717,25 @@
     "noMakes": "No manufacturers found",
     "modelsTitle": "{brand} models",
     "modelCount": "{count} models",
+    "modelsLoading": "Loading models…",
+    "viewAllInAuctions": "All {brand} listings",
+    "noModels": "No models found",
+    "unavailable": "Catalogue is temporarily unavailable. Please try again."
+  },
+  "koreaBrands": {
+    "metadata": {
+      "title": "Korean manufacturers",
+      "description": "Every manufacturer available from Korea and their models. Pick a manufacturer to see its models with live listing counts."
+    },
+    "title": "Korean manufacturers",
+    "subtitle": "Pick a manufacturer to explore its models and find them in Korea.",
+    "featuredLabel": "Featured",
+    "allLabel": "All manufacturers",
+    "searchPlaceholder": "Search manufacturer",
+    "noMakes": "No manufacturers found",
+    "modelsTitle": "{brand} models",
+    "modelCount": "{count} models",
+    "modelsLoading": "Loading models…",
     "viewAllInAuctions": "All {brand} listings",
     "noModels": "No models found",
     "unavailable": "Catalogue is temporarily unavailable. Please try again."
