@@ -333,7 +333,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
   }[] = [
     { key: "japan", label: t("nav.japan"), href: "/japan", Icon: JapanIcon },
     { key: "korea", label: t("nav.korea"), href: "/korea", Icon: KoreaIcon },
-    { key: "ready", label: t("nav.ready"), href: "/cars", Icon: CarIcon },
+    { key: "ready", label: t("nav.ready"), href: "/garage", Icon: CarIcon },
     {
       key: "report",
       label: t("nav.report"),
@@ -597,7 +597,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
           {/* Order CTA */}
           <div className="border-b border-neutral-100 px-5 py-3 dark:border-neutral-900">
             <Link
-              href="/cars"
+              href="/garage"
               onClick={() => setMobileOpen(false)}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_2px_8px_-2px_rgba(16,185,129,0.5)] transition-colors hover:bg-emerald-600"
             >

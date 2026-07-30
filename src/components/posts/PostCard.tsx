@@ -8,7 +8,7 @@ import {
   postDateTimeAttr,
   postExcerpt,
 } from "@/utils/postFormat";
-import { postImage } from "@/utils/postImage";
+import { cdnImage } from "@/utils/cdnImage";
 
 const KNOWN_CATEGORIES: PostCategory[] = ["news", "tutorial"];
 
@@ -33,7 +33,7 @@ export default async function PostCard({
   const locale = await getLocale();
   const t = await getTranslations("posts");
 
-  const cover = postImage(post.featured_image, "card");
+  const cover = cdnImage(post.featured_image, "card");
   const published = post.published_at ?? post.created_at;
   const date = formatPostDate(published, locale);
   const category = KNOWN_CATEGORIES.includes(post.category)

@@ -13,7 +13,7 @@ type Props = {
   /**
    * Show the compare pill. Only detail pages whose id the compare endpoint can
    * re-fetch upstream enable this (Japan AJES lots, Korea CARAPIS listings);
-   * local stock (`/cars/[id]`) stays wishlist-only.
+   * local stock (`/garage/[id]`) stays wishlist-only.
    */
   enableCompare?: boolean;
   /**

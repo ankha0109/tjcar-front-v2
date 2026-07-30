@@ -17,9 +17,22 @@ description: Launch and drive tjcar-front-v2 locally to verify UI changes end-to
 - Server-rendered HTML is greppable evidence, but beware: next-intl serializes whole message namespaces into `<script>` payloads — match rendered DOM (unescaped text), not `\"key\":\"...\"` JSON, before claiming a string renders.
 - Screenshots: no Playwright in the repo; use headless system Chrome:
   `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu --hide-scrollbars --screenshot=out.png --window-size=1440,2600 --virtual-time-budget=15000 <url>` (390×844 for mobile).
+- Clicking, filling, reading computed styles, or overriding the viewport needs CDP,
+  and Node 22 ships a global `WebSocket` — so a dependency-free driver is ~30 lines:
+  launch Chrome with `--headless=new --remote-debugging-port=9222 --user-data-dir=<tmp>`,
+  `fetch` `/json/list` for `webSocketDebuggerUrl`, then send `Page.navigate` /
+  `Runtime.evaluate` / `Emulation.setDeviceMetricsOverride` / `Page.captureScreenshot`.
+  Below ~485px `--window-size` lies on macOS — use `setDeviceMetricsOverride` and
+  assert `document.documentElement.scrollWidth === window.innerWidth`.
+- antd v6 renders `.ant-select` on the root but NOT `.ant-select-selector` — count
+  `.ant-select` when asserting that a Select rendered.
 
 ## Gotchas
 
 - AJES image CDN resizes on the literal `&w=320`/`&h=50` suffix even with no `?` in the URL; a standards-correct `?w=320` is IGNORED (full-size served). Don't "fix" `withImageSize`.
 - Encar CDN (`ci.encar.com`) has no size params at all — Korea galleries pass `sizeVariants={false}` to `CarGallery`.
-- `/api/cars` is empty locally — `/cars/[id]` can't be driven with real data.
+- `/api/cars` (in-stock cars, served under `/garage`) has ~76 real rows locally, but
+  only 7 are `active` — the other 69 are `sold`. Ids: `GET /api/cars?per_page=200`.
+- `cdn.tjcar.mn` stores `_w320`/`_h50` variants for **post** uploads only. Car images
+  under `public/cars/*` have the original alone and the derived name 403s — never
+  wrap a car image in `cdnImage(_, "card")`.

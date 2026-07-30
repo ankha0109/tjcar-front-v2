@@ -103,7 +103,7 @@ export default function HeroSection() {
             style={{ animationDelay: "440ms" }}
           >
             <Link
-              href="/cars"
+              href="/garage"
               className="group inline-flex h-12 items-center gap-2 rounded-full bg-neutral-900 px-5 text-[14px] font-semibold text-white shadow-[0_8px_24px_-12px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-12px_rgba(0,0,0,0.55)] dark:bg-neutral-100 dark:text-neutral-900"
             >
               <span>{t("cta.primary")}</span>

@@ -2,9 +2,10 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 /**
  * Loading placeholder for the car detail pages (`/japan/[id]`, `/korea/[id]`,
- * `/cars/[id]`). Mirrors the {@link JapanCarDetail}/{@link CarDetail} two-column
- * layout — gallery on the left, info + specs on the right — so navigation from a
- * listing shows a detail-shaped skeleton instead of the card-grid one.
+ * `/garage/[id]`). Mirrors the {@link JapanCarDetail}/{@link EncarDetail}
+ * two-column layout — gallery on the left, info + specs on the right — so
+ * navigation from a listing shows a detail-shaped skeleton instead of the
+ * card-grid one.
  */
 export default function CarDetailSkeleton() {
   return (

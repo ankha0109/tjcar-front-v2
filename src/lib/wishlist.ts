@@ -2,16 +2,17 @@ import type { CarItem, CarSource } from "@/types/car";
 import type { WishlistItem } from "@/types/wishlist";
 import { parseImages, type CarFixture } from "@/lib/carFixtures";
 
-// On AJES-sourced cars, image index 0 is the auction evaluation (inspection)
+// On Japanese auction lots, image index 0 is the auction evaluation (inspection)
 // sheet whenever a car photo remains after it — same convention the snapshot
-// consumers use. Encar (korea) photo lists are all car photos, so no split.
+// consumers use. Every other source (Encar, our own stock uploads) lists car
+// photos only, so no split.
 const carPhoto = (images: string[], source: CarSource): string | undefined =>
-  source === "korea" ? images[0] : (images[1] ?? images[0]);
+  source === "japan" ? (images[1] ?? images[0]) : images[0];
 const evaluationSheet = (
   images: string[],
   source: CarSource,
 ): string | undefined =>
-  source !== "korea" && images.length > 1 ? images[0] : undefined;
+  source === "japan" && images.length > 1 ? images[0] : undefined;
 
 /** Build a saved-car snapshot from a listing-card `CarItem` (has MNT price). */
 export function wishlistItemFromCarItem(car: CarItem): WishlistItem {

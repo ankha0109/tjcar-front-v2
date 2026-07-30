@@ -1,7 +1,12 @@
 import { decodeAuctionText } from "@/utils/auctionInfo";
 import { FeaturedCar } from "./featured";
 
-export type CarSource = "japan" | "korea" | "china";
+/**
+ * Where a car comes from. `stock` is our own in-stock inventory (`GET /cars`,
+ * rendered under `/garage`) — admin-registered cars we already bought, so it
+ * carries no auction feed and no upstream id the compare endpoint can re-fetch.
+ */
+export type CarSource = "japan" | "korea" | "china" | "stock";
 
 export type CarCurrency = "JPY" | "KRW" | "CNY" | "USD";
 

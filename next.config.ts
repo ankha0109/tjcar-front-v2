@@ -20,6 +20,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Бэлэн машины хуудсыг /cars → /garage болгож нэрлэсэн. V1-ийн тархсан
+  // /cars/{id} линкүүд ажилласаар байхын тулд түр хугацааны redirect. Эдгээр нь
+  // `proxy.ts` middleware-ээс ӨМНӨ ажилладаг тул locale prefix-гүй хувилбарыг
+  // next-intl дараа нь /mn/... болгож нормчилно.
+  async redirects() {
+    return [
+      {
+        source: "/:locale(mn|en|ru)/cars/:path*",
+        destination: "/:locale/garage/:path*",
+        permanent: false,
+      },
+      {
+        source: "/cars/:path*",
+        destination: "/garage/:path*",
+        permanent: false,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.svg": {

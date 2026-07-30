@@ -5,13 +5,13 @@ import { ArrowIcon } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import { getLatestPosts } from "@/services/posts";
 import { formatPostDate, postDateTimeAttr } from "@/utils/postFormat";
-import { postImage } from "@/utils/postImage";
+import { cdnImage } from "@/utils/cdnImage";
 
 /**
  * Mobile landing page — reached only through the `tjcar-device` cookie split in
  * `Home.tsx`, never through a breakpoint. Two sections, both derived from the
  * desktop home: services and blog. No search form, no brand grid, no VIN panel;
- * `MobileBottomNav` already carries /japan, /korea, /cars and /report.
+ * `MobileBottomNav` already carries /japan, /korea, /garage and /report.
  *
  * `MobileShell` reserves the fixed bottom nav on its own `<main>`
  * (`pb-[calc(4rem+env(safe-area-inset-bottom))]`), so nothing here reserves it
@@ -121,7 +121,7 @@ async function MobileBlog() {
 
       <ul className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
         {posts.map((post) => {
-          const cover = postImage(post.featured_image, "card");
+          const cover = cdnImage(post.featured_image, "card");
           const published = post.published_at ?? post.created_at;
           const date = formatPostDate(published, locale);
 
@@ -136,7 +136,7 @@ async function MobileBlog() {
                     // `alt=""` — the title sits in the same link, so a second
                     // announcement is noise. `unoptimized` because cdn.tjcar.mn
                     // is not in `next.config.ts` remotePatterns; the `_w320`
-                    // variant from `postImage(_, "card")` is the real sizing.
+                    // variant from `cdnImage(_, "card")` is the real sizing.
                     <Image
                       src={cover}
                       alt=""

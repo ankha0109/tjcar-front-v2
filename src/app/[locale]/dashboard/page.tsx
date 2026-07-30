@@ -22,12 +22,12 @@ export default async function DashboardIndex({
     {
       title: t("quickActions.newBid.title"),
       description: t("quickActions.newBid.description"),
-      href: "/cars",
+      href: "/garage",
     },
     {
       title: t("quickActions.track.title"),
       description: t("quickActions.track.description"),
-      href: "/cars",
+      href: "/garage",
     },
     {
       title: t("quickActions.report.title"),
@@ -55,7 +55,7 @@ export default async function DashboardIndex({
           <EmptyState
             title={t("recent.emptyTitle")}
             description={t("recent.emptyDescription")}
-            cta={{ label: t("recent.emptyCta"), href: "/cars" }}
+            cta={{ label: t("recent.emptyCta"), href: "/garage" }}
             icon={
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />

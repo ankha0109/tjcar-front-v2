@@ -37,6 +37,16 @@ type Props = {
   hidePrice?: boolean;
   /** Hide the compare toggle (cards whose `source` mislabels the id's upstream). */
   disableCompare?: boolean;
+  /**
+   * Overrides the price caption. Auction cards show a comparable-sales average,
+   * so that is the default; in-stock cars carry a real asking price.
+   */
+  priceLabel?: string;
+  /**
+   * Status pill over the photo, top-left. Only in-stock cars use it — the slot
+   * is otherwise the premium badge's, and stock cars are never premium.
+   */
+  badge?: React.ReactNode;
 };
 
 const MAX_SCRUB_IMAGES = 4;
@@ -46,6 +56,8 @@ export default function CarCard({
   imageSize = "card",
   hidePrice,
   disableCompare,
+  priceLabel,
+  badge,
 }: Props) {
   const t = useTranslations("car.card");
 
@@ -66,6 +78,12 @@ export default function CarCard({
   const hasSpecs = Boolean(
     car.year || mileageLabel || engineLabel || car.color,
   );
+
+  // AJES shouts colours ("PEARL WHITE"); title case is both calmer and narrow
+  // enough to survive the half-width cell. Hand-typed colours — our own stock,
+  // written in Mongolian — already carry their casing, and `capitalize` would
+  // turn "Хар хөх" into "Хар Хөх", so only all-caps values get re-cased.
+  const shoutedColor = car.color ? !/\p{Ll}/u.test(car.color) : false;
 
   const grade = getGradeInfo(car.auction?.grade);
   const gradeDescription = grade ? t(`grade.description.${grade.tier}`) : null;
@@ -90,6 +108,7 @@ export default function CarCard({
       >
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
         {isPremium && <PremiumBadge className="absolute left-2.5 top-2.5" />}
+        {badge && <div className="absolute left-2.5 top-2.5 z-10">{badge}</div>}
       </CarImageScrub>
 
       <div className="flex flex-1 flex-col gap-2.5 p-3 sm:gap-3 sm:p-3.5">
@@ -153,10 +172,12 @@ export default function CarCard({
               <Spec
                 icon={<ColorDot color={car.color} size={13} />}
                 label={t("specs.color")}
-                // AJES shouts colours ("PEARL WHITE"); title case is both
-                // calmer and narrow enough to survive the half-width cell.
                 value={
-                  <span className="capitalize">{car.color.toLowerCase()}</span>
+                  shoutedColor ? (
+                    <span className="capitalize">{car.color.toLowerCase()}</span>
+                  ) : (
+                    car.color
+                  )
                 }
               />
             )}
@@ -195,7 +216,7 @@ export default function CarCard({
         {!hidePrice && (
           <div className="flex flex-col items-start gap-0.5 border-t border-dashed border-neutral-200 pt-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:pt-3 dark:border-neutral-800">
             <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-              {t("avgPriceLabel")}
+              {priceLabel ?? t("avgPriceLabel")}
             </p>
             <div className="flex items-center gap-0.5">
               <TugrigIcon

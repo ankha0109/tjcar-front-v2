@@ -22,7 +22,7 @@ export default async function AboutCTA() {
 
             <div className="flex flex-wrap items-center gap-3 lg:col-span-5 lg:justify-end">
               <Link
-                href="/cars"
+                href="/garage"
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-neutral-900 px-5 text-[13.5px] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
               >
                 {t("primary")}

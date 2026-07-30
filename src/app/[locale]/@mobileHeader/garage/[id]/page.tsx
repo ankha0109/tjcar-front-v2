@@ -8,12 +8,12 @@ type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
 
-export default async function MobileHeaderCarDetail({ params }: Props) {
+export default async function MobileHeaderGarageCarDetail({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
   const device = await getDevice();
   if (device !== "mobile") return null;
   const car = await getCar(id);
   const title = car ? carTitle(carResourceToFixture(car)) : "";
-  return <MobileHeader back={{ href: "/cars" }} title={title} />;
+  return <MobileHeader back={{ href: "/garage" }} title={title} />;
 }

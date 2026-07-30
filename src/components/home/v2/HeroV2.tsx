@@ -131,7 +131,7 @@ export default function HeroV2() {
             style={reveal(240)}
           >
             <Link
-              href="/cars"
+              href="/garage"
               className="group inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-3 text-[13.5px] font-medium text-white transition-all duration-300 hover:gap-3 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
             >
               {t("ctaPrimary")}

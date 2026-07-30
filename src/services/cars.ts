@@ -10,12 +10,21 @@ export type GetCarsParams = {
 };
 
 /**
- * GET /cars — Active + Sold cars in stock, paginated (default 20/page).
+ * One page big enough to hold the whole catalogue (~80 rows and growing slowly),
+ * so `/garage` can filter and sort client-side — the endpoint supports neither.
+ */
+export const STOCK_PER_PAGE = 200;
+
+/**
+ * GET /cars — Active + Sold cars in stock, paginated (default 20/page), Active
+ * first then newest. The endpoint takes no filters or sort beyond that.
  * Wrapped in React `cache` so repeated reads in one request hit the API once.
  */
 export const getCars = cache(
   (params: GetCarsParams = {}): Promise<Paginated<CarResource>> =>
-    ServerApi.get<Paginated<CarResource>>("/cars", params),
+    ServerApi.get<Paginated<CarResource>>("/cars", params, {
+      cache: "no-store",
+    }),
 );
 
 /**

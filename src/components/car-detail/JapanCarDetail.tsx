@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import CarBreadcrumb from "./CarBreadcrumb";
 import PremiumGallery from "./PremiumGallery";
 import CarActionButtons from "./CarActionButtons";
 import CarEvaluation from "./CarEvaluation";
@@ -48,33 +48,6 @@ function ColorIcon({ swatch }: { swatch: ColorSwatch }) {
       className={`h-4 w-4 shrink-0 rounded-full ${swatch.ring ? "ring-1 ring-neutral-300 dark:ring-neutral-600" : ""}`}
       style={{ background: swatch.bg }}
     />
-  );
-}
-
-/** One breadcrumb step. Muted until hovered, so only the trail's tail reads as
- *  the current page. The colour is set on the anchor itself, not inherited from
- *  the list: antd's reset styles bare `a` with its link blue, which an
- *  inherited colour would lose to. */
-function CrumbLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <li>
-      <Link
-        href={href}
-        className="text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
-      >
-        {children}
-      </Link>
-    </li>
-  );
-}
-
-/** Decorative breadcrumb separator — hidden from assistive tech, which reads
- *  the list structure instead. */
-function CrumbSep() {
-  return (
-    <li aria-hidden className="text-neutral-300 dark:text-neutral-700">
-      ›
-    </li>
   );
 }
 
@@ -236,51 +209,30 @@ export default async function JapanCarDetail({ car }: Props) {
           sit flush under the site header. */}
       {showTitleHeader && (
         <>
-          <nav
-            aria-label={t("breadcrumb.aria")}
-            className="px-4 pt-5 pb-3 text-[13px] lg:px-0 lg:pt-0"
-          >
-            <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-neutral-500 dark:text-neutral-400">
-              <CrumbLink href="/">{t("breadcrumb.home")}</CrumbLink>
-              <CrumbSep />
-              <CrumbLink href="/japan">{tNav("japan")}</CrumbLink>
-              {/* `marka` is the brand-name filter the auction list already
-                  reads (see queryToFilters), so this lands on the same make. */}
-              {showBrandCrumb && (
-                <>
-                  <CrumbSep />
-                  <CrumbLink
-                    href={`/japan?marka=${encodeURIComponent(brandCrumb)}`}
-                  >
-                    {brandCrumb}
-                  </CrumbLink>
-                </>
-              )}
-              <CrumbSep />
-              {/* The model step filters by `model_name`, scoped to the brand the
-                  step above it sets — the same pair the filter panel produces.
-                  It links rather than marking the current page, so no
-                  `aria-current` here; hover underlines because the tail is
-                  already at full contrast and a colour shift would not read. */}
-              {showBrandCrumb ? (
-                <li>
-                  <Link
-                    href={`/japan?marka=${encodeURIComponent(brandCrumb)}&model=${encodeURIComponent(modelCrumb)}`}
-                    className="font-medium text-neutral-900 underline-offset-2 hover:underline dark:text-neutral-100"
-                  >
-                    {modelCrumb}
-                  </Link>
-                </li>
-              ) : (
-                <li
-                  aria-current="page"
-                  className="font-medium text-neutral-900 dark:text-neutral-100"
-                >
-                  {title}
-                </li>
-              )}
-            </ol>
-          </nav>
+          {/* `marka`/`model` are the brand + model-name filters the auction
+              list already reads (see queryToFilters), so each step lands on the
+              same make/model the filter panel would produce. The model step
+              therefore links instead of marking the current page. */}
+          <CarBreadcrumb
+            ariaLabel={t("breadcrumb.aria")}
+            className="px-4 pt-5 pb-3 lg:px-0 lg:pt-0"
+            items={[
+              { label: t("breadcrumb.home"), href: "/" },
+              { label: tNav("japan"), href: "/japan" },
+              ...(showBrandCrumb
+                ? [
+                    {
+                      label: brandCrumb,
+                      href: `/japan?marka=${encodeURIComponent(brandCrumb)}`,
+                    },
+                    {
+                      label: modelCrumb,
+                      href: `/japan?marka=${encodeURIComponent(brandCrumb)}&model=${encodeURIComponent(modelCrumb)}`,
+                    },
+                  ]
+                : [{ label: title }]),
+            ]}
+          />
           <header className="flex items-center justify-between gap-3 px-4 pb-6 lg:px-0">
             {/* Grade trails the title on the same baseline rather than taking
                 its own line — the band is above the fold, so the row saved is

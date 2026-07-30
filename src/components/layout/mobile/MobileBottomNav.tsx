@@ -8,7 +8,7 @@ import { cn } from "@/utils";
 
 // Доод цэс гарахгүй замууд. Шинэ замыг энд нэмж/хасаж тохируулна.
 const HIDDEN_PATH_PATTERNS: RegExp[] = [
-  /^\/cars\/[^/]+/, // машины дэлгэрэнгүй (Бэлэн)
+  /^\/garage\/[^/]+/, // машины дэлгэрэнгүй (Бэлэн)
   /^\/japan\/[^/]+/, // машины дэлгэрэнгүй (Япон)
   /^\/korea\/[^/]+/, // машины дэлгэрэнгүй (Солонгос)
 ];
@@ -92,9 +92,9 @@ export default function MobileBottomNav() {
       ),
     },
     {
-      href: "/cars",
+      href: "/garage",
       label: t("ready"),
-      match: (p) => p === "/cars" || p.startsWith("/cars/"),
+      match: (p) => p === "/garage" || p.startsWith("/garage/"),
       icon: (active) => (
         <svg
           viewBox="0 0 24 24"

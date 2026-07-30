@@ -321,7 +321,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
   }[] = [
     { key: "japan", label: t("nav.japan"), href: "/japan", Icon: JapanIcon },
     { key: "korea", label: t("nav.korea"), href: "/korea", Icon: KoreaIcon },
-    { key: "ready", label: t("nav.ready"), href: "/cars", Icon: CarIcon },
+    { key: "ready", label: t("nav.ready"), href: "/garage", Icon: CarIcon },
     {
       key: "report",
       label: t("nav.report"),

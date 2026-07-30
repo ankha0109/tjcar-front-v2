@@ -932,6 +932,55 @@
       "next": "Next"
     }
   },
+  "garage": {
+    "metadata": {
+      "title": "In-stock cars",
+      "description": "Cars we already bought at auction — in Mongolia now, loaded for shipping, or on the way."
+    },
+    "eyebrow": "Our inventory",
+    "heading": "In-stock cars",
+    "subheading": "Cars we bought at auction ourselves. Already in Mongolia, loaded for shipping, or on the way — every photo and price is real.",
+    "tabs": {
+      "available": "Available",
+      "sold": "Sold"
+    },
+    "filters": {
+      "allTypes": "All types",
+      "brand": "Brand",
+      "allBrands": "All brands",
+      "sort": "Sort"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "type": {
+      "ready_to_ship": "Loaded for shipping",
+      "available": "In Mongolia",
+      "arriving_soon": "Arriving soon",
+      "preorder_only": "Pre-order only"
+    },
+    "sold": "Sold",
+    "priceLabel": "Price",
+    "arrivalLabel": "Arrives in Mongolia",
+    "specs": {
+      "marka": "Manufacturer",
+      "model": "Model",
+      "purchaseType": "Purchase type"
+    },
+    "contact": {
+      "title": "Get in touch",
+      "subtitle": "Call us for details or to book a viewing.",
+      "messenger": "Send a message",
+      "cta": "Contact us"
+    },
+    "empty": {
+      "title": "No results",
+      "description": "Try changing your filters."
+    },
+    "error": "Could not load the cars. Please try again later."
+  },
   "about": {
     "metadata": {
       "title": "About us",

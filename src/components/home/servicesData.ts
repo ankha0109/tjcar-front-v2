@@ -24,5 +24,5 @@ export const HOME_SERVICES: HomeService[] = [
   { key: "japan", href: "/japan", image: japanImg },
   { key: "korea", href: "/korea", image: koreaImg },
   { key: "report", href: "/report", image: reportImg },
-  { key: "garage", href: "/cars", image: garageImg },
+  { key: "garage", href: "/garage", image: garageImg },
 ];

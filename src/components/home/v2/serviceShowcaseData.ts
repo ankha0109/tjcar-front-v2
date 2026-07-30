@@ -32,7 +32,7 @@ export type ShowcaseService = {
 export const SHOWCASE_SERVICES: ShowcaseService[] = [
   { key: "japan", href: "/japan", Icon: IconJapan, photo: japanImg },
   { key: "korea", href: "/korea", Icon: IconKorea, photo: koreaImg },
-  { key: "ready", href: "/cars", Icon: IconReady, photo: readyImg },
+  { key: "ready", href: "/garage", Icon: IconReady, photo: readyImg },
   { key: "report", href: "/report", Icon: IconReport, photo: reportImg },
   { key: "brands", href: "/japan/brands", Icon: IconBrands },
   { key: "howItWorks", href: "/how-it-works", Icon: IconHowItWorks },

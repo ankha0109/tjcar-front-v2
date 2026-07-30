@@ -42,11 +42,12 @@ export function wishlistKey(source: CarSource, id: string): string {
 }
 
 /**
- * Detail-page route for a saved car. Japan lots live under `/japan/{id}`;
- * everything else (stock/Korea) is served by `/korea/{id}` and `/cars/{id}`
- * alike, so we route non-Japan sources to `/korea`.
+ * Detail-page route for a saved car. Japan lots live under `/japan/{id}`, our
+ * own in-stock inventory under `/garage/{id}`, and everything else (Korea,
+ * China) is served by `/korea/{id}`.
  */
 export function wishlistHref(source: CarSource, id: string): string {
-  const segment = source === "japan" ? "japan" : "korea";
+  const segment =
+    source === "japan" ? "japan" : source === "stock" ? "garage" : "korea";
   return `/${segment}/${id}`;
 }
