@@ -116,14 +116,22 @@ export type KoreaListing = {
 /**
  * Brand slugs the backend accepts (mirrors EncarListingService::BRANDS — an
  * unknown slug is a 422). Labels are the English names the API returns.
+ *
+ * `logo` overrides the name handed to `brandLogoUrl`, which derives a
+ * carlogos.org slug from the display name. Only two brands need it: the CDN
+ * has no "renault-korea" entry, and no post-rename "kg-mobility" logo.
  */
-export const KOREA_BRANDS: ReadonlyArray<{ slug: string; label: string }> = [
+export const KOREA_BRANDS: ReadonlyArray<{
+  slug: string;
+  label: string;
+  logo?: string;
+}> = [
   { slug: "hyundai", label: "Hyundai" },
   { slug: "kia", label: "Kia" },
   { slug: "genesis", label: "Genesis" },
   { slug: "chevrolet", label: "Chevrolet" },
-  { slug: "renault-korea", label: "Renault Korea" },
-  { slug: "kg-mobility", label: "KG Mobility" },
+  { slug: "renault-korea", label: "Renault Korea", logo: "Renault" },
+  { slug: "kg-mobility", label: "KG Mobility", logo: "SsangYong" },
   { slug: "bmw", label: "BMW" },
   { slug: "mercedes-benz", label: "Mercedes-Benz" },
   { slug: "audi", label: "Audi" },
@@ -141,8 +149,29 @@ export const KOREA_BRANDS: ReadonlyArray<{ slug: string; label: string }> = [
   { slug: "tesla", label: "Tesla" },
 ];
 
+/**
+ * Curated "popular" Korea makes, in display order. Nine of them, so the home
+ * page's featured grid reads as 5×2 with the "browse all" card in the tenth
+ * cell; the brands explorer shows the same nine above its A–Z list.
+ */
+export const FEATURED_KOREA_BRANDS: readonly string[] = [
+  "hyundai",
+  "kia",
+  "genesis",
+  "kg-mobility",
+  "renault-korea",
+  "chevrolet",
+  "bmw",
+  "mercedes-benz",
+  "audi",
+];
+
+export function koreaBrand(slug: string) {
+  return KOREA_BRANDS.find((b) => b.slug === slug);
+}
+
 export function koreaBrandLabel(slug: string): string {
-  return KOREA_BRANDS.find((b) => b.slug === slug)?.label ?? slug;
+  return koreaBrand(slug)?.label ?? slug;
 }
 
 /** `fuel` filter values the backend accepts (labels via `carDetail.fuel.*`). */
