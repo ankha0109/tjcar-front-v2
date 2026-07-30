@@ -141,9 +141,23 @@ git status --short
 
 `brandLogoUrl` derives a carlogos.org slug from a display name. Nineteen of the 21 Korea brands resolve; `Renault Korea` and `KG Mobility` do not. `CarSearchSection` already hardcodes exactly these two overrides for its nine featured makes — that table moves into `KOREA_BRANDS` so the other twelve brands get correct logos on the new page too.
 
+> **Scope correction (2026-07-31, during execution).** This task was written
+> by reading the *working tree*, not the committed file. The committed
+> `CarSearchSection.tsx` has no Korea integration at all — it still uses a
+> hardcoded `DEMO_KOREA_BRANDS` list behind a "backend not wired yet" comment.
+> The `@/types/korea` import, `FEATURED_KOREA_MAKES`, `useKoreaModels`, and the
+> Korea filter selects all live in the user's uncommitted WIP, so Steps 2–5
+> cannot be committed without committing that WIP too.
+>
+> **Ruling:** this branch commits only the `src/types/korea.ts` half (Step 1).
+> Steps 2–5 are still applied to the working tree — they are correct and
+> verified — but they ride along with the user's own Korea-filters commit
+> rather than this branch. Later tasks are unaffected: every other file they
+> touch is committed. Judge this task's diff on Step 1 alone.
+
 **Files:**
-- Modify: `src/types/korea.ts:116-146`
-- Modify: `src/components/home/CarSearchSection.tsx` (imports, `BROWSE_ALL_HREF`, `FEATURED_KOREA_MAKES`, `featuredMakes`)
+- Modify: `src/types/korea.ts:116-146` — **committed by this branch**
+- Modify: `src/components/home/CarSearchSection.tsx` (imports, `BROWSE_ALL_HREF`, `FEATURED_KOREA_MAKES`, `featuredMakes`) — **working tree only, not committed here** (see scope correction above)
 
 **Interfaces:**
 - Consumes: nothing.
