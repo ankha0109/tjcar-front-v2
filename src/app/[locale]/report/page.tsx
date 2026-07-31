@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { effectiveReportPrice, getConfig } from "@/services/config";
 import ReportJsonLd from "@/components/report/ReportJsonLd";
 import ReportHero from "@/components/report/ReportHero";
 import ReportCompare from "@/components/report/ReportCompare";
@@ -47,10 +48,15 @@ export default async function ReportPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
+  // The backend recomputes the price at purchase time, so this copy is
+  // display-only. `/report` is already dynamic — the locale layout reads
+  // cookies() — so the no-store fetch costs no static rendering.
+  const config = await getConfig();
+
   return (
     <>
       <ReportJsonLd locale={locale} />
-      <ReportHero />
+      <ReportHero price={effectiveReportPrice(config)} />
       <ReportCompare />
       <ReportFeatures />
       <ReportPdfPreview />

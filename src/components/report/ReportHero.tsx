@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { BorderBeam, Button, Input, Segmented } from "antd";
 import type { BorderBeamGradient } from "antd";
-import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/utils";
 import {
   normalizeFor,
+  reportSearchQuery,
   validate,
   type SearchError,
   type SearchMode,
 } from "@/lib/reportSearch";
+import ReportLookupModal from "./ReportLookupModal";
 import SampleReportModal from "./SampleReportModal";
 import soyombo from "../../../public/images/32px-Soyombo_red.png";
 
@@ -40,25 +41,59 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export default function ReportHero() {
+/**
+ * Reflect the current lookup in the URL without navigating.
+ *
+ * `history.replaceState` rather than next-intl's router: the modal is pure
+ * client state, and a `router.replace` would re-run the landing page's server
+ * component just to change a query string. The existing pathname already
+ * carries the locale prefix, so it is reused as-is.
+ */
+function syncUrl(query: { plate?: string; vin?: string }) {
+  const params = new URLSearchParams();
+  if (query.plate) params.set("plate", query.plate);
+  if (query.vin) params.set("vin", query.vin);
+  const qs = params.toString();
+  window.history.replaceState(
+    null,
+    "",
+    qs ? `${window.location.pathname}?${qs}` : window.location.pathname,
+  );
+}
+
+type Props = {
+  /** Effective price in MNT, resolved server-side from GET /config. */
+  price: number;
+};
+
+export default function ReportHero({ price }: Props) {
   const t = useTranslations("reportLanding.hero");
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const [mode, setMode] = useState<SearchMode>("plate");
   const [value, setValue] = useState("");
   const [error, setError] = useState<SearchError>(null);
   const [sampleOpen, setSampleOpen] = useState(false);
+  const [lookup, setLookup] = useState<{ plate?: string; vin?: string }>({});
+  const [lookupOpen, setLookupOpen] = useState(false);
 
-  // Prefill from ?vin= (pushed by the home CarSearchSection). Read from
-  // window instead of useSearchParams so the page can stay fully static.
+  // One-time URL read after hydration. This single path covers arriving from
+  // the home panel, returning from `/auth/login`, and refreshing or sharing the
+  // URL. Read from `window` rather than `useSearchParams`, which would force a
+  // Suspense/CSR bailout and drag the whole landing page client-side.
   useEffect(() => {
-    const vin = new URLSearchParams(window.location.search).get("vin");
-    if (!vin) return;
-    // One-time URL sync after hydration; useSearchParams would force a
-    // Suspense/CSR bailout and make the page dynamic.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMode("vin");
-    setValue(normalizeFor("vin", vin));
+    const params = new URLSearchParams(window.location.search);
+    const plate = params.get("plate");
+    const vin = params.get("vin");
+    if (!plate && !vin) return;
+
+    const nextMode: SearchMode = plate ? "plate" : "vin";
+    const next = normalizeFor(nextMode, plate ?? vin ?? "");
+
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setMode(nextMode);
+    setValue(next);
+    setLookup(reportSearchQuery(nextMode, next));
+    setLookupOpen(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   function switchMode(next: SearchMode) {
@@ -68,9 +103,9 @@ export default function ReportHero() {
   }
 
   /**
-   * The hero only validates and hands off — the lookup itself runs on
-   * /report/check so the result is refreshable and shareable, and so the
-   * plate → VIN → report chain has somewhere to show its intermediate states.
+   * The form only validates; the lookup itself runs in the modal. The term is
+   * mirrored into the URL so a refresh, a shared link and the login round-trip
+   * all reopen the same result.
    */
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,10 +113,15 @@ export default function ReportHero() {
     setError(err);
     if (err) return;
 
-    const query = mode === "plate" ? { plate: value } : { vin: value };
-    startTransition(() => {
-      router.push({ pathname: "/report/check", query });
-    });
+    const query = reportSearchQuery(mode, value);
+    setLookup(query);
+    syncUrl(query);
+    setLookupOpen(true);
+  }
+
+  function closeLookup() {
+    setLookupOpen(false);
+    syncUrl({});
   }
 
   return (
@@ -201,7 +241,6 @@ export default function ReportHero() {
                   variant="solid"
                   size="large"
                   htmlType="submit"
-                  loading={isPending}
                   className="min-h-12! w-full rounded-xl! px-6! font-semibold! sm:w-auto"
                 >
                   {t("form.submit")}
@@ -249,6 +288,14 @@ export default function ReportHero() {
           </div>
         </div>
       </div>
+
+      <ReportLookupModal
+        open={lookupOpen}
+        price={price}
+        plate={lookup.plate}
+        vin={lookup.vin}
+        onClose={closeLookup}
+      />
     </section>
   );
 }
