@@ -300,7 +300,7 @@ export default function ReportLookupModal({
       // longer run while a purchase is pending, so it never needs to guard
       // against resetting one.
       closable={!purchase.isPending}
-      maskClosable={!purchase.isPending}
+      mask={{ closable: !purchase.isPending }}
       keyboard={!purchase.isPending}
       // Unmounts the modal's body while closed. That is DOM hygiene, not what
       // keeps searches from bleeding into each other: this component and its
