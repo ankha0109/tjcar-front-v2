@@ -1710,11 +1710,7 @@
     "unavailable": "Catalogue is temporarily unavailable. Please try again."
   },
   "reportCheck": {
-    "metaTitle": "Check vehicle history",
-    "metaDescription": "Look up auction and damage history by VIN.",
     "title": "Check vehicle history",
-    "noInputTitle": "Nothing to look up",
-    "noInputBody": "Enter a licence plate or VIN and search again.",
     "foundTitle": "Vehicle found",
     "notFoundTitle": "No information found",
     "tryAgain": "Search again",
