@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import CarGallery from "./CarGallery";
 import CarActionButtons from "./CarActionButtons";
 import KoreaDetailExtras from "./KoreaDetailExtras";
+import KoreaLandedPriceCard from "./KoreaLandedPriceCard";
 import KoreaOptionsPanel from "./KoreaOptionsPanel";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
@@ -11,6 +12,8 @@ import type {
   KoreaInsurance,
   KoreaOptionGroup,
 } from "@/types/korea";
+import type { PowertrainResolution } from "@/lib/powertrain";
+import type { VehicleCostResult } from "@/types/vehicleCost";
 import { colorNameKey, getColorSwatch } from "@/utils/carColor";
 import { formatMileage, formatTransmission } from "@/utils/carFormat";
 
@@ -45,6 +48,16 @@ type Props = {
     inspection?: KoreaInspection | null;
     insurance?: KoreaInsurance | null;
   };
+  /**
+   * Landed-cost breakdown inputs. The page resolves Encar's fuel type and,
+   * when that is unambiguous, prices the car server-side so the total is in
+   * the first paint. Omit to hide the card entirely.
+   */
+  landedCost?: {
+    listingId: number;
+    resolution: PowertrainResolution;
+    initial: VehicleCostResult | null;
+  };
 };
 
 /** `carDetail.fuel.*` keys that exist in the locale files (backend FUEL_MAP). */
@@ -74,6 +87,7 @@ export default async function EncarDetail({
   priceMnt = 0,
   enableCompare,
   encar,
+  landedCost,
 }: Props) {
   const t = await getTranslations("carDetail");
   const tFmt = await getTranslations("car.card");
@@ -229,6 +243,17 @@ export default async function EncarDetail({
                 </a>
               )}
             </section>
+          )}
+
+          {/* Landed cost — the asking price is what Encar charges; this is what
+              the car actually costs once shipping and Mongolian import taxes
+              are on it. Every figure comes from the calculator API. */}
+          {landedCost && (
+            <KoreaLandedPriceCard
+              listingId={landedCost.listingId}
+              resolution={landedCost.resolution}
+              initial={landedCost.initial}
+            />
           )}
 
           {/* Quick specs */}

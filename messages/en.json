@@ -1186,6 +1186,33 @@
         "Placing a realistic, competitive bid based on this figure improves your chances of winning."
       ]
     },
+    "koreaLanded": {
+      "title": "Total landed cost in Mongolia",
+      "choosePowertrain": "Select the powertrain",
+      "powertrainHint": "Encar only reports “hybrid”, which does not say which kind. Mild hybrids are taxed differently, so please choose.",
+      "powertrain": {
+        "HEV": "Hybrid (HEV / PHEV)",
+        "MHEV": "Mild hybrid (MHEV)"
+      },
+      "loading": "Calculating…",
+      "hintLabel": "Details",
+      "disclaimer": "Includes the car price, shipping, and Mongolian customs duty, excise tax and VAT. Bank charges, brokerage, domestic transport and other extras are not included.",
+      "unsupported": {
+        "electric": "No excise-tax rate has been set for electric vehicles yet, so the cost cannot be calculated. Please contact an operator.",
+        "lpg": "The tax rules for LPG vehicles are not defined, so the cost cannot be calculated. Please contact an operator.",
+        "hydrogen": "The tax rules for hydrogen vehicles are not defined, so the cost cannot be calculated. Please contact an operator.",
+        "unknown": "This listing does not state the powertrain, so the cost cannot be calculated. Please contact an operator."
+      },
+      "error": {
+        "EXCHANGE_RATE_UNAVAILABLE": "Exchange rates are temporarily unavailable. Please try again shortly.",
+        "POWERTRAIN_REVIEW_REQUIRED": "Mild hybrid (MHEV) vehicles need their tax confirmed manually. Please contact an operator.",
+        "EXCISE_TAX_NOT_CONFIGURED": "No excise tax has been set for this vehicle type. Please contact an operator.",
+        "LISTING_NOT_FOUND": "This listing is no longer available.",
+        "INVALID_MANUFACTURE_DATE": "The listing is missing its manufacture year and month, so the cost cannot be calculated.",
+        "INVALID_ENGINE_CC": "The listing is missing its engine displacement, so the cost cannot be calculated.",
+        "VALIDATION_ERROR": "The listing is missing information needed to calculate the cost."
+      }
+    },
     "rateInfo": {
       "title": "About the rating",
       "intro": "RATE is the overall condition grade the independent auction inspector gives the car — the higher the number, the better the condition.",

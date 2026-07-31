@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import EncarDetail from "@/components/car-detail/EncarDetail";
 import { getKoreaListing } from "@/services/korea";
+import { calculateVehicleCost } from "@/services/vehicleCost";
 import { koreaListingToFixture } from "@/lib/koreaAdapter";
+import { resolvePowertrain } from "@/lib/powertrain";
 import { carTitle } from "@/lib/carFixtures";
+import type { VehicleCostResult } from "@/types/vehicleCost";
 
 type Props = {
   params: Promise<{ locale: string; id: string }>;
@@ -24,11 +27,26 @@ export default async function KoreaDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const listing = await getKoreaListing(id);
   if (!listing) notFound();
+
+  // Encar's fuel type only pins the excise class for petrol and diesel. Price
+  // those here so the total is in the first paint; a hybrid needs the buyer to
+  // pick HEV/PHEV/MHEV first, and LPG/hydrogen/EV have no excise rule at all.
+  const resolution = resolvePowertrain(listing.fuel_type);
+  const initial: VehicleCostResult | null =
+    resolution.kind === "resolved"
+      ? await calculateVehicleCost({
+          country: "KOREA",
+          koreaListingId: Number(id),
+          powertrain: resolution.powertrain,
+        })
+      : null;
+
   return (
     <EncarDetail
       car={koreaListingToFixture(listing)}
       priceMnt={listing.price_mnt ?? 0}
       enableCompare
+      landedCost={{ listingId: Number(id), resolution, initial }}
       encar={{
         priceKrw: listing.price_krw ?? null,
         priceMnt: listing.price_mnt ?? null,
