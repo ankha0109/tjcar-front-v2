@@ -91,6 +91,12 @@ export default function ReportHero({ price }: Props) {
     /* eslint-disable react-hooks/set-state-in-effect */
     setMode(nextMode);
     setValue(next);
+    // A query string is user-supplied and can normalize to nothing (e.g.
+    // `?plate=-` strips to ""). ReportLookupModal has no "nothing to search"
+    // state, so opening it on a blank/invalid term would leave the customer
+    // staring at a Skeleton forever. Validate the same way the submit
+    // handler does before ever setting `lookupOpen`.
+    if (validate(nextMode, next)) return;
     setLookup(reportSearchQuery(nextMode, next));
     setLookupOpen(true);
     /* eslint-enable react-hooks/set-state-in-effect */
