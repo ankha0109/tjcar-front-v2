@@ -35,6 +35,13 @@ import {
   koreaFiltersToQuery,
   type KoreaFilterValues,
 } from "@/types/korea";
+import {
+  normalizeFor,
+  reportSearchQuery,
+  validate,
+  type SearchError,
+  type SearchMode,
+} from "@/lib/reportSearch";
 
 type Tab = "japan" | "korea";
 
@@ -84,13 +91,16 @@ export default function CarSearchSection({ japanBrands, filterOptions }: Props) 
   const tk = useTranslations("korea");
   const tFuel = useTranslations("carDetail.fuel");
   const tTrans = useTranslations("car.card.transmission");
+  const tr = useTranslations("reportLanding.hero.form");
   const router = useRouter();
 
   const [tab, setTab] = useState<Tab>("japan");
   const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
   const [koreaFilters, setKoreaFilters] =
     useState<KoreaFilterValues>(EMPTY_KOREA_FILTERS);
-  const [vinForm] = Form.useForm<{ vin: string }>();
+  const [reportMode, setReportMode] = useState<SearchMode>("plate");
+  const [reportValue, setReportValue] = useState("");
+  const [reportError, setReportError] = useState<SearchError>(null);
 
   // Each tab links into its own browser with that browser's query contract:
   // `/japan` reads `marka`, `/korea` reads a `brand` slug (see `@/types/korea`).
@@ -265,10 +275,25 @@ export default function CarSearchSection({ japanBrands, filterOptions }: Props) 
     router.push(qs ? `/${tab}?${qs}` : `/${tab}`);
   };
 
-  const onVinSubmit = ({ vin }: { vin: string }) => {
-    const v = vin.trim();
-    if (!v) return;
-    router.push(`/report?vin=${encodeURIComponent(v)}`);
+  const switchReportMode = (next: SearchMode) => {
+    setReportMode(next);
+    setReportValue("");
+    setReportError(null);
+  };
+
+  /**
+   * The panel only validates and hands off — `/report` owns the lookup and
+   * opens its result modal from the query it finds here.
+   */
+  const onReportSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validate(reportMode, reportValue);
+    setReportError(err);
+    if (err) return;
+    router.push({
+      pathname: "/report",
+      query: reportSearchQuery(reportMode, reportValue),
+    });
   };
 
   const segments = [
@@ -622,36 +647,58 @@ export default function CarSearchSection({ japanBrands, filterOptions }: Props) 
               ))}
             </ul>
 
-            <Form
-              form={vinForm}
-              layout="vertical"
-              onFinish={onVinSubmit}
-              className="mt-auto pt-8"
-              requiredMark={false}
-            >
-              <Form.Item
-                name="vin"
-                rules={[{ required: true, message: t("vin.required") }]}
-                className="mb-3!"
-              >
-                <Input
-                  placeholder={t("vin.placeholder")}
-                  size="large"
-                  autoComplete="off"
-                  spellCheck={false}
-                  className="rounded-xl! border-white/30! bg-white/95! shadow-sm! backdrop-blur"
-                />
-              </Form.Item>
+            <form onSubmit={onReportSubmit} noValidate className="mt-auto pt-8">
+              <Segmented<SearchMode>
+                value={reportMode}
+                onChange={switchReportMode}
+                options={[
+                  { label: t("vin.modePlate"), value: "plate" },
+                  { label: t("vin.modeVin"), value: "vin" },
+                ]}
+                block
+                className="mb-3 bg-white/10! [&_.ant-segmented-item]:text-blue-100! [&_.ant-segmented-item-selected]:bg-white! [&_.ant-segmented-item-selected]:text-neutral-900!"
+              />
+              <label htmlFor="home-report-input" className="sr-only">
+                {reportMode === "plate" ? tr("plateLabel") : tr("label")}
+              </label>
+              <Input
+                id="home-report-input"
+                value={reportValue}
+                onChange={(e) => {
+                  setReportValue(normalizeFor(reportMode, e.target.value));
+                  if (reportError) setReportError(null);
+                }}
+                placeholder={
+                  reportMode === "plate"
+                    ? tr("platePlaceholder")
+                    : tr("placeholder")
+                }
+                size="large"
+                autoComplete="off"
+                spellCheck={false}
+                aria-invalid={reportError ? true : undefined}
+                aria-describedby={reportError ? "home-report-error" : undefined}
+                className="rounded-xl! border-white/30! bg-white/95! shadow-sm! backdrop-blur"
+              />
+              {reportError ? (
+                <p
+                  id="home-report-error"
+                  role="alert"
+                  className="mt-2 text-[12px] font-medium text-red-300"
+                >
+                  {tr(`errors.${reportError}`)}
+                </p>
+              ) : null}
               <Button
                 htmlType="submit"
                 type="primary"
                 size="large"
                 block
-                className="rounded-xl! border-none! bg-blue-600! font-semibold! text-white! shadow-lg! hover:bg-blue-500!"
+                className="mt-3 rounded-xl! border-none! bg-blue-600! font-semibold! text-white! shadow-lg! hover:bg-blue-500!"
               >
                 {t("vin.submit")}
               </Button>
-            </Form>
+            </form>
           </div>
         </aside>
       </div>

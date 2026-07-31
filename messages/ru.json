@@ -198,9 +198,9 @@
         "mileage": "Реальный пробег",
         "report": "Лист оценки"
       },
-      "placeholder": "VIN или гос. номер",
-      "submit": "Проверить",
-      "required": "Введите VIN или гос. номер"
+      "modePlate": "Гос. номер",
+      "modeVin": "VIN",
+      "submit": "Проверить"
     }
   },
   "footer": {

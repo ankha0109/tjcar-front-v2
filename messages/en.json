@@ -198,9 +198,9 @@
         "mileage": "True mileage",
         "report": "Inspection sheet"
       },
-      "placeholder": "VIN or plate number",
-      "submit": "Check",
-      "required": "Please enter a VIN or plate number"
+      "modePlate": "Plate",
+      "modeVin": "VIN",
+      "submit": "Check"
     }
   },
   "footer": {

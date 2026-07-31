@@ -198,9 +198,9 @@
         "mileage": "Жинхэнэ гүйлт",
         "report": "Үнэлгээний хуудас"
       },
-      "placeholder": "VIN эсвэл улсын дугаар",
-      "submit": "Шалгах",
-      "required": "VIN эсвэл улсын дугаараа оруулна уу"
+      "modePlate": "Улсын дугаар",
+      "modeVin": "VIN",
+      "submit": "Шалгах"
     }
   },
   "footer": {
