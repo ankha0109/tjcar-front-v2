@@ -287,6 +287,21 @@ export default function ReportLookupModal({
       open={open}
       onCancel={handleClose}
       footer={null}
+      // While a purchase is in flight, block every way `onCancel` can fire —
+      // Esc, the X, and the mask click. `POST /reports` has already been
+      // sent at that point (possibly with a QPay invoice opening
+      // server-side), and antd's Button already refuses a second click while
+      // `loading` — but that guard lives only in the Button, and
+      // `handleClose`'s unconditional `purchase.reset()` would otherwise
+      // detach the observer, drop `isPending` back to idle, and silently
+      // re-arm Buy for a resubmit that fires a second, concurrent
+      // `createReport` for the same car. Making the modal undismissable here
+      // is what keeps that unconditional reset correct: `handleClose` can no
+      // longer run while a purchase is pending, so it never needs to guard
+      // against resetting one.
+      closable={!purchase.isPending}
+      maskClosable={!purchase.isPending}
+      keyboard={!purchase.isPending}
       // Unmounts the modal's body while closed. That is DOM hygiene, not what
       // keeps searches from bleeding into each other: this component and its
       // query/mutation hooks stay mounted the whole time (`ReportHero` renders
