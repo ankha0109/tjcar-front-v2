@@ -207,3 +207,28 @@ shared `validate`.
 - The commented-out badge block at `CarSearchSection.tsx:602-605` and its now-unused
   `ShieldIcon` import. Left exactly as found.
 - Any change to `POST /plates/search` or `POST /reports/search` on the backend.
+
+## Follow-ups found during implementation
+
+Reviewed, deliberately not fixed here, and worth their own work. All three sit on the
+purchase path, where the backend has no duplicate guard — `src/services/reports.ts:55-59`
+records that a retry creates a second unpaid report and a second QPay invoice.
+
+1. **`TryAgain` is not gated on `purchase.isPending`.** The modal's three dismiss vectors
+   (Esc, close icon, mask) are gated, so `handleClose` — and its `purchase.reset()` —
+   cannot fire mid-purchase. The two `TryAgain` buttons are not, and rely instead on
+   `renderView()` never showing them while the found-panel is active. That holds unless a
+   background refetch of `report-lookup` fails: `AntdProvider.tsx:55` disables
+   `refetchOnWindowFocus` but leaves `refetchOnReconnect` at TanStack's default `true`, and
+   TanStack flips `status` to `error` on any failed fetch, including one over data it
+   already has. So a purchase pending past the 60s `staleTime`, plus a reconnect, plus that
+   refetch failing, exposes an ungated `TryAgain` that re-arms the Buy button.
+2. **No client-side timeout or `AbortController` on `POST /reports`.** A genuinely hung
+   request leaves the modal deliberately unclosable with no upper bound and no affordance
+   telling the customer why; the only escape is a browser-level reload.
+3. **A logged-out search can still be replayed to a logged-in render across a hard
+   reload.** The in-memory fix (session identity in the query key) covers the client-side
+   login round-trip, which is the path this work introduced. It does not cover a customer
+   who already owns a VIN, searches it logged out on a fresh device, and logs in: the
+   duplicate check lives behind auth on `POST /reports/search`, and `POST /reports` has
+   none of its own. The durable fix belongs in the API.
