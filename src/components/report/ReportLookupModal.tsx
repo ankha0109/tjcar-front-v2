@@ -61,10 +61,21 @@ export default function ReportLookupModal({
   const { status: authStatus } = useSession();
 
   const lookup = useQuery<LookupOutcome>({
-    queryKey: ["report-lookup", plate ?? "", vin ?? ""],
+    // `authStatus` is part of the key on purpose: the duplicate check inside
+    // `queryFn` (via `searchVin`) is auth-gated backend-side, so a logged-out
+    // "found" answer and a logged-in "owned" answer are genuinely different
+    // results for the same plate/vin. Without the session in the key, the
+    // `QueryClient` (which survives the client-side nav back from
+    // `/auth/login`, see `AntdProvider`) would replay the logged-out result
+    // — Buy button included — for up to `staleTime` after login.
+    queryKey: ["report-lookup", authStatus, plate ?? "", vin ?? ""],
     // Gated on `open` too: the component stays mounted while closed so the
     // modal can animate out, and a closed modal must not fire a request.
-    enabled: open && Boolean(plate || vin),
+    // Also gated on the session having settled: `authStatus` passes through
+    // "loading" before "authenticated"/"unauthenticated", and each value is
+    // its own cache entry now, so firing while "loading" would just mean a
+    // second, wasted fetch a moment later under the real status.
+    enabled: open && authStatus !== "loading" && Boolean(plate || vin),
     retry: false,
     staleTime: 60_000,
     queryFn: async () => {
@@ -98,11 +109,18 @@ export default function ReportLookupModal({
 
   // Already purchased → straight to the report, no second charge. `replace` so
   // Back does not bounce the customer into the buy screen again.
+  //
+  // Gated on `open`: `enabled` above only stops *future* fetches, it does not
+  // cancel one already in flight. If the customer presses Esc while
+  // `POST /reports/search` is still running, the promise still resolves,
+  // `{kind:"owned"}` still lands in the query cache, and this effect would
+  // otherwise still fire — navigating them away from the landing page they
+  // just chose to close the modal and stay on.
   useEffect(() => {
-    if (lookup.data?.kind === "owned") {
+    if (open && lookup.data?.kind === "owned") {
       router.replace(`/report/${lookup.data.reportId}`);
     }
-  }, [lookup.data, router]);
+  }, [open, lookup.data, router]);
 
   // The API authors this message as HTML; derived, not stored, so it can never
   // lag a render behind the query that produced it.
@@ -121,8 +139,28 @@ export default function ReportLookupModal({
         ...(plateNo ? { plate_no: plateNo } : {}),
       });
     },
+    // Not gated on `open`: unlike the "owned" redirect above, this fires only
+    // for a purchase the customer actually initiated by clicking Buy. Money
+    // already moved (or a QPay invoice already opened) by the time this
+    // resolves, so it should still land them on the report even if they
+    // closed the modal in the meantime — the alternative is a successful
+    // purchase with no visible confirmation.
     onSuccess: ({ report_id }) => router.push(`/report/${report_id}`),
   });
+
+  /**
+   * Every way of dismissing the modal — Esc, the X, or "Дахин оролдох" —
+   * routes through here. `ReportHero` renders this modal unconditionally, so
+   * the mutation above stays mounted (and its state un-reset) for the life of
+   * the page; nothing else clears a stale purchase error between searches.
+   * Reset it on every close, not just when the search term changes, so
+   * reopening with the *same* plate/vin after a failed purchase doesn't still
+   * show the old failure.
+   */
+  function handleClose() {
+    purchase.reset();
+    onClose();
+  }
 
   /**
    * Where login sends the customer back to. The value is encoded for the query
@@ -161,7 +199,7 @@ export default function ReportLookupModal({
               className="text-[13.5px] leading-relaxed text-neutral-600 dark:text-neutral-300"
               dangerouslySetInnerHTML={{ __html: notFoundHtml }}
             />
-            <TryAgain label={t("tryAgain")} onClick={onClose} />
+            <TryAgain label={t("tryAgain")} onClick={handleClose} />
           </>
         ),
       };
@@ -171,7 +209,7 @@ export default function ReportLookupModal({
       return {
         title: t("errors.generic"),
         tone: "error",
-        body: <TryAgain label={t("tryAgain")} onClick={onClose} />,
+        body: <TryAgain label={t("tryAgain")} onClick={handleClose} />,
       };
     }
 
@@ -247,10 +285,14 @@ export default function ReportLookupModal({
   return (
     <Modal
       open={open}
-      onCancel={onClose}
+      onCancel={handleClose}
       footer={null}
-      // Unmounts the body on close, so reopening with a different plate never
-      // flashes the previous car while the new query runs.
+      // Unmounts the modal's body while closed. That is DOM hygiene, not what
+      // keeps searches from bleeding into each other: this component and its
+      // query/mutation hooks stay mounted the whole time (`ReportHero` renders
+      // it unconditionally), so it is the query key changing with plate/vin
+      // that stops a previous car flashing on reopen, and `handleClose`
+      // resetting `purchase` that stops a previous purchase error surviving.
       destroyOnHidden
       centered
       width="min(560px, 94vw)"
