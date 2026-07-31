@@ -1100,12 +1100,16 @@
           "role": "CEO"
         },
         "sales": {
-          "name": "Tulga",
+          "name": "Tulgabuyan",
           "role": "Sales Manager"
         },
         "it": {
           "name": "Ankhbayar",
           "role": "Software Engineer"
+        },
+        "support": {
+          "name": "Aya",
+          "role": "AI Advisor"
         }
       }
     },

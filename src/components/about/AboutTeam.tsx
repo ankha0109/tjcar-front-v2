@@ -11,15 +11,19 @@ import Reveal from "@/components/ui/Reveal";
 const TEAM = [
   {
     key: "ceo",
-    photo: "https://cdn.tjcar.mn/public/static/v2/employees/tuvshinjargal.webp",
+    photo: "https://cdn.tjcar.mn/public/static/v2/employees/tuvshinjargal.jpg",
   },
   {
     key: "sales",
-    photo: "https://cdn.tjcar.mn/public/static/v2/employees/tulga.webp",
+    photo: "https://cdn.tjcar.mn/public/static/v2/employees/tulga.jpg",
   },
   {
     key: "it",
-    photo: "https://cdn.tjcar.mn/public/static/v2/employees/ankhbayar.webp",
+    photo: "https://cdn.tjcar.mn/public/static/v2/employees/ankhbayar.jpg",
+  },
+  {
+    key: "support",
+    photo: "https://cdn.tjcar.mn/public/static/v2/employees/aya.jpg",
   },
 ] as const;
 
@@ -31,7 +35,7 @@ export default async function AboutTeam() {
       <SectionHeading heading={t("heading")} subheading={t("subheading")} />
 
       <Reveal>
-        <ul className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-5 sm:grid-cols-3 md:mt-12">
+        <ul className="mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 md:mt-12 lg:grid-cols-4">
           {TEAM.map(({ key, photo }) => {
             const name = t(`members.${key}.name`);
             return (
@@ -44,7 +48,7 @@ export default async function AboutTeam() {
                     src={photo}
                     alt={name}
                     fill
-                    sizes="(min-width: 640px) 33vw, 320px"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 320px"
                     className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                     unoptimized
                   />
@@ -54,7 +58,10 @@ export default async function AboutTeam() {
                   />
                   <div className="absolute inset-x-0 bottom-0 p-4 transition-transform duration-300 group-hover:-translate-y-0.5">
                     <p className="flex items-center gap-2 text-[11px] font-semibold uppercase text-white/75">
-                      <span aria-hidden="true" className="h-px w-4 bg-primary" />
+                      <span
+                        aria-hidden="true"
+                        className="h-px w-4 bg-primary"
+                      />
                       {t(`members.${key}.role`)}
                     </p>
                     <p className="mt-1 text-[17px] font-semibold text-white">
