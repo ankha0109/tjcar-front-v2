@@ -68,9 +68,17 @@ Consumers: `ReportHero` and `CarSearchSection`. Neither re-implements validation
 | `src/app/[locale]/report/page.tsx` | `await getConfig()`, pass `price={effectiveReportPrice(config)}` to `<ReportHero />` |
 | `src/app/[locale]/dashboard/page.tsx:35` | `href: "/report/check"` → `"/report"` |
 
-The `reportCheck` i18n namespace **stays** — the modal renders those exact strings. Only
-`reportCheck.metaTitle` and `reportCheck.metaDescription` become unused and are removed
-from all three message files.
+The `reportCheck` i18n namespace **stays** — the modal renders those exact strings, with
+one adjustment. The modal needs a heading while the lookup is still running, which the
+page never did; `metaTitle` already carries the right copy but is named for metadata the
+modal does not have. So `metaTitle` is re-cut as `reportCheck.title`, and four keys go:
+
+| Key | Fate |
+| --- | --- |
+| `metaTitle` | replaced by `title`, same copy, used as the modal's loading/redirect heading |
+| `metaDescription` | removed — no page metadata left to describe |
+| `noInputTitle` | removed — the modal only opens with a search term |
+| `noInputBody` | removed — same |
 
 No redirect rule is added. `/report/check` shipped recently, is `noindex`, and is not the
 URL printed by the PDF QR code (that is `/report/view/{id}`, still unimplemented and out
@@ -78,8 +86,9 @@ of scope).
 
 ## 3. `ReportLookup` → `ReportLookupModal`
 
-`src/components/report/ReportLookup.tsx` is renamed to `ReportLookupModal.tsx`. All
-behaviour that makes the component correct is preserved:
+`src/components/report/ReportLookup.tsx` becomes `ReportLookupModal.tsx`. The new file is
+added before the old one is deleted so that `/report/check` keeps compiling in between and
+every commit type-checks. All behaviour that makes the component correct is preserved:
 
 - the plate → chassis → report chain, including `plateChassisNo` reassembly;
 - the `isExistingReport` short-circuit that redirects an already-owned VIN to
