@@ -7,12 +7,14 @@ import { BorderBeam, Button, Input, Segmented } from "antd";
 import type { BorderBeamGradient } from "antd";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/utils";
+import {
+  normalizeFor,
+  validate,
+  type SearchError,
+  type SearchMode,
+} from "@/lib/reportSearch";
 import SampleReportModal from "./SampleReportModal";
 import soyombo from "../../../public/images/32px-Soyombo_red.png";
-
-type SearchMode = "plate" | "vin";
-type SearchError =
-  "required" | "tooShort" | "invalidChars" | "plateFormat" | null;
 
 // Brand-warm gradient for the lookup card's BorderBeam.
 const CHECK_BEAM_COLOR: BorderBeamGradient = [
@@ -20,50 +22,6 @@ const CHECK_BEAM_COLOR: BorderBeamGradient = [
   { color: "#ff8f66", percent: 52 },
   { color: "#ffcdb8", percent: 100 },
 ];
-
-/** Uppercase, strip whitespace, normalise unicode hyphen variants to "-". */
-function normalizeChassis(raw: string) {
-  return raw
-    .toUpperCase()
-    .replace(/\s+/g, "")
-    .replace(/[‐-―−－]/g, "-");
-}
-
-/* Plates are Cyrillic; map the Latin homoglyphs an English keyboard
-   produces (A→А, Y/U→У, …) so "1234YBH" still validates. */
-const LATIN_TO_CYRILLIC: Record<string, string> = {
-  A: "А",
-  B: "В",
-  C: "С",
-  E: "Е",
-  H: "Н",
-  I: "И",
-  K: "К",
-  M: "М",
-  O: "О",
-  P: "Р",
-  T: "Т",
-  X: "Х",
-  Y: "У",
-  U: "У",
-};
-
-function normalizePlate(raw: string) {
-  return raw
-    .toUpperCase()
-    .replace(/[\s‐-―−－-]/g, "")
-    .replace(/[A-Z]/g, (ch) => LATIN_TO_CYRILLIC[ch] ?? ch);
-}
-
-function validate(mode: SearchMode, v: string): SearchError {
-  if (!v) return "required";
-  if (mode === "plate") {
-    return /^\d{4}[А-ЯЁӨҮ]{3}$/u.test(v) ? null : "plateFormat";
-  }
-  if (!/^[A-Z0-9-]+$/.test(v)) return "invalidChars";
-  if (v.length < 6) return "tooShort";
-  return null;
-}
 
 function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -100,7 +58,7 @@ export default function ReportHero() {
     // Suspense/CSR bailout and make the page dynamic.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMode("vin");
-    setValue(normalizeChassis(vin));
+    setValue(normalizeFor("vin", vin));
   }, []);
 
   function switchMode(next: SearchMode) {
@@ -227,11 +185,7 @@ export default function ReportHero() {
                   aria-invalid={error ? true : undefined}
                   aria-describedby={error ? "report-vin-error" : undefined}
                   onChange={(e) => {
-                    setValue(
-                      mode === "plate"
-                        ? normalizePlate(e.target.value)
-                        : normalizeChassis(e.target.value),
-                    );
+                    setValue(normalizeFor(mode, e.target.value));
                     if (error) setError(null);
                   }}
                   placeholder={
