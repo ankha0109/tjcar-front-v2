@@ -1712,6 +1712,7 @@
   "reportCheck": {
     "metaTitle": "Check vehicle history",
     "metaDescription": "Look up auction and damage history by VIN.",
+    "title": "Check vehicle history",
     "noInputTitle": "Nothing to look up",
     "noInputBody": "Enter a licence plate or VIN and search again.",
     "foundTitle": "Vehicle found",
