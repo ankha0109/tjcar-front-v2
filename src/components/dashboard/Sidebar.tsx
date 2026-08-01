@@ -40,6 +40,18 @@ const NAV_HREFS = [
     ),
   },
   {
+    href: "/dashboard/orders",
+    key: "orders",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 17h4V5H2v12h3" />
+        <path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1" />
+        <circle cx="7.5" cy="17.5" r="2.5" />
+        <circle cx="17.5" cy="17.5" r="2.5" />
+      </svg>
+    ),
+  },
+  {
     href: "/dashboard/reports",
     key: "reports",
     icon: (
@@ -59,7 +71,7 @@ export default function Sidebar() {
 
   const NAV = NAV_HREFS.map((item) => ({
     ...item,
-    label: t(item.key as "overview" | "profile" | "bids" | "reports"),
+    label: t(item.key as "overview" | "profile" | "bids" | "orders" | "reports"),
   }));
 
   return (

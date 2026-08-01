@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import Api from "@/services/Api";
 import { listReports } from "@/services/reports";
+import { listOrders } from "@/services/orders";
 import StatCard from "./StatCard";
 
 type StatsResponse = {
@@ -41,16 +42,31 @@ export default function DashboardStats() {
     staleTime: 30_000,
   });
 
+  // Same one-row-page trick as the reports card: read `meta.total` instead of
+  // adding a server-side counter for a single figure.
+  const orderCount = useQuery({
+    queryKey: ["stats", "orders"],
+    queryFn: () => listOrders(1, 1),
+    enabled: isAuthenticated,
+    staleTime: 30_000,
+  });
+
   const bids = bidStats.data?.data;
 
   // Same wrapper element and classes the server page used, so the grid does not shift.
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatCard
         label={t("stats.bidsLabel")}
         value={bids?.requests ?? "—"}
         hint={t("stats.bidsHint", { count: bids?.requests_pending ?? 0 })}
         href="/dashboard/bids"
+      />
+      <StatCard
+        label={t("stats.ordersLabel")}
+        value={orderCount.data?.meta.total ?? "—"}
+        hint={t("stats.ordersHint")}
+        href="/dashboard/orders"
       />
       <StatCard
         label={t("stats.reportsLabel")}
