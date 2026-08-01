@@ -470,6 +470,7 @@
       "overview": "Overview",
       "profile": "Profile",
       "bids": "My bids",
+      "orders": "My orders",
       "reports": "My reports"
     },
     "home": {
@@ -482,8 +483,8 @@
           "description": "Join an auction"
         },
         "track": {
-          "title": "Track a car",
-          "description": "Add to watchlist"
+          "title": "Track orders",
+          "description": "See shipping progress"
         },
         "report": {
           "title": "Check accident",
@@ -494,7 +495,9 @@
         "bidsLabel": "Bids sent",
         "bidsHint": "{count} pending",
         "reportsLabel": "My reports",
-        "reportsHint": "total created"
+        "reportsHint": "total created",
+        "ordersLabel": "My orders",
+        "ordersHint": "orders in total"
       },
       "recent": {
         "title": "Recent activity",
@@ -550,6 +553,68 @@
       "successBody": "Your new price has been recorded.",
       "errorTitle": "Price not updated",
       "errorFallback": "Please try again."
+    },
+    "orders": {
+      "title": "My orders",
+      "description": "Track the cars you won at auction.",
+      "listHeading": "My orders",
+      "orderNo": "Order #{id}",
+      "notShipped": "Not shipped yet",
+      "emptyTitle": "No orders yet",
+      "emptyDescription": "Cars you win at auction appear here once the order is created.",
+      "emptyCta": "Browse auctions",
+      "loadErrorTitle": "Could not load the list",
+      "loadErrorBody": "Check your connection and refresh the page."
+    },
+    "orderDetail": {
+      "title": "Order details",
+      "description": "Car information, shipping progress and payment breakdown.",
+      "orderNo": "Order #{id}",
+      "createdAt": "Ordered: {date}",
+      "progressHeading": "Shipping progress",
+      "orderHeading": "Order information",
+      "paymentHeading": "Payment",
+      "carHeading": "Car information",
+      "auctionHeading": "Auction information",
+      "status": "Status",
+      "port": "Loading port",
+      "departureDate": "Departure date",
+      "arrivalDate": "Expected in Mongolia",
+      "operatorLabel": "Assigned staff",
+      "note": "Note",
+      "total": "Total price",
+      "advance": "Advance payment",
+      "remaining": "Remaining balance",
+      "jpyTotal": "Japan-side price",
+      "exchangeRate": "Exchange rate",
+      "marka": "Make",
+      "model": "Model",
+      "year": "Year",
+      "kuzov": "Chassis number",
+      "color": "Colour",
+      "engine": "Engine displacement",
+      "transmission": "Transmission",
+      "grade": "Grade",
+      "mileage": "Mileage",
+      "rate": "Auction rating",
+      "rateExt": "Exterior grade",
+      "rateInt": "Interior grade",
+      "auctionId": "ID",
+      "lot": "Lot no.",
+      "auctionName": "Auction house",
+      "auctionDate": "Auction date",
+      "timelineEmpty": "No shipping records yet",
+      "backToList": "Back to orders",
+      "notFoundTitle": "Order not found",
+      "notFoundBody": "This order was removed or does not belong to you.",
+      "loadErrorTitle": "Could not load",
+      "loadErrorBody": "Check your connection and refresh the page."
+    },
+    "transportStops": {
+      "stop0": "Departed Japan",
+      "stop1": "Departed Tianjin",
+      "stop2": "Departed Zamyn-Üüd",
+      "stop3": "Arrived at customs"
     },
     "profile": {
       "title": "Profile",
