@@ -665,6 +665,7 @@
       "startPriceLabel": "Start price",
       "mntPriceLabel": "MNT estimate",
       "avgPriceLabel": "Average price",
+      "koreaPriceLabel": "Price in Korea",
       "lotLabel": "Lot",
       "wishlist": "Save",
       "compare": "Compare",
@@ -795,24 +796,26 @@
   "homeServices": {
     "eyebrow": "Services",
     "heading": "Featured services",
-    "cta": "View details",
-    "ctaAria": "{service} — view details",
     "items": {
       "japan": {
-        "title": "Order from Japan",
-        "description": "We bid at Japanese auctions, inspect, and ship all the way to Mongolia."
+        "title": "Order a car from Japan",
+        "description": "We buy the car you want at Japanese auctions and hand it over to you in 45–60 days.",
+        "cta": "Order from Japan"
       },
       "korea": {
-        "title": "Order from Korea",
-        "description": "Buy straight from Encar and take delivery in Mongolia within 14 days."
+        "title": "Order a car from Korea",
+        "description": "We buy the car you want on the Korean market and hand it over to you in 10–14 days.",
+        "cta": "Order from Korea"
       },
       "report": {
-        "title": "Accident history report",
-        "description": "Accidents, mileage and auction grade — verified in one PDF report."
+        "title": "Check a car's history (Report)",
+        "description": "Check accidents, mileage, auction grade and past history in a PDF report.",
+        "cta": "Check a report"
       },
       "garage": {
-        "title": "TJ Garage",
-        "description": "Inspected cars already in Mongolia, ready to drive away today."
+        "title": "TJ Garage — cars in stock",
+        "description": "Browse inspected cars that are already in Mongolia and ready to go.",
+        "cta": "View cars in stock"
       }
     }
   },
@@ -1253,25 +1256,11 @@
     },
     "koreaLanded": {
       "title": "Total landed cost in Mongolia",
-      "choosePowertrain": "Select the powertrain",
-      "powertrainHint": "Encar only reports “hybrid”, which does not say which kind. Mild hybrids are taxed differently, so please choose.",
-      "powertrain": {
-        "HEV": "Hybrid (HEV / PHEV)",
-        "MHEV": "Mild hybrid (MHEV)"
-      },
-      "loading": "Calculating…",
       "hintLabel": "Details",
       "disclaimer": "Includes the car price, shipping, and Mongolian customs duty, excise tax and VAT. Bank charges, brokerage, domestic transport and other extras are not included.",
-      "unsupported": {
-        "electric": "No excise-tax rate has been set for electric vehicles yet, so the cost cannot be calculated. Please contact an operator.",
-        "lpg": "The tax rules for LPG vehicles are not defined, so the cost cannot be calculated. Please contact an operator.",
-        "hydrogen": "The tax rules for hydrogen vehicles are not defined, so the cost cannot be calculated. Please contact an operator.",
-        "unknown": "This listing does not state the powertrain, so the cost cannot be calculated. Please contact an operator."
-      },
+      "unknownPowertrain": "This listing does not state the powertrain, so the cost cannot be calculated. Please contact an operator.",
       "error": {
         "EXCHANGE_RATE_UNAVAILABLE": "Exchange rates are temporarily unavailable. Please try again shortly.",
-        "POWERTRAIN_REVIEW_REQUIRED": "Mild hybrid (MHEV) vehicles need their tax confirmed manually. Please contact an operator.",
-        "EXCISE_TAX_NOT_CONFIGURED": "No excise tax has been set for this vehicle type. Please contact an operator.",
         "LISTING_NOT_FOUND": "This listing is no longer available.",
         "INVALID_MANUFACTURE_DATE": "The listing is missing its manufacture year and month, so the cost cannot be calculated.",
         "INVALID_ENGINE_CC": "The listing is missing its engine displacement, so the cost cannot be calculated.",
@@ -1314,36 +1303,110 @@
     "evaluationGuide": {
       "title": "Inspection sheet guide",
       "subtitle": "What the inspector's shorthand marks mean",
+      "noteLabel": "Note:",
+      "note": "The exact wording of these marks can differ slightly between auction houses and countries.",
       "marks": {
-        "A1": "Tiny scratch",
-        "A2": "Scratch",
-        "A3": "Large scratch",
-        "E1": "Dent with a small scratch",
-        "E2": "Dent with a medium scratch",
-        "E3": "Dent with a large scratch",
-        "U1": "Small dent",
-        "U2": "Minor dent",
-        "U3": "Large dent",
-        "W1": "Minor repair (not visible)",
-        "W2": "Repaired",
-        "W3": "Repaired (needs repainting)",
-        "S1": "Rust",
-        "S2": "Deep rust",
-        "C1": "Corrosion",
-        "C2": "Deep corrosion",
-        "P": "Painted",
-        "H": "Faded paint (needs replacing)",
-        "XX": "Replaced part",
-        "B1": "Small dent",
-        "B2": "Minor dent",
-        "B3": "Large dent",
-        "Y1": "Small hole or crack",
-        "Y2": "Hole or crack",
-        "Y3": "Large hole or crack",
-        "X1": "~1cm crack in the glass",
-        "R": "Windshield repaired",
-        "RX": "Windshield cracked (needs replacing)",
-        "G": "Stone chip on the glass"
+        "A1": {
+          "title": "Tiny scratch",
+          "description": "Very small, barely noticeable scratch"
+        },
+        "A2": { "title": "Scratch", "description": "Medium-sized scratch" },
+        "A3": {
+          "title": "Large scratch",
+          "description": "Large or deep scratch"
+        },
+        "E1": {
+          "title": "A few small dents",
+          "description": "One or a handful of small dents"
+        },
+        "E2": {
+          "title": "Several small dents",
+          "description": "Many small dents"
+        },
+        "E3": {
+          "title": "Many small dents",
+          "description": "A great many small dents"
+        },
+        "U1": {
+          "title": "Small dent",
+          "description": "Barely noticeable dent"
+        },
+        "U2": { "title": "Medium dent", "description": "Medium-sized dent" },
+        "U3": { "title": "Large dent", "description": "Large dent" },
+        "W1": {
+          "title": "Repaired (barely visible)",
+          "description": "Repair and paint ripple are barely noticeable"
+        },
+        "W2": {
+          "title": "Repaired (noticeable)",
+          "description": "Repair marks and paint ripple are noticeable"
+        },
+        "W3": {
+          "title": "Repaired (clearly visible)",
+          "description": "Repair marks and paint ripple are clearly visible"
+        },
+        "S1": { "title": "Rust", "description": "Small area of rust" },
+        "S2": {
+          "title": "Deep rust",
+          "description": "Deep, widespread rust"
+        },
+        "C1": { "title": "Corrosion", "description": "Corrosion has started" },
+        "C2": {
+          "title": "Deep corrosion",
+          "description": "Deep corrosion is present"
+        },
+        "P": {
+          "title": "Paint damage",
+          "description": "Paint stains, peeling, colour mismatch, paint runs"
+        },
+        "X": {
+          "title": "Needs replacing",
+          "description": "The part or body panel needs to be replaced"
+        },
+        "XX": {
+          "title": "Replaced",
+          "description": "Part or panel that has already been replaced"
+        },
+        "B1": {
+          "title": "Small dent with a scratch",
+          "description": "Small dent that also has a scratch"
+        },
+        "B2": {
+          "title": "Medium dent with a scratch",
+          "description": "Medium-sized dent that also has a scratch"
+        },
+        "B3": {
+          "title": "Large dent with a scratch",
+          "description": "Large dent that also has a scratch"
+        },
+        "Y1": {
+          "title": "Small hole or crack",
+          "description": "Small hole or crack"
+        },
+        "Y2": {
+          "title": "Hole or crack",
+          "description": "Medium-sized hole or crack"
+        },
+        "Y3": {
+          "title": "Large hole or crack",
+          "description": "Large hole or crack"
+        },
+        "X1": {
+          "title": "~1cm crack in the glass",
+          "description": "About a 1cm crack in the windshield"
+        },
+        "R": {
+          "title": "Windshield repaired",
+          "description": "The windshield has been repaired"
+        },
+        "RX": {
+          "title": "Repaired but needs replacing",
+          "description": "Windshield cracked and repaired, but still needs replacing"
+        },
+        "G": {
+          "title": "Stone chip on the glass",
+          "description": "Small stone mark on the glass"
+        }
       }
     },
     "specs": {

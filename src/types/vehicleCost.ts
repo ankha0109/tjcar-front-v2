@@ -8,8 +8,8 @@
 export type VehicleCountry = "JAPAN" | "KOREA";
 
 /**
- * The excise-tax classes the backend recognises. Encar's `fuel_type` does not
- * map onto these one-for-one — see `@/lib/powertrain`.
+ * The excise-tax classes the backend recognises. Encar's `fuel_type` uses its
+ * own vocabulary — see `@/lib/powertrain` for the map.
  */
 export type Powertrain =
   | "GASOLINE"
@@ -17,7 +17,9 @@ export type Powertrain =
   | "HEV"
   | "PHEV"
   | "MHEV"
-  | "EV";
+  | "EV"
+  | "LPG"
+  | "HYDROGEN";
 
 export type VerificationStatus = "VERIFIED" | "UNVERIFIED" | "REVIEW_REQUIRED";
 
@@ -111,8 +113,9 @@ export type VehicleCost = {
 
 /**
  * The calculator answers with a §15 `code` on failure. Several of those are
- * ordinary outcomes for a given car (an EV has no excise table yet), so the
- * caller renders them as an explanation rather than an error.
+ * ordinary outcomes for a given listing (Encar never stated the manufacture
+ * month, the exchange rate is missing), so the caller renders them as an
+ * explanation rather than an error.
  */
 export type VehicleCostFailure = {
   code: string;

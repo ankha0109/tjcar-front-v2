@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 
 /**
  * Inspection-sheet mark codes, in the order the Japanese auction sheets use
- * them. Descriptions are localized under `carDetail.evaluationGuide.marks.*`.
+ * them. Each code is localized as a `{ title, description }` pair under
+ * `carDetail.evaluationGuide.marks.*`.
  */
 const MARK_CODES = [
   "A1",
@@ -26,7 +27,7 @@ const MARK_CODES = [
   "C1",
   "C2",
   "P",
-  "H",
+  "X",
   "XX",
   "B1",
   "B2",
@@ -80,21 +81,34 @@ export default function EvaluationGuide() {
       <Modal
         open={open}
         onCancel={() => setOpen(false)}
-        footer={null}
+        // Auction houses word the same mark slightly differently — the caveat
+        // sits in the footer so it stays visible while the list scrolls.
+        footer={
+          <p className="rounded-lg bg-amber-50 px-3 py-2 text-left text-[12px] leading-relaxed text-amber-700 dark:bg-amber-950/40 dark:text-amber-400">
+            <span className="font-semibold">{t("noteLabel")}</span> {t("note")}
+          </p>
+        }
         title={t("title")}
         centered
+        width={760}
+        styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
       >
         <p className="mb-4 text-[13px] text-neutral-500 dark:text-neutral-400">
           {t("subtitle")}
         </p>
-        <ul className="grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
           {MARK_CODES.map((code) => (
             <li key={code} className="flex items-start gap-2.5">
-              <span className="mt-px inline-flex min-w-[30px] justify-center rounded-md bg-neutral-900 px-1.5 py-0.5 text-[11px] font-bold text-white dark:bg-neutral-700">
+              <span className="inline-flex min-w-9 shrink-0 justify-center rounded-md bg-neutral-900 px-1.5 py-1 text-[14px] font-bold text-white dark:bg-neutral-700">
                 {code}
               </span>
-              <span className="text-[12.5px] leading-snug text-neutral-600 dark:text-neutral-300">
-                {t(`marks.${code}`)}
+              <span className="min-w-0">
+                <span className="block text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+                  {t(`marks.${code}.title`)}
+                </span>
+                <span className="mt-0.5 block text-[12px] leading-snug text-neutral-500 dark:text-neutral-400">
+                  {t(`marks.${code}.description`)}
+                </span>
               </span>
             </li>
           ))}

@@ -16,11 +16,11 @@ const CALCULATE_PATH = "/v1/vehicle-cost/calculate";
  * breakdown.
  *
  * Never throws on a calculator refusal. Several §15 codes are ordinary
- * outcomes for a particular car (`EXCISE_TAX_NOT_CONFIGURED` for an EV,
- * `POWERTRAIN_REVIEW_REQUIRED` for a mild hybrid) and a missing exchange rate
- * is an operations problem, not a broken page — the detail page must still
- * render with the asking price. Callers get a discriminated result and show an
- * explanation in the card. Network and 5xx-other failures still throw.
+ * outcomes for a particular listing (`INVALID_MANUFACTURE_DATE` when Encar
+ * never stated the month) and a missing exchange rate is an operations
+ * problem, not a broken page — the detail page must still render with the
+ * asking price. Callers get a discriminated result and show an explanation in
+ * the card. Network and 5xx-other failures still throw.
  */
 export const calculateVehicleCost = cache(
   async (payload: CalculateVehicleCostRequest): Promise<VehicleCostResult> => {

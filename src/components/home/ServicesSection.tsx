@@ -113,15 +113,20 @@ export default async function ServicesSection() {
                 <h3 className="text-[16px] font-bold leading-snug text-neutral-900 md:text-[17px]">
                   {title}
                 </h3>
-                <p className="line-clamp-2 text-[13px] leading-relaxed text-neutral-600">
+                {/* Three lines, not two: the copy runs to a full sentence with
+                    a delivery window in it, and mn/ru both wrap to three at
+                    this column width. The clamp still guards a longer one. */}
+                <p className="line-clamp-3 text-[13px] leading-relaxed text-neutral-600">
                   {t(`items.${key}.description`)}
                 </p>
+                {/* No aria-label: each card names its own action ("Японоос
+                    захиалах", …), so the link text already reads uniquely and
+                    an override would only fight the visible label. */}
                 <Link
                   href={href}
-                  aria-label={t("ctaAria", { service: title })}
                   className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-[12.5px] font-semibold text-white transition-[background-color,gap] duration-200 after:absolute after:inset-0 after:rounded-[22px] after:content-[''] group-hover:gap-2.5 group-hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
-                  {t("cta")}
+                  {t(`items.${key}.cta`)}
                   <ChevronIcon aria-hidden className="h-3.5 w-3.5" />
                 </Link>
               </div>

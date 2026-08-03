@@ -179,14 +179,37 @@ export default function CompareSlider({
         </div>
       </div>
 
-      {/* floating labels — no backdrop-blur: a blur above the moving layer
-          would force an expensive re-filter on every dragged frame */}
-      <span className="absolute left-3 top-3 rounded-full bg-neutral-950/75 px-3 py-1 text-[11.5px] font-medium text-white sm:left-4 sm:top-4 sm:text-[12px]">
-        {labelLeft}
-      </span>
-      <span className="absolute right-3 top-3 rounded-full bg-primary/90 px-3 py-1 text-[11.5px] font-medium text-white sm:right-4 sm:top-4 sm:text-[12px]">
-        {labelRight}
-      </span>
+      {/* floating labels — each one lives inside its own layer, so the divider
+          wipes it exactly like the image underneath: drag far enough left and
+          the left label is gone, far enough right and the right one is.
+          No backdrop-blur: a blur above the moving layer would force an
+          expensive re-filter on every dragged frame. */}
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden will-change-transform"
+        style={{ transform: "translateX(calc(var(--pos) - 100%))" }}
+      >
+        <div
+          className="absolute inset-0 will-change-transform"
+          style={{ transform: "translateX(calc(100% - var(--pos)))" }}
+        >
+          <span className="absolute left-3 top-3 rounded-full bg-neutral-950/75 px-3 py-1 text-[11.5px] font-medium text-white sm:left-4 sm:top-4 sm:text-[12px]">
+            {labelLeft}
+          </span>
+        </div>
+      </div>
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden will-change-transform"
+        style={{ transform: "translateX(var(--pos))" }}
+      >
+        <div
+          className="absolute inset-0 will-change-transform"
+          style={{ transform: "translateX(calc(-1 * var(--pos)))" }}
+        >
+          <span className="absolute right-3 top-3 rounded-full bg-primary/90 px-3 py-1 text-[11.5px] font-medium text-white sm:right-4 sm:top-4 sm:text-[12px]">
+            {labelRight}
+          </span>
+        </div>
+      </div>
 
       {badge ? (
         <span className="absolute bottom-3 left-3 rounded-full bg-neutral-950/60 px-2.5 py-1 text-[10px] uppercase text-white/85 sm:bottom-4 sm:left-4">

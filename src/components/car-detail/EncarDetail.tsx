@@ -12,7 +12,6 @@ import type {
   KoreaInsurance,
   KoreaOptionGroup,
 } from "@/types/korea";
-import type { PowertrainResolution } from "@/lib/powertrain";
 import type { VehicleCostResult } from "@/types/vehicleCost";
 import { colorNameKey, getColorSwatch } from "@/utils/carColor";
 import { formatMileage, formatTransmission } from "@/utils/carFormat";
@@ -49,15 +48,12 @@ type Props = {
     insurance?: KoreaInsurance | null;
   };
   /**
-   * Landed-cost breakdown inputs. The page resolves Encar's fuel type and,
-   * when that is unambiguous, prices the car server-side so the total is in
-   * the first paint. Omit to hide the card entirely.
+   * Landed-cost breakdown. The page maps Encar's fuel type to an excise class
+   * and prices the car server-side, so the total is in the first paint and the
+   * buyer is asked nothing. `result` is `null` when the fuel type maps to no
+   * class; omit `landedCost` itself to hide the card entirely.
    */
-  landedCost?: {
-    listingId: number;
-    resolution: PowertrainResolution;
-    initial: VehicleCostResult | null;
-  };
+  landedCost?: { result: VehicleCostResult | null };
 };
 
 /** `carDetail.fuel.*` keys that exist in the locale files (backend FUEL_MAP). */
@@ -248,13 +244,7 @@ export default async function EncarDetail({
           {/* Landed cost — the asking price is what Encar charges; this is what
               the car actually costs once shipping and Mongolian import taxes
               are on it. Every figure comes from the calculator API. */}
-          {landedCost && (
-            <KoreaLandedPriceCard
-              listingId={landedCost.listingId}
-              resolution={landedCost.resolution}
-              initial={landedCost.initial}
-            />
-          )}
+          {landedCost && <KoreaLandedPriceCard result={landedCost.result} />}
 
           {/* Quick specs */}
           <section className="grid grid-cols-3 gap-2">

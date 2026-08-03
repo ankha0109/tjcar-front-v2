@@ -21,6 +21,7 @@ import {
   PremiumBadge,
   isPremiumCar,
 } from "../shared/PremiumBadge";
+import { defaultPriceLabelKey } from "../shared/priceLabel";
 import {
   ColorDot,
   DriveIcon,
@@ -169,7 +170,7 @@ export default function CarListItem({
             {!hidePrice && (
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-                  {t("avgPriceLabel")}
+                  {t(defaultPriceLabelKey(car.source))}
                 </span>
                 <div className="flex items-center gap-0.5">
                   <TugrigIcon

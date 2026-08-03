@@ -3,24 +3,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { formatMnt } from "@/lib/bidConfig";
-import { useVehicleCost } from "@/hooks/useVehicleCost";
-import type { PowertrainResolution } from "@/lib/powertrain";
-import type {
-  CostLine,
-  Powertrain,
-  VehicleCost,
-  VehicleCostResult,
-} from "@/types/vehicleCost";
+import type { CostLine, VehicleCost, VehicleCostResult } from "@/types/vehicleCost";
 
 type Props = {
-  listingId: number;
-  /** What Encar's fuel type could be resolved to — see `@/lib/powertrain`. */
-  resolution: PowertrainResolution;
   /**
-   * Server-computed result, present only when the powertrain was unambiguous.
-   * Keeps the headline number in the first paint instead of behind a spinner.
+   * What the server priced this listing at, or `null` when its fuel type maps
+   * to no excise class — see `@/lib/powertrain`.
    */
-  initial: VehicleCostResult | null;
+  result: VehicleCostResult | null;
 };
 
 const CURRENCY_SUFFIX: Record<CostLine["currency"], string> = {
@@ -46,27 +36,18 @@ function formatLine(line: CostLine): string {
  * is computed here. The MNT rows sum to the total by construction, so the card
  * renders `total` as sent rather than re-adding the rows.
  *
- * Three shapes, driven by what Encar's fuel type can be resolved to:
- * unambiguous fuels arrive already priced from the server; a hybrid asks the
- * buyer to pick HEV/PHEV/MHEV first, because the tax differs and guessing is
- * worse than asking; LPG, hydrogen and EVs have no excise rule yet and get an
- * explanation instead of a number.
+ * The page prices the car server-side, so the number is in the first paint and
+ * this asks the buyer nothing. It used to make a hybrid pick HEV/PHEV/MHEV
+ * before it could quote anything; since the 2026-08-03 ruling put every class
+ * but petrol and diesel on one excise grid, there is nothing left to pick.
+ * `"use client"` survives only for the per-row {@link Hint} tooltip.
+ *
+ * `verification.warnings` is not rendered. Korea has no VIN decoder, so the
+ * only warning it ever carried said exactly that — a fact about our tooling,
+ * not about this price. Verification belongs in its own section.
  */
-export default function KoreaLandedPriceCard({
-  listingId,
-  resolution,
-  initial,
-}: Props) {
+export default function KoreaLandedPriceCard({ result }: Props) {
   const t = useTranslations("carDetail.koreaLanded");
-  const [chosen, setChosen] = useState<Powertrain | null>(null);
-
-  const query = useVehicleCost(
-    chosen ? { country: "KOREA", koreaListingId: listingId, powertrain: chosen } : null,
-    String(listingId),
-  );
-
-  const result: VehicleCostResult | null =
-    resolution.kind === "choice" ? (query.data ?? null) : initial;
 
   return (
     <section className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
@@ -74,84 +55,26 @@ export default function KoreaLandedPriceCard({
         {t("title")}
       </h2>
 
-      {resolution.kind === "unsupported" ? (
+      {result === null && (
         <p className="mt-3 text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-          {t(`unsupported.${resolution.reason}`)}
+          {t("unknownPowertrain")}
         </p>
-      ) : (
-        <>
-          {resolution.kind === "choice" && (
-            <PowertrainPicker
-              options={resolution.options}
-              chosen={chosen}
-              onChoose={setChosen}
-            />
-          )}
+      )}
 
-          {query.isFetching && (
-            <p className="mt-3 text-[13px] text-neutral-500 dark:text-neutral-400">
-              {t("loading")}
-            </p>
-          )}
+      {result?.ok && <Breakdown cost={result.cost} />}
 
-          {!query.isFetching && result?.ok && <Breakdown cost={result.cost} />}
-
-          {!query.isFetching && result && !result.ok && (
-            <p className="mt-3 text-[13px] leading-relaxed text-amber-600 dark:text-amber-500">
-              {t.has(`error.${result.code}`)
-                ? t(`error.${result.code}`)
-                : result.message}
-            </p>
-          )}
-        </>
+      {result && !result.ok && (
+        <p className="mt-3 text-[13px] leading-relaxed text-amber-600 dark:text-amber-500">
+          {t.has(`error.${result.code}`)
+            ? t(`error.${result.code}`)
+            : result.message}
+        </p>
       )}
 
       <p className="mt-4 border-t border-neutral-200 pt-3 text-[11px] leading-relaxed text-neutral-400 dark:border-neutral-800 dark:text-neutral-500">
         {t("disclaimer")}
       </p>
     </section>
-  );
-}
-
-function PowertrainPicker({
-  options,
-  chosen,
-  onChoose,
-}: {
-  options: readonly Powertrain[];
-  chosen: Powertrain | null;
-  onChoose: (p: Powertrain) => void;
-}) {
-  const t = useTranslations("carDetail.koreaLanded");
-
-  return (
-    <div className="mt-3">
-      <p className="text-[13px] leading-relaxed text-neutral-600 dark:text-neutral-300">
-        {t("choosePowertrain")}
-      </p>
-
-      <div className="mt-2 flex flex-wrap gap-2" role="group">
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={chosen === option}
-            onClick={() => onChoose(option)}
-            className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
-              chosen === option
-                ? "border-neutral-900 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900"
-                : "border-neutral-300 text-neutral-600 hover:border-neutral-400 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500"
-            }`}
-          >
-            {t(`powertrain.${option}`)}
-          </button>
-        ))}
-      </div>
-
-      <p className="mt-2 text-[11px] leading-relaxed text-neutral-400 dark:text-neutral-500">
-        {t("powertrainHint")}
-      </p>
-    </div>
   );
 }
 
@@ -180,19 +103,6 @@ function Breakdown({ cost }: { cost: VehicleCost }) {
           {formatMnt(cost.total.amount)}
         </span>
       </div>
-
-      {cost.verification.warnings.length > 0 && (
-        <ul className="mt-3 space-y-1">
-          {cost.verification.warnings.map((warning) => (
-            <li
-              key={warning}
-              className="text-[11px] leading-relaxed text-amber-600 dark:text-amber-500"
-            >
-              {warning}
-            </li>
-          ))}
-        </ul>
-      )}
     </>
   );
 }

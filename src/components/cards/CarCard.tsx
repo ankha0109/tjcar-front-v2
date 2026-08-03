@@ -17,6 +17,7 @@ import {
   PremiumBadge,
   isPremiumCar,
 } from "./shared/PremiumBadge";
+import { defaultPriceLabelKey } from "./shared/priceLabel";
 import {
   ColorDot,
   EngineIcon,
@@ -38,8 +39,9 @@ type Props = {
   /** Hide the compare toggle (cards whose `source` mislabels the id's upstream). */
   disableCompare?: boolean;
   /**
-   * Overrides the price caption. Auction cards show a comparable-sales average,
-   * so that is the default; in-stock cars carry a real asking price.
+   * Overrides the price caption. Japanese auction cards show a comparable-sales
+   * average, so that is the default; Korean listings and in-stock cars carry a
+   * real asking price.
    */
   priceLabel?: string;
   /**
@@ -211,12 +213,20 @@ export default function CarCard({
           />
         </div>
 
-        {/* Avg price — stacked below `sm`, where a nine-digit MNT figure and the
-            label together overflow the two-column card. */}
+        {/* Price — stacked below `sm`, where a nine-digit MNT figure and the
+            label together overflow the two-column card. Korea keeps the stack at
+            every width: "Солонгос дахь үнэ" is half again as long as the auction
+            caption and never shares a row with the figure. */}
         {!hidePrice && (
-          <div className="flex flex-col items-start gap-0.5 border-t border-dashed border-neutral-200 pt-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:pt-3 dark:border-neutral-800">
+          <div
+            className={cn(
+              "flex flex-col items-start gap-0.5 border-t border-dashed border-neutral-200 pt-2.5 sm:pt-3 dark:border-neutral-800",
+              car.source !== "korea" &&
+                "sm:flex-row sm:items-center sm:justify-between sm:gap-2",
+            )}
+          >
             <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-              {priceLabel ?? t("avgPriceLabel")}
+              {priceLabel ?? t(defaultPriceLabelKey(car.source))}
             </p>
             <div className="flex items-center gap-0.5">
               <TugrigIcon
