@@ -15,6 +15,14 @@ export default async function MobileHeaderKoreaDetail({ params }: Props) {
   const device = await getDevice();
   if (device !== "mobile") return null;
   const listing = await getKoreaListing(id);
-  const title = listing ? carTitle(koreaListingToFixture(listing)) : "";
-  return <MobileHeader back={{ href: "/korea" }} title={title} />;
+  // Trim rides as the header's second line, the same split the Japan lot page
+  // uses — which is why the page body's title band is skipped on this shell.
+  const car = listing ? koreaListingToFixture(listing) : null;
+  return (
+    <MobileHeader
+      back={{ href: "/korea" }}
+      title={car ? carTitle(car) : ""}
+      subtitle={car?.GRADE || undefined}
+    />
+  );
 }

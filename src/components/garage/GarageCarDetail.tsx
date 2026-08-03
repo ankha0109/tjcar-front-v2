@@ -27,9 +27,9 @@ function formatNumber(value: number) {
  * tugrik price is final and the car is already bought. The bid panel's slot goes
  * to {@link GarageContactCard}.
  *
- * It does not reuse `EncarDetail`: that component's price hero, options panel
- * and inspection block are all gated behind its Encar-only `encar` prop, so
- * feeding it a stock car would mean faking Korean listing data.
+ * It does not reuse `EncarDetail`: that component's landed-price card, options
+ * panel and inspection block are all gated behind its Encar-only `encar` prop,
+ * so feeding it a stock car would mean faking Korean listing data.
  */
 export default async function GarageCarDetail({ car }: Props) {
   const t = await getTranslations("carDetail");

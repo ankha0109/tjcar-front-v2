@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { Select } from "antd";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import CarCard from "@/components/cards/CarCard";
@@ -18,7 +19,11 @@ import KoreaFilters, {
 } from "@/components/korea/KoreaFilters";
 import { koreaListingToCarItem } from "@/lib/koreaAdapter";
 import { type CarItem } from "@/types/car";
-import { type KoreaFilterValues, koreaFiltersToQuery } from "@/types/korea";
+import {
+  type KoreaFilterValues,
+  type KoreaOrdering,
+  koreaFiltersToQuery,
+} from "@/types/korea";
 import { useKoreaInfinite, type KoreaPage } from "@/hooks/useKoreaInfinite";
 
 type Props = {
@@ -28,6 +33,9 @@ type Props = {
 };
 
 const FILTER_DEBOUNCE_MS = 400;
+
+/** Encar's default order has no `ordering` key of its own, hence the sentinel. */
+type SortChoice = KoreaOrdering | "newest";
 
 function serializeFilters(filters: KoreaFilterValues): string {
   const params = new URLSearchParams();
@@ -44,6 +52,7 @@ export default function KoreaBrowser({
 }: Props) {
   const t = useTranslations("auctions");
   const tSchedule = useTranslations("featured.schedule");
+  const tSort = useTranslations("korea.sort");
   const router = useRouter();
   const pathname = usePathname();
   const [, startTransition] = useTransition();
@@ -51,6 +60,16 @@ export default function KoreaBrowser({
   const [filters, setFilters] = useState<KoreaFilterValues>(initialFilters);
   const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode);
   const lastPushedRef = useRef<string>(serializeFilters(initialFilters));
+
+  // Sorting is an upstream (Encar) concern, so it goes through the same filter
+  // state — changing it refetches from page 1 rather than reordering the pages
+  // already in hand, which would only sort the slice the user scrolled to.
+  const handleSortChange = (next: SortChoice) => {
+    setFilters((prev) => ({
+      ...prev,
+      ordering: next === "newest" ? null : next,
+    }));
+  };
 
   const handleViewModeChange = (next: ViewMode) => {
     setViewMode(next);
@@ -119,8 +138,23 @@ export default function KoreaBrowser({
         <KoreaFilters value={filters} onChange={setFilters} />
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-end gap-3">
-            <div className="shrink-0 pt-1">
+          {/* Both controls are 40px tall (`size="large"`), so `items-center`
+              lines them up; the `pt-1` the switcher used to carry moves here so
+              the row keeps sitting where it did. */}
+          <div className="flex items-center justify-end gap-3 pt-1">
+            <Select<SortChoice>
+              options={[
+                { value: "newest", label: tSort("newest") },
+                { value: "price", label: tSort("priceAsc") },
+                { value: "-price", label: tSort("priceDesc") },
+              ]}
+              value={filters.ordering ?? "newest"}
+              onChange={handleSortChange}
+              variant="filled"
+              size="large"
+              style={{ width: 180 }}
+            />
+            <div className="shrink-0">
               <ViewModeSwitcher
                 value={viewMode}
                 onChange={handleViewModeChange}

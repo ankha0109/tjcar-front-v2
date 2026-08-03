@@ -17,8 +17,8 @@ type Props = {
   images: string[];
   alt: string;
   /**
-   * Whether the image host supports the auction-CDN `w=`/`h=` size params
-   * (Japan/AJES). Encar photo URLs don't — pass `false` there so every image
+   * Whether the image host has a resizer {@link withImageSize} knows (AJES and
+   * Encar both do). Pass `false` for a host that has none, so every image
    * (thumbnails included) loads the URL untouched.
    */
   sizeVariants?: boolean;
@@ -27,9 +27,9 @@ type Props = {
 /**
  * Car photo gallery: an Embla carousel (full-bleed on mobile) with a synced
  * thumbnail strip, and a yet-another-react-lightbox overlay for full-size
- * pinch/scroll zoom. Inline images and the lightbox thumbnails use the `w=320`
- * (card) variant; the main lightbox slide / zoom loads the original (no size
- * param) via {@link withImageSize}.
+ * pinch/scroll zoom. Inline images and the lightbox thumbnails use the small
+ * `card` variant; the main lightbox slide / zoom loads the full-size `original`
+ * via {@link withImageSize}.
  */
 export default function CarGallery({
   images,

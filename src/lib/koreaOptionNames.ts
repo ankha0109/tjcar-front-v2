@@ -63,7 +63,7 @@ const OPTIONS: Record<string, LocalizedName> = {
   Airbags: { mn: "Аюулгүйн дэр", ru: "Подушки безопасности" },
   "Airbag (driver)": { mn: "Аюулгүйн дэр (жолооч)", ru: "Подушка (водитель)" },
   "Airbag (passenger)": {
-    mn: "Аюулгүйн дэр (суугч)",
+    mn: "Аюулгүйн дэр (зорчигч)",
     ru: "Подушка (пассажир)",
   },
   "Airbag (side)": { mn: "Аюулгүйн дэр (хажуу)", ru: "Подушки (боковые)" },
@@ -89,17 +89,17 @@ const OPTIONS: Record<string, LocalizedName> = {
     mn: "Электрон подвеска (ECS)",
     ru: "Электронная подвеска (ECS)",
   },
-  "Parking sensors": { mn: "Зогсоолын мэдрэгч", ru: "Парктроники" },
+  "Parking sensors": { mn: "Саад мэдрэгч", ru: "Парктроники" },
   "Parking sensors (front)": {
-    mn: "Зогсоолын мэдрэгч (урд)",
+    mn: "Саад мэдрэгч (урд)",
     ru: "Парктроники (перед)",
   },
   "Parking sensors (rear)": {
-    mn: "Зогсоолын мэдрэгч (хойно)",
+    mn: "Саад мэдрэгч (хойно)",
     ru: "Парктроники (зад)",
   },
   "Blind-spot warning": {
-    mn: "Сохор бүсийн анхааруулга",
+    mn: "Сохор бүсийн анхааруулга (BSM)",
     ru: "Контроль слепых зон",
   },
   "Rear camera": { mn: "Арын камер", ru: "Камера заднего вида" },
@@ -142,7 +142,7 @@ const OPTIONS: Record<string, LocalizedName> = {
     mn: "Хөшиг (хойд цонх)",
     ru: "Шторка (заднее стекло)",
   },
-  Navigation: { mn: "Навигац", ru: "Навигация" },
+  Navigation: { mn: "GPS зам заагч", ru: "Навигация" },
   "Front AV monitor": { mn: "Урд AV дэлгэц", ru: "Передний AV-монитор" },
   "Rear AV monitor": { mn: "Хойд AV дэлгэц", ru: "Задний AV-монитор" },
   Bluetooth: { mn: "Bluetooth", ru: "Bluetooth" },
@@ -164,22 +164,22 @@ const OPTIONS: Record<string, LocalizedName> = {
     mn: "Автомат суудал (хойно)",
     ru: "Электросиденья (зад)",
   },
-  "Heated seats": { mn: "Халдаг суудал", ru: "Подогрев сидений" },
+  "Heated seats": { mn: "Суудал халаагч", ru: "Подогрев сидений" },
   "Heated seats (front)": {
-    mn: "Халдаг суудал (урд)",
+    mn: "Суудал халаагч (урд)",
     ru: "Подогрев (передние)",
   },
   "Heated seats (rear)": {
-    mn: "Халдаг суудал (хойно)",
+    mn: "Суудал халаагч (хойно)",
     ru: "Подогрев (задние)",
   },
-  "Memory seat": { mn: "Санах ойтой суудал", ru: "Память сидений" },
+  "Memory seat": { mn: "Суудал сануулагч", ru: "Память сидений" },
   "Memory seat (driver)": {
-    mn: "Санах ойтой суудал (жолооч)",
+    mn: "Суудал сануулагч (жолооч)",
     ru: "Память (водитель)",
   },
   "Memory seat (passenger)": {
-    mn: "Санах ойтой суудал (суугч)",
+    mn: "Суудал сануулагч (суугч)",
     ru: "Память (пассажир)",
   },
   "Ventilated seats": {

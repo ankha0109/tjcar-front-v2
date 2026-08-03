@@ -202,6 +202,16 @@ export const KRW_PRICE_STEPS = [
   50_000_000, 70_000_000, 100_000_000, 150_000_000, 200_000_000,
 ] as const;
 
+/**
+ * `ordering` values the backend accepts (anything else is a 422). Encar sorts
+ * upstream, so this has to travel with the request — the whole result set is
+ * ordered, not just the pages already loaded. `null` keeps Encar's own default
+ * (most recently updated ads first).
+ */
+export const KOREA_ORDERINGS = ["price", "-price"] as const;
+
+export type KoreaOrdering = (typeof KOREA_ORDERINGS)[number];
+
 export type KoreaFilterValues = {
   /** Brand slug from KOREA_BRANDS (the backend rejects anything else). */
   make: string | null;
@@ -215,6 +225,12 @@ export type KoreaFilterValues = {
   mileageTo: number | null;
   fuel: string | null;
   transmission: string | null;
+  /**
+   * Sort key. It rides along with the filters because every consumer (URL sync,
+   * react-query key, server hydration) already carries them as one unit — but
+   * it is not a filter: it adds no chip and survives "clear all".
+   */
+  ordering: KoreaOrdering | null;
 };
 
 export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
@@ -227,8 +243,10 @@ export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
   mileageTo: null,
   fuel: null,
   transmission: null,
+  ordering: null,
 };
 
+/** `ordering` is deliberately excluded — a sort choice is not an active filter. */
 export function isKoreaFiltersEmpty(f: KoreaFilterValues): boolean {
   return (
     !f.make &&
@@ -261,6 +279,7 @@ export function koreaFiltersToQuery(
   if (f.mileageTo != null) q.max_mileage = f.mileageTo;
   if (f.fuel) q.fuel = f.fuel;
   if (f.transmission) q.transmission = f.transmission;
+  if (f.ordering) q.ordering = f.ordering;
   return q;
 }
 
@@ -279,6 +298,14 @@ function pickInt(p: SearchParamRecord, key: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+/** A hand-edited `?ordering=` would 422 the backend, so unknown keys drop out. */
+function pickOrdering(p: SearchParamRecord): KoreaOrdering | null {
+  const s = pickString(p, "ordering");
+  return KOREA_ORDERINGS.includes(s as KoreaOrdering)
+    ? (s as KoreaOrdering)
+    : null;
+}
+
 /** Parse the URL search params (backend param names) back into UI filters. */
 export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
   return {
@@ -291,5 +318,6 @@ export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
     mileageTo: pickInt(p, "max_mileage"),
     fuel: pickString(p, "fuel"),
     transmission: pickString(p, "transmission"),
+    ordering: pickOrdering(p),
   };
 }

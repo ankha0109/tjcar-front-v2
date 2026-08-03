@@ -5,6 +5,11 @@
       "fromPlaceholder": "Min",
       "toPlaceholder": "Max"
     },
+    "sort": {
+      "newest": "Newest first",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
     "filters": {
       "modelNeedsBrand": "Pick a make first",
       "fuel": "Fuel",
@@ -1110,20 +1115,16 @@
       },
       "stats": {
         "orders": {
-          "value": "800+",
+          "value": "1200+",
           "label": "Cars ordered"
         },
         "users": {
-          "value": "7200+",
+          "value": "8000+",
           "label": "Registered users"
         },
         "savings": {
           "value": "10-20%",
           "label": "Below market price"
-        },
-        "deposit": {
-          "value": "30-50%",
-          "label": "Down payment"
         }
       }
     },
@@ -1134,27 +1135,27 @@
       "items": {
         "japan": {
           "title": "Japanese auctions",
-          "body": "We take part in 30+ Japanese auctions"
+          "body": "We bid directly at 194 auctions across 59 cities in 43 Japanese prefectures to order the car you want."
         },
         "korea": {
           "title": "Korea orders",
-          "body": "Left-hand-drive cars bought directly from Encar and Korean auctions."
+          "body": "We pick and order the car you want from ENCar and Korean dealers."
         },
         "global": {
           "title": "USA, Australia, UAE",
-          "body": "We source cars to order for our customers"
+          "body": "We order cars that match your request from the US, Australian and UAE markets."
         },
         "ready": {
           "title": "In-stock cars",
-          "body": "Choose from cars already in Mongolia or in transit"
+          "body": "Choose from cars already in Mongolia or still in transit."
         },
         "report": {
-          "title": "Accident check service",
-          "body": "We gather the full Japanese auction history and deliver the photos and data together"
+          "title": "Vehicle history check",
+          "body": "We check the auction grade, photos, mileage and any accident or damage records."
         },
         "custom": {
-          "title": "Cars to order",
-          "body": "Sourcing rare high-value cars, large vehicles and cargo transport vehicles to order"
+          "title": "Special orders",
+          "body": "We order rare models, high-value, oversized and special-purpose vehicles."
         }
       }
     },
@@ -1170,6 +1171,10 @@
         "sales": {
           "name": "Tulgabuyan",
           "role": "Sales Manager"
+        },
+        "korea_sales": {
+          "name": "Gantulga",
+          "role": "Manager in Korea"
         },
         "it": {
           "name": "Ankhbayar",
@@ -1581,6 +1586,9 @@
     "priceHistory": {
       "title": "Comparable price history",
       "subtitle": "Landed price of recently sold cars with the same spec",
+      "subtitleJpy": "Japan sold price of recently sold cars with the same spec",
+      "jpy": "JPY",
+      "mnt": "MNT",
       "noData": "No data yet",
       "colStartPrice": "Start price in Japan",
       "colSoldPrice": "Sold price in Japan",

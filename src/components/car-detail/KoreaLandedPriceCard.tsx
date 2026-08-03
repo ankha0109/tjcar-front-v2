@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Tooltip } from "antd";
 import { useTranslations } from "next-intl";
 import { formatMnt } from "@/lib/bidConfig";
 import type { CostLine, VehicleCost, VehicleCostResult } from "@/types/vehicleCost";
@@ -11,6 +11,12 @@ type Props = {
    * to no excise class — see `@/lib/powertrain`.
    */
   result: VehicleCostResult | null;
+  /**
+   * Encar's factory (new-car) KRW price. Not a cost component — it is what the
+   * same car sold for new in Korea, so it renders in the footnote block under
+   * the total rather than as a breakdown row.
+   */
+  newPriceKrw?: number | null;
 };
 
 const CURRENCY_SUFFIX: Record<CostLine["currency"], string> = {
@@ -46,8 +52,9 @@ function formatLine(line: CostLine): string {
  * only warning it ever carried said exactly that — a fact about our tooling,
  * not about this price. Verification belongs in its own section.
  */
-export default function KoreaLandedPriceCard({ result }: Props) {
+export default function KoreaLandedPriceCard({ result, newPriceKrw }: Props) {
   const t = useTranslations("carDetail.koreaLanded");
+  const tEncar = useTranslations("carDetail.encar");
 
   return (
     <section className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
@@ -71,9 +78,23 @@ export default function KoreaLandedPriceCard({ result }: Props) {
         </p>
       )}
 
-      <p className="mt-4 border-t border-neutral-200 pt-3 text-[11px] leading-relaxed text-neutral-400 dark:border-neutral-800 dark:text-neutral-500">
-        {t("disclaimer")}
-      </p>
+      {/* Footnotes under the total: the new-car reference price first, then the
+          standing disclaimer. Both sit below the divider so neither reads as a
+          row that was added into the total. */}
+      <div className="mt-4 border-t border-neutral-200 pt-3 dark:border-neutral-800">
+        {newPriceKrw ? (
+          <div className="mb-2.5 flex items-baseline justify-between gap-4 text-[12px] text-neutral-500 dark:text-neutral-400">
+            <span>{tEncar("newPriceLabel")}</span>
+            <span className="shrink-0 font-medium tabular-nums">
+              {new Intl.NumberFormat("en-US").format(newPriceKrw)}
+              {CURRENCY_SUFFIX.KRW}
+            </span>
+          </div>
+        ) : null}
+        <p className="text-[11px] leading-relaxed text-neutral-400 dark:text-neutral-500">
+          {t("disclaimer")}
+        </p>
+      </div>
     </section>
   );
 }
@@ -107,32 +128,28 @@ function Breakdown({ cost }: { cost: VehicleCost }) {
   );
 }
 
-/** The `?` affordance next to a row; `hint` text is built by the API. */
+/**
+ * The `?` affordance next to a row; `hint` text is built by the API. `click` is
+ * in the trigger list beside `hover`/`focus` because most of this card's traffic
+ * is touch, where a hover-only tooltip never opens.
+ */
 function Hint({ text }: { text: string }) {
   const t = useTranslations("carDetail.koreaLanded");
-  const [open, setOpen] = useState(false);
 
   return (
-    <span className="relative inline-flex">
+    <Tooltip
+      title={text}
+      placement="top"
+      trigger={["hover", "focus", "click"]}
+      mouseEnterDelay={0.2}
+    >
       <button
         type="button"
         aria-label={t("hintLabel")}
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        onBlur={() => setOpen(false)}
         className="ml-1 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-300 text-[10px] leading-none text-neutral-400 transition hover:border-neutral-400 hover:text-neutral-600 dark:border-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
       >
         ?
       </button>
-
-      {open && (
-        <span
-          role="tooltip"
-          className="absolute bottom-full left-1/2 z-10 mb-1.5 w-max max-w-[15rem] -translate-x-1/2 rounded-md bg-neutral-800 px-2.5 py-1.5 text-[11px] font-normal text-white shadow-lg dark:bg-neutral-700"
-        >
-          {text}
-        </span>
-      )}
-    </span>
+    </Tooltip>
   );
 }

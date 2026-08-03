@@ -4,15 +4,20 @@ import { decodeAuctionText } from "@/utils/auctionInfo";
 import { formatEngine } from "@/utils/carFormat";
 
 /**
- * One comparable car that sold recently. Prices are tugrik only — the site
- * quotes every figure in ₮, so the yen the auction actually ran in is converted
- * here and never leaves this module.
+ * One comparable car that sold recently. Every Japan-side figure is carried in
+ * both currencies: the yen the auction actually ran in, and that yen at the live
+ * rate. The chart's ¥/₮ switch picks between them, so neither conversion can be
+ * done at render time without the rate.
  */
 export type ComparableSale = {
   /** ISO date (e.g. "2026-06-20"). */
   date: string;
-  /** Landed ("гар дээр ирэх") price in tugrik — the plotted series. */
+  /** Landed ("гар дээр ирэх") price in tugrik — the plotted series in ₮ mode. */
   mnt: number;
+  /** Japan hammer price in yen — the plotted series in ¥ mode. */
+  hammerJpy?: number;
+  /** Auction start (reserve) price in yen. */
+  startJpy?: number;
   /** Japan hammer price in tugrik. Context for the landed figure, not the plot. */
   hammerMnt?: number;
   /** Auction start (reserve) price in tugrik. */
@@ -39,10 +44,10 @@ export type ComparableSale = {
  * could not price are dropped rather than fallen back to a Japan-side figure,
  * which would put roughly half the real cost under a "гар дээр ирэх үнэ" label.
  *
- * `jpyRate` is the live JPY→MNT rate from `GET /config` and now only converts
- * the Japan-side start/hammer prices shown as tooltip context. It degrades to 0
- * when that call fails, which simply omits those two lines — the landed price
- * arrives already in tugrik and does not depend on it.
+ * `jpyRate` is the live JPY→MNT rate from `GET /config` and only converts the
+ * Japan-side start/hammer prices. It degrades to 0 when that call fails, which
+ * drops the tugrik copies of those two — the yen originals and the landed price
+ * survive, so the chart still works in either currency.
  */
 export function toComparableSales(
   rows: FeaturedCar[],
@@ -58,11 +63,16 @@ export function toComparableSales(
       const date = (row.AUCTION_DATE ?? "").slice(0, 10);
       if (!landedMnt || !date) return null;
 
+      const hammerJpy = Number(row.FINISH) || 0;
+      const startJpy = Number(row.START) || 0;
+
       return {
         date,
         mnt: landedMnt,
-        hammerMnt: toMnt(Number(row.FINISH) || 0),
-        startMnt: toMnt(Number(row.START) || 0),
+        hammerJpy: hammerJpy || undefined,
+        startJpy: startJpy || undefined,
+        hammerMnt: toMnt(hammerJpy),
+        startMnt: toMnt(startJpy),
         rate: row.RATE || undefined,
         year: row.YEAR || undefined,
         mileageKm: Number(row.MILEAGE) || undefined,
@@ -96,6 +106,11 @@ export function sameSpecLabel(car: CarFixture): string {
 /** "60000000" → "60,000,000₮". */
 export function formatMnt(value: number): string {
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}₮`;
+}
+
+/** "850000" → "¥850,000". */
+export function formatJpy(value: number): string {
+  return `¥${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 /** Parse a date-only ISO string at UTC noon (avoids timezone day shifts). */

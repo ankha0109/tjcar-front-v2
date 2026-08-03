@@ -51,6 +51,8 @@ export default async function KoreaDetailPage({ params }: Props) {
         priceMnt: listing.price_mnt ?? null,
         newPriceKrw: listing.new_price_krw ?? null,
         officialUrl: listing.listing_url ?? null,
+        brandSlug: listing.brand_slug ?? null,
+        modelName: listing.model_name ?? null,
         fuelType: listing.fuel_type ?? null,
         seatCount: listing.seat_count ?? null,
         yearMonth: listing.year_month ?? null,

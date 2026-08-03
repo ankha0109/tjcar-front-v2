@@ -1,6 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
+import { Segmented } from "antd";
 import { useTranslations } from "next-intl";
 import {
   Area,
@@ -13,12 +14,26 @@ import {
   YAxis,
 } from "recharts";
 import {
+  formatJpy,
   formatMnt,
   formatSaleDate,
   type ComparableSale,
 } from "@/lib/priceHistory";
 import { withImageSize } from "@/utils/auctionImage";
 import { formatMileage } from "@/utils/carFormat";
+
+/**
+ * Which price the chart plots. Not two views of one number: `mnt` is the landed
+ * price (Japan fees, shipping and Mongolian duties in), `jpy` the bare hammer
+ * price the auction closed at. A bidder bids the second and pays the first.
+ */
+type Metric = "jpy" | "mnt";
+
+/** Series key per metric — `hammerJpy` may be missing on a row, `mnt` never is. */
+const SERIES_KEY: Record<Metric, "hammerJpy" | "mnt"> = {
+  jpy: "hammerJpy",
+  mnt: "mnt",
+};
 
 type Props = {
   data: ComparableSale[];
@@ -46,8 +61,13 @@ function shortDate(iso: string): string {
   return `${m}/${d}`;
 }
 
-/** Whole-million axis tick, e.g. "31сая" / "31M". */
-function compactValue(value: number, locale: string): string {
+/** Whole-million axis tick, e.g. "31сая" / "31M" / "¥1.1M" / "¥850k". */
+function compactValue(value: number, metric: Metric, locale: string): string {
+  if (metric === "jpy") {
+    return value >= 1_000_000
+      ? `¥${(value / 1_000_000).toFixed(1)}M`
+      : `¥${Math.round(value / 1_000)}k`;
+  }
   const millions = Math.round(value / 1_000_000);
   return locale === "mn" ? `${millions}сая` : `${millions}M`;
 }
@@ -55,11 +75,31 @@ function compactValue(value: number, locale: string): string {
 /**
  * Point label. `compactValue` rounds ₮30.6M and ₮31.4M to the same whole number,
  * which would make ten distinct sales read as one — labels keep one decimal so
- * the differences survive.
+ * the differences survive. Comparable hammer prices sit tens of thousands of yen
+ * apart, an order of magnitude finer, so the ¥ form takes a second decimal.
  */
-function labelValue(value: number, locale: string): string {
+function labelValue(value: number, metric: Metric, locale: string): string {
+  if (metric === "jpy") {
+    return value >= 1_000_000
+      ? `¥${(value / 1_000_000).toFixed(2)}M`
+      : `¥${Math.round(value / 1_000)}k`;
+  }
   const millions = (value / 1_000_000).toFixed(1);
   return locale === "mn" ? `${millions}сая` : `${millions}M`;
+}
+
+/**
+ * A Japan-side price in the currency the chart is showing. The yen figure is the
+ * auction's own number; the tugrik one is that yen at the live rate, so it drops
+ * out when `GET /config` failed and the rate never arrived.
+ */
+function japanPrice(
+  jpy: number | undefined,
+  mnt: number | undefined,
+  metric: Metric,
+): string | undefined {
+  if (metric === "jpy") return jpy != null ? formatJpy(jpy) : undefined;
+  return mnt != null ? formatMnt(mnt) : undefined;
 }
 
 /**
@@ -74,17 +114,20 @@ const LABEL_CLASS =
  * against what recent cars actually cost to land. The whole comparable-prices
  * section — the chart carries the detail per sale in its tooltip, so no
  * companion table. Fed by `GET /japan/history` (AJES `stats`) via
- * toComparableSales, in tugrik only.
+ * toComparableSales.
  *
- * The series is the LANDED price (`PRICE_MNT`, computed server-side from each
- * sale's own hammer price), not the yen figure — the tooltip keeps the
- * Japan-side start/sold prices underneath it as context. The rows are filtered
- * upstream to the viewed car's chassis and rate, so every point is a genuine
- * like-for-like comparable; `specLabel` spells out which grade that is.
+ * Two series behind a ¥/₮ switch. ₮ (the default) plots the LANDED price
+ * (`PRICE_MNT`, computed server-side from each sale's own hammer price) — what a
+ * buyer actually pays. ¥ plots the Japan hammer price — what they have to bid to
+ * win. Whichever is not plotted stays in the tooltip as context, so no reading
+ * is lost by switching. The rows are filtered upstream to the viewed car's
+ * chassis and rate, so every point is a genuine like-for-like comparable;
+ * `specLabel` spells out which grade that is.
  */
 export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
   const t = useTranslations("carDetail.priceHistory");
   const tCard = useTranslations("car.card");
+  const [metric, setMetric] = useState<Metric>("mnt");
   const isDark = useSyncExternalStore(
     subscribeTheme,
     getDarkSnapshot,
@@ -94,24 +137,48 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
   const gridColor = isDark ? "#262626" : "#f0f0f0";
   const axisColor = isDark ? "#737373" : "#a3a3a3";
 
+  // The upstream leaves FINISH off rows it never priced. With no hammer figure
+  // anywhere there is no ¥ series to switch to, so the control hides rather than
+  // offering an empty chart.
+  const hasJpy = data.some((sale) => sale.hammerJpy != null);
+  const isJpy = metric === "jpy";
+  const seriesKey = SERIES_KEY[metric];
+  const subtitle = isJpy ? t("subtitleJpy") : t("subtitle");
+
   /**
    * Section heading. Deliberately identical to the one CarEvaluation puts above
    * its section — both are top-level sections of the lot page, so they must read
    * as siblings. Keep the two in step when either changes.
    */
   const heading = (
-    <div className="mb-4 lg:mb-5">
-      <h2 className="text-[17px] font-semibold tracking-tight text-neutral-900 lg:text-[20px] dark:text-neutral-100">
-        {t("title")}
-      </h2>
-      <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
-        {specLabel ? `${specLabel} · ${t("subtitle")}` : t("subtitle")}
-      </p>
+    <div className="mb-4 flex items-start justify-between gap-3 lg:mb-5">
+      <div className="min-w-0">
+        <h2 className="text-[17px] font-semibold tracking-tight text-neutral-900 lg:text-[20px] dark:text-neutral-100">
+          {t("title")}
+        </h2>
+        <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
+          {specLabel ? `${specLabel} · ${subtitle}` : subtitle}
+        </p>
+      </div>
+      {/* Currency switch, top-right of the heading. `shrink-0` so the long mn
+          title wraps under it instead of squeezing it. */}
+      {hasJpy && (
+        <Segmented<Metric>
+          size="small"
+          className="shrink-0"
+          value={metric}
+          onChange={setMetric}
+          options={[
+            { label: t("jpy"), value: "jpy" },
+            { label: t("mnt"), value: "mnt" },
+          ]}
+        />
+      )}
     </div>
   );
 
-  // The sales rows go to recharts as-is: `mnt` is the series key and every
-  // other field rides along for the tooltip to read.
+  // The sales rows go to recharts as-is: the active metric names the series key
+  // and every other field rides along for the tooltip to read.
   if (!data.length) {
     return (
       <div>
@@ -158,7 +225,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
             />
             <YAxis
               width={52}
-              tickFormatter={(v: number) => compactValue(v, locale)}
+              tickFormatter={(v: number) => compactValue(v, metric, locale)}
               tick={{ fill: axisColor, fontSize: 11 }}
               tickLine={false}
               axisLine={false}
@@ -174,6 +241,18 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
               content={({ active, payload }) => {
                 if (!active || !payload?.length) return null;
                 const row = payload[0].payload as ComparableSale;
+                // Japan-side figures follow the selected currency; the landed
+                // price is a tugrik-native number and stays in ₮ either way.
+                const startPrice = japanPrice(
+                  row.startJpy,
+                  row.startMnt,
+                  metric,
+                );
+                const soldPrice = japanPrice(
+                  row.hammerJpy,
+                  row.hammerMnt,
+                  metric,
+                );
                 // Fixed width, not `min-w`: a shrink-to-fit box has no width for
                 // the `w-full` photo to resolve against, so the image falls back
                 // to its intrinsic 640px and drags the tooltip out with it.
@@ -222,23 +301,32 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                           price — the plotted series and the only figure a buyer
                           pays — set apart by its own rule and the brand colour. */}
                       <dl className="mt-2.5 space-y-1 border-t border-neutral-100 pt-2 dark:border-neutral-800">
-                        {row.startMnt != null && (
+                        {startPrice && (
                           <div className="flex items-baseline justify-between gap-4">
                             <dt className="text-neutral-500 dark:text-neutral-400">
                               {t("colStartPrice")}
                             </dt>
                             <dd className="text-neutral-700 dark:text-neutral-300">
-                              {formatMnt(row.startMnt)}
+                              {startPrice}
                             </dd>
                           </div>
                         )}
-                        {row.hammerMnt != null && (
+                        {soldPrice && (
                           <div className="flex items-baseline justify-between gap-4">
                             <dt className="text-neutral-500 dark:text-neutral-400">
                               {t("colSoldPrice")}
                             </dt>
-                            <dd className="text-neutral-700 dark:text-neutral-300">
-                              {formatMnt(row.hammerMnt)}
+                            {/* Brand colour marks the plotted figure, so it
+                                moves to the sold price in ¥ mode and back down
+                                to the landed price in ₮ mode. */}
+                            <dd
+                              className={
+                                isJpy
+                                  ? "font-semibold text-primary"
+                                  : "text-neutral-700 dark:text-neutral-300"
+                              }
+                            >
+                              {soldPrice}
                             </dd>
                           </div>
                         )}
@@ -246,7 +334,13 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
                           <dt className="text-neutral-500 dark:text-neutral-400">
                             {t("colLandedPrice")}
                           </dt>
-                          <dd className="font-semibold text-primary">
+                          <dd
+                            className={
+                              isJpy
+                                ? "text-neutral-700 dark:text-neutral-300"
+                                : "font-semibold text-primary"
+                            }
+                          >
                             {formatMnt(row.mnt)}
                           </dd>
                         </div>
@@ -258,32 +352,38 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
             />
             <Area
               type="monotone"
-              dataKey="mnt"
+              dataKey={seriesKey}
               stroke={BRAND}
               strokeWidth={2}
               fill="url(#priceFill)"
               dot={{ r: 2.5, fill: BRAND, strokeWidth: 0 }}
               activeDot={{ r: 4 }}
               isAnimationActive={false}
+              /* Only the ¥ series can have holes (a row the upstream priced but
+                 left no FINISH on); bridging them keeps one continuous trend
+                 instead of a line that breaks apart mid-chart. */
+              connectNulls
             >
-              {/* Landed price on every point — the number a bidder is really
-                  after, so it should not need a hover to read. Two variants:
-                  ten points leave ~27px per label on a phone, which only the
-                  whole-million form fits, and far more from `sm` up, where the
-                  one-decimal form actually distinguishes the sales. */}
+              {/* The plotted price on every point — the number a bidder is
+                  really after, so it should not need a hover to read. Two
+                  variants: ten points leave ~27px per label on a phone, which
+                  only the coarse form fits, and far more from `sm` up, where the
+                  finer one actually distinguishes the sales. */}
               <LabelList
-                dataKey="mnt"
+                dataKey={seriesKey}
                 position="top"
                 offset={8}
                 className={`${LABEL_CLASS} text-[9px] sm:hidden`}
-                formatter={(value) => compactValue(Number(value), locale)}
+                formatter={(value) =>
+                  compactValue(Number(value), metric, locale)
+                }
               />
               <LabelList
-                dataKey="mnt"
+                dataKey={seriesKey}
                 position="top"
                 offset={8}
                 className={`${LABEL_CLASS} hidden text-[10px] sm:block`}
-                formatter={(value) => labelValue(Number(value), locale)}
+                formatter={(value) => labelValue(Number(value), metric, locale)}
               />
             </Area>
           </AreaChart>

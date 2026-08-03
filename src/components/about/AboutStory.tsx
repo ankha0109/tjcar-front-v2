@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/ui/Reveal";
 
 const MILESTONES = ["y2017", "y2022", "y2024", "y2025", "y2026"] as const;
-const STATS = ["orders", "users", "savings", "deposit"] as const;
+const STATS = ["orders", "users", "savings"] as const;
 
 /**
  * Company story. Tinted band so it breaks the rhythm of the white card sections
@@ -57,7 +57,7 @@ export default async function AboutStory() {
         </Reveal>
 
         <Reveal delay={80}>
-          <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-neutral-200 pt-10 md:mt-14 md:grid-cols-4 dark:border-neutral-800">
+          <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-neutral-200 pt-10 md:mt-14 md:grid-cols-3 dark:border-neutral-800">
             {STATS.map((key) => (
               <div key={key}>
                 <dt className="sr-only">{t(`stats.${key}.label`)}</dt>

@@ -383,7 +383,10 @@ export default function KoreaFilters({ value, onChange }: Props) {
     <FilterShell
       fields={fields}
       hasFilters={!isKoreaFiltersEmpty(value)}
-      onClearAll={() => onChange({ ...EMPTY_KOREA_FILTERS })}
+      // Clearing the filters is not a request to re-sort the results.
+      onClearAll={() =>
+        onChange({ ...EMPTY_KOREA_FILTERS, ordering: value.ordering })
+      }
     />
   );
 }

@@ -7,7 +7,7 @@ import CarEvaluation from "./CarEvaluation";
 import CarBidSection from "./CarBidSection";
 import RateCard from "./RateCard";
 import LandedPriceCard from "./LandedPriceCard";
-// import ChassisYearVerify from "./ChassisYearVerify"; // temporarily hidden
+import ChassisYearVerify from "./ChassisYearVerify";
 import PriceHistoryChart from "./PriceHistoryChart";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
@@ -19,6 +19,7 @@ import { auctionSchedule } from "@/utils/auctionTime";
 import { parseAuctionInfo } from "@/utils/auctionInfo";
 import {
   ChassisIcon,
+  ColorIcon,
   DriveIcon,
   DrivetrainIcon,
   EngineIcon,
@@ -28,7 +29,7 @@ import {
   TransmissionIcon,
   YearIcon,
 } from "@/components/icons/CarSpecIcons";
-import { getColorSwatch, type ColorSwatch } from "@/utils/carColor";
+import { getColorSwatch } from "@/utils/carColor";
 import {
   formatDrivetrain,
   formatEngineWithPower,
@@ -39,17 +40,6 @@ import {
 type Props = {
   car: CarFixture;
 };
-
-/** Filled circle showing the car's actual paint colour for the colour tile. */
-function ColorIcon({ swatch }: { swatch: ColorSwatch }) {
-  return (
-    <span
-      aria-hidden
-      className={`h-4 w-4 shrink-0 rounded-full ${swatch.ring ? "ring-1 ring-neutral-300 dark:ring-neutral-600" : ""}`}
-      style={{ background: swatch.bg }}
-    />
-  );
-}
 
 /**
  * Japan auction lot detail page. A live-bidding experience distinct from the
@@ -327,14 +317,21 @@ export default async function JapanCarDetail({ car }: Props) {
               </div>
             }
           />
+
+          {/* Chassis-year verification — closes the info column. The lot's own
+              KUZOV/SERIAL pre-fill it, so it is a one-tap check of the
+              manufacture year against the maker's VIN records. */}
+          <ChassisYearVerify
+            markaName={car.MARKA_NAME}
+            chassis={car.KUZOV}
+            serial={car.SERIAL}
+          />
         </div>
       </div>
 
       {/* Evaluation (inspection) sheet + AI explainer. The most consulted part
           of the lot, so it leads the full-width sections below the fold, with
-          the sheet and the assistant side by side and room to breathe.
-          Chassis-year verify temporarily hidden:
-          <ChassisYearVerify markaName={car.MARKA_NAME} chassis={car.KUZOV} serial={car.SERIAL} /> */}
+          the sheet and the assistant side by side and room to breathe. */}
       {evaluationImage && <CarEvaluation image={evaluationImage} car={car} />}
 
       {/* Comparable sold cars — the trend chart across the full page width, after
