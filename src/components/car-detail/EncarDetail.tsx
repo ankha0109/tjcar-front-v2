@@ -176,7 +176,7 @@ export default async function EncarDetail({
   // desktop, in the info column below `lg`.
   const vin = encar?.inspection?.vin?.trim() || null;
   const chassisVerify = (
-    <ChassisYearVerify markaName={car.MARKA_NAME} vin={vin ?? ""} />
+    <ChassisYearVerify vin={vin ?? ""} />
   );
   const priceMain = encar?.priceMnt || null;
   const priceSub = encar?.priceKrw || null;

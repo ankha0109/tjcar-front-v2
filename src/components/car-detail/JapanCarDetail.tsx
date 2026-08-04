@@ -191,11 +191,7 @@ export default async function JapanCarDetail({ car }: Props) {
   // info column below `lg` (see both call sites). Exactly one copy is visible at
   // any width.
   const chassisVerify = (
-    <ChassisYearVerify
-      markaName={car.MARKA_NAME}
-      chassis={car.KUZOV}
-      serial={car.SERIAL}
-    />
+    <ChassisYearVerify chassis={car.KUZOV} serial={car.SERIAL} />
   );
 
   return (

@@ -6,11 +6,9 @@ import { useTranslations } from "next-intl";
 import Api, { ApiError } from "@/services/Api";
 
 type Props = {
-  /** Make name — sent lowercased as `vendor`. */
-  markaName: string;
   /** Chassis / body code (KUZOV) — pre-fills the first input. */
   chassis?: string;
-  /** VIN serial (SERIAL) — pre-fills the second input. */
+  /** Frame serial (SERIAL) — pre-fills the second input. */
   serial?: string;
   /**
    * Whole VIN in one piece. Encar listings carry it that way (the performance
@@ -23,119 +21,40 @@ type Props = {
 
 type VerifyValues = { chassis?: string; serial?: string; vin?: string };
 
-/** POST /verify-month — the AJES maker database, keyed by chassis + serial. */
-type VerifyMonthResult = {
-  modelname?: string;
-  year?: string;
-  month?: string;
-  gradecode?: string;
-  modelcode?: string;
-  engineno?: string;
-  colorcode?: string;
-};
-
-/** GET /vin/{vin} — partsouq's parts catalog, keyed by a whole 17-char VIN. */
+/**
+ * GET /vin/{vin} — partsouq's parts catalog, read through the scraper service.
+ * `production_date` is already `YYYY-MM`, and it is the car's own build date
+ * rather than its model generation's production window. Either field can be
+ * null: partsouq records different things for different makes.
+ */
 type VinLookupResult = {
-  model?: string;
-  model_code?: string;
-  production_date?: string;
-  trim_code?: string;
-  engine_code?: string;
-  color_code?: string;
-  color_name?: string;
-  color_image?: string;
+  production_date?: string | null;
+  color_code?: string | null;
+  color_name?: string | null;
 };
-
-/** What the card renders, whichever source answered. */
-type BuildInfo = {
-  model?: string;
-  made?: string;
-  grade?: string;
-  modelCode?: string;
-  engineCode?: string;
-  colorCode?: string;
-  colorName?: string;
-  colorImage?: string;
-};
-
-function fromVerifyMonth(data: VerifyMonthResult): BuildInfo {
-  return {
-    model: data.modelname,
-    made:
-      data.year || data.month
-        ? `${data.year ?? ""}${data.month ? `-${data.month}` : ""}`
-        : undefined,
-    grade: data.gradecode,
-    modelCode: data.modelcode,
-    engineCode: data.engineno,
-    colorCode: data.colorcode,
-  };
-}
-
-function fromVinLookup(data: VinLookupResult): BuildInfo {
-  return {
-    model: data.model,
-    // Already `YYYY-MM`, and it is the car's own build date rather than the
-    // model generation's production window.
-    made: data.production_date,
-    grade: data.trim_code,
-    modelCode: data.model_code,
-    engineCode: data.engine_code,
-    colorCode: data.color_code,
-    colorName: data.color_name,
-    colorImage: data.color_image,
-  };
-}
 
 /**
- * "Арлын дугаараар он баталгаажуулах" — verifies a car's manufacture year (and
- * a few build codes) against the maker's records. The listing pre-fills the
- * form; the buyer can correct it before checking. A 404 means "not found".
+ * "Арлын дугаараар он баталгаажуулах" — looks a car's manufacture date and
+ * colour code up in partsouq's parts catalog via GET /vin/{vin}. The listing
+ * pre-fills the form; the buyer can correct it before checking. A 404 means
+ * "not found".
  *
- * Two shapes, because the two sources store the number differently — and each
- * has its own backend:
+ * Both numbers go to the same endpoint, because partsouq resolves both and keys
+ * each without its dashes:
  *
- * - Japan lot: split (KUZOV + SERIAL) → POST /verify-month, the AJES database.
- * - Encar listing: one whole VIN → GET /vin/{vin}, read off partsouq's catalog.
- *   AJES cannot decode 17-char export VINs, and it is the only source that
- *   carries a colour code.
+ * - Japan lot: KUZOV + SERIAL, joined into a frame number (`AXAH544016407`).
+ * - Encar listing: the whole 17-char VIN (`JTMW1RFV1KD025709`).
  *
- * Only VINs partsouq's Toyota catalog resolves (Toyota and Lexus) come back with
+ * Only what partsouq's Toyota catalog holds (Toyota and Lexus) comes back with
  * data; every other make answers 404 and lands on the "not found" message.
  */
-export default function ChassisYearVerify({
-  markaName,
-  chassis,
-  serial,
-  vin,
-}: Props) {
+export default function ChassisYearVerify({ chassis, serial, vin }: Props) {
   const t = useTranslations("carDetail.verify");
   const singleVin = vin !== undefined;
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<BuildInfo | null>(null);
+  const [result, setResult] = useState<VinLookupResult | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState(false);
-
-  const lookupByVin = async (raw: string): Promise<BuildInfo | null> => {
-    // The route only accepts the 17-char VIN alphabet, so strip the spaces and
-    // dashes people paste along with it rather than 404-ing on punctuation.
-    const normalized = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    const res = await Api.get<{ data?: VinLookupResult }>(`/vin/${normalized}`);
-
-    return res?.data ? fromVinLookup(res.data) : null;
-  };
-
-  const lookupByChassis = async (
-    values: VerifyValues,
-  ): Promise<BuildInfo | null> => {
-    const res = await Api.post<{ data?: VerifyMonthResult }>("/verify-month", {
-      vendor: (markaName || "").toLowerCase(),
-      vin: `${values.chassis}-${values.serial}`,
-    });
-    const data = res?.data;
-
-    return data && Object.keys(data).length > 0 ? fromVerifyMonth(data) : null;
-  };
 
   const onFinish = async (values: VerifyValues) => {
     setResult(null);
@@ -143,15 +62,24 @@ export default function ChassisYearVerify({
     setError(false);
     setLoading(true);
     try {
-      const info = singleVin
-        ? await lookupByVin(values.vin ?? "")
-        : await lookupByChassis(values);
+      // Partsouq keys both a VIN and a frame number without punctuation, so the
+      // two form shapes collapse to one lookup: strip everything that is not a
+      // letter or a digit and send what is left.
+      const number = (
+        singleVin
+          ? (values.vin ?? "")
+          : `${values.chassis ?? ""}${values.serial ?? ""}`
+      )
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
 
-      if (info) setResult(info);
+      const res = await Api.get<{ data?: VinLookupResult }>(`/vin/${number}`);
+
+      if (res?.data) setResult(res.data);
       else setNotFound(true);
     } catch (err) {
-      // Both backends abort 404 when the number is unknown. A 502 means the
-      // upstream catalog is down — that is an error, not "no such car".
+      // 404 is "the catalog does not hold this car". 502/503 mean the lookup
+      // service itself could not answer — an error, not "no such car".
       if (err instanceof ApiError && err.status === 404) setNotFound(true);
       else setError(true);
     } finally {
@@ -159,20 +87,15 @@ export default function ChassisYearVerify({
     }
   };
 
-  const rows: Array<{ label: string; value?: string; swatch?: string }> = result
+  const rows: Array<{ label: string; value?: string }> = result
     ? [
-        { label: t("model"), value: result.model },
-        { label: t("made"), value: result.made },
-        { label: t("grade"), value: result.grade },
-        { label: t("modelCode"), value: result.modelCode },
-        { label: t("engineCode"), value: result.engineCode },
+        { label: t("made"), value: result.production_date ?? undefined },
         {
           label: t("colorCode"),
           // partsouq names the paint too; the code alone means little to a buyer.
-          value: [result.colorCode, result.colorName]
-            .filter(Boolean)
-            .join(" · "),
-          swatch: result.colorImage,
+          value:
+            [result.color_code, result.color_name].filter(Boolean).join(" · ") ||
+            undefined,
         },
       ]
     : [];
@@ -246,17 +169,8 @@ export default function ChassisYearVerify({
               <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
                 {row.label}
               </dt>
-              <dd className="flex items-center gap-1.5 font-semibold text-neutral-900 dark:text-neutral-100">
-                {row.swatch && row.value?.trim() && (
-                  // eslint-disable-next-line @next/next/no-img-element -- partsouq host, not in next.config images
-                  <img
-                    src={row.swatch}
-                    alt=""
-                    aria-hidden="true"
-                    className="size-4 shrink-0 rounded-full border border-neutral-300 object-cover dark:border-neutral-600"
-                  />
-                )}
-                <span>{row.value?.trim() || "-"}</span>
+              <dd className="font-semibold text-neutral-900 dark:text-neutral-100">
+                {row.value?.trim() || "-"}
               </dd>
             </div>
           ))}
