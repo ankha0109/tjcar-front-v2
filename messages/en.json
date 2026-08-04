@@ -1294,6 +1294,7 @@
       "subtitle": "Confirm the manufacture year against the maker's VIN records.",
       "chassisPlaceholder": "Chassis code",
       "serialPlaceholder": "Serial number",
+      "vinPlaceholder": "VIN number",
       "submit": "Check",
       "required": "Required",
       "notFound": "No record found. Please check the chassis number.",

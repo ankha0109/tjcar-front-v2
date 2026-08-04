@@ -187,6 +187,17 @@ export default async function JapanCarDetail({ car }: Props) {
       : []),
   ];
 
+  // Rendered twice, CSS-gated: under the gallery on desktop, at the end of the
+  // info column below `lg` (see both call sites). Exactly one copy is visible at
+  // any width.
+  const chassisVerify = (
+    <ChassisYearVerify
+      markaName={car.MARKA_NAME}
+      chassis={car.KUZOV}
+      serial={car.SERIAL}
+    />
+  );
+
   return (
     <article className="mx-auto w-full max-w-7xl px-0 lg:px-6 lg:py-8">
       {/* Title band — the breadcrumb row plus the title/actions row, both full
@@ -245,9 +256,10 @@ export default async function JapanCarDetail({ car }: Props) {
         </>
       )}
       <div className="flex flex-col lg:flex-row lg:items-start lg:gap-x-10">
-        {/* Left column — gallery only, full-bleed on mobile (no side padding).
-            As a flex column its height is its own content, so it no longer
-            stretches to match the tall info column. */}
+        {/* Left column — the gallery, full-bleed on mobile (no side padding),
+            with the chassis-year form under it. As a flex column its height is
+            its own content, so it no longer stretches to match the tall info
+            column. */}
         <div className="lg:min-w-0 lg:grow-[1.4] lg:basis-0">
           <PremiumGallery
             images={images}
@@ -255,6 +267,11 @@ export default async function JapanCarDetail({ car }: Props) {
             isPremium={car.AUCTION_TYPE === "1"}
             lot={car.LOT}
           />
+          {/* Desktop placement: the gallery ends well above the info column, so
+              the form fills space that was empty. Below `lg` the two columns are
+              one stack and this copy hides — the form must not come between the
+              photos and the price. */}
+          <div className="hidden lg:mt-6 lg:block">{chassisVerify}</div>
         </div>
 
         {/* Info column — right on desktop, independent height from the left */}
@@ -318,14 +335,9 @@ export default async function JapanCarDetail({ car }: Props) {
             }
           />
 
-          {/* Chassis-year verification — closes the info column. The lot's own
-              KUZOV/SERIAL pre-fill it, so it is a one-tap check of the
-              manufacture year against the maker's VIN records. */}
-          <ChassisYearVerify
-            markaName={car.MARKA_NAME}
-            chassis={car.KUZOV}
-            serial={car.SERIAL}
-          />
+          {/* Mobile placement of the chassis-year form — the desktop copy sits
+              under the gallery. */}
+          <div className="lg:hidden">{chassisVerify}</div>
         </div>
       </div>
 

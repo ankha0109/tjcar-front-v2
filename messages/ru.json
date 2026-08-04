@@ -1294,6 +1294,7 @@
       "subtitle": "Подтвердите год выпуска по данным VIN производителя.",
       "chassisPlaceholder": "Код кузова",
       "serialPlaceholder": "Серийный номер",
+      "vinPlaceholder": "VIN-номер",
       "submit": "Проверить",
       "required": "Обязательно",
       "notFound": "Данные не найдены. Проверьте номер кузова.",
