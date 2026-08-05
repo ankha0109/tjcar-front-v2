@@ -44,8 +44,11 @@ The phone shell's fixed top bar comes from a parallel route, not from the page:
 `src/app/[locale]/@mobileHeader/`. `default.tsx` renders the logo + hamburger;
 a route with its own segment under the slot overrides it.
 
-- Every slot file starts with `if ((await getDevice()) !== "mobile") return null;`
-  — the desktop shell renders the slot too.
+- The desktop shell renders the slot too, so whatever produces the bar has to bail
+  out on desktop: `const device = await getDevice();` then
+  `if (device !== "mobile") return null;`. Slot files that render their own
+  `<MobileHeader>` carry that check; the dashboard subpage files delegate it to
+  `DashboardMobileHeader`, which carries it for them.
 - Lot detail pages (`japan/[id]`, `korea/[id]`, `garage/[id]`) each fetch the car
   they name, so they get one file apiece.
 - Dashboard routes get one thin file apiece too, all delegating to
