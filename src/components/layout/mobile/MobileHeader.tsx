@@ -16,6 +16,12 @@ type Props = {
    */
   subtitle?: string;
   back?: { href: string };
+  /**
+   * Drop the home logo from the left. For a bar whose title *is* the subject —
+   * the dashboard account screen — the logo only eats width. Ignored when
+   * {@link back} is set, since the arrow takes that slot anyway.
+   */
+  hideLogo?: boolean;
   /** Right-hand action. Omit for the compare tray; pass `null` for none. */
   right?: ReactNode;
   customAction?: ReactNode;
@@ -61,6 +67,7 @@ export default function MobileHeader({
   title,
   subtitle,
   back,
+  hideLogo,
   right,
   customAction,
   menuButton,
@@ -102,7 +109,7 @@ export default function MobileHeader({
         <polyline points="15 18 9 12 15 6" />
       </svg>
     </button>
-  ) : (
+  ) : hideLogo ? null : (
     <Link
       href="/"
       aria-label={t("menu.homeAria")}

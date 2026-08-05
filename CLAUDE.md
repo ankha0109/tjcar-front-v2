@@ -54,8 +54,9 @@ a route with its own segment under the slot overrides it.
 - Dashboard subpages get one thin file apiece, all delegating to
   `DashboardMobileHeader`, which keeps the titles and back targets in a single
   switch. `/dashboard` itself is the exception: its slot file renders
-  `<MobileHeader>` directly, because the account screen wants the logo and the
-  hamburger rather than a back arrow. Adding a dashboard subpage means adding
+  `<MobileHeader>` directly, because the account screen wants its own title and
+  the hamburger — no back arrow, and `hideLogo` so the logo does not compete
+  with the title for the 56px bar. Adding a dashboard subpage means adding
   both a slot file and a `case`; with neither, the page falls back to the root
   `default.tsx` — logo, compare icon and hamburger, no title.
 - An optional catch-all (`[[...rest]]`) does NOT work here: Next rejects it as
