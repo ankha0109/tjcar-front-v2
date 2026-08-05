@@ -1,10 +1,9 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import BrandButton from "@/components/ui/BrandButton";
-import { useWalletBalance, WALLET_BALANCE_KEY } from "@/hooks/useWalletBalance";
+import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { MINIMUM_BALANCE, formatMnt } from "@/lib/bidConfig";
 import { cn } from "@/utils";
 
@@ -32,14 +31,9 @@ type Props = {
  */
 export default function MobileAccountCard({ onTopUp }: Props) {
   const t = useTranslations("dashboard.wallet");
-  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const user = session?.user as CustomerUser | undefined;
-  const { balance, isFetching, isAuthenticated } = useWalletBalance();
-
-  const isPremium = balance >= MINIMUM_BALANCE;
-  const missing = Math.max(MINIMUM_BALANCE - balance, 0);
-  const progress = Math.min(Math.round((balance / MINIMUM_BALANCE) * 100), 100);
+  const { balance, isFetching, isAuthenticated, isPremium, missing, progress, refresh } = useWalletBalance();
 
   const fullName =
     [user?.firstname, user?.lastname].filter(Boolean).join(" ") ||
@@ -80,9 +74,7 @@ export default function MobileAccountCard({ onTopUp }: Props) {
         )}
         <button
           type="button"
-          onClick={() =>
-            queryClient.invalidateQueries({ queryKey: WALLET_BALANCE_KEY })
-          }
+          onClick={refresh}
           disabled={isFetching}
           aria-label={t("refresh")}
           className="ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 disabled:opacity-60 dark:border-neutral-700 dark:text-neutral-400"

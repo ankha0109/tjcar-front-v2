@@ -1,7 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { MINIMUM_BALANCE } from "@/lib/bidConfig";
 import { getBalance } from "@/services/wallet";
 
 /** Shared query key so any component (and the bid mutation) can invalidate it. */
@@ -14,6 +16,14 @@ type UseWalletBalanceResult = {
   currency: string;
   isFetching: boolean;
   isAuthenticated: boolean;
+  /** `balance` has reached {@link MINIMUM_BALANCE} — bidding is unlocked. */
+  isPremium: boolean;
+  /** How far short of {@link MINIMUM_BALANCE} the balance is. 0 once premium. */
+  missing: number;
+  /** Progress towards {@link MINIMUM_BALANCE}, 0-100, capped at 100. */
+  progress: number;
+  /** Refetch the balance now — the manual refresh both wallet cards offer. */
+  refresh: () => void;
 };
 
 /**
@@ -50,10 +60,25 @@ export function useWalletBalance(): UseWalletBalanceResult {
     refetchOnWindowFocus: true,
   });
 
+  const queryClient = useQueryClient();
+  const balance = query.data ?? seed ?? 0;
+
+  const refresh = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: WALLET_BALANCE_KEY }),
+    [queryClient],
+  );
+
   return {
-    balance: query.data ?? seed ?? 0,
+    balance,
     currency: sessionUser?.currency ?? "₮",
     isFetching: query.isFetching,
     isAuthenticated,
+    // Derived here rather than in each card: the premium threshold is a rule
+    // about the balance, so two cards computing it apart is two places to fix
+    // when the rule moves.
+    isPremium: balance >= MINIMUM_BALANCE,
+    missing: Math.max(MINIMUM_BALANCE - balance, 0),
+    progress: Math.min(Math.round((balance / MINIMUM_BALANCE) * 100), 100),
+    refresh,
   };
 }
