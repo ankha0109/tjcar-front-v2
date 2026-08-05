@@ -5,8 +5,12 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-/** Hard navigations to a route with no slot of its own. */
-export default async function MobileHeaderDefault({ params }: Props) {
+/**
+ * The locale root (`/mn`). `[...rest]` needs at least one segment, so without
+ * this file the home page is the one destination a soft navigation could still
+ * reach with the previous route's header intact.
+ */
+export default async function MobileHeaderHome({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   return <DefaultMobileHeader />;

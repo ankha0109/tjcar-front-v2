@@ -41,9 +41,19 @@ mx-auto w-full max-w-7xl px-4 lg:px-6
 ## Mobile header (`@mobileHeader` slot)
 
 The phone shell's fixed top bar comes from a parallel route, not from the page:
-`src/app/[locale]/@mobileHeader/`. `default.tsx` renders the logo + hamburger;
-a route with its own segment under the slot overrides it.
+`src/app/[locale]/@mobileHeader/`. `DefaultMobileHeader` renders the plain bar —
+logo, compare tray, hamburger — and a route with its own segment under the slot
+overrides it.
 
+- **The slot must match every path.** Next keeps an unmatched slot's previous
+  subtree across a *soft* navigation (the behaviour that holds intercepted-route
+  modals open) and only falls back to `default.tsx` on a hard one. So a gap in
+  this slot does not mean "show the default bar", it means "keep the last page's
+  title" — leaving `/japan/[id]` or `/dashboard` by tapping a link used to strand
+  that heading on the next screen. Three files close it, all rendering
+  `DefaultMobileHeader`: `default.tsx` (hard navigations), `page.tsx` (the locale
+  root, which a catch-all cannot match) and `[...rest]/page.tsx` (everything
+  else). Do not delete any of them.
 - The desktop shell renders the slot too, so whatever produces the bar has to bail
   out on desktop: `const device = await getDevice();` then
   `if (device !== "mobile") return null;`. Slot files that render their own
@@ -57,10 +67,13 @@ a route with its own segment under the slot overrides it.
   `<MobileHeader>` directly, because the account screen wants its own title and
   the hamburger — no back arrow, and `hideLogo` so the logo does not compete
   with the title for the 56px bar. Adding a dashboard subpage means adding
-  both a slot file and a `case`; with neither, the page falls back to the root
-  `default.tsx` — logo, compare icon and hamburger, no title.
-- An optional catch-all (`[[...rest]]`) does NOT work here: Next rejects it as
-  having the same specificity as the static `/[locale]/dashboard` route.
+  both a slot file and a `case`; with neither, the page falls through to
+  `[...rest]/page.tsx` — logo, compare icon and hamburger, no title.
+- The catch-all must stay `[...rest]`, never `[[...rest]]`: an optional catch-all
+  also matches zero segments, which Next rejects as having the same specificity
+  as the route beside it (`/[locale]/dashboard` and `/[*]/dashboard/[[...rest]]`
+  fails the build). This is also why a per-route file, not one catch-all, carries
+  each dashboard title.
 - A page whose title lives in this bar must not also render it in the body —
   `DashboardHeader` returns `null` on phones for exactly this reason.
 - `MobileHeader` fills its right slot with the compare tray by default. Pass
