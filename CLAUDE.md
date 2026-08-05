@@ -38,6 +38,28 @@ mx-auto w-full max-w-7xl px-4 lg:px-6
 - Vertical padding is free (`py-8`, `pb-12 pt-6`, …); only the horizontal scale is fixed.
 - Car detail pages keep `px-0 lg:px-6` on purpose — the gallery is full-bleed on mobile.
 
+## Mobile header (`@mobileHeader` slot)
+
+The phone shell's fixed top bar comes from a parallel route, not from the page:
+`src/app/[locale]/@mobileHeader/`. `default.tsx` renders the logo + hamburger;
+a route with its own segment under the slot overrides it.
+
+- Every slot file starts with `if ((await getDevice()) !== "mobile") return null;`
+  — the desktop shell renders the slot too.
+- Lot detail pages (`japan/[id]`, `korea/[id]`, `garage/[id]`) each fetch the car
+  they name, so they get one file apiece.
+- Dashboard routes get one thin file apiece too, all delegating to
+  `DashboardMobileHeader`, which keeps the titles and back targets in a single
+  switch. Adding a dashboard subpage means adding both a slot file and a `case`;
+  with neither, the page falls back to the root `default.tsx` — logo + hamburger,
+  no title.
+- An optional catch-all (`[[...rest]]`) does NOT work here: Next rejects it as
+  having the same specificity as the static `/[locale]/dashboard` route.
+- A page whose title lives in this bar must not also render it in the body —
+  `DashboardHeader` returns `null` on phones for exactly this reason.
+- `MobileHeader` fills its right slot with the compare tray by default. Pass
+  `right={null}` for no action, or a node to replace it.
+
 ## API and headers
 
 - Every API request includes `Accept-Language: <locale>` automatically:
