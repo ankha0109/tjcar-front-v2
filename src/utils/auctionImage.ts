@@ -30,16 +30,33 @@ function withEncarSize(url: string, size: AuctionImageSize): string {
   return `${base}?impolicy=heightRate&rh=${h}&cw=${w}&ch=${h}&cg=Center`;
 }
 
+const AJES_HOST_RE = /(^|\.)ajes\.com$/i;
+
+function isAjes(url: string): boolean {
+  try {
+    return AJES_HOST_RE.test(new URL(url).hostname);
+  } catch {
+    // Relative or malformed — no resizer applies either way.
+    return false;
+  }
+}
+
 /**
  * Resize a car photo URL to one of the three variants the detail UI uses.
  *
  * AJES CDN: the resizer is keyed to the literal `&w=`/`&h=` suffix even when
  * the URL has no `?` — a standards-correct `?w=320` is ignored and serves the
- * full-size image, so don't "fix" the separator. Hosts that understand neither
- * convention are left untouched by their caller (CarGallery `sizeVariants`).
+ * full-size image, so don't "fix" the separator.
+ *
+ * Any other host is returned untouched. That matters for the premium (scraped)
+ * photos, which are plain S3 objects: appending `&w=320` to a URL with no query
+ * string makes it part of the object key and the request 404s. The USS gallery
+ * mixes AJES and S3 urls in one carousel, so the decision has to be per URL —
+ * `CarGallery`'s `sizeVariants` prop is per gallery and cannot express it.
  */
 export function withImageSize(url: string, size: AuctionImageSize): string {
   if (url.includes(ENCAR_HOST)) return withEncarSize(url, size);
+  if (!isAjes(url)) return url;
 
   const clean = url.replace(SIZE_PARAM_RE, "").replace(/[?&]+$/, "");
   if (size === "original") return clean;
