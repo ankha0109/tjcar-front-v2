@@ -1,20 +1,25 @@
+import { getDevice } from "@/lib/device";
+
 type Props = {
   title: string;
-  description?: string;
   action?: React.ReactNode;
 };
 
-export default function DashboardHeader({ title, description, action }: Props) {
+/**
+ * The page title, on desktop only.
+ *
+ * On phones the very same title is rendered by the `@mobileHeader/dashboard`
+ * slot inside the fixed bar, so repeating it here would ship two headings and
+ * burn a chunk of a small screen. `action` goes with it: the mobile header
+ * carries its own (the reports page's "new report" plus).
+ */
+export default async function DashboardHeader({ title, action }: Props) {
+  const device = await getDevice();
+  if (device === "mobile") return null;
+
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="text-2xl font-semibold text-neutral-900">
-          {title}
-        </h1>
-        {description && (
-          <p className="mt-1 text-sm text-neutral-500">{description}</p>
-        )}
-      </div>
+      <h1 className="text-2xl font-semibold text-neutral-900">{title}</h1>
       {action && <div className="flex items-center gap-2">{action}</div>}
     </div>
   );
