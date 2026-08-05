@@ -51,11 +51,13 @@ a route with its own segment under the slot overrides it.
   `DashboardMobileHeader`, which carries it for them.
 - Lot detail pages (`japan/[id]`, `korea/[id]`, `garage/[id]`) each fetch the car
   they name, so they get one file apiece.
-- Dashboard routes get one thin file apiece too, all delegating to
+- Dashboard subpages get one thin file apiece, all delegating to
   `DashboardMobileHeader`, which keeps the titles and back targets in a single
-  switch. Adding a dashboard subpage means adding both a slot file and a `case`;
-  with neither, the page falls back to the root `default.tsx` — logo + hamburger,
-  no title.
+  switch. `/dashboard` itself is the exception: its slot file renders
+  `<MobileHeader>` directly, because the account screen wants the logo and the
+  hamburger rather than a back arrow. Adding a dashboard subpage means adding
+  both a slot file and a `case`; with neither, the page falls back to the root
+  `default.tsx` — logo, compare icon and hamburger, no title.
 - An optional catch-all (`[[...rest]]`) does NOT work here: Next rejects it as
   having the same specificity as the static `/[locale]/dashboard` route.
 - A page whose title lives in this bar must not also render it in the body —

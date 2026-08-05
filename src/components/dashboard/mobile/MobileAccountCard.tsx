@@ -7,12 +7,11 @@ import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { MINIMUM_BALANCE, formatMnt } from "@/lib/bidConfig";
 import { cn } from "@/utils";
 
-// Same shape MobileDrawer casts the session user to — the augmented next-auth
-// type does not surface these fields here.
+// Only the fields this card reads, all optional: the session is briefly absent
+// while it hydrates on the client.
 type CustomerUser = {
   firstname?: string;
   lastname?: string;
-  name?: string;
 };
 
 type Props = {
@@ -26,8 +25,9 @@ type Props = {
  *
  * That is why the desktop card's four-line "what Premium buys you" list is not
  * here — the top-up drawer makes the same argument at the moment it matters.
- * The progress bar stays: below the threshold the number alone does not say
- * how far off bidding is.
+ * The desktop card's one-line `premiumActiveHint` is dropped for the same
+ * reason: vertical space. The progress bar stays: below the threshold the
+ * number alone does not say how far off bidding is.
  */
 export default function MobileAccountCard({ onTopUp }: Props) {
   const t = useTranslations("dashboard.wallet");
@@ -36,9 +36,7 @@ export default function MobileAccountCard({ onTopUp }: Props) {
   const { balance, isFetching, isAuthenticated, isPremium, missing, progress, refresh } = useWalletBalance();
 
   const fullName =
-    [user?.firstname, user?.lastname].filter(Boolean).join(" ") ||
-    user?.name ||
-    "";
+    [user?.firstname, user?.lastname].filter(Boolean).join(" ") || "";
   const initials =
     `${user?.firstname?.[0] ?? ""}${user?.lastname?.[0] ?? ""}`.toUpperCase() ||
     "U";

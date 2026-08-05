@@ -74,7 +74,7 @@ export default function MobileMenuRow({
   const className = cn(
     "flex min-h-[52px] w-full items-center gap-3 px-4 py-2 text-left",
     (href || external || onClick) &&
-      "active:bg-neutral-50 dark:active:bg-neutral-900",
+      "active:bg-neutral-50 dark:active:bg-neutral-800",
   );
 
   if (href) {

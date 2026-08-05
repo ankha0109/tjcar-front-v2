@@ -123,7 +123,8 @@
       "open": "User menu",
       "homeAria": "TJ Car home",
       "openMenu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "back": "Back"
     },
     "auth": {
       "signIn": "Sign in",

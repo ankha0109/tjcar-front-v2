@@ -78,7 +78,7 @@ export function useWalletBalance(): UseWalletBalanceResult {
     // when the rule moves.
     isPremium: balance >= MINIMUM_BALANCE,
     missing: Math.max(MINIMUM_BALANCE - balance, 0),
-    progress: Math.min(Math.round((balance / MINIMUM_BALANCE) * 100), 100),
+    progress: Math.min(Math.max(Math.round((balance / MINIMUM_BALANCE) * 100), 0), 100),
     refresh,
   };
 }

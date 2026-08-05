@@ -6,7 +6,7 @@ import { getDevice } from "@/lib/device";
 
 type Props = {
   /** First path segment under `/dashboard` — `"bids"`, `"orders"`, … */
-  section: string;
+  section: "bids" | "orders" | "reports" | "profile";
   /** Present on a `[id]` detail route. */
   id?: string;
 };

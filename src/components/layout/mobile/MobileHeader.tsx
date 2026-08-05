@@ -85,7 +85,7 @@ export default function MobileHeader({
     <button
       type="button"
       onClick={() => handleBack(back.href)}
-      aria-label={t("menu.closeMenu")}
+      aria-label={t("menu.back")}
       className="-ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-900"
     >
       <svg

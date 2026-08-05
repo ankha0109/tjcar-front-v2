@@ -123,7 +123,8 @@
       "open": "Хэрэглэгчийн цэс",
       "homeAria": "TJ Car нүүр хуудас",
       "openMenu": "Цэс нээх",
-      "closeMenu": "Цэс хаах"
+      "closeMenu": "Цэс хаах",
+      "back": "Буцах"
     },
     "auth": {
       "signIn": "Нэвтрэх",

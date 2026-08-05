@@ -19,7 +19,7 @@ export default async function DashboardHeader({ title, action }: Props) {
 
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
-      <h1 className="text-2xl font-semibold text-neutral-900">{title}</h1>
+      <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">{title}</h1>
       {action && <div className="flex items-center gap-2">{action}</div>}
     </div>
   );

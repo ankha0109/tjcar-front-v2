@@ -16,7 +16,7 @@ type Props = {
  */
 export default function MobileMenuGroup({ title, children }: Props) {
   return (
-    <section>
+    <div>
       {title ? (
         <h2 className="px-1 pb-2 pt-5 text-[11px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
           {title}
@@ -30,6 +30,6 @@ export default function MobileMenuGroup({ title, children }: Props) {
       >
         {children}
       </div>
-    </section>
+    </div>
   );
 }
