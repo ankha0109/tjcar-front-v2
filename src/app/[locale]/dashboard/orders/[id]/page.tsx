@@ -13,7 +13,7 @@ export default async function OrderDetailPage({
 
   return (
     <>
-      <DashboardHeader title={t("title")} description={t("description")} />
+      <DashboardHeader title={t("title")} />
       {/* Ownership is enforced by the API (another customer's id 404s), so the
           shell renders unconditionally and OrderDetail handles the 404 state. */}
       <OrderDetail id={id} />

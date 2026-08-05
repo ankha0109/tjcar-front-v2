@@ -201,8 +201,8 @@ export default function CarBidSection(props: Props) {
       return gateCard(
         t("depositTitle"),
         t("depositBody", { amount: formatMnt(MINIMUM_BALANCE) }),
-        <Link href="/dashboard">
-          <BrandButton size="middle">{t("contact")}</BrandButton>
+        <Link href="/dashboard?topup=1">
+          <BrandButton size="middle">{t("topUp")}</BrandButton>
         </Link>,
       );
     }

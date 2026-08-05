@@ -539,12 +539,21 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                   <div className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                     {user.firstname} {user.lastname}
                   </div>
-                  <div className="text-[11.5px] uppercase text-neutral-400 dark:text-neutral-500">
-                    {t("menu.balanceLabel")}
-                  </div>
-                  <div className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                    {formatBalance(liveBalance, liveCurrency)}
-                  </div>
+                  <Link
+                    href="/dashboard?topup=1"
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-neutral-900 dark:text-neutral-100"
+                  >
+                    <div className="text-[11.5px] uppercase text-neutral-400 dark:text-neutral-500">
+                      {t("menu.balanceLabel")}
+                    </div>
+                    <div className="flex flex-wrap items-baseline gap-x-2 text-sm font-semibold">
+                      {formatBalance(liveBalance, liveCurrency)}
+                      <span className="text-[11px] font-medium text-primary">
+                        {t("menu.topUp")}
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>

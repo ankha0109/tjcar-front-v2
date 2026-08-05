@@ -18,10 +18,7 @@ export default async function ProfilePage({
 
   return (
     <>
-      <DashboardHeader
-        title={t("title")}
-        description={t("description")}
-      />
+      <DashboardHeader title={t("title")} />
 
       <section className="space-y-4">
         <SectionMast title={t("basicHeading")} />

@@ -95,7 +95,7 @@ export default function PremiumInfoModalRoot() {
       </div>
 
       <Link
-        href="/dashboard/wallet"
+        href="/dashboard?topup=1"
         onClick={() => setOpen(false)}
         className="mt-5 block"
       >
