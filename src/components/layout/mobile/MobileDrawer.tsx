@@ -1,15 +1,14 @@
 "use client";
 
-import { useSyncExternalStore, useTransition } from "react";
 import { Button, Drawer, Switch } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
-import { setTheme } from "@/app/actions/theme";
-import type { Theme } from "@/lib/theme";
 import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_RAW } from "@/lib/contact";
 import { useCompare } from "@/hooks/useCompare";
+import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { useWishlist } from "@/hooks/useWishlist";
 
@@ -19,9 +18,6 @@ type CustomerUser = {
   balance: number;
   currency: string;
 };
-
-const CONTACT_PHONE_RAW = "+97675115888";
-const CONTACT_PHONE_DISPLAY = "+976 7511-5888";
 
 const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -168,26 +164,6 @@ const MoonIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-// Reads the active theme straight from <html data-theme> (set server-side and
-// re-rendered on router.refresh()), so the toggle stays in sync with the DOM
-// without prop-drilling `theme` through the mobile-header parallel-route slots.
-function subscribeTheme(onChange: () => void) {
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-theme"],
-  });
-  return () => observer.disconnect();
-}
-
-function getThemeSnapshot(): Theme {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
-
-function getServerThemeSnapshot(): Theme {
-  return "light";
-}
-
 function formatBalance(amount: number, currency: string) {
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount ?? 0)} ${currency || "₮"}`;
 }
@@ -283,20 +259,11 @@ export default function MobileDrawer({ open, onClose }: Props) {
   const { balance: liveBalance, currency: liveCurrency } = useWalletBalance();
   const { count: wishlistCount } = useWishlist();
   const { count: compareCount } = useCompare();
-  const router = useRouter();
-  const [isThemePending, startThemeTransition] = useTransition();
-  const theme = useSyncExternalStore(
-    subscribeTheme,
-    getThemeSnapshot,
-    getServerThemeSnapshot,
-  );
-
-  const onToggleTheme = (checked: boolean) => {
-    startThemeTransition(async () => {
-      await setTheme(checked ? "dark" : "light");
-      router.refresh();
-    });
-  };
+  const {
+    theme,
+    isPending: isThemePending,
+    toggle: onToggleTheme,
+  } = useThemeToggle();
 
   const MAIN_NAV: {
     key: string;
@@ -361,12 +328,21 @@ export default function MobileDrawer({ open, onClose }: Props) {
                 <div className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                   {user.firstname} {user.lastname}
                 </div>
-                <div className="text-[11.5px] uppercase text-neutral-400 dark:text-neutral-500">
-                  {t("menu.balanceLabel")}
-                </div>
-                <div className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                  {formatBalance(liveBalance, liveCurrency)}
-                </div>
+                <Link
+                  href="/dashboard?topup=1"
+                  onClick={onClose}
+                  className="block text-neutral-900 dark:text-neutral-100"
+                >
+                  <div className="text-[11.5px] uppercase text-neutral-400 dark:text-neutral-500">
+                    {t("menu.balanceLabel")}
+                  </div>
+                  <div className="flex flex-wrap items-baseline gap-x-2 text-sm font-semibold">
+                    {formatBalance(liveBalance, liveCurrency)}
+                    <span className="text-[11px] font-medium text-primary">
+                      {t("menu.topUp")}
+                    </span>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
