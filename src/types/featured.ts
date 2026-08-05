@@ -41,4 +41,10 @@ export type FeaturedCar = {
   AUCTION_TYPE: string;
   SERIAL?: string;
   INFO?: string;
+  /**
+   * Completed premium (USS scraper) photo urls for this lot, or null when no
+   * scrape has finished. Present on `GET /japan/{id}` only — the `/japan` list
+   * and `/compare` never populate it.
+   */
+  premium_images?: string[] | null;
 };

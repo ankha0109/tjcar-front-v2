@@ -35,7 +35,8 @@ export type CarFixture = {
   IMAGES: string;
   SERIAL: string;
   INFO: string;
-  premium_images: string | null;
+  /** Completed premium (USS) photo urls. Only ever non-null on Japan lots. */
+  premium_images: string[] | null;
   /**
    * Landed ("гар дээр ирэх") MNT price, computed by the API. Null on in-stock
    * cars, which are already priced in tugrik, and on auction lots the upstream
@@ -139,7 +140,7 @@ export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
     IMAGES: str(lot.IMAGES),
     SERIAL: str(lot.SERIAL),
     INFO: str(lot.INFO),
-    premium_images: null,
+    premium_images: lot.premium_images ?? null,
     PRICE_MNT: lot.PRICE_MNT ?? null,
   };
 }
