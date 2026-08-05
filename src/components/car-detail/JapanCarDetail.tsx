@@ -262,6 +262,14 @@ export default async function JapanCarDetail({ car }: Props) {
             alt={title}
             isPremium={car.AUCTION_TYPE === "1"}
             lot={car.LOT}
+            auctionId={car.ID}
+            premiumImages={car.premium_images}
+            make={car.MARKA_NAME}
+            model={car.MODEL_NAME}
+            year={car.YEAR}
+            mileage={car.MILEAGE}
+            modelType={car.KUZOV}
+            gradeOrigin={car.RATE}
           />
           {/* Desktop placement: the gallery ends well above the info column, so
               the form fills space that was empty. Below `lg` the two columns are

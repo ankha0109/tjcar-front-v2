@@ -1599,6 +1599,8 @@
     "gallery": {
       "viewFull": "Томоор нээх",
       "premiumBanner": "Premium зураг. Нийтэд дамжуулах, сошиалд ашиглахгүй байхыг анхаарна уу.",
+      "premiumLoading": "Premium зураг татаж байна, түр хүлээнэ үү",
+      "premiumFailed": "Premium зураг татаж чадсангүй. Админд хандана уу",
       "premiumLockedTitle": "Premium зураг цоожтой",
       "premiumLockedBody": "USS дуудлага худалдааны мэдээлэл нь төлбөртэй эх сурвалж тул зөвхөн данс цэнэглэсэн хэрэглэгч үзэх боломжтой.",
       "premiumContactLabel": "Холбоо барих:",

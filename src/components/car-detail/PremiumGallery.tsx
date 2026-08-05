@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
+import { usePremiumImages } from "@/hooks/usePremiumImages";
 import { MINIMUM_BALANCE } from "@/lib/bidConfig";
 import { withImageSize } from "@/utils/auctionImage";
 import BrandButton from "@/components/ui/BrandButton";
@@ -14,19 +15,51 @@ type Props = {
   alt: string;
   /** AUCTION_TYPE === "1" — a paid USS (premium) lot. */
   isPremium: boolean;
-  /** Lot number, shown on the locked teaser. */
+  /** Human auction lot number — shown on the locked teaser, sent as `lotNumber`. */
   lot: string;
+  /** The lot's opaque `ID` — what the scrape is keyed by. NOT the lot number. */
+  auctionId: string;
+  /** Completed premium urls already delivered with the lot, if any. */
+  premiumImages: string[] | null;
+  make: string;
+  model: string;
+  year: string;
+  mileage: string;
+  modelType: string;
+  gradeOrigin: string;
 };
+
+/** The scraper takes numbers; the lot fixture stringifies everything. */
+function num(value: string): number | undefined {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
 
 /**
  * Gallery with the USS premium gate. Premium (AUCTION_TYPE "1") lots are a paid
  * source: their photos are only viewable by a signed-in customer whose wallet
  * balance clears {@link MINIMUM_BALANCE}. Otherwise the gallery is replaced with
- * a locked teaser (blurred first frame + how to unlock). The backend already
- * swaps in the premium images server-side for qualifying users, so an unlocked
- * premium lot just gets a "handle with care" banner above the normal gallery.
+ * a locked teaser (blurred first frame + how to unlock).
+ *
+ * For a customer who IS through the gate, the extra premium photo set is fetched
+ * on mount — no button, matching v1 — and prepended to the carousel when it
+ * lands. The auction's own photos stay on screen throughout, so a slow or failed
+ * scrape costs a status strip, never the gallery.
  */
-export default function PremiumGallery({ images, alt, isPremium, lot }: Props) {
+export default function PremiumGallery({
+  images,
+  alt,
+  isPremium,
+  lot,
+  auctionId,
+  premiumImages,
+  make,
+  model,
+  year,
+  mileage,
+  modelType,
+  gradeOrigin,
+}: Props) {
   const t = useTranslations("carDetail");
   const { status } = useSession();
   const { balance } = useWalletBalance();
@@ -34,6 +67,23 @@ export default function PremiumGallery({ images, alt, isPremium, lot }: Props) {
 
   const deposited = status === "authenticated" && balance >= MINIMUM_BALANCE;
   const locked = isPremium && !deposited;
+
+  const premium = usePremiumImages({
+    enabled: isPremium && !locked,
+    auctionId,
+    seed: premiumImages,
+    filters: {
+      make,
+      model,
+      yearStart: num(year),
+      yearEnd: num(year),
+      mileageStart: num(mileage),
+      mileageEnd: num(mileage),
+      modelType: modelType || undefined,
+      gradeOrigin: gradeOrigin || undefined,
+      lotNumber: lot || undefined,
+    },
+  });
 
   if (locked) {
     const teaser = images[0] ? withImageSize(images[0], "card") : undefined;
@@ -83,9 +133,35 @@ export default function PremiumGallery({ images, alt, isPremium, lot }: Props) {
     );
   }
 
+  // Premium photos lead: they are the reason a customer paid to see this lot.
+  const allImages = [...premium.images, ...images];
+
   return (
     <div className="flex flex-col gap-3">
-      {isPremium && (
+      {isPremium && premium.status === "loading" && (
+        <div className="mx-3 flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 lg:mx-0 dark:border-blue-900/50 dark:bg-blue-950/30">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 animate-spin text-blue-600 dark:text-blue-400" aria-hidden>
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+          <span className="text-[12px] leading-snug text-blue-700 dark:text-blue-300">
+            {t("gallery.premiumLoading")}
+          </span>
+        </div>
+      )}
+
+      {isPremium && premium.status === "failed" && (
+        <div className="mx-3 flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 lg:mx-0 dark:border-red-900/50 dark:bg-red-950/30">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 dark:text-red-400" aria-hidden>
+            <circle cx="12" cy="12" r="10" />
+            <path d="m15 9-6 6M9 9l6 6" />
+          </svg>
+          <span className="text-[12px] leading-snug text-red-700 dark:text-red-300">
+            {t("gallery.premiumFailed")}
+          </span>
+        </div>
+      )}
+
+      {isPremium && premium.status === "completed" && (
         <div className="mx-3 flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 lg:mx-0 dark:border-emerald-900/50 dark:bg-emerald-950/30">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden>
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -96,7 +172,8 @@ export default function PremiumGallery({ images, alt, isPremium, lot }: Props) {
           </span>
         </div>
       )}
-      <CarGallery images={images} alt={alt} />
+
+      <CarGallery images={allImages} alt={alt} />
     </div>
   );
 }
