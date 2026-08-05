@@ -115,6 +115,7 @@
     },
     "menu": {
       "balanceLabel": "Balance",
+      "topUp": "Top up",
       "dashboard": "Dashboard",
       "profile": "Profile",
       "bids": "My bids",
@@ -478,24 +479,61 @@
       "orders": "My orders",
       "reports": "My reports"
     },
+    "mobile": {
+      "title": "My account",
+      "groupActivity": "My activity",
+      "groupLists": "My lists",
+      "groupAccount": "Account",
+      "groupSupport": "Support"
+    },
+    "wallet": {
+      "balanceLabel": "Account balance",
+      "refresh": "Refresh",
+      "topUp": "Top up",
+      "premiumActive": "Premium active",
+      "premiumActiveHint": "You can bid at auction and see the full USS data and photos.",
+      "shortBy": "{amount} short of Premium",
+      "progressAria": "Progress towards Premium",
+      "minimumHint": "Minimum balance to bid at auction: {amount}",
+      "benefitsHeading": "Top up {amount} or more and you can",
+      "howHeading": "How to top up",
+      "howDescription": "Three steps. The transfer itself goes through your bank.",
+      "step1Title": "Read the agreement",
+      "step1Body": "Read and accept the auction service terms.",
+      "step2Title": "Transfer to our account",
+      "step2Body": "Send the amount to the account below with the exact transfer note. A wrong note delays the confirmation.",
+      "step3Title": "Let us know",
+      "step3Body": "Send the request after the transfer and we will check it and credit your account.",
+      "viewContract": "Read the agreement",
+      "contractTitle": "Service agreement",
+      "contractAgree": "Accept",
+      "contractAgreed": "Agreement accepted",
+      "contractOpenExternal": "Open the agreement in a new tab",
+      "bank": "Bank",
+      "iban": "IBAN",
+      "accountNumber": "Account number",
+      "accountHolder": "Beneficiary",
+      "transferNote": "Transfer note",
+      "transferNoteHint": "This is how the payment is matched to your account.",
+      "transferNoteFallback": "Name + phone number",
+      "mntOnly": "MNT account only",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Could not copy",
+      "requestCta": "Send top-up request",
+      "requestAgainCta": "Send the request again",
+      "requestNeedsContract": "Read the agreement first.",
+      "requestSentTitle": "Request sent",
+      "requestSentBody": "Your top-up request has been sent. It is confirmed during business hours.",
+      "requestSentInline": "Request sent — waiting for confirmation.",
+      "requestErrorTitle": "Something went wrong",
+      "requestErrorBody": "The request could not be sent. Please try again in a moment.",
+      "ok": "Got it",
+      "qpayNotice": "Vehicle history reports are paid by QPay only — they are not deducted from this balance.",
+      "hoursNotice": "Top-ups are confirmed during business hours, so the amount may not appear right after the transfer."
+    },
     "home": {
-      "guestName": "Guest",
-      "greeting": "Hi, {name}",
-      "subtitle": "Your auction activity in one place.",
-      "quickActions": {
-        "newBid": {
-          "title": "New bid",
-          "description": "Join an auction"
-        },
-        "track": {
-          "title": "Track orders",
-          "description": "See shipping progress"
-        },
-        "report": {
-          "title": "Check accident",
-          "description": "Get a VIN report"
-        }
-      },
+      "title": "Overview",
       "stats": {
         "bidsLabel": "Bids sent",
         "bidsHint": "{count} pending",
@@ -505,21 +543,16 @@
         "ordersHint": "orders in total"
       },
       "recent": {
-        "title": "Recent activity",
-        "description": "Your latest actions will appear here.",
-        "emptyTitle": "No activity yet",
-        "emptyDescription": "Pick a car from an auction and submit your first bid.",
-        "emptyCta": "Find cars"
+        "title": "Recent bids",
+        "viewAll": "View all"
       },
-      "quick": {
-        "title": "Quick actions",
-        "description": "Most-used actions."
+      "activeOrders": {
+        "title": "Cars on the way",
+        "viewAll": "View all"
       }
     },
     "bids": {
       "title": "My bids",
-      "description": "Track and manage the bids you have sent.",
-      "listHeading": "Sent bids",
       "tabAll": "All",
       "tabActive": "Active",
       "tabClosed": "Closed",
@@ -531,7 +564,6 @@
     },
     "bidDetail": {
       "title": "Bid detail",
-      "description": "The bid and its progress history.",
       "sentAt": "Sent: {date}",
       "viewCar": "View car details",
       "startPrice": "Start price: {price}",
@@ -561,8 +593,6 @@
     },
     "orders": {
       "title": "My orders",
-      "description": "Track the cars you won at auction.",
-      "listHeading": "My orders",
       "orderNo": "Order #{id}",
       "notShipped": "Not shipped yet",
       "emptyTitle": "No orders yet",
@@ -573,7 +603,6 @@
     },
     "orderDetail": {
       "title": "Order details",
-      "description": "Car information, shipping progress and payment breakdown.",
       "orderNo": "Order #{id}",
       "createdAt": "Ordered: {date}",
       "progressHeading": "Shipping progress",
@@ -623,7 +652,6 @@
     },
     "profile": {
       "title": "Profile",
-      "description": "Personal info and preferences.",
       "basicHeading": "Basics",
       "name": "Name",
       "email": "Email",
@@ -635,15 +663,32 @@
       "settingsComingDescription": "Available in an upcoming release."
     },
     "reports": {
+      "tabActive": "Active",
+      "tabPending": "Pending",
+      "newReport": "New report",
+      "vin": "Chassis no.",
+      "unknownCar": "Unknown car",
+      "download": "Download PDF",
+      "pay": "Pay now",
+      "expiredHint": "Needs to be ordered again",
+      "activeEmptyTitle": "No active reports",
+      "activeEmptyBody": "Paid reports show up here.",
+      "pendingEmptyTitle": "Nothing pending",
+      "pendingEmptyBody": "You have no unpaid or expired reports.",
+      "limitNote": "Showing the latest {count} reports of {total}.",
+      "phase": {
+        "ready": "Ready",
+        "preparing": "Preparing",
+        "awaiting-payment": "Awaiting payment",
+        "expired": "Expired"
+      },
       "title": "My reports",
-      "description": "Accident and history reports by VIN.",
-      "listHeading": "Created reports",
       "emptyTitle": "No reports yet",
       "emptyDescription": "Enter a VIN to run an accident and history check.",
       "emptyCta": "New report",
       "loadErrorTitle": "Could not load the list",
       "loadErrorBody": "Check your connection and refresh the page.",
-      "preparing": "Preparing"
+      "preparingHint": "Ready shortly"
     }
   },
   "car": {
@@ -1549,7 +1594,7 @@
       "or": "or",
       "depositTitle": "Top up your account",
       "depositBody": "To join the auction, keep at least {amount} in your account.",
-      "contact": "Contact us",
+      "topUp": "Top up balance",
       "closedTitle": "Bidding closed",
       "closedBody": "Bidding has closed for this lot. Bids are accepted up to {hours} hours before the auction."
     },

@@ -16,6 +16,7 @@ type Props = {
    */
   subtitle?: string;
   back?: { href: string };
+  /** Right-hand action. Omit for the compare tray; pass `null` for none. */
   right?: ReactNode;
   customAction?: ReactNode;
   menuButton?: boolean;
@@ -151,7 +152,11 @@ export default function MobileHeader({
           <div className="flex-1" />
         )}
         {customAction}
-        {right ?? <DefaultRight />}
+        {/* `??` would swallow an explicit `right={null}`, so compare is the
+            default only when the prop is genuinely absent. The dashboard passes
+            `null`: a "compare cars" button has no business on an account
+            screen. */}
+        {right === undefined ? <DefaultRight /> : right}
         {menuButton && (
           <button
             type="button"
