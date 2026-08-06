@@ -13,6 +13,7 @@ import AntdProvider from "@/providers/AntdProvider";
 import { auth } from "@/auth";
 import AppShell from "@/components/layout/AppShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import ScrollState from "@/components/layout/ScrollState";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
@@ -112,6 +113,7 @@ export default async function LocaleLayout({
               <AiChatWidget />
               <ScrollState />
               <ScrollToTop />
+              <GoogleAnalytics />
             </AntdProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
