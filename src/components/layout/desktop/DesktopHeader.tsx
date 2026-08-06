@@ -637,7 +637,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                 {CONTACT_PHONE_DISPLAY}
               </DrawerLink>
               <DrawerLink
-                href="/about"
+                href="/contact"
                 onClick={() => setMobileOpen(false)}
                 leading={<MailIcon className="h-4 w-4 text-sky-500" />}
               >

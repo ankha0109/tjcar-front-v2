@@ -455,7 +455,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
               {CONTACT_PHONE_DISPLAY}
             </DrawerLink>
             <DrawerLink
-              href="/about"
+              href="/contact"
               onClick={onClose}
               leading={<MailIcon className="h-4 w-4 text-sky-500" />}
             >
