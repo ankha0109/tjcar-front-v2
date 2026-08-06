@@ -10,6 +10,11 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-06-google-analytics-design.md`
 
+> **Executed 2026-08-06, with one change.** Browser verification showed the
+> component in Task 1 double-counting every client-side navigation, and it was
+> replaced by a much smaller one. Read the "Outcome" section at the foot of this
+> file before the tasks, and do NOT copy the component in Task 1 Step 1.
+
 ## Global Constraints
 
 - **No test runner exists in this repo** (`package.json` scripts: `dev`, `build`, `start`, `lint`; no vitest/jest; zero test files). Do NOT add one. Every task verifies with `npx tsc --noEmit` + `npm run lint`, and Task 2 adds a manual browser pass.
@@ -327,6 +332,41 @@ Run: `npm run build`
 Expected: succeeds. In particular no `useSearchParams() should be wrapped in a suspense boundary` error — if that appears, the `<Suspense>` in Task 1 Step 1 was dropped.
 
 ---
+
+## Outcome
+
+All tasks ran. Commits: `4f1c723` (component), `7be8666` (mount), `a88ea55`
+(the correction below).
+
+**Task 1 Step 4 was dropped.** It grepped the built bundle for
+`googletagmanager` before anything imported the component — an unimported module
+is never compiled in, so the check could only ever pass. The real version of it
+ran in Task 2, after the mount: `NEXT_PUBLIC_GA_ID= npm run build` left zero
+hits across 69 chunks, and the normal build shipped `G-NZPS67G2NB`.
+
+**The component was rewritten.** A CDP driver walked six navigations
+(`/mn` → `/mn/japan` → `?page=2` → a lot detail → Back → language switch to
+`/en`) against a production build on port 2501, recording every
+`googletagmanager.com` request. It counted **ten** hits for six navigations.
+
+`window.dataLayer` held exactly one `page_view` per navigation, so the effect
+was not double-firing — the extra hits had no dataLayer entry at all. They came
+from gtag.js: GA4 Enhanced Measurement's history-event listener, which
+`send_page_view: false` does not disable. It suppresses only the first pageview.
+
+Given the choice between suppressing gtag's tracker (a GA console setting,
+invisible from the repo) and dropping ours, the manual tracking went. That
+removed `useSearchParams`, its `<Suspense>` boundary, the `gtag` shim, both
+effects, the two eslint-disable directives and the `"use client"` directive —
+the file is now a server component holding the standard gtag snippet. The same
+walk sends six hits for six navigations.
+
+Consequently the plan's Global Constraint about `usePathname` importing from
+`next/navigation` is moot: the shipped component has no hooks.
+
+**Verified in the browser, not inferred:** GA off (dev, port 2500) serves no
+`googletagmanager` reference at all; GA on (production build, port 2501) sends
+one `page_view` per navigation including the client-side language switch.
 
 ## Handoff notes
 
