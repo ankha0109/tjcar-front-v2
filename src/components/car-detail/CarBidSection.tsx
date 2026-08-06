@@ -13,6 +13,7 @@ import AuctionCountdown from "./AuctionCountdown";
 import AuctionSchedule, { type AuctionScheduleTimes } from "./AuctionSchedule";
 import { MINIMUM_BALANCE, BID_CUTOFF_HOURS, formatMnt } from "@/lib/bidConfig";
 import { parseJapanAuctionDate } from "@/utils/auctionTime";
+import { isAuctionFinished } from "@/utils/auctionStatus";
 
 /** Session user fields the bid panel needs (balance comes from useWalletBalance). */
 type BidUser = { type: number };
@@ -52,12 +53,14 @@ type Props = {
 /**
  * Best-effort closed check. The backend is the source of truth (it rejects bids
  * placed less than {@link BID_CUTOFF_HOURS} hours before the auction); here we
- * only surface an obviously-closed state: sold, or the auction time has passed.
- * The auction time is Japan (GMT+9); {@link parseJapanAuctionDate} anchors it and
- * returns null for the 00:00:00 "not scheduled" sentinel, so those stay open.
+ * only surface an obviously-closed state: the lot has been through the auction,
+ * or its time has passed. Status spellings vary upstream, so the verdict comes
+ * from {@link isAuctionFinished} rather than a literal comparison. The auction
+ * time is Japan (GMT+9); {@link parseJapanAuctionDate} anchors it and returns
+ * null for the 00:00:00 "not scheduled" sentinel, so those stay open.
  */
 function isAuctionClosed(status: string, auctionDate: string): boolean {
-  if (["SOLD", "Sold"].includes(status)) return true;
+  if (isAuctionFinished(status)) return true;
   const d = parseJapanAuctionDate(auctionDate);
   if (!d) return false;
   return Date.now() > d.getTime();
