@@ -115,6 +115,25 @@ a {
   }
 }
 
+/* 404 entrance. One orchestrated reveal instead of scattered micro-motion: the
+   three groups carry their own `animation-delay`. `backwards` holds the start
+   frame through that delay, so a delayed group does not flash in first. Pure
+   CSS — nothing is hidden by JS, so crawlers and no-JS clients see the markup. */
+@keyframes nf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.nf-rise {
+  animation: nf-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nf-rise {
+    animation: none;
+  }
+}
+
 /* Shiny text — a highlight band sweeps across the glyphs. The base colour is a
    dimmed white so the pass reads as a shine, which means this only works on a
    dark surface. */

@@ -77,6 +77,13 @@
       "ru": "Русский"
     }
   },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you were looking for was removed, moved, or the address is wrong.",
+    "home": "Home",
+    "back": "Go back",
+    "linksLabel": "Popular sections"
+  },
   "metadata": {
     "title": {
       "default": "Home",
