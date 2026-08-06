@@ -1,18 +1,11 @@
 import { getTranslations } from "next-intl/server";
+import { CONTACT_PHONES, MESSENGER_URL } from "@/lib/contact";
 
 /**
  * In-stock cars are sold over the phone, so this card takes the place the bid
- * panel holds on an auction lot. Same numbers as the header/footer; kept here as
- * data rather than translations because they are identical in every locale.
+ * panel holds on an auction lot. The numbers come from `@/lib/contact` — the
+ * same list the contact page prints.
  */
-const PHONES = [
-  { raw: "+97675115888", display: "7511-5888" },
-  { raw: "+97686045888", display: "8604-5888" },
-  { raw: "+97683045888", display: "8304-5888" },
-];
-
-const MESSENGER_URL = "https://m.me/tjcar.llc";
-
 export default async function GarageContactCard() {
   const t = await getTranslations("garage.contact");
 
@@ -33,7 +26,7 @@ export default async function GarageContactCard() {
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        {PHONES.map((phone) => (
+        {CONTACT_PHONES.map((phone) => (
           <a
             key={phone.raw}
             href={`tel:${phone.raw}`}

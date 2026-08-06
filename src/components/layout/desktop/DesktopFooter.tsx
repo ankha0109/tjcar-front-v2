@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import Logo from "@/components/svg/logo.svg";
 import { useTranslations } from "next-intl";
 import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
+import { FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/contact";
 import type { ComponentType, SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -81,11 +82,11 @@ const SOCIAL_LINKS: ReadonlyArray<{
   Icon: ComponentType<IconProps>;
 }> = [
   {
-    href: "https://www.facebook.com/tjcar.llc",
+    href: FACEBOOK_URL,
     key: "facebook",
     Icon: FacebookIcon,
   },
-  { href: "https://instagram.com", key: "instagram", Icon: InstagramIcon },
+  { href: INSTAGRAM_URL, key: "instagram", Icon: InstagramIcon },
   { href: "https://youtube.com", key: "youtube", Icon: YoutubeIcon },
   { href: "https://tiktok.com", key: "tiktok", Icon: TiktokIcon },
 ];
