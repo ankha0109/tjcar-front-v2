@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useAiChat } from "./AiChatContext";
 import AiChatMessage from "./AiChatMessage";
@@ -132,8 +133,17 @@ export default function AiChatPanel({ mounted }: Props) {
       {/* Header */}
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-3 dark:border-neutral-800">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-            <SparkleIcon className="h-4.5 w-4.5" />
+          {/* Operator portrait. The source is a transparent 300×300 cutout with
+              the face in the upper third, so zoom from the top edge — a plain
+              1× fit leaves the face too small to read at 36px. */}
+          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-primary">
+            <Image
+              src="/images/operator_aya.webp"
+              alt=""
+              fill
+              sizes="36px"
+              className="origin-top scale-[1.35] object-cover"
+            />
           </div>
           <div className="min-w-0">
             <div className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">

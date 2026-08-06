@@ -12,7 +12,12 @@ import CarBidForm from "./CarBidForm";
 import AuctionCountdown from "./AuctionCountdown";
 import type { AuctionScheduleTimes } from "./AuctionSchedule";
 import AuctionMeta from "./AuctionMeta";
-import { MINIMUM_BALANCE, BID_CUTOFF_HOURS, formatMnt } from "@/lib/bidConfig";
+import {
+  MINIMUM_BALANCE,
+  BID_CUTOFF_HOURS,
+  formatJpy,
+  formatMnt,
+} from "@/lib/bidConfig";
 import { parseJapanAuctionDate } from "@/utils/auctionTime";
 import { isAuctionFinished } from "@/utils/auctionStatus";
 
@@ -111,6 +116,32 @@ export default function CarBidSection(props: Props) {
     enabled: showForm,
   });
 
+  /**
+   * The opening price, in the open: no login, no deposit, no drawer. It used to
+   * surface only as a helper line under the bid input — that is, only to a
+   * logged-in customer holding {@link MINIMUM_BALANCE}, and even then only in
+   * yen mode. Everyone sees it now, in the currency the auction house quotes.
+   *
+   * Hidden once the lot is closed, since a start price you can no longer act on
+   * only competes with the "time is up" card below it. Hidden too when the
+   * upstream published no START — same rule as FINISH on the result panel: no
+   * figure, no row, rather than a dash.
+   *
+   * Same label/value recipe as the sold price in {@link AuctionResultSection},
+   * so one lot reads the same either side of the hammer.
+   */
+  const startBlock =
+    !closed && startPrice > 0 ? (
+      <div className="flex min-w-0 flex-col gap-0 leading-normal">
+        <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+          {t("startPriceLabel")}
+        </span>
+        <span className="truncate text-[26px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
+          {formatJpy(startPrice)}
+        </span>
+      </div>
+    ) : null;
+
   const gateCard = (title: string, body: string, actions?: React.ReactNode) => (
     <div className="flex flex-col items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-6 text-center dark:border-neutral-800 dark:bg-neutral-900">
       <h3 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
@@ -196,6 +227,7 @@ export default function CarBidSection(props: Props) {
           {/* Countdown beside the title as a compact, understated timer. */}
           <AuctionCountdown auctionDate={auctionDate} variant="inline" />
         </div>
+        {startBlock}
         <AuctionMeta
           schedule={schedule}
           auctionLocation={auctionLocation}
@@ -218,6 +250,7 @@ export default function CarBidSection(props: Props) {
           <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
             {t("panelTitle")}
           </h2>
+          {startBlock}
           <AuctionCountdown auctionDate={auctionDate} />
           <AuctionMeta
             schedule={schedule}

@@ -75,12 +75,13 @@ export default async function AboutHero() {
             </span>
           </h1>
 
-          <p
-            className="hero-reveal mt-5 max-w-xl text-[15px] leading-relaxed text-neutral-600 md:text-base dark:text-neutral-400"
+          <div
+            className="hero-reveal mt-5 max-w-xl space-y-3 text-[15px] leading-relaxed text-neutral-600 md:text-base dark:text-neutral-400"
             style={{ animationDelay: "220ms" }}
           >
-            {t("subtitle")}
-          </p>
+            <p>{t("subtitle")}</p>
+            <p>{t("subtitle2")}</p>
+          </div>
         </div>
       </div>
     </section>

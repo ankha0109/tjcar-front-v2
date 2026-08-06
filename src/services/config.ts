@@ -7,6 +7,12 @@ export type SiteConfig = {
   JPY: number;
   /** USD → MNT exchange rate. */
   USD: number;
+  /**
+   * KRW → MNT exchange rate. Unlike JPY and USD — which the API's
+   * `app:khanbank-rate` command refreshes on a schedule — this one is typed in
+   * by an admin, so it can sit still for a while.
+   */
+  KRW: number;
   /** List price of one vehicle history report, MNT. */
   reportPrice: number;
   /** Promo price, MNT. 0 means "no promo running". */
@@ -18,6 +24,7 @@ export type SiteConfig = {
 const EMPTY_CONFIG: SiteConfig = {
   JPY: 0,
   USD: 0,
+  KRW: 0,
   reportPrice: 0,
   reportDiscountPrice: 0,
   reportDiscountEndDate: "",
@@ -25,7 +32,15 @@ const EMPTY_CONFIG: SiteConfig = {
 
 /**
  * GET /config — public site config (live exchange rates, report pricing).
- * Wrapped in React `cache` so repeated reads in one request hit the API once.
+ *
+ * Two layers of caching, and both are load-bearing: React `cache` collapses
+ * repeated reads within one render, and Next's data cache holds the response
+ * for an hour across requests. Every value here moves at most once a day, and
+ * the layout reads this on every page, so per-request fetching bought nothing.
+ * `skipAuth` keeps the bearer token off the request — otherwise the cache would
+ * key on it and every logged-in visitor would get a private entry. Revalidate
+ * early with `revalidateTag("config")`.
+ *
  * Failures degrade gracefully to zeroes so callers stay renderable.
  */
 export const getConfig = cache(async (): Promise<SiteConfig> => {
@@ -33,11 +48,12 @@ export const getConfig = cache(async (): Promise<SiteConfig> => {
     const { data } = await ServerApi.get<{ data: Record<string, string> }>(
       "/config",
       {},
-      { cache: "no-store" },
+      { skipAuth: true, next: { revalidate: 3600, tags: ["config"] } },
     );
     return {
       JPY: Number(data?.JPY) || 0,
       USD: Number(data?.USD) || 0,
+      KRW: Number(data?.KRW) || 0,
       reportPrice: Number(data?.["report-price"]) || 0,
       reportDiscountPrice: Number(data?.["report-discount-price"]) || 0,
       reportDiscountEndDate: data?.["report-discount-end-date"] ?? "",

@@ -15,7 +15,14 @@ function JsonLdScript({ data }: { data: object }) {
 }
 
 /** FAQPage + Service structured data for the /report landing page. */
-export default async function ReportJsonLd({ locale }: { locale: string }) {
+export default async function ReportJsonLd({
+  locale,
+  price,
+}: {
+  locale: string;
+  /** Effective price in MNT, the same one the page shows. */
+  price: number;
+}) {
   const t = await getTranslations({ locale, namespace: "reportLanding" });
 
   const faqPage = {
@@ -49,7 +56,9 @@ export default async function ReportJsonLd({ locale }: { locale: string }) {
     },
     offers: {
       "@type": "Offer",
-      price: "20000",
+      // Search engines quote this in the result snippet, so a stale number here
+      // is a price the customer sees before ever loading the page.
+      price: String(price),
       priceCurrency: "MNT",
       availability: "https://schema.org/InStock",
     },

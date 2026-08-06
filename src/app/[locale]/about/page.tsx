@@ -33,7 +33,7 @@ export default async function AboutPage({ params }: PageProps) {
       <AboutStory />
       <AboutTeam />
       <AboutGallery />
-      <AboutCustomers />
+      {/* <AboutCustomers /> */}
     </>
   );
 }

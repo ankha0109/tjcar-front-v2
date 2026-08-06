@@ -28,7 +28,7 @@ export default function SectionHeading({
         {heading}
       </h2>
       {subheading ? (
-        <p className="max-w-2xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14.5px] dark:text-neutral-400">
+        <p className="max-w-3xl text-[13.5px] leading-relaxed text-neutral-600 md:text-[14.5px] dark:text-neutral-400">
           {subheading}
         </p>
       ) : null}

@@ -52,7 +52,7 @@ const STEPS = [
   { key: "receive", Icon: PdfIcon },
 ] as const;
 
-export default async function ReportSteps() {
+export default async function ReportSteps({ price }: { price: number }) {
   const t = await getTranslations("reportLanding.steps");
 
   return (
@@ -90,8 +90,10 @@ export default async function ReportSteps() {
                   <h3 className="mt-1.5 text-[15.5px] font-semibold text-neutral-900 dark:text-neutral-50">
                     {t(`items.${key}.title`)}
                   </h3>
+                  {/* Only the `pay` body carries {price}; ICU ignores the
+                      value for the two that don't. */}
                   <p className="mt-1.5 text-[13.5px] leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {t(`items.${key}.body`)}
+                    {t(`items.${key}.body`, { price })}
                   </p>
                   {key === "pay" ? (
                     <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-1 pl-1 pr-3 text-[12px] font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">

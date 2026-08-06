@@ -49,18 +49,20 @@ export default async function ReportPage({
   setRequestLocale(locale);
 
   // The backend recomputes the price at purchase time, so this copy is
-  // display-only. `/report` is already dynamic — the locale layout reads
-  // cookies() — so the no-store fetch costs no static rendering.
-  const config = await getConfig();
+  // display-only. Every spot on the page that quotes a number takes it from
+  // here — a promo has to move all of them at once, or the page contradicts
+  // itself. `getConfig` is cached for an hour, and the locale layout has
+  // already read it, so this is free.
+  const price = effectiveReportPrice(await getConfig());
 
   return (
     <>
-      <ReportJsonLd locale={locale} />
-      <ReportHero price={effectiveReportPrice(config)} />
+      <ReportJsonLd locale={locale} price={price} />
+      <ReportHero price={price} />
       <ReportCompare />
       <ReportFeatures />
       <ReportPdfPreview />
-      <ReportSteps />
+      <ReportSteps price={price} />
       <ReportAudience />
       <ReportFAQ />
     </>

@@ -10,6 +10,7 @@ import {
 } from "next-intl/server";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import AntdProvider from "@/providers/AntdProvider";
+import RatesProvider from "@/providers/RatesProvider";
 import { auth } from "@/auth";
 import AppShell from "@/components/layout/AppShell";
 import AiChatWidget from "@/components/ai-chat/AiChatWidget";
@@ -19,6 +20,7 @@ import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
+import { getConfig } from "@/services/config";
 import ScrollToTopOnSamePage from "@/utils/useScrollToTop";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
@@ -75,11 +77,12 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const [session, messages, cookieStore, device] = await Promise.all([
+  const [session, messages, cookieStore, device, config] = await Promise.all([
     safeAuth(),
     getMessages(),
     cookies(),
     getDevice(),
+    getConfig(),
   ]);
 
   const theme: Theme =
@@ -107,9 +110,17 @@ export default async function LocaleLayout({
           <ScrollToTopOnSamePage />
           <AntdRegistry>
             <AntdProvider session={session} locale={locale} theme={theme}>
-              <AppShell theme={theme} mobileHeader={mobileHeader}>
-                {children}
-              </AppShell>
+              {/* The header, drawer and footer all print the rates, and they
+                  sit in three different subtrees — hence a context rather than
+                  props. `getConfig` is cached for an hour, so this costs the
+                  page nothing on a warm cache. */}
+              <RatesProvider
+                rates={{ USD: config.USD, JPY: config.JPY, KRW: config.KRW }}
+              >
+                <AppShell theme={theme} mobileHeader={mobileHeader}>
+                  {children}
+                </AppShell>
+              </RatesProvider>
               <AiChatWidget />
               <ScrollState />
               <ScrollToTop />

@@ -111,7 +111,8 @@
       "about": "About us",
       "ready": "In-stock cars",
       "report": "Accident report",
-      "posts": "News & guides"
+      "posts": "News & guides",
+      "terms": "Terms of service"
     },
     "phone": "+976 7511-5888",
     "hours": "Mon–Sat · 07:30–17:30",
@@ -126,6 +127,8 @@
       "dashboard": "Dashboard",
       "profile": "Profile",
       "bids": "My bids",
+      "orders": "My orders",
+      "reports": "My reports",
       "signout": "Sign out",
       "open": "User menu",
       "homeAria": "TJ Car home",
@@ -164,7 +167,8 @@
         "label": "Rate",
         "updated": "Last updated: {time}",
         "usd": "USD",
-        "jpy": "JPY"
+        "jpy": "JPY",
+        "krw": "KRW"
       },
       "phone": {
         "label": "Phone",
@@ -255,9 +259,7 @@
     },
     "social": {
       "facebook": "Facebook",
-      "instagram": "Instagram",
-      "youtube": "YouTube",
-      "tiktok": "TikTok"
+      "instagram": "Instagram"
     },
     "bottom": {
       "rights": "All rights reserved.",
@@ -877,172 +879,6 @@
       }
     }
   },
-  "homeV2": {
-    "eyebrow": "Services",
-    "heading": "All services in one place",
-    "subheading": "Pick a service to see its details and live stats right away.",
-    "prev": "Previous",
-    "next": "Next",
-    "hero": {
-      "badge": "Japan · Korea · Mongolia",
-      "titleLead": "From the auction,",
-      "titleAccent": "straight to your driveway",
-      "subtitle": "Bidding, inspection and delivery from Japan and Korea to Mongolia — every step handled in one place.",
-      "ctaPrimary": "Browse cars",
-      "ctaSecondary": "How it works",
-      "routeFrom1": "Japan",
-      "routeFrom2": "Korea",
-      "routeTo": "Mongolia",
-      "routeNote": "14-day delivery",
-      "s1": {
-        "value": "15,000+",
-        "label": "Cars delivered"
-      },
-      "s2": {
-        "value": "10+",
-        "label": "Years"
-      },
-      "s3": {
-        "value": "4.9★",
-        "label": "Rating"
-      }
-    },
-    "services": {
-      "japan": {
-        "tab": "Japan",
-        "title": "Japan cars",
-        "url": "tjcar.mn/japan",
-        "summary": "We bid for you across every major Japanese auction, win at the best price, and handle delivery all the way to Mongolia.",
-        "cta": "Browse Japan cars",
-        "m1": {
-          "value": "12,400+",
-          "label": "Active listings"
-        },
-        "m2": {
-          "value": "40+",
-          "label": "Connected auctions"
-        },
-        "m3": {
-          "value": "100%",
-          "label": "Real reports"
-        }
-      },
-      "korea": {
-        "tab": "Korea",
-        "title": "Korea cars",
-        "url": "tjcar.mn/korea",
-        "summary": "Buy directly from Korea's Encar platform and get official delivery to Mongolia within 14 days.",
-        "cta": "Browse Korea cars",
-        "m1": {
-          "value": "14 days",
-          "label": "Avg. delivery"
-        },
-        "m2": {
-          "value": "8,900+",
-          "label": "Encar listings"
-        },
-        "m3": {
-          "value": "2x",
-          "label": "Verified"
-        }
-      },
-      "ready": {
-        "tab": "In stock",
-        "title": "In-stock cars",
-        "url": "tjcar.mn/cars",
-        "summary": "Choose from cars already in Mongolia, in transit, or ready to ship — and take delivery fast.",
-        "cta": "View in-stock cars",
-        "m1": {
-          "value": "320+",
-          "label": "In stock"
-        },
-        "m2": {
-          "value": "100+",
-          "label": "In transit"
-        },
-        "m3": {
-          "value": "24h",
-          "label": "Fast reply"
-        }
-      },
-      "report": {
-        "tab": "Report",
-        "title": "Vehicle history report",
-        "url": "tjcar.mn/report",
-        "summary": "Verify mileage, accident and flood history, and auction grade from the source in a trusted PDF report.",
-        "cta": "Check a report",
-        "m1": {
-          "value": "20,000₮",
-          "label": "Per report"
-        },
-        "m2": {
-          "value": "60s",
-          "label": "Lookup time"
-        },
-        "m3": {
-          "value": "100%",
-          "label": "Sourced"
-        }
-      },
-      "brands": {
-        "tab": "Brands",
-        "title": "Japan brand catalog",
-        "url": "tjcar.mn/japan/brands",
-        "summary": "Filter cars by manufacturer — Toyota, Lexus, Nissan and more — to find the model you want fast.",
-        "cta": "Open catalog",
-        "m1": {
-          "value": "60+",
-          "label": "Brands"
-        },
-        "m2": {
-          "value": "900+",
-          "label": "Models"
-        },
-        "m3": {
-          "value": "A–Z",
-          "label": "Sorted"
-        }
-      },
-      "about": {
-        "tab": "About",
-        "title": "About us",
-        "url": "tjcar.mn/about",
-        "summary": "An experienced team, a reliable partner network and transparent pricing — meet TJ Car.",
-        "cta": "Learn more",
-        "m1": {
-          "value": "10+",
-          "label": "Years"
-        },
-        "m2": {
-          "value": "15,000+",
-          "label": "Cars delivered"
-        },
-        "m3": {
-          "value": "4.9★",
-          "label": "Customer rating"
-        }
-      },
-      "dashboard": {
-        "tab": "Dashboard",
-        "title": "My dashboard",
-        "url": "tjcar.mn/dashboard",
-        "summary": "Manage your orders, auction bids and saved cars from a single dashboard.",
-        "cta": "Open dashboard",
-        "m1": {
-          "value": "All-in-one",
-          "label": "Orders"
-        },
-        "m2": {
-          "value": "Live",
-          "label": "Status updates"
-        },
-        "m3": {
-          "value": "∞",
-          "label": "Saved cars"
-        }
-      }
-    }
-  },
   "homeBlog": {
     "eyebrow": "News & guides",
     "heading": "News & articles",
@@ -1138,7 +974,8 @@
         "fairPrice": "at a fair price"
       },
       "titleLine2": "into your hands.",
-      "subtitle": "Since 2017 our team has been bidding at Japanese auctions on behalf of our customers, sourcing every type of vehicle at a good price, with solid auction grades and guaranteed quality. In 2022 we expanded and now also supply left-hand-drive cars from Korea, the USA, Australia and the UAE."
+      "subtitle": "Since 2017 our team has sourced cars from Japanese auctions to order — each one matched to the customer's needs and budget.",
+      "subtitle2": "In 2022 we widened our reach and began supplying cars from South Korea, the USA, Australia and the UAE. We handle the whole process in one place: choosing the car, costing it out, buying, shipping, customs clearance and handover."
     },
     "story": {
       "eyebrow": "Our story",
@@ -1192,7 +1029,7 @@
         },
         "korea": {
           "title": "Korea orders",
-          "body": "We pick and order the car you want from ENCar and Korean dealers."
+          "body": "We pick and order the car you want from Encar and other trusted marketplaces."
         },
         "global": {
           "title": "USA, Australia, UAE",
@@ -1215,7 +1052,7 @@
     "team": {
       "eyebrow": "Our team",
       "heading": "Our team",
-      "subheading": "A small team that owns every step — from taking your order to handing over the keys.",
+      "subheading": "A professional team that owns the whole process — from choosing the car to handing it over to you.",
       "members": {
         "ceo": {
           "name": "Tuvshinjargal",
@@ -1257,7 +1094,7 @@
   },
   "aiChat": {
     "openButton": "Chat with the AI assistant",
-    "title": "TJCAR AI assistant",
+    "title": "AYA",
     "subtitle": "Online",
     "placeholder": "Ask anything...",
     "send": "Send",
@@ -1302,9 +1139,9 @@
       "notSet": "not set"
     },
     "landed": {
-      "title": "Est. landed price",
+      "title": "Est. average landed price",
       "unknown": "Unavailable",
-      "infoTitle": "Estimated landed price",
+      "infoTitle": "Estimated average landed price",
       "close": "Got it",
       "infoParagraphs": [
         "This price includes the fees paid in Japan, shipping costs and all taxes due in Mongolia — in other words, the total cost to get this car into your hands.",
@@ -1585,6 +1422,7 @@
       "belowMinJpy": "Below the start price. Start price: {min}",
       "minPriceHelp": "Minimum price: {min}",
       "startPriceHelp": "Start price: {min}",
+      "startPriceLabel": "Start price",
       "advanceLabel": "Advance {percent}%",
       "remainderLabel": "Balance due after arrival in Mongolia",
       "approxMnt": "Approx. in MNT",
@@ -1614,7 +1452,8 @@
       "topBid": "Highest bid reached",
       "sold": "Sold",
       "unsold": "Not sold",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "landed": "≈ {price} landed in Mongolia"
     },
     "gallery": {
       "viewFull": "Open full size",
@@ -1831,7 +1670,7 @@
         },
         "pay": {
           "title": "Pay for the report",
-          "body": "A single car's report costs 20,000₮."
+          "body": "A single car's report costs {price, number}₮."
         },
         "receive": {
           "title": "Get your PDF report",
@@ -2012,5 +1851,106 @@
     "previewTitle": "Report preview",
     "stalledTitle": "This is taking longer than usual",
     "stalledBody": "Your report is taking longer than normal to build. Your payment is safe — we are looking into it and will follow up shortly. Message us on chat if you need it sooner."
+  },
+  "reportView": {
+    "metaTitle": "Report verification",
+    "title": "Coming soon",
+    "description": "The online report verification page is being prepared. Soon this address will let you confirm that a report is genuine.",
+    "ctaReport": "Report service",
+    "ctaHome": "Home"
+  },
+  "terms": {
+    "metadata": {
+      "title": "Terms of service",
+      "description": "TJ CAR LLC auction terms — registration, the deposit, and how refunds work."
+    },
+    "hero": {
+      "eyebrow": "Terms of service",
+      "company": "TJ CAR LLC",
+      "title": "Rules for taking part in the auction",
+      "subtitle": "Please read these terms carefully before you become our customer and start bidding at Japanese auctions."
+    },
+    "toc": "On this page",
+    "importantLabel": "Important",
+    "sections": {
+      "deposit": {
+        "title": "Registration and the deposit",
+        "body": "Registering with us is free. Once your account is created, you earn the right to bid at auction by placing a deposit of at least 2,000,000₮.",
+        "amount": "2,000,000₮",
+        "amountLabel": "Minimum deposit"
+      },
+      "premium": {
+        "title": "High-value cars",
+        "body": "For a “special” or “high-value” car (over 50 million ₮), the deposit is 5,000,000 – 10,000,000₮ depending on the price of the vehicle.",
+        "amount": "5–10M ₮",
+        "amountLabel": "For cars over 50M ₮"
+      },
+      "applied": {
+        "title": "The deposit counts towards the price",
+        "body": "The deposit you place is credited against the total price of the car you buy."
+      },
+      "refund": {
+        "title": "How long we hold it, and refunds",
+        "body": "Your deposit is held with no time limit until you win an auction and take the car you chose. If you never find the car you want, you can withdraw the deposit in full, with no fee."
+      },
+      "winning": {
+        "title": "After you win an auction",
+        "body": "Once you have won an auction the car cannot be returned for any reason. If you then refuse to pay the outstanding balance, TJ CAR LLC will not refund the deposit held on your account."
+      }
+    },
+    "closing": {
+      "title": "Confirm your registration",
+      "body": "Please confirm your registration only after you have read these terms in full.",
+      "cta": "Create an account"
+    },
+    "contact": {
+      "title": "Still have questions?",
+      "body": "Our team is happy to talk you through anything that is not clear.",
+      "cta": "Call us"
+    }
+  },
+  "contact": {
+    "metadata": {
+      "title": "Contact",
+      "description": "Reach TJ Car LLC by phone, Messenger or email. Office address, working hours and a map."
+    },
+    "hero": {
+      "eyebrow": "Contact",
+      "hours": "Mon–Sat 07:30–17:30",
+      "title": "Questions? Talk to us directly.",
+      "subtitle": "Our team answers by phone and on Messenger — auctions, orders, shipping and registration."
+    },
+    "channels": {
+      "heading": "Ways to reach us",
+      "phone": {
+        "label": "Call us",
+        "hint": "Answered during working hours"
+      },
+      "messenger": {
+        "label": "Messenger",
+        "hint": "Message our Facebook page"
+      },
+      "email": {
+        "label": "Email",
+        "hint": "For paperwork and contracts"
+      }
+    },
+    "office": {
+      "heading": "Office",
+      "addressLabel": "Address",
+      "address": "Bayangol District, Khoroo 3, Zamchdyn St, 80/1, Suite 1003, Ulaanbaatar",
+      "hoursLabel": "Working hours",
+      "hours": {
+        "weekdays": "Monday–Friday: 07:30–17:30",
+        "saturday": "Saturday: 07:30–17:30",
+        "sunday": "Sunday: Closed"
+      },
+      "socialLabel": "Social"
+    },
+    "map": {
+      "heading": "Find us",
+      "title": "TJ Car LLC office location on Google Maps",
+      "directions": "Open in Google Maps"
+    }
   }
 }

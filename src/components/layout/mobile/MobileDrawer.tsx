@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
-import { EXCHANGE_RATES, formatRate } from "@/lib/exchangeRates";
+import ExchangeRateList from "@/components/layout/ExchangeRateList";
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_RAW } from "@/lib/contact";
 import { useCompare } from "@/hooks/useCompare";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
@@ -115,38 +115,6 @@ const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
     <polyline points="22,6 12,13 2,6" />
-  </svg>
-);
-
-const DollarIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.4"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <line x1="12" y1="2" x2="12" y2="22" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-  </svg>
-);
-
-const YenIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M6 3l6 9 6-9" />
-    <line x1="12" y1="12" x2="12" y2="21" />
-    <line x1="5" y1="14" x2="19" y2="14" />
-    <line x1="5" y1="18" x2="19" y2="18" />
   </svg>
 );
 
@@ -282,9 +250,11 @@ export default function MobileDrawer({ open, onClose }: Props) {
     },
   ];
 
+  // The phone shell has no footer, so the drawer is the only way to /terms.
   const FEATURED = [
     { key: "about", labelKey: "nav.about" as const, href: "/about" },
     { key: "posts", labelKey: "nav.posts" as const, href: "/posts" },
+    { key: "terms", labelKey: "nav.terms" as const, href: "/terms" },
   ];
 
   return (
@@ -349,28 +319,10 @@ export default function MobileDrawer({ open, onClose }: Props) {
         )}
 
         <div className="flex-1 overflow-y-auto">
-          <div className="border-b border-neutral-100 px-5 py-3 dark:border-neutral-900">
-            <div className="mb-1.5 text-[10.5px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
-              {t("topbar.rates.label")}
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <DollarIcon className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100">
-                  {t("topbar.rates.usd")} {formatRate(EXCHANGE_RATES.USD.value)}
-                </span>
-                <span className="text-[11px] text-neutral-400">₮</span>
-              </div>
-              <span className="h-3 w-px bg-neutral-200 dark:bg-neutral-800" />
-              <div className="flex items-center gap-1.5">
-                <YenIcon className="h-3.5 w-3.5 text-rose-500 dark:text-rose-400" />
-                <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100">
-                  {t("topbar.rates.jpy")} {formatRate(EXCHANGE_RATES.JPY.value)}
-                </span>
-                <span className="text-[11px] text-neutral-400">₮</span>
-              </div>
-            </div>
-          </div>
+          <ExchangeRateList
+            variant="menu"
+            className="border-b border-neutral-100 px-5 py-3 dark:border-neutral-900"
+          />
           <DrawerSection title={t("nav2.regions")}>
             {MAIN_NAV.map((item) => (
               <DrawerLink

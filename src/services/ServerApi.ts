@@ -10,6 +10,13 @@ type RequestOptions = Omit<RequestInit, "body" | "headers" | "method"> & {
   headers?: Record<string, string>;
   body?: unknown;
   method?: string;
+  /**
+   * Leave the session's bearer token off the request. Next keys its data cache
+   * on the fetch arguments, headers included, so a cached public endpoint would
+   * otherwise hold one entry per logged-in user. Only for endpoints that ignore
+   * the token anyway.
+   */
+  skipAuth?: boolean;
 };
 
 const baseURL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -18,7 +25,7 @@ const request = async <T = unknown>(
   url: string,
   options: RequestOptions = {},
 ): Promise<T> => {
-  const { body, headers: customHeaders, ...restOptions } = options;
+  const { body, headers: customHeaders, skipAuth, ...restOptions } = options;
   const fullUrl = `${baseURL}${url}`;
 
   const locale = await getLocale();
@@ -28,9 +35,11 @@ const request = async <T = unknown>(
     ...customHeaders,
   };
 
-  const accessToken = await getAccessToken();
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
+  if (!skipAuth) {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
   }
 
   let finalBody: BodyInit | undefined;

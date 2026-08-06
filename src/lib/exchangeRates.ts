@@ -1,11 +1,13 @@
-// TODO: Replace static rates with a Mongolbank API hook later.
-export const EXCHANGE_RATES = {
-  USD: { value: 3450, updatedAt: "2026-05-25T10:00:00Z" },
-  JPY: { value: 23.1, updatedAt: "2026-05-25T10:00:00Z" },
-} as const;
-
+/**
+ * The rates themselves come from `GET /config` via `getConfig()`; they reach
+ * the client through `RatesProvider`. Only the formatting lives here.
+ *
+ * Two fraction digits, not one: KRW hovers around 2.48 and rounding it to "2.5"
+ * would drop a digit that matters. USD (3,594) and JPY (22.5) print the same
+ * either way.
+ */
 export function formatRate(value: number) {
   return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
+    maximumFractionDigits: 2,
   }).format(value);
 }
