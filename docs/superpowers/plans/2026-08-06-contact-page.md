@@ -71,7 +71,20 @@ done
 
 Expected, for each file: line 882 is `  "homeV2": {`, line 1047 is `  },`, line 1048 is `  "homeBlog": {`. If any file differs, find its real range with `grep -n '^  "homeV2"' <file>` and use that instead of 882–1047 in the next step.
 
-- [ ] **Step 4: Remove the namespace from all three locales**
+- [ ] **Step 4: Back the three files up first**
+
+These files hold the user's uncommitted work, so git is **not** a safety net here — `git checkout -- messages/` would destroy 203 lines of their in-flight changes. Copy them into the plan's workspace instead, and restore from there if anything goes wrong in Step 5.
+
+```bash
+mkdir -p .superpowers/sdd/2026-08-06-contact-page/backup
+cp messages/mn.json messages/en.json messages/ru.json \
+   .superpowers/sdd/2026-08-06-contact-page/backup/
+ls -l .superpowers/sdd/2026-08-06-contact-page/backup/
+```
+
+Expected: three files listed, each non-empty.
+
+- [ ] **Step 5: Remove the namespace from all three locales**
 
 ```bash
 for f in messages/mn.json messages/en.json messages/ru.json; do
@@ -79,7 +92,7 @@ for f in messages/mn.json messages/en.json messages/ru.json; do
 done
 ```
 
-- [ ] **Step 5: Verify all three files are still valid JSON and the key is gone**
+- [ ] **Step 6: Verify all three files are still valid JSON and the key is gone**
 
 ```bash
 python3 -c "
@@ -92,9 +105,9 @@ for loc in ('mn','en','ru'):
 "
 ```
 
-Expected: three `ok` lines. A `json.decoder.JSONDecodeError` means the line range was wrong — `git checkout -- messages/` and redo Step 3.
+Expected: three `ok` lines. A `json.decoder.JSONDecodeError` means the line range was wrong — restore from the Step 4 backup (`cp .superpowers/sdd/2026-08-06-contact-page/backup/*.json messages/`), then redo Step 3. **Never `git checkout` these files.**
 
-- [ ] **Step 6: Verify no reference survives anywhere**
+- [ ] **Step 7: Verify no reference survives anywhere**
 
 ```bash
 grep -rn "homeV2\|home/v2" src messages ; echo "exit=$?"
@@ -102,17 +115,17 @@ grep -rn "homeV2\|home/v2" src messages ; echo "exit=$?"
 
 Expected: no output and `exit=1`.
 
-- [ ] **Step 7: Build**
+- [ ] **Step 8: Build**
 
 Run: `npm run build`
 Expected: success. A dangling import from the deleted tree, or a `homeV2` key still read somewhere, fails here.
 
-- [ ] **Step 8: Confirm the route is gone**
+- [ ] **Step 9: Confirm the route is gone**
 
 Start `npm run dev`, open `http://localhost:2500/mn/home-v2`.
 Expected: the 404 page (`NotFoundView` — "Хуудас олдсонгүй" with the Japan/Korea/garage/posts links), not the demo home.
 
-- [ ] **Step 9: Commit the deletions only**
+- [ ] **Step 10: Commit the deletions only**
 
 The three message files stay out of this commit — see the Global Constraints. Their `homeV2` removal stays in the working tree.
 
@@ -127,7 +140,7 @@ working tree and rides along with the user's in-flight messages/*.json work.
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
-- [ ] **Step 10: Confirm the message files are still dirty and unstaged**
+- [ ] **Step 11: Confirm the message files are still dirty and unstaged**
 
 ```bash
 git status --short messages/
