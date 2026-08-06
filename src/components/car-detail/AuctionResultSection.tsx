@@ -13,7 +13,7 @@ type Props = {
   state: FinishedState;
   /** Raw STATUS — the pill label when `state` is "other" and we have no word for it. */
   rawStatus: string;
-  /** FINISH in yen. 0 means the upstream published no figure at all. */
+  /** FINISH in yen. 0 means no figure to show — the upstream published none, or it did not parse as a number. */
   finishJpy: number;
   /** Japan + Ulaanbaatar clocks for AUCTION_DATE, formatted server-side. */
   schedule: AuctionScheduleTimes | null;
@@ -34,13 +34,6 @@ const PILL: Record<FinishedState, string> = {
     "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/30",
   other:
     "bg-neutral-100 text-neutral-600 ring-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700",
-};
-
-const DOT: Record<FinishedState, string> = {
-  sold: "bg-emerald-500",
-  unsold: "bg-neutral-400",
-  cancelled: "bg-amber-500",
-  other: "bg-neutral-400",
 };
 
 /**
@@ -84,7 +77,7 @@ export default async function AuctionResultSection({
         PILL[state],
       )}
     >
-      <span className={cn("h-1.5 w-1.5 rounded-full", DOT[state])} aria-hidden />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
       {statusLabel}
     </span>
   );
@@ -134,7 +127,7 @@ export default async function AuctionResultSection({
           ~96px for the AI chat FAB, which otherwise covers the actions between
           768px and 1023px. */}
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-neutral-100 bg-white/95 px-4 md:pr-24 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl lg:hidden dark:border-neutral-900 dark:bg-neutral-950/95">
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-1" aria-hidden>
           {pill}
           {finishJpy > 0 && (
             <span className="truncate text-[17px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">

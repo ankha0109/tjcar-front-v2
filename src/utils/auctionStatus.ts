@@ -18,12 +18,14 @@ export type AuctionResultState =
   | "other";
 
 export function auctionResultState(status: string): AuctionResultState {
-  const s = status.trim().toLowerCase().replace(/\s+/g, " ");
+  const s = String(status ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 
   if (!s) return "upcoming";
   // Checked before `sold` so "not sold" cannot fall through to a sale.
   if (s.startsWith("not sold")) return "unsold";
-  // "sold", "Sold", "Sold By Nego" — a negotiated sale is still a sale.
+  // "sold", "Sold", "Sold By Nego" — a negotiated sale is still a sale. Any
+  // future upstream status beginning with "sold" is treated as one too, so
+  // do not widen this prefix without checking what it would now claim.
   if (s.startsWith("sold")) return "sold";
   if (s === "cancelled" || s === "canceled" || s === "removed") {
     return "cancelled";
