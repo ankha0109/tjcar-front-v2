@@ -5,6 +5,7 @@ import PremiumGallery from "./PremiumGallery";
 import CarActionButtons from "./CarActionButtons";
 import CarEvaluation from "./CarEvaluation";
 import CarBidSection from "./CarBidSection";
+import AuctionResultSection from "./AuctionResultSection";
 import RateCard from "./RateCard";
 import LandedPriceCard from "./LandedPriceCard";
 import ChassisYearVerify from "./ChassisYearVerify";
@@ -17,6 +18,7 @@ import { getAuctionHistory } from "@/services/auctions";
 import { getConfig } from "@/services/config";
 import { auctionSchedule } from "@/utils/auctionTime";
 import { parseAuctionInfo } from "@/utils/auctionInfo";
+import { auctionResultState } from "@/utils/auctionStatus";
 import {
   ChassisIcon,
   ColorIcon,
@@ -102,6 +104,12 @@ export default async function JapanCarDetail({ car }: Props) {
   // Ulaanbaatar (GMT+8). Numeric output, so it is identical on server and
   // client. The countdown itself still ticks in the browser.
   const schedule = auctionSchedule(car.AUCTION_DATE);
+
+  // Lot lifecycle. An empty STATUS is the only "still to come" value; anything
+  // else means the sale has happened. `/japan` does not filter finished lots
+  // out of its list, so this branch is routine — yesterday's lots are one tap
+  // from the browser.
+  const resultState = auctionResultState(car.STATUS);
 
   // Exterior/interior grades, dug out of the free-text INFO blob. Whatever the
   // auction house left unpublished is simply left out of the grid rather than
@@ -192,6 +200,38 @@ export default async function JapanCarDetail({ car }: Props) {
   // any width.
   const chassisVerify = (
     <ChassisYearVerify chassis={car.KUZOV} serial={car.SERIAL} />
+  );
+
+  // Passed to whichever panel renders — the bid card or the result card.
+  const quickSpecGrid = (
+    <div className="grid grid-cols-3 gap-x-3 gap-y-4">
+      {quickSpecs.map(({ label, value, icon }) => (
+        <div key={label} className="flex items-center gap-1.25">
+          {icon ? (
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-neutral-0 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+              {icon}
+            </span>
+          ) : (
+            // Invisible spacer — keeps the columns lined up until the
+            // remaining icons land.
+            <span className="h-6 w-6 shrink-0" aria-hidden />
+          )}
+          <div className="flex min-w-0 flex-col gap-0 leading-normal">
+            <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+              {label}
+            </span>
+            <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+              {value || "-"}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Mobile-only in practice: the `lg` layout puts these in the title header.
+  const barActions = (
+    <CarActionButtons item={wishlistItem} enableCompare variant="bar" />
   );
 
   return (
@@ -290,54 +330,40 @@ export default async function JapanCarDetail({ car }: Props) {
             </div>
           </div>
 
-          {/* Auction action card — quick specs, then countdown + venue/lot + gated bid form, split by dividers */}
-          <CarBidSection
-            auctionId={car.ID}
-            startPrice={startNum || 0}
-            status={car.STATUS}
-            auctionDate={car.AUCTION_DATE}
-            schedule={schedule}
-            auctionLocation={car.AUCTION}
-            town={car.TOWN}
-            lot={car.LOT}
-            chassis={car.KUZOV}
-            engineSize={car.ENG_V}
-            year={car.YEAR}
-            rate={car.RATE}
-            jpyRate={jpyRate}
-            actions={
-              <CarActionButtons
-                item={wishlistItem}
-                enableCompare
-                variant="bar"
-              />
-            }
-            quickSpecs={
-              <div className="grid grid-cols-3 gap-x-3 gap-y-4">
-                {quickSpecs.map(({ label, value, icon }) => (
-                  <div key={label} className="flex items-center gap-1.25">
-                    {icon ? (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-neutral-0 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-                        {icon}
-                      </span>
-                    ) : (
-                      // Invisible spacer — keeps the columns lined up until the
-                      // remaining icons land.
-                      <span className="h-6 w-6 shrink-0" aria-hidden />
-                    )}
-                    <div className="flex min-w-0 flex-col gap-0 leading-normal">
-                      <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-                        {label}
-                      </span>
-                      <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-                        {value || "-"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            }
-          />
+          {/* Auction panel. Upcoming: quick specs, countdown, venue/lot and the
+              gated bid form. Finished: the same shell with the hammer price and
+              a status pill where the countdown and form were. */}
+          {resultState === "upcoming" ? (
+            <CarBidSection
+              auctionId={car.ID}
+              startPrice={startNum || 0}
+              status={car.STATUS}
+              auctionDate={car.AUCTION_DATE}
+              schedule={schedule}
+              auctionLocation={car.AUCTION}
+              town={car.TOWN}
+              lot={car.LOT}
+              chassis={car.KUZOV}
+              engineSize={car.ENG_V}
+              year={car.YEAR}
+              rate={car.RATE}
+              jpyRate={jpyRate}
+              actions={barActions}
+              quickSpecs={quickSpecGrid}
+            />
+          ) : (
+            <AuctionResultSection
+              state={resultState}
+              rawStatus={car.STATUS}
+              finishJpy={Number(car.FINISH) || 0}
+              schedule={schedule}
+              auctionLocation={car.AUCTION}
+              town={car.TOWN}
+              lot={car.LOT}
+              actions={barActions}
+              quickSpecs={quickSpecGrid}
+            />
+          )}
 
           {/* Mobile placement of the chassis-year form — the desktop copy sits
               under the gallery. */}
