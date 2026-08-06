@@ -43,6 +43,11 @@ export type CarFixture = {
    * has no comparable sale for.
    */
   PRICE_MNT: number | null;
+  /**
+   * Landed MNT for this lot's own FINISH, from the v1 calculator. Japan auction
+   * lots only — null everywhere else, and null on a lot that has not sold yet.
+   */
+  FINISH_LANDED_MNT: number | null;
 };
 
 const str = (value: unknown): string =>
@@ -99,6 +104,7 @@ export function carResourceToFixture(car: CarResource): CarFixture {
     INFO: str(cd.INFO),
     premium_images: null,
     PRICE_MNT: null, // in-stock cars carry their own tugrik price
+    FINISH_LANDED_MNT: null, // in-stock cars never went through an auction here
   };
 }
 
@@ -142,6 +148,7 @@ export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
     INFO: str(lot.INFO),
     premium_images: lot.premium_images ?? null,
     PRICE_MNT: lot.PRICE_MNT ?? null,
+    FINISH_LANDED_MNT: lot.FINISH_LANDED_MNT ?? null,
   };
 }
 

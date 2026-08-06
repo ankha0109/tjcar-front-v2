@@ -34,6 +34,16 @@ export type FeaturedCar = {
    * LandedPriceEstimator in the API.
    */
   PRICE_MNT?: number | null;
+  /**
+   * This lot's OWN hammer price (`FINISH`) run through the v1 vehicle-cost
+   * calculator — the total MNT to land THIS car. `GET /japan/{id}` only; null
+   * on an upcoming lot and on any lot the calculator declines (an auction with
+   * no FOB row, a missing exchange rate).
+   *
+   * Not a second opinion on `PRICE_MNT`: that is a comparable-sales AVERAGE
+   * from the legacy calculator, this is what this exact car fetched.
+   */
+  FINISH_LANDED_MNT?: number | null;
   AVG_STRING: string;
   MARKA_NAME: string;
   MODEL_NAME: string;
