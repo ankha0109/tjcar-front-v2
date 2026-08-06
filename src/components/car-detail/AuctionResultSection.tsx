@@ -106,25 +106,32 @@ export default async function AuctionResultSection({
           <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
             {t("title")}
           </h2>
-          {/* Price left, verdict right. With no price the pill simply starts the
-              row — no placeholder, no empty column. */}
-          <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
-            {finishJpy > 0 && (
-              <div className="flex min-w-0 flex-col gap-0 leading-normal">
-                <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-                  {priceLabel}
-                </span>
-                <span className="truncate text-[26px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
-                  {formatJpy(finishJpy)}
-                </span>
-                {landed > 0 && (
-                  <span className="truncate text-[12px] font-medium text-neutral-500 dark:text-neutral-400">
-                    {t("landed", { price: formatMnt(landed) })}
+          <div className="flex flex-col gap-1">
+            {/* Price left, verdict right. With no price the pill simply starts
+                the row — no placeholder, no empty column. The landed line
+                renders below this row rather than inside its flex-col: a
+                third line in that column would grow it and drop `items-end`'s
+                bottom edge onto the small grey landed text instead of the ¥
+                figure, so it stays out and the row's height — and the pill's
+                alignment — stays pinned to the label+price pair. */}
+            <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+              {finishJpy > 0 && (
+                <div className="flex min-w-0 flex-col gap-0 leading-normal">
+                  <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+                    {priceLabel}
                   </span>
-                )}
-              </div>
+                  <span className="truncate text-[26px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
+                    {formatJpy(finishJpy)}
+                  </span>
+                </div>
+              )}
+              {pill}
+            </div>
+            {finishJpy > 0 && landed > 0 && (
+              <span className="truncate text-[12px] font-medium text-neutral-500 dark:text-neutral-400">
+                {t("landed", { price: formatMnt(landed) })}
+              </span>
             )}
-            {pill}
           </div>
         </div>
 
@@ -152,7 +159,7 @@ export default async function AuctionResultSection({
               {formatJpy(finishJpy)}
             </span>
           )}
-          {landed > 0 && (
+          {finishJpy > 0 && landed > 0 && (
             <span className="truncate text-[11px] font-semibold leading-tight text-neutral-500 dark:text-neutral-400">
               {`≈ ${formatMnt(landed)}`}
             </span>
