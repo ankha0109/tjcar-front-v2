@@ -145,8 +145,26 @@ export function auctionLotToFixture(lot: FeaturedCar): CarFixture {
   };
 }
 
+/**
+ * Split the `#`-joined image field into urls, keeping the first occurrence of
+ * each and discarding repeats.
+ *
+ * The upstream repeats itself, sometimes badly: lot `pEtikK0yth1qb` ships 16
+ * entries of which 3 are distinct — one photo listed 14 times — and every USS
+ * row on the `/japan` list carries its single thumbnail twice. Nothing
+ * downstream wants that: the galleries render one slide and one thumbnail per
+ * entry and key those lists by the url itself, so a repeat is both a duplicate
+ * photo on screen and a duplicate React key. Deduping here fixes it once for
+ * every consumer instead of at each call site.
+ *
+ * Insertion order is preserved, so callers that read `[0]` — the auction
+ * evaluation sheet on a Japan lot, the card thumbnail elsewhere — are
+ * unaffected.
+ */
 export function parseImages(imagesStr: string): string[] {
-  return imagesStr.split("#").map((s) => s.trim()).filter(Boolean);
+  return Array.from(
+    new Set(imagesStr.split("#").map((s) => s.trim()).filter(Boolean)),
+  );
 }
 
 export function carTitle(car: Pick<CarFixture, "MARKA_NAME" | "MODEL_NAME">): string {
