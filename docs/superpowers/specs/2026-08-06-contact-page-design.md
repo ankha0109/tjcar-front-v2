@@ -53,13 +53,19 @@ in `GarageContactCard` and the Facebook/Instagram URLs in `DesktopFooter`.
 
 ### Conflicting facts
 
-Two values disagree between v1 and v2. **v2's footer wins** in both cases; the
-v1 and topbar values are treated as stale.
+Two values disagree between v1 and v2. **The newest v2 value wins** in both
+cases; the v1 and topbar values are treated as stale.
 
 | | v1 | v2 | Use |
 | --- | --- | --- | --- |
-| Second phone | 8811-3032 | `footer.contact.phone` → 8604-5888 | **8604-5888** |
+| Phones | 7511-5888, 8811-3032 | `footer.contact.phone` → two numbers; `GarageContactCard` → **three** | **7511-5888, 8604-5888, 8304-5888** |
 | Hours | 07:30–17:30 | `footer.contact.hours` → 07:30–17:30, but `header.topbar.hours.short` → 09:00–18:00 | **07:30–17:30** |
+
+`GarageContactCard`'s `PHONES` array is the fullest list and its comment claims
+the numbers match the header and footer, which they no longer do — the footer
+string stopped at two. The contact page prints all three. Rewriting the footer's
+`footer.contact.phone` string is a copy decision for the user and stays out of
+scope; only the numbers the new page prints are settled here.
 
 `header.topbar.hours.short` stays wrong after this change. It is rendered by the
 header topbar only and fixing it means deciding what the "short" form should
@@ -95,9 +101,12 @@ Below it, one `mx-auto w-full max-w-7xl px-4 lg:px-6` container holding a
 12-column grid:
 
 - **`lg:col-span-7`** — `ContactChannels`. Three cards in a
-  `sm:grid-cols-3` row: call (`tel:`), Messenger (new tab), email (`mailto:`).
-  Each card is a single anchor wrapping icon, label and value, so the whole card
-  is the hit target. Under them, the office block: address, the three-line
+  `sm:grid-cols-3` row: call, Messenger (new tab), email (`mailto:`). The
+  Messenger and email cards are a single anchor wrapping icon, label and value,
+  so the whole card is the hit target. The phone card cannot be — it holds three
+  numbers — so it is a plain card listing each number as its own `tel:` chip,
+  the shape `GarageContactCard` already uses. Under them, the office block:
+  address, the three-line
   schedule (weekdays / Saturday / Sunday-closed), and the Facebook + Instagram
   links.
 - **`lg:col-span-5`** — `ContactMap`. The iframe inside a bordered, rounded
@@ -120,6 +129,7 @@ export const CONTACT_PHONE_DISPLAY = "+976 7511-5888"; // unchanged
 export const CONTACT_PHONES = [
   { raw: "+97675115888", display: "7511-5888" },
   { raw: "+97686045888", display: "8604-5888" },
+  { raw: "+97683045888", display: "8304-5888" },
 ] as const;
 export const CONTACT_EMAIL = "info@tjcar.mn";
 export const MESSENGER_URL = "https://m.me/tjcar.llc";
@@ -133,8 +143,10 @@ export const MAP_PLACE_URL =
 The two existing exports keep their names and values so `DesktopHeader`,
 `MobileDrawer`, `DesktopFooter` and `TermsBody` are untouched.
 
-`MESSENGER_URL` moves here from `GarageContactCard`, which imports it instead of
-declaring its own copy — one URL, one home. `FACEBOOK_URL` / `INSTAGRAM_URL`
+`CONTACT_PHONES` and `MESSENGER_URL` move here from `GarageContactCard`, which
+imports both instead of declaring its own copies — one list, one home, and the
+comment about the numbers matching the header and footer stops being a promise
+nobody enforces. `FACEBOOK_URL` / `INSTAGRAM_URL`
 likewise move out of `DesktopFooter`'s `SOCIAL_LINKS`, which keeps its array
 shape but sources the two `href`s from this module.
 
@@ -157,7 +169,7 @@ current `"contact"` keys are all nested (`header.topbar`, `footer.company`,
 
 ```
 contact.metadata.{title,description}
-contact.hero.{eyebrow,title,subtitle}
+contact.hero.{eyebrow,hours,title,subtitle}
 contact.channels.heading
 contact.channels.phone.{label,hint}
 contact.channels.messenger.{label,hint}
