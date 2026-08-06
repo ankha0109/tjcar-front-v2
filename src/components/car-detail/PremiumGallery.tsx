@@ -139,7 +139,7 @@ export default function PremiumGallery({
   return (
     <div className="flex flex-col gap-3">
       {isPremium && premium.status === "loading" && (
-        <div className="mx-3 flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 lg:mx-0 dark:border-blue-900/50 dark:bg-blue-950/30">
+        <div role="status" aria-live="polite" className="mx-3 flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 lg:mx-0 dark:border-blue-900/50 dark:bg-blue-950/30">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 animate-spin text-blue-600 dark:text-blue-400" aria-hidden>
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
@@ -150,7 +150,7 @@ export default function PremiumGallery({
       )}
 
       {isPremium && premium.status === "failed" && (
-        <div className="mx-3 flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 lg:mx-0 dark:border-red-900/50 dark:bg-red-950/30">
+        <div role="status" aria-live="polite" className="mx-3 flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 lg:mx-0 dark:border-red-900/50 dark:bg-red-950/30">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 dark:text-red-400" aria-hidden>
             <circle cx="12" cy="12" r="10" />
             <path d="m15 9-6 6M9 9l6 6" />
@@ -162,7 +162,7 @@ export default function PremiumGallery({
       )}
 
       {isPremium && premium.status === "completed" && (
-        <div className="mx-3 flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 lg:mx-0 dark:border-emerald-900/50 dark:bg-emerald-950/30">
+        <div role="status" aria-live="polite" className="mx-3 flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 lg:mx-0 dark:border-emerald-900/50 dark:bg-emerald-950/30">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden>
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <path d="m9 11 3 3L22 4" />
@@ -173,7 +173,19 @@ export default function PremiumGallery({
         </div>
       )}
 
-      <CarGallery images={allImages} alt={alt} />
+      {/*
+        Remount when the premium set lands. `CarGallery` holds `selectedIndex`
+        and a `visited` set of indices, and embla keeps its numeric index
+        across a reInit — prepending N slides mid-view would silently slide the
+        customer from auction photo 3 to premium photo 3 and leave `visited`
+        pointing at the wrong images. Starting over lands on the first premium
+        photo, which is what they were waiting for anyway.
+      */}
+      <CarGallery
+        key={premium.images.length > 0 ? "premium" : "base"}
+        images={allImages}
+        alt={alt}
+      />
     </div>
   );
 }
