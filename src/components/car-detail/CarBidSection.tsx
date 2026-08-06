@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Drawer, Typography } from "antd";
+import { Drawer } from "antd";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -10,7 +10,8 @@ import { useLandedPrice } from "@/hooks/useLandedPrice";
 import BrandButton from "@/components/ui/BrandButton";
 import CarBidForm from "./CarBidForm";
 import AuctionCountdown from "./AuctionCountdown";
-import AuctionSchedule, { type AuctionScheduleTimes } from "./AuctionSchedule";
+import type { AuctionScheduleTimes } from "./AuctionSchedule";
+import AuctionMeta from "./AuctionMeta";
 import { MINIMUM_BALANCE, BID_CUTOFF_HOURS, formatMnt } from "@/lib/bidConfig";
 import { parseJapanAuctionDate } from "@/utils/auctionTime";
 import { isAuctionFinished } from "@/utils/auctionStatus";
@@ -86,7 +87,6 @@ export default function CarBidSection(props: Props) {
   } = props;
 
   const t = useTranslations("carDetail.bid");
-  const tSpecs = useTranslations("carDetail.specs");
   const pathname = usePathname();
   const { data: session, status: authStatus } = useSession();
   const { balance: liveBalance } = useWalletBalance();
@@ -110,50 +110,6 @@ export default function CarBidSection(props: Props) {
     price: startPrice,
     enabled: showForm,
   });
-
-  // Everything you need before bidding — both clocks, then venue/lot/town.
-  // Grouped inside the "join the auction" block rather than with the car specs:
-  // these describe the sale, not the car. Always visible, even to guests.
-  const auctionMeta = (
-    <div className="flex flex-col gap-3">
-      <AuctionSchedule schedule={schedule} />
-      {/* Same label/value recipe as the quick specs above: 11px uppercase
-          label, 13px semibold value, gap-0 + leading-normal, value truncates. */}
-      <dl className="grid grid-cols-2 gap-x-3 gap-y-4">
-        <div className="flex min-w-0 flex-col gap-0 leading-normal">
-          <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-            {tSpecs("auction")}
-          </dt>
-          <dd className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-            {auctionLocation || "-"}
-          </dd>
-        </div>
-        <div className="flex min-w-0 flex-col gap-0 leading-normal">
-          <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-            {tSpecs("lot")}
-          </dt>
-          <dd className="flex items-center gap-1 text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-            <span className="truncate">{lot || "-"}</span>
-            {/* Bare antd copy control — the number keeps its own typography and
-                only the button comes from antd. Its tooltip ("Хуулбарлах" /
-                "Хуулсан") ships with the ConfigProvider locale, so mn/en/ru all
-                read correctly without extra message keys. */}
-            {lot ? <Typography.Text copyable={{ text: lot }} /> : null}
-          </dd>
-        </div>
-        {town && (
-          <div className="flex min-w-0 flex-col gap-0 leading-normal">
-            <dt className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-              {tSpecs("location")}
-            </dt>
-            <dd className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-              {town}
-            </dd>
-          </div>
-        )}
-      </dl>
-    </div>
-  );
 
   const gateCard = (title: string, body: string, actions?: React.ReactNode) => (
     <div className="flex flex-col items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-6 text-center dark:border-neutral-800 dark:bg-neutral-900">
@@ -240,7 +196,12 @@ export default function CarBidSection(props: Props) {
           {/* Countdown beside the title as a compact, understated timer. */}
           <AuctionCountdown auctionDate={auctionDate} variant="inline" />
         </div>
-        {auctionMeta}
+        <AuctionMeta
+          schedule={schedule}
+          auctionLocation={auctionLocation}
+          town={town}
+          lot={lot}
+        />
         {renderBody()}
       </section>
 
@@ -258,7 +219,12 @@ export default function CarBidSection(props: Props) {
             {t("panelTitle")}
           </h2>
           <AuctionCountdown auctionDate={auctionDate} />
-          {auctionMeta}
+          <AuctionMeta
+            schedule={schedule}
+            auctionLocation={auctionLocation}
+            town={town}
+            lot={lot}
+          />
         </section>
 
         <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-neutral-100 bg-white/95 px-4 md:pr-24 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl dark:border-neutral-900 dark:bg-neutral-950/95">
