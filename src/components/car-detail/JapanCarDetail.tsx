@@ -356,6 +356,7 @@ export default async function JapanCarDetail({ car }: Props) {
               state={resultState}
               rawStatus={car.STATUS}
               finishJpy={Number(car.FINISH) || 0}
+              landedMnt={car.FINISH_LANDED_MNT}
               schedule={schedule}
               auctionLocation={car.AUCTION}
               town={car.TOWN}

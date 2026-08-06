@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import AuctionMeta from "./AuctionMeta";
 import type { AuctionScheduleTimes } from "./AuctionSchedule";
-import { formatJpy } from "@/lib/bidConfig";
+import { formatJpy, formatMnt } from "@/lib/bidConfig";
 import type { AuctionResultState } from "@/utils/auctionStatus";
 import { cn } from "@/utils";
 
@@ -15,6 +15,14 @@ type Props = {
   rawStatus: string;
   /** FINISH in yen. 0 means no figure to show — the upstream published none, or it did not parse as a number. */
   finishJpy: number;
+  /**
+   * `FINISH` priced into tugrik by the v1 vehicle-cost calculator — auction
+   * price, Japan-side costs, freight and every Mongolian import tax. Null when
+   * the API could not price it, and then the line simply does not render: the
+   * yen figure above is already the answer to "what did it go for", so there is
+   * nothing a placeholder would stand in for.
+   */
+  landedMnt?: number | null;
   /** Japan + Ulaanbaatar clocks for AUCTION_DATE, formatted server-side. */
   schedule: AuctionScheduleTimes | null;
   auctionLocation: string;
@@ -52,6 +60,7 @@ export default async function AuctionResultSection({
   state,
   rawStatus,
   finishJpy,
+  landedMnt,
   schedule,
   auctionLocation,
   town,
@@ -69,6 +78,7 @@ export default async function AuctionResultSection({
   // NOT a sale price — 30 of 33 sampled "Not Sold" rows carry one. Only a sold
   // lot may caption it as what the car fetched.
   const priceLabel = state === "sold" ? t("soldPrice") : t("topBid");
+  const landed = landedMnt ?? 0;
 
   const pill = (
     <span
@@ -107,6 +117,11 @@ export default async function AuctionResultSection({
                 <span className="truncate text-[26px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
                   {formatJpy(finishJpy)}
                 </span>
+                {landed > 0 && (
+                  <span className="truncate text-[12px] font-medium text-neutral-500 dark:text-neutral-400">
+                    {t("landed", { price: formatMnt(landed) })}
+                  </span>
+                )}
               </div>
             )}
             {pill}
@@ -127,11 +142,19 @@ export default async function AuctionResultSection({
           ~96px for the AI chat FAB, which otherwise covers the actions between
           768px and 1023px. */}
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-neutral-100 bg-white/95 px-4 md:pr-24 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl lg:hidden dark:border-neutral-900 dark:bg-neutral-950/95">
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-1" aria-hidden>
+        <div
+          className="flex min-w-0 flex-1 flex-col items-start gap-1"
+          aria-hidden
+        >
           {pill}
           {finishJpy > 0 && (
             <span className="truncate text-[17px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
               {formatJpy(finishJpy)}
+            </span>
+          )}
+          {landed > 0 && (
+            <span className="truncate text-[11px] font-semibold leading-tight text-neutral-500 dark:text-neutral-400">
+              {`≈ ${formatMnt(landed)}`}
             </span>
           )}
         </div>
