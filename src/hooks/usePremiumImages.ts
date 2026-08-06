@@ -12,8 +12,13 @@ import {
 
 export const PREMIUM_IMAGES_KEY = ["premium-images"] as const;
 
-/** How often to ask whether the scrape has finished. */
-const POLL_MS = 3_000;
+/**
+ * How often to ask whether the scrape has finished. The scraper drives a real
+ * browser and takes tens of seconds, so polling faster than this only adds load
+ * without shortening anyone's wait — it buys at most a few seconds of latency
+ * on the one poll that lands.
+ */
+const POLL_MS = 5_000;
 /** Matches ScrapeAuctionImages::$timeout on the API — past this it cannot still be running. */
 const GIVE_UP_MS = 120_000;
 

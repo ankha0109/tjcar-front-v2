@@ -43,8 +43,11 @@ function num(value: string): number | undefined {
  *
  * For a customer who IS through the gate, the extra premium photo set is fetched
  * on mount — no button, matching v1 — and prepended to the carousel when it
- * lands. The auction's own photos stay on screen throughout, so a slow or failed
- * scrape costs a status strip, never the gallery.
+ * lands. While that runs, the gallery is replaced by a waiting panel built from
+ * the same shell as the locked teaser: a USS lot without its premium set carries
+ * only a couple of thumbnail-sized stills, and blowing those up to full width
+ * looks worse than a deliberate placeholder. A FAILED scrape falls back to the
+ * ordinary gallery plus a strip, so the customer is never left with nothing.
  */
 export default function PremiumGallery({
   images,
@@ -85,8 +88,10 @@ export default function PremiumGallery({
     },
   });
 
+  // Both full-bleed panels below sit on the same darkened, blurred first frame.
+  const teaser = images[0] ? withImageSize(images[0], "card") : undefined;
+
   if (locked) {
-    const teaser = images[0] ? withImageSize(images[0], "card") : undefined;
     return (
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-900 lg:rounded-2xl">
         {teaser && (
@@ -133,22 +138,51 @@ export default function PremiumGallery({
     );
   }
 
+  // The waiting panel takes the gallery's place rather than sitting above it:
+  // the stills a USS lot ships without its premium set are thumbnail-sized, and
+  // stretching those across the column reads as a broken gallery.
+  if (isPremium && premium.status === "loading") {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-900 lg:rounded-2xl"
+      >
+        {teaser && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={teaser}
+            alt=""
+            aria-hidden
+            className="h-full w-full scale-110 object-cover opacity-25 blur-lg"
+          />
+        )}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+          <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20">
+            {/* Slow halo behind the spinner — reads as "still working" from across
+                the room, where a 16px spinner alone does not. */}
+            <span className="absolute inset-0 animate-ping rounded-full bg-white/10" aria-hidden />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="relative animate-spin" aria-hidden>
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          </span>
+          <h3 className="text-[15px] font-semibold text-white">
+            {t("gallery.premiumLoading")}
+          </h3>
+          <p className="max-w-md text-[13px] leading-relaxed text-neutral-300">
+            {t("gallery.premiumLoadingBody")}
+          </p>
+          <p className="text-[12px] text-neutral-400">LOT: {lot || "-"}</p>
+        </div>
+      </div>
+    );
+  }
+
   // Premium photos lead: they are the reason a customer paid to see this lot.
   const allImages = [...premium.images, ...images];
 
   return (
     <div className="flex flex-col gap-3">
-      {isPremium && premium.status === "loading" && (
-        <div role="status" aria-live="polite" className="mx-3 flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 lg:mx-0 dark:border-blue-900/50 dark:bg-blue-950/30">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 animate-spin text-blue-600 dark:text-blue-400" aria-hidden>
-            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-          </svg>
-          <span className="text-[12px] leading-snug text-blue-700 dark:text-blue-300">
-            {t("gallery.premiumLoading")}
-          </span>
-        </div>
-      )}
-
       {isPremium && premium.status === "failed" && (
         <div role="status" aria-live="polite" className="mx-3 flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 lg:mx-0 dark:border-red-900/50 dark:bg-red-950/30">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 dark:text-red-400" aria-hidden>

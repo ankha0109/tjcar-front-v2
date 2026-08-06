@@ -1602,7 +1602,8 @@
     "gallery": {
       "viewFull": "Open full size",
       "premiumBanner": "Premium photos. Please don't redistribute or post them on social media.",
-      "premiumLoading": "Fetching premium photos, please wait",
+      "premiumLoading": "Fetching premium photos",
+      "premiumLoadingBody": "We're pulling the high-resolution set straight from the source. This can take about a minute — please keep this page open.",
       "premiumFailed": "Could not fetch the premium photos. Please contact an administrator",
       "premiumLockedTitle": "Premium photos locked",
       "premiumLockedBody": "USS auction data is a paid source, so only customers who have topped up their wallet can view these photos.",
