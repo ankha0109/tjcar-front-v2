@@ -10,7 +10,7 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { useTranslations } from "next-intl";
-import { withImageSize } from "@/utils/auctionImage";
+import { withImageSize, type AuctionImageSize } from "@/utils/auctionImage";
 import { cn } from "@/utils";
 
 type Props = {
@@ -22,19 +22,26 @@ type Props = {
    * (thumbnails included) loads the URL untouched.
    */
   sizeVariants?: boolean;
+  /**
+   * Variant the thumbnail strip loads. `"thumb"` (AJES `&h=50`, ~4 KB) is the
+   * right size for the 64–110px the strip actually renders at, but it is opt-in
+   * per gallery: Korea/Encar lots stay on `"card"` deliberately.
+   */
+  stripSize?: AuctionImageSize;
 };
 
 /**
  * Car photo gallery: an Embla carousel (full-bleed on mobile) with a synced
  * thumbnail strip, and a yet-another-react-lightbox overlay for full-size
- * pinch/scroll zoom. Inline images and the lightbox thumbnails use the small
- * `card` variant; the main lightbox slide / zoom loads the full-size `original`
- * via {@link withImageSize}.
+ * pinch/scroll zoom. Every photo is fetched at the size it is shown at, via
+ * {@link withImageSize}: the strip takes `stripSize`, an unvisited main slide
+ * the `card`, and the visited slide / lightbox / zoom the `original`.
  */
 export default function CarGallery({
   images,
   alt,
   sizeVariants = true,
+  stripSize = "card",
 }: Props) {
   const t = useTranslations("carDetail.gallery");
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
@@ -259,7 +266,7 @@ export default function CarGallery({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={sized(src, "card")}
+                  src={sized(src, stripSize)}
                   alt=""
                   loading="lazy"
                   className="h-full w-full object-cover"

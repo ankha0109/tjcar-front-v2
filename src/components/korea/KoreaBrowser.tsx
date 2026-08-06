@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Select } from "antd";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import CarCard from "@/components/cards/CarCard";
+import CarCard, { PRIORITY_CARDS } from "@/components/cards/CarCard";
 import CarListItem from "@/components/cards/views/CarListItem";
 import CarTableView from "@/components/cards/views/CarTableView";
 import ViewModeSwitcher from "@/components/cards/views/ViewModeSwitcher";
@@ -25,6 +25,7 @@ import {
   koreaFiltersToQuery,
 } from "@/types/korea";
 import { useKoreaInfinite, type KoreaPage } from "@/hooks/useKoreaInfinite";
+import { useFilterScrollReset } from "@/utils/useFilterScrollReset";
 
 type Props = {
   initialPage?: KoreaPage;
@@ -60,15 +61,24 @@ export default function KoreaBrowser({
   const [filters, setFilters] = useState<KoreaFilterValues>(initialFilters);
   const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode);
   const lastPushedRef = useRef<string>(serializeFilters(initialFilters));
+  const { ref: rootRef, scrollToTop } = useFilterScrollReset<HTMLElement>();
+
+  // Every filter entry point goes through this, never `setFilters` directly —
+  // see `useFilterScrollReset` for what the list collapse does to the scroll
+  // position otherwise.
+  const changeFilters = (next: KoreaFilterValues) => {
+    setFilters(next);
+    scrollToTop();
+  };
 
   // Sorting is an upstream (Encar) concern, so it goes through the same filter
   // state — changing it refetches from page 1 rather than reordering the pages
   // already in hand, which would only sort the slice the user scrolled to.
   const handleSortChange = (next: SortChoice) => {
-    setFilters((prev) => ({
-      ...prev,
+    changeFilters({
+      ...filters,
       ordering: next === "newest" ? null : next,
-    }));
+    });
   };
 
   const handleViewModeChange = (next: ViewMode) => {
@@ -133,9 +143,12 @@ export default function KoreaBrowser({
   }, [listings]);
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8 lg:px-6">
+    <section
+      ref={rootRef}
+      className="mx-auto w-full max-w-7xl px-4 py-8 lg:px-6"
+    >
       <div className="flex flex-col lg:flex-row lg:gap-6">
-        <KoreaFilters value={filters} onChange={setFilters} />
+        <KoreaFilters value={filters} onChange={changeFilters} />
 
         <div className="min-w-0 flex-1">
           {/* Both controls are 40px tall (`size="large"`), so `items-center`
@@ -167,7 +180,7 @@ export default function KoreaBrowser({
             </div>
           </div>
 
-          <KoreaFilterChips value={filters} onChange={setFilters} />
+          <KoreaFilterChips value={filters} onChange={changeFilters} />
 
           {isInitialLoading ? (
             <div className="mt-16 flex items-center justify-center text-[13px] text-neutral-500">
@@ -178,13 +191,13 @@ export default function KoreaBrowser({
               <div className="mt-6">
                 {viewMode === "grid" && (
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-                    {items.map((car) => (
+                    {items.map((car, i) => (
                       <Link
                         key={car.id}
                         href={`/korea/${car.id}`}
                         className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                       >
-                        <CarCard car={car} />
+                        <CarCard car={car} imagePriority={i < PRIORITY_CARDS} />
                       </Link>
                     ))}
                   </div>

@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import CarGallery from "./CarGallery";
 import CarActionButtons from "./CarActionButtons";
 import CarBreadcrumb, { type Crumb } from "./CarBreadcrumb";
-import ChassisYearVerify from "./ChassisYearVerify";
 import KoreaDetailExtras from "./KoreaDetailExtras";
 import KoreaLandedPriceCard from "./KoreaLandedPriceCard";
 import KoreaOptionsPanel from "./KoreaOptionsPanel";
@@ -167,17 +166,6 @@ export default async function EncarDetail({
       ? t(`fuel.${fuelType}`)
       : fuelType
     : undefined;
-  // The government performance inspection is the only place an Encar listing
-  // states the VIN, so it is what the year-verification form checks. Encar
-  // keeps the number whole, so the form pre-fills one field rather than the
-  // Japan lot page's chassis + serial pair. With no inspection on file there is
-  // nothing to pre-fill and the card would just be an empty lookup box, so it
-  // drops out entirely. Rendered twice, CSS-gated: under the gallery on
-  // desktop, in the info column below `lg`.
-  const vin = encar?.inspection?.vin?.trim() || null;
-  const chassisVerify = (
-    <ChassisYearVerify vin={vin ?? ""} />
-  );
   const priceMain = encar?.priceMnt || null;
   const priceSub = encar?.priceKrw || null;
   // What the mobile sticky bar quotes. With the price hero gone, the landed
@@ -279,12 +267,9 @@ export default async function EncarDetail({
           <div className="pt-2 lg:p-0">
             <CarGallery images={images} alt={title} />
           </div>
-          {/* Chassis-year form and options both live under the gallery on
-              desktop; on mobile they render in the info column instead, so the
-              price stays next to the photos. */}
-          {vin && (
-            <div className="hidden lg:mt-6 lg:block">{chassisVerify}</div>
-          )}
+          {/* Options live under the gallery on desktop; on mobile they render
+              in the info column instead, so the price stays next to the
+              photos. */}
           {encar && (
             <div className="hidden lg:mt-6 lg:block">
               <KoreaOptionsPanel options={encar.options} />
@@ -374,10 +359,6 @@ export default async function EncarDetail({
               insurance={encar.insurance}
             />
           )}
-
-          {/* Mobile placement of the chassis-year form — the desktop copy sits
-              under the gallery. */}
-          {vin && <div className="lg:hidden">{chassisVerify}</div>}
 
           {/* Mobile-only options placement (desktop shows them under the gallery) */}
           {encar && (

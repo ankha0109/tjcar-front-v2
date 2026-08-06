@@ -49,9 +49,27 @@ type Props = {
    * is otherwise the premium badge's, and stock cars are never premium.
    */
   badge?: React.ReactNode;
+  /**
+   * Preload the cover photo. Only the handful of cards that can hold the LCP —
+   * the first row of a listing grid — should set it: `priority` emits a
+   * `<link rel=preload>` into `<head>`, so a whole 40-card page of them fires
+   * 40 highest-priority image fetches before the browser knows what is even on
+   * screen. Everything else stays `loading="lazy"`.
+   */
+  imagePriority?: boolean;
 };
 
 const MAX_SCRUB_IMAGES = 4;
+
+/** Grid cell width: full-bleed on the two-column phone card, 320px at `xl`. */
+const SCRUB_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px";
+
+/**
+ * How many leading cards of a listing grid get `imagePriority`. One `xl` row —
+ * two rows on the two-column phone grid — which is as far as the fold reaches
+ * and as far as preloading pays for itself.
+ */
+export const PRIORITY_CARDS = 4;
 
 export default function CarCard({
   car,
@@ -60,6 +78,7 @@ export default function CarCard({
   disableCompare,
   priceLabel,
   badge,
+  imagePriority = false,
 }: Props) {
   const t = useTranslations("car.card");
 
@@ -107,6 +126,7 @@ export default function CarCard({
         images={scrubImages}
         alt={`${car.marka} ${car.model}`}
         fallback={t("noImage")}
+        priority={imagePriority}
       >
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
         {isPremium && <PremiumBadge className="absolute left-2.5 top-2.5" />}
@@ -270,20 +290,42 @@ function Spec({
   );
 }
 
+/**
+ * The cover photo, with the rest of the lot's shots revealed by sweeping the
+ * pointer across it.
+ *
+ * Only the cover is ever in the DOM up front, and it is `loading="lazy"` unless
+ * the card claims `priority` — a 40-card listing otherwise fetched every photo
+ * of every lot before the visitor had scrolled past the first row. The scrub
+ * frames mount on the first real hover, which is also the first moment they can
+ * be seen: a touch device never hovers, so it never pays for them at all.
+ */
 function CarImageScrub({
   images,
   alt,
   fallback,
   children,
+  priority = false,
 }: {
   images: string[];
   alt: string;
   fallback: string;
   children?: React.ReactNode;
+  priority?: boolean;
 }) {
   const [activeIdx, setActiveIdx] = useState(0);
+  const [armed, setArmed] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasMany = images.length > 1;
+
+  // `pointerType` gates out the synthetic enter a tap fires: on a phone the
+  // scrub is unreachable, so mounting its images there is pure waste.
+  const handleEnter = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (hasMany && e.pointerType === "mouse") setArmed(true);
+    },
+    [hasMany],
+  );
 
   const handleMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -317,25 +359,37 @@ function CarImageScrub({
   return (
     <div
       ref={containerRef}
+      onPointerEnter={handleEnter}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100"
     >
-      {images.map((src, idx) => (
-        <Image
-          key={src + idx}
-          src={src}
-          alt={alt}
-          fill
-          priority={idx === 0}
-          className={cn(
-            "object-cover transition-opacity duration-200 ease-out",
-            idx === activeIdx ? "opacity-100" : "opacity-0",
-          )}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
-          unoptimized
-        />
-      ))}
+      {/* The cover never fades out — it is the backdrop the scrub frames stack
+          over, so a frame still in flight shows the cover rather than a hole. */}
+      <Image
+        src={images[0]}
+        alt={alt}
+        fill
+        priority={priority}
+        className="object-cover"
+        sizes={SCRUB_SIZES}
+        unoptimized
+      />
+      {armed &&
+        images.slice(1).map((src, i) => (
+          <Image
+            key={src + i}
+            src={src}
+            alt=""
+            fill
+            className={cn(
+              "object-cover transition-opacity duration-200 ease-out",
+              i + 1 === activeIdx ? "opacity-100" : "opacity-0",
+            )}
+            sizes={SCRUB_SIZES}
+            unoptimized
+          />
+        ))}
 
       {/* Scrub position. Sits along the bottom — the top corners belong to the
           premium badge and the action buttons — and needs `z-10` to clear the

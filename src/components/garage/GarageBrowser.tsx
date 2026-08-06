@@ -3,7 +3,7 @@
 import { Select } from "antd";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import CarCard from "@/components/cards/CarCard";
+import CarCard, { PRIORITY_CARDS } from "@/components/cards/CarCard";
 import { EmptyState } from "@/components/cards/views/scheduleTabs";
 import { Link } from "@/i18n/navigation";
 import type { StockCarItem } from "@/lib/stockAdapter";
@@ -158,7 +158,7 @@ export default function GarageBrowser({ cars }: { cars: StockCarItem[] }) {
         <EmptyState title={t("empty.title")} description={t("empty.description")} />
       ) : (
         <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
-          {items.map((item) => (
+          {items.map((item, i) => (
             <Link
               key={item.car.id}
               href={`/garage/${item.car.id}`}
@@ -168,6 +168,7 @@ export default function GarageBrowser({ cars }: { cars: StockCarItem[] }) {
                 car={item.car}
                 hidePrice={isSold}
                 priceLabel={t("priceLabel")}
+                imagePriority={i < PRIORITY_CARDS}
                 badge={
                   isSold ? (
                     <SoldBadge label={t("sold")} />

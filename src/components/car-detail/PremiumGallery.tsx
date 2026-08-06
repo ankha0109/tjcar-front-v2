@@ -215,10 +215,18 @@ export default function PremiumGallery({
         pointing at the wrong images. Starting over lands on the first premium
         photo, which is what they were waiting for anyway.
       */}
+      {/*
+        `stripSize="thumb"` (AJES `&h=50`, ~4 KB) rather than the default
+        `card` (`&w=320`, ~33 KB): the strip renders 64px wide on phones and
+        ~110px in the desktop grid, and a USS lot brings dozens of photos, so
+        the strip alone was the heaviest thing on the page. Japan only — Korea
+        lots keep the `card` strip.
+      */}
       <CarGallery
         key={premium.images.length > 0 ? "premium" : "base"}
         images={allImages}
         alt={alt}
+        stripSize="thumb"
       />
     </div>
   );

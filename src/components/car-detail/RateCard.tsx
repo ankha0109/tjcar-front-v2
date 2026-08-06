@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Modal } from "antd";
 import { useTranslations } from "next-intl";
 import { cn } from "@/utils";
+import { getGradeInfo, type GradeTier } from "@/utils/auctionGrade";
 
 type Props = {
   /** Overall inspection grade (e.g. "S", "5", "4.5", "R"). */
@@ -15,26 +16,47 @@ type Props = {
 /**
  * Overall auction grades, best → worst, shown in the info modal legend.
  * `key` is the (dot-free) message key — next-intl forbids "." in keys — while
- * `code` is what the badge displays and how the current RATE is matched.
+ * `code` is what the badge displays. `matches` lists every raw RATE the row
+ * stands for, which is how the current lot's grade is highlighted: the houses
+ * spell the same verdict several ways (`RB`/`RC` are still repair history,
+ * `99`/`X`/`***` are all "grounded").
  */
 const RATE_GRADES = [
-  { code: "S", key: "S" },
-  { code: "6", key: "6" },
-  { code: "5", key: "5" },
-  { code: "4.5", key: "4_5" },
-  { code: "4", key: "4" },
-  { code: "3.5", key: "3_5" },
-  { code: "3", key: "3" },
-  { code: "2", key: "2" },
-  { code: "R", key: "R" },
-  { code: "RA", key: "RA" },
+  { code: "S", key: "S", matches: ["S"] },
+  { code: "6", key: "6", matches: ["6"] },
+  { code: "5", key: "5", matches: ["5"] },
+  { code: "4.5", key: "4_5", matches: ["4.5"] },
+  { code: "4", key: "4", matches: ["4"] },
+  { code: "3.5", key: "3_5", matches: ["3.5"] },
+  { code: "3", key: "3", matches: ["3"] },
+  { code: "2", key: "2", matches: ["2"] },
+  { code: "1", key: "1", matches: ["1"] },
+  { code: "RA", key: "RA", matches: ["RA"] },
+  { code: "R", key: "R", matches: ["R", "RB", "RC", "R1", "R2", "R?", "A"] },
+  {
+    code: "99",
+    key: "grounded",
+    matches: ["99", "X", "XX", "0", "*", "**", "***"],
+  },
 ] as const;
+
+/** Legend badge fill per tier — the key to the colours the card itself uses. */
+const LEGEND_BADGE: Record<GradeTier, string> = {
+  pristine: "bg-emerald-600",
+  good: "bg-emerald-600",
+  average: "bg-amber-500",
+  poor: "bg-rose-500",
+  repaired: "bg-orange-500",
+  damaged: "bg-red-600",
+  unknown: "bg-neutral-400",
+};
 
 /**
  * Standalone square card for the auction inspection grade (RATE) — the single
- * most important quality signal, so it gets its own tile. `R`/`RA` (accident or
- * repair history) reads red; everything else reads emerald. An info button opens
- * a modal legend that decodes every grade.
+ * most important quality signal, so it gets its own tile. The colour comes from
+ * {@link getGradeInfo}, the same helper the list badges use, so one lot never
+ * reads emerald here and black on the card it came from. An info button opens a
+ * modal legend that decodes every grade.
  */
 export default function RateCard({ rate, label }: Props) {
   const t = useTranslations("carDetail.rateInfo");
@@ -42,7 +64,7 @@ export default function RateCard({ rate, label }: Props) {
 
   const value = rate?.trim() || "-";
   const current = value.toUpperCase();
-  const isRepaired = current === "R" || current === "RA";
+  const info = getGradeInfo(value);
   const grades = t.raw("grades") as Record<string, string>;
 
   return (
@@ -77,9 +99,7 @@ export default function RateCard({ rate, label }: Props) {
       <div
         className={cn(
           "text-[22px] font-extrabold leading-tight",
-          isRepaired
-            ? "text-red-600 dark:text-red-500"
-            : "text-emerald-600 dark:text-emerald-400",
+          info?.classes.text ?? "text-neutral-500 dark:text-neutral-400",
         )}
       >
         {value}
@@ -96,23 +116,24 @@ export default function RateCard({ rate, label }: Props) {
           {t("intro")}
         </p>
         <ul className="flex flex-col gap-1.5">
-          {RATE_GRADES.map(({ code, key }) => {
-            const active = current === code.toUpperCase();
-            const repaired = code === "R" || code === "RA";
+          {RATE_GRADES.map(({ code, key, matches }) => {
+            const active = (matches as readonly string[]).includes(current);
+            const tier = getGradeInfo(code)?.tier ?? "unknown";
             return (
               <li
                 key={key}
                 className={cn(
                   "flex items-start gap-2.5 rounded-lg px-2 py-1.5",
-                  active && "bg-emerald-50 dark:bg-emerald-500/10",
+                  // Neutral, never emerald: the highlighted row is just as often
+                  // the worst grade on the list as the best one.
+                  active &&
+                    "bg-neutral-100 ring-1 ring-neutral-300 dark:bg-neutral-800 dark:ring-neutral-600",
                 )}
               >
                 <span
                   className={cn(
                     "mt-px inline-flex min-w-9 justify-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white",
-                    repaired
-                      ? "bg-red-600 dark:bg-red-600"
-                      : "bg-neutral-900 dark:bg-neutral-700",
+                    LEGEND_BADGE[tier],
                   )}
                 >
                   {code}
