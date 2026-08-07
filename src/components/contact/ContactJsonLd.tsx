@@ -7,8 +7,7 @@ import {
   OFFICE_LAT,
   OFFICE_LNG,
 } from "@/lib/contact";
-
-const SITE_URL = "https://v2.tjcar.mn";
+import { SITE_URL } from "@/lib/site";
 
 function JsonLdScript({ data }: { data: object }) {
   return (

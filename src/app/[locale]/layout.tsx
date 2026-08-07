@@ -20,6 +20,7 @@ import ScrollToTop from "@/components/layout/ScrollToTop";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, type Theme } from "@/lib/theme";
 import { getDevice } from "@/lib/device";
+import { OG_IMAGE, SITE_URL, ogSite } from "@/lib/site";
 import { getConfig } from "@/services/config";
 import ScrollToTopOnSamePage from "@/utils/useScrollToTop";
 
@@ -39,12 +40,29 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
+  const title = {
+    default: t("title.default"),
+    template: t("title.template"),
+  };
+  const description = t("description");
   return {
-    title: {
-      default: t("title.default"),
-      template: t("title.template"),
+    // Absolute base for every relative URL in this tree — without it the
+    // relative `openGraph.images` on `/report` resolves against localhost.
+    metadataBase: new URL(SITE_URL),
+    title,
+    description,
+    // Inherited by every page that does not declare its own `openGraph`, so one
+    // card covers the whole site. Deliberately no `title`/`description` here:
+    // leaving them out lets Next fill `og:title` from each page's own resolved
+    // title, template and all — set them and every subpage advertises the home
+    // page's title instead. No `url` either: it would be the locale root on
+    // every page, not the page itself.
+    openGraph: {
+      ...ogSite(locale),
+      type: "website",
+      images: [{ ...OG_IMAGE, alt: t("ogImageAlt") }],
     },
-    description: t("description"),
+    twitter: { card: "summary_large_image" },
   };
 }
 

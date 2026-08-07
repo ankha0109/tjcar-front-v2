@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import GarageCarDetail from "@/components/garage/GarageCarDetail";
 import { carResourceToFixture, carTitle } from "@/lib/carFixtures";
+import { ogSite } from "@/lib/site";
 import { getCar } from "@/services/cars";
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { locale, id } = await params;
   const car = await getCar(id);
   if (!car) return {};
   const fixture = carResourceToFixture(car);
@@ -18,7 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cover = car.images?.[0];
   return {
     title: fixture.YEAR ? `${title} · ${fixture.YEAR}` : title,
-    openGraph: cover ? { title, images: [cover] } : undefined,
+    // Spread rather than `openGraph: undefined`: Next walks the returned object's
+    // own keys, so an explicit `undefined` here wipes the layout's card instead
+    // of leaving it in place. A car with no photo falls back to the site image.
+    ...(cover
+      ? { openGraph: { ...ogSite(locale), title, images: [cover] } }
+      : {}),
   };
 }
 

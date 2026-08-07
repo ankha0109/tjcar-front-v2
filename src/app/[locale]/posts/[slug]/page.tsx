@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowIcon } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
+import { ogSite } from "@/lib/site";
 import { getPost } from "@/services/posts";
 import type { PostCategory } from "@/types/post";
 import { formatPostDate, postDateTimeAttr } from "@/utils/postFormat";
@@ -15,7 +16,7 @@ type PageProps = { params: Promise<{ locale: string; slug: string }> };
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
 
@@ -25,6 +26,7 @@ export async function generateMetadata({
     title: post.title,
     description,
     openGraph: {
+      ...ogSite(locale),
       title: post.title,
       description,
       images: post.featured_image ? [post.featured_image] : undefined,

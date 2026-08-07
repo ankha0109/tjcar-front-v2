@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogSite } from "@/lib/site";
 import { effectiveReportPrice, getConfig } from "@/services/config";
 import ReportJsonLd from "@/components/report/ReportJsonLd";
 import ReportHero from "@/components/report/ReportHero";
@@ -24,6 +25,7 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     openGraph: {
+      ...ogSite(locale),
       title: t("ogTitle"),
       description: t("ogDescription"),
       type: "website",

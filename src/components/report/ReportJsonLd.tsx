@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
+import { SITE_URL } from "@/lib/site";
 import { REPORT_FAQ_KEYS } from "./reportFaqKeys";
-
-const SITE_URL = "https://v2.tjcar.mn";
 
 function JsonLdScript({ data }: { data: object }) {
   return (

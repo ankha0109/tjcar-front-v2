@@ -97,7 +97,8 @@
       "default": "Import cars from Japan and Korea | TJCAR.MN",
       "template": "%s | TJCAR.MN"
     },
-    "description": "Order cars from Japanese auctions and the Korean market — live lots, landed-cost estimates and full import service by TJCAR.MN"
+    "description": "Order cars from Japanese auctions and the Korean market — live lots, landed-cost estimates and full import service by TJCAR.MN",
+    "ogImageAlt": "TJCAR.MN — import cars from Japan and Korea"
   },
   "wishlist": {
     "title": "Saved cars",
