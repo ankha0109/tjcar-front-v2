@@ -1,5 +1,6 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import AuctionBrowser from "@/components/cards/AuctionBrowser";
 import {
   VIEW_MODE_COOKIE,
@@ -14,6 +15,14 @@ type PageProps = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auctions.metadata" });
+  return { title: t("title"), description: t("description") };
+}
 
 export default async function JapanPage({ params, searchParams }: PageProps) {
   const { locale } = await params;

@@ -1,5 +1,9 @@
 {
   "korea": {
+    "metadata": {
+      "title": "Korean car market",
+      "description": "Browse and order cars listed on the Korean market. Live Encar listings, delivered to Mongolia."
+    },
     "price": {
       "label": "Price (₩)",
       "fromPlaceholder": "Min",
@@ -59,6 +63,10 @@
     }
   },
   "auctions": {
+    "metadata": {
+      "title": "Japanese car auctions",
+      "description": "Search live lots from Japanese car auctions, updated daily — filter, compare and bid through TJCAR.MN."
+    },
     "title": "Japan auctions",
     "subtitle": "Live lots from Japanese auctions",
     "resultsTotal": "{count, number} lots",
@@ -86,10 +94,10 @@
   },
   "metadata": {
     "title": {
-      "default": "Home",
-      "template": "%s | TJ Car"
+      "default": "Import cars from Japan and Korea | TJCAR.MN",
+      "template": "%s | TJCAR.MN"
     },
-    "description": "TJ Car - Japanese car auction service"
+    "description": "Order cars from Japanese auctions and the Korean market — live lots, landed-cost estimates and full import service by TJCAR.MN"
   },
   "wishlist": {
     "title": "Saved cars",
@@ -1853,7 +1861,7 @@
     "stalledBody": "Your report is taking longer than normal to build. Your payment is safe — we are looking into it and will follow up shortly. Message us on chat if you need it sooner."
   },
   "reportView": {
-    "metaTitle": "Report verification",
+    "metaTitle": "Accident & mileage check service",
     "title": "Coming soon",
     "description": "The online report verification page is being prepared. Soon this address will let you confirm that a report is genuine.",
     "ctaReport": "Report service",
