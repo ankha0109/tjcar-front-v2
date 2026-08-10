@@ -10,6 +10,7 @@ import {
 import { AUCTIONS_PER_PAGE, getAuctions } from "@/services/auctions";
 import { getFilterOptions } from "@/services/filters";
 import { filtersToAuctionQuery, queryToFilters } from "@/types/filters";
+import { isJapanHolidayActive } from "@/utils/japanHoliday";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -62,6 +63,7 @@ export default async function JapanPage({ params, searchParams }: PageProps) {
       initialFilters={filters}
       filterOptions={filterOptions}
       initialViewMode={initialViewMode}
+      showHolidayNotice={isJapanHolidayActive()}
     />
   );
 }

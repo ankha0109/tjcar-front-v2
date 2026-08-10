@@ -16,6 +16,7 @@ import {
 import JapanAuctionFilters, {
   JapanAuctionFilterChips,
 } from "@/components/cards/JapanAuctionFilters";
+import JapanHolidayNotice from "@/components/cards/JapanHolidayNotice";
 import {
   EmptyState,
   ScheduleDayDrawer,
@@ -34,6 +35,8 @@ type Props = {
   initialFilters: FilterValues;
   filterOptions?: FilterOptions;
   initialViewMode?: ViewMode;
+  /** Decided on the server — see `isJapanHolidayActive`. */
+  showHolidayNotice?: boolean;
 };
 
 const DAYS_AHEAD = 5;
@@ -52,6 +55,7 @@ export default function AuctionBrowser({
   initialFilters,
   filterOptions,
   initialViewMode = "grid",
+  showHolidayNotice = false,
 }: Props) {
   const t = useTranslations("auctions");
   const tSchedule = useTranslations("featured.schedule");
@@ -165,6 +169,8 @@ export default function AuctionBrowser({
       ref={rootRef}
       className="mx-auto w-full max-w-7xl px-4 py-4 md:py-8 lg:px-6"
     >
+      {showHolidayNotice && <JapanHolidayNotice />}
+
       <div className="flex flex-col lg:flex-row lg:gap-6">
         <JapanAuctionFilters
           value={filters}

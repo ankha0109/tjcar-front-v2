@@ -74,7 +74,12 @@
     "loadingMore": "Loading more…",
     "endOfList": "No more lots",
     "noResultsTitle": "No matching lots",
-    "noResultsDescription": "Try adjusting your filters"
+    "noResultsDescription": "Try adjusting your filters",
+    "holidayNotice": {
+      "title": "Japanese auctions are on their summer break",
+      "body": "Because of the summer holiday in Japan, no auctions are held {range}. They resume on {resume}.",
+      "services": "Korea cars and the accident report service run as normal."
+    }
   },
   "common": {
     "loading": "Loading...",
