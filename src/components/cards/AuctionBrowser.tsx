@@ -17,6 +17,7 @@ import JapanAuctionFilters, {
   JapanAuctionFilterChips,
 } from "@/components/cards/JapanAuctionFilters";
 import JapanHolidayNotice from "@/components/cards/JapanHolidayNotice";
+import InfiniteScrollSentinel from "@/components/cards/views/InfiniteScrollSentinel";
 import {
   EmptyState,
   ScheduleDayDrawer,
@@ -130,24 +131,6 @@ export default function AuctionBrowser({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Infinite-scroll sentinel ──
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const { hasNextPage, isFetchingNextPage, fetchNextPage } = infinite;
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { rootMargin: "600px" },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
   const isInitialLoading = infinite.isLoading;
   // Dedupe by id: offset pagination over the live auction feed can legitimately
   // return a lot on two pages (the set shifts between fetches), which would
@@ -259,17 +242,12 @@ export default function AuctionBrowser({
                 )}
               </div>
 
-              {/* Infinite-scroll sentinel + status */}
-              <div
-                ref={sentinelRef}
-                className="mt-8 flex items-center justify-center py-6 text-[12.5px] text-neutral-400"
-              >
-                {isFetchingNextPage
-                  ? t("loadingMore")
-                  : hasNextPage
-                    ? " "
-                    : t("endOfList")}
-              </div>
+              <InfiniteScrollSentinel
+                hasNextPage={infinite.hasNextPage}
+                isFetchingNextPage={infinite.isFetchingNextPage}
+                isFetchNextPageError={infinite.isFetchNextPageError}
+                fetchNextPage={infinite.fetchNextPage}
+              />
             </>
           ) : (
             <EmptyState

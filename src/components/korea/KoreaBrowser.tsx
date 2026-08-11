@@ -14,6 +14,7 @@ import {
   type ViewMode,
 } from "@/components/cards/views/viewMode";
 import { EmptyState } from "@/components/cards/views/scheduleTabs";
+import InfiniteScrollSentinel from "@/components/cards/views/InfiniteScrollSentinel";
 import KoreaFilters, {
   KoreaFilterChips,
 } from "@/components/korea/KoreaFilters";
@@ -110,24 +111,6 @@ export default function KoreaBrowser({
 
   // Scroll restoration is the browser's job — see the note in `AuctionBrowser`.
 
-  // Infinite-scroll sentinel
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const { hasNextPage, isFetchingNextPage, fetchNextPage } = infinite;
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { rootMargin: "600px" },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
   const isInitialLoading = infinite.isLoading;
   // Dedupe by id — the live feed can legitimately repeat a listing across pages.
   const items = useMemo(() => {
@@ -223,17 +206,12 @@ export default function KoreaBrowser({
                 )}
               </div>
 
-              {/* Infinite-scroll sentinel + status */}
-              <div
-                ref={sentinelRef}
-                className="mt-8 flex items-center justify-center py-6 text-[12.5px] text-neutral-400"
-              >
-                {isFetchingNextPage
-                  ? t("loadingMore")
-                  : hasNextPage
-                    ? " "
-                    : t("endOfList")}
-              </div>
+              <InfiniteScrollSentinel
+                hasNextPage={infinite.hasNextPage}
+                isFetchingNextPage={infinite.isFetchingNextPage}
+                isFetchNextPageError={infinite.isFetchNextPageError}
+                fetchNextPage={infinite.fetchNextPage}
+              />
             </>
           ) : (
             <EmptyState

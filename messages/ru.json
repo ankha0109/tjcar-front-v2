@@ -73,6 +73,8 @@
     "loading": "Загрузка лотов…",
     "loadingMore": "Загрузка ещё…",
     "endOfList": "Больше лотов нет",
+    "loadMoreFailed": "Не удалось загрузить следующие лоты.",
+    "retry": "Повторить",
     "noResultsTitle": "Подходящих лотов нет",
     "noResultsDescription": "Измените параметры фильтра",
     "holidayNotice": {

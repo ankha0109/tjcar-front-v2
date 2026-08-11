@@ -73,6 +73,8 @@
     "loading": "Loading lots…",
     "loadingMore": "Loading more…",
     "endOfList": "No more lots",
+    "loadMoreFailed": "Could not load more lots.",
+    "retry": "Try again",
     "noResultsTitle": "No matching lots",
     "noResultsDescription": "Try adjusting your filters",
     "holidayNotice": {

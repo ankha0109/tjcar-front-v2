@@ -73,6 +73,8 @@
     "loading": "Лотуудыг ачааллаж байна…",
     "loadingMore": "Цааш ачааллаж байна…",
     "endOfList": "Бүх лот ачаалагдлаа",
+    "loadMoreFailed": "Дараагийн лотуудыг ачаалж чадсангүй.",
+    "retry": "Дахин оролдох",
     "noResultsTitle": "Тохирох лот олдсонгүй",
     "noResultsDescription": "Шүүлтүүрээ өөрчилж үзнэ үү",
     "holidayNotice": {
