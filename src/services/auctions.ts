@@ -17,6 +17,7 @@ export const getAuctions = cache(
   (params: QueryParams = {}): Promise<Paginated<FeaturedCar>> =>
     ServerApi.get<Paginated<FeaturedCar>>("/japan", params, {
       cache: "no-store",
+      forwardUserAgent: true,
     }),
 );
 
@@ -30,7 +31,7 @@ export const getAuction = cache(
       const { data } = await ServerApi.get<ResourceObject<FeaturedCar>>(
         `/japan/${id}`,
         {},
-        { cache: "no-store" },
+        { cache: "no-store", forwardUserAgent: true },
       );
       return data;
     } catch (err) {
@@ -57,7 +58,7 @@ export const getAuctionHistory = cache(
     const { data } = await ServerApi.get<ResourceObject<FeaturedCar[]>>(
       "/japan/history",
       params,
-      { cache: "no-store" },
+      { cache: "no-store", forwardUserAgent: true },
     );
     return data;
   },

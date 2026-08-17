@@ -31,6 +31,14 @@ async function handler(
   if (acceptLanguage) {
     headers["Accept-Language"] = acceptLanguage;
   }
+
+  // Forwarded so the API can tell a crawler from a reader. Every request reaches
+  // it through this proxy, so without this it only ever sees Node's own agent and
+  // its bot/browser accounting of the AJES daily quota is meaningless.
+  const userAgent = request.headers.get("user-agent");
+  if (userAgent) {
+    headers["User-Agent"] = userAgent;
+  }
   if (token?.accessToken) {
     headers.Authorization = `Bearer ${token.accessToken}`;
   }

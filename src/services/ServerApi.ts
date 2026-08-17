@@ -3,6 +3,7 @@ import { buildQuery, type QueryParams } from "@/utils/buildQuery";
 import { getAccessToken } from "@/lib/serverAuth";
 import { ServerApiError } from "@/services/errors";
 import { getLocale } from "next-intl/server";
+import { headers } from "next/headers";
 
 export { ServerApiError };
 
@@ -17,15 +18,45 @@ type RequestOptions = Omit<RequestInit, "body" | "headers" | "method"> & {
    * the token anyway.
    */
   skipAuth?: boolean;
+  /**
+   * Pass the visitor's own `User-Agent` through to the API.
+   *
+   * Opt-in rather than automatic for the same reason `skipAuth` exists: Next keys
+   * its data cache on the fetch headers, so sending a per-visitor agent on a
+   * revalidated endpoint would give it one cache entry per distinct agent. Only
+   * safe on `cache: "no-store"` reads — which is exactly the set worth tagging,
+   * because the API cannot otherwise tell a crawler from a reader (it only ever
+   * sees this server) and those are the reads that spend the AJES daily quota.
+   */
+  forwardUserAgent?: boolean;
 };
 
 const baseURL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "";
+
+/**
+ * The incoming request's `User-Agent`, or null when there is no request to read
+ * one from — `headers()` throws outside a request scope, which is where build
+ * time and any background render live.
+ */
+const visitorUserAgent = async (): Promise<string | null> => {
+  try {
+    return (await headers()).get("user-agent");
+  } catch {
+    return null;
+  }
+};
 
 const request = async <T = unknown>(
   url: string,
   options: RequestOptions = {},
 ): Promise<T> => {
-  const { body, headers: customHeaders, skipAuth, ...restOptions } = options;
+  const {
+    body,
+    headers: customHeaders,
+    skipAuth,
+    forwardUserAgent,
+    ...restOptions
+  } = options;
   const fullUrl = `${baseURL}${url}`;
 
   const locale = await getLocale();
@@ -34,6 +65,13 @@ const request = async <T = unknown>(
     "Accept-Language": locale,
     ...customHeaders,
   };
+
+  if (forwardUserAgent) {
+    const agent = await visitorUserAgent();
+    if (agent) {
+      headers["User-Agent"] = agent;
+    }
+  }
 
   if (!skipAuth) {
     const accessToken = await getAccessToken();
