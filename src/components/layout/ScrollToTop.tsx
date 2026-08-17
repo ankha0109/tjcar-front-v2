@@ -14,10 +14,13 @@ import { usePathname } from "@/i18n/navigation";
  * Next's reset and ours: measured on a real iPhone as `y 0→151→217` across
  * roughly half a second, once as late as 1349ms.
  *
- * Only production builds show it. In development `<Link>` never prefetches, so
- * every tap costs a server round trip and the thread has long settled by the
- * time the route commits; with prefetch the payload is already cached and the
- * commit lands while the thread is still hot. Blink applies the write
+ * Only production builds showed it while `<Link>` still prefetched: the payload
+ * was already cached, so the commit landed while the scrolling thread was still
+ * hot, whereas a tap that costs a server round trip commits long after the
+ * thread has settled. Prefetching is off since 2026-08-17 (`@/i18n/navigation`
+ * defaults it to `false` to spare the AJES quota), which makes every tap the
+ * slow kind — but the hold below stays: nothing guarantees the round trip is
+ * slower than the flick on a fast connection. Blink applies the write
  * synchronously either way, which is why desktop Chrome never reproduces it —
  * re-verified 2026-07-27 against a local production build over CDP: ~60 page
  * pairs, both shells, parked at 200px, every one of them landed at 0.
