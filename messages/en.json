@@ -1489,6 +1489,8 @@
       "ai": {
         "title": "AI explanation",
         "badge": "Beta",
+        "start": "Analyze the sheet",
+        "startHint": "Have the AI read this car's auction inspection sheet and explain every mark on it in plain language.",
         "intro": "This is the **official auction inspection sheet** for this car. Before every sale, an independent auction inspector checks the vehicle and records its condition, so this sheet is the most trustworthy summary you can get.\n\n- **Overall grade:** {rate}\n- **Interior grade:** {grade}\n- **Equipment noted:** {equip}\n\nThe car diagram on the sheet marks each scratch, dent and repaired panel. Pick a question below or ask your own.",
         "suggestedTitle": "Try asking",
         "suggested": [
