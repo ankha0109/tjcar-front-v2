@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Badge, Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
@@ -53,16 +54,6 @@ const CompareIcon = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path d="M3 7h13l-3-3" />
     <path d="M21 17H8l3 3" />
-  </svg>
-);
-
-const SparkleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M12 2l1.8 5.8L19.6 9.6 13.8 11.4 12 17.2 10.2 11.4 4.4 9.6 10.2 7.8z" />
-    <path
-      d="M19 14l.9 2.9L22.8 17.8l-2.9.9L19 21.6l-.9-2.9L15.2 17.8l2.9-.9z"
-      opacity="0.6"
-    />
   </svg>
 );
 
@@ -634,7 +625,15 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
               <DrawerLink
                 href="/dashboard/profile?ai=1"
                 onClick={() => setMobileOpen(false)}
-                leading={<SparkleIcon className="h-4 w-4 text-violet-500" />}
+                leading={
+                  <Image
+                    src="/images/tj_tibo_head.svg"
+                    alt=""
+                    width={905}
+                    height={669}
+                    className="h-auto w-5 max-w-none shrink-0"
+                  />
+                }
               >
                 {t("tjcarAi")}
               </DrawerLink>

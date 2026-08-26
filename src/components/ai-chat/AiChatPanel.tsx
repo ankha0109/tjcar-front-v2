@@ -13,7 +13,6 @@ import {
   CollapseIcon,
   ExpandIcon,
   RefreshIcon,
-  SparkleIcon,
   TrashIcon,
 } from "./icons";
 import { cn } from "@/utils";
@@ -211,8 +210,17 @@ export default function AiChatPanel({ mounted }: Props) {
       >
         {showEmpty && (
           <div className="flex h-full flex-col items-center justify-center gap-4 px-4 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <SparkleIcon className="h-7 w-7" />
+            {/* Same portrait as the header avatar — this panel is AYA, so the
+                empty state shows her face rather than a generic AI mark. The
+                cutout keeps the face in the upper third, hence the top zoom. */}
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-primary">
+              <Image
+                src="/images/operator_aya.webp"
+                alt=""
+                fill
+                sizes="56px"
+                className="origin-top scale-[1.35] object-cover"
+              />
             </div>
             <p className="text-sm text-neutral-600 dark:text-neutral-300">
               {t("emptyGreeting")}
