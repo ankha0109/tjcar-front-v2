@@ -1186,7 +1186,6 @@
       "submit": "Calculate",
       "hintLabel": "Details",
       "enterPrice": "Enter your bid in yen.",
-      "disclaimer": "Includes the car price, Japan-side costs, shipping, and Mongolian customs duty, excise tax and VAT. Bank charges, domestic transport and other extras are not included.",
       "note": "This estimate can change with the exchange rate of the day, and with the car's engine displacement, build year and shipping terms.",
       "lines": {
         "BASE_PRICE": "Base price",

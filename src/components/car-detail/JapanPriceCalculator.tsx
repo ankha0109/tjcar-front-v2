@@ -184,10 +184,7 @@ export default function JapanPriceCalculator({
 
         {/* `mt-auto` pins the disclaimer to the bottom of the card, so the card
             can stretch to the chart's height without a gap under the total. */}
-        <div className="mt-auto space-y-1.5 border-t border-neutral-200 pt-3 dark:border-neutral-800">
-          <p className="text-[11px] leading-relaxed text-neutral-400 dark:text-neutral-500">
-            {t("disclaimer")}
-          </p>
+        <div className="mt-auto border-t border-neutral-200 pt-3 dark:border-neutral-800">
           <p className="text-[11px] leading-relaxed text-neutral-400 dark:text-neutral-500">
             {t("note")}
           </p>
