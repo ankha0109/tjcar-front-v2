@@ -30,8 +30,9 @@ export type FeaturedCar = {
    * `/japan/history`; ABSENT on the `/japan` list. Null when unpriceable.
    *
    * Basis differs by endpoint: sold `stats` rows price off their own FINISH,
-   * upcoming `main` lots off AVG_PRICE or the comparable average — see
-   * LandedPriceEstimator in the API.
+   * upcoming `main` lots off AVG_PRICE, and on `/japan/{id}` — where the
+   * upstream withholds AVG_PRICE on ~92% of rows — off the mean of the
+   * comparable sales `/japan/history` returns. See JapanLandedPrice in the API.
    */
   PRICE_MNT?: number | null;
   /**
@@ -40,10 +41,16 @@ export type FeaturedCar = {
    * on an upcoming lot and on any lot the calculator declines (an auction with
    * no FOB row, a missing exchange rate).
    *
-   * Not a second opinion on `PRICE_MNT`: that is a comparable-sales AVERAGE
-   * from the legacy calculator, this is what this exact car fetched.
+   * Not a second opinion on `PRICE_MNT`: that is a comparable-sales AVERAGE,
+   * this is what this exact car fetched.
    */
   FINISH_LANDED_MNT?: number | null;
+  /**
+   * This lot's OPENING price (`START`) landed in tugrik — the floor the bid
+   * form validates against. `GET /japan/{id}` only; null when the upstream
+   * published no START, or when the calculator declined the lot.
+   */
+  START_LANDED_MNT?: number | null;
   AVG_STRING: string;
   MARKA_NAME: string;
   MODEL_NAME: string;

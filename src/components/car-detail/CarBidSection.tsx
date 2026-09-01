@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
-import { useLandedPrice } from "@/hooks/useLandedPrice";
 import BrandButton from "@/components/ui/BrandButton";
 import CarBidForm from "./CarBidForm";
 import AuctionCountdown from "./AuctionCountdown";
@@ -39,11 +38,13 @@ type Props = {
   town?: string;
   /** Lot number (LOT). */
   lot: string;
-  /** Calculator inputs. */
-  chassis: string;
-  engineSize: string;
-  year: string;
-  rate: string;
+  /**
+   * The lot's START price already landed in tugrik (`START_LANDED_MNT`), the
+   * least a bid can be. Computed server-side with every other price on the
+   * page; null when the upstream published no START, or when the calculator
+   * declined the lot.
+   */
+  startLandedMnt: number | null;
   /** Live JPY → MNT rate from /config. */
   jpyRate: number;
   /** Quick-spec grid rendered at the top of the card, above a divider. */
@@ -82,10 +83,7 @@ export default function CarBidSection(props: Props) {
     auctionLocation,
     town,
     lot,
-    chassis,
-    engineSize,
-    year,
-    rate,
+    startLandedMnt,
     jpyRate,
     quickSpecs,
     actions,
@@ -103,18 +101,11 @@ export default function CarBidSection(props: Props) {
   // Live balance (fresh from GET /balance) so an admin recharge unlocks the form
   // on refresh/focus — the JWT `user.balance` is only a login-time snapshot.
   const hasDeposit = liveBalance >= MINIMUM_BALANCE;
-  const showForm = !closed && loggedIn && hasDeposit;
 
-  // MNT minimum bid (price basis = START) — only fetched once the form is shown.
-  const { data: minAmount = 0, isLoading: loadingMin } = useLandedPrice({
-    auctionId,
-    chassis,
-    engineSize,
-    year,
-    rate,
-    price: startPrice,
-    enabled: showForm,
-  });
+  // MNT minimum bid, price basis = START. This used to be a POST /calculator
+  // per lot page; the API now prices it alongside the tile, so the form has its
+  // floor the moment it renders.
+  const minAmount = startLandedMnt ?? 0;
 
   /**
    * The opening price, in the open: no login, no deposit, no drawer. It used to
@@ -201,7 +192,6 @@ export default function CarBidSection(props: Props) {
         auctionId={auctionId}
         startPrice={startPrice}
         minAmount={minAmount}
-        loadingMin={loadingMin}
         canChooseCurrency={user?.type === 2}
         jpyRate={jpyRate}
         onSubmitted={onSubmitted}

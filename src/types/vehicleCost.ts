@@ -33,26 +33,36 @@ export type AdditionalCost = {
 
 export type CalculateVehicleCostRequest = {
   country: VehicleCountry;
-  powertrain: Powertrain;
+  /**
+   * Required for Korea. Japan may omit it: the backend reads the excise class
+   * off `chassis` against its hybrid table.
+   */
+  powertrain?: Powertrain;
 
   /** Korea — omit the rest and the backend prefills them from the listing. */
   koreaListingId?: number;
   purchasePriceKRW?: number;
   domesticCostKRW?: number;
 
-  /** Japan */
+  /** Japan — `auctionName` must be a house the backend's FOB table lists. */
   purchasePriceJPY?: number;
   auctionName?: string;
 
+  /**
+   * Chassis code (AJES `KUZOV`). On a Japanese request it also stands in for
+   * `freightUSD`, which the backend resolves from its own `transport_costs`
+   * table — that figure has no public endpoint to read it from.
+   */
+  chassis?: string;
   freightUSD?: number;
   manufactureYear?: number;
+  /** Japan may omit it — an auction lot carries a build year and nothing finer. */
   manufactureMonth?: number;
   engineCc?: number;
+  seatCount?: number;
 
   /** YYYY-MM-DD; defaults to today server-side. */
   calculationDate?: string;
-  vinOrChassis?: string;
-  vendor?: string;
 
   additionalCostsMNT?: AdditionalCost[];
 };
@@ -78,14 +88,23 @@ export type VehicleCost = {
   verification: {
     status: VerificationStatus;
     manufactureYear: number;
-    manufactureMonth: number;
+    /** Null on a Japanese lot: the auction publishes a build year only. */
+    manufactureMonth: number | null;
     engineCc: number;
-    powertrain: Powertrain;
+    seatCount: number | null;
+    /** Null when the chassis matched no entry in the hybrid table. */
+    powertrain: Powertrain | null;
+    powertrainSource: "CLIENT" | "CHASSIS_LOOKUP" | "DEFAULT";
     exciseMode: "HYBRID" | "NON_HYBRID";
-    /** Ready-made Mongolian notices, e.g. VIN could not be verified. */
+    /** Ready-made Mongolian notices, e.g. the build month is unknown. */
     warnings: string[];
   };
-  age: { completedYears: number; bucket: AgeBucket };
+  /** `source` is ASSUMED wherever the manufacture month was not stated. */
+  age: {
+    completedYears: number;
+    bucket: AgeBucket;
+    source: "EXACT" | "ASSUMED";
+  };
   /** Raw figures — kept for audit/debug, not for rendering the breakdown. */
   detail: {
     rates: {

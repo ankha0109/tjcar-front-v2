@@ -8,6 +8,7 @@ import CarBidSection from "./CarBidSection";
 import AuctionResultSection from "./AuctionResultSection";
 import RateCard from "./RateCard";
 import LandedPriceCard from "./LandedPriceCard";
+import JapanPriceCalculator from "./JapanPriceCalculator";
 import ChassisYearVerify from "./ChassisYearVerify";
 import PriceHistoryChart from "./PriceHistoryChart";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
@@ -343,10 +344,7 @@ export default async function JapanCarDetail({ car }: Props) {
               auctionLocation={car.AUCTION}
               town={car.TOWN}
               lot={car.LOT}
-              chassis={car.KUZOV}
-              engineSize={car.ENG_V}
-              year={car.YEAR}
-              rate={car.RATE}
+              startLandedMnt={car.START_LANDED_MNT ?? null}
               jpyRate={jpyRate}
               actions={barActions}
               quickSpecs={quickSpecGrid}
@@ -377,18 +375,36 @@ export default async function JapanCarDetail({ car }: Props) {
           the sheet and the assistant side by side and room to breathe. */}
       {evaluationImage && <CarEvaluation image={evaluationImage} car={car} />}
 
-      {/* Comparable sold cars — the trend chart across the full page width, after
-          the evaluation sheet. Every per-sale detail lives in its tooltip, so no
-          companion table. */}
-      {comparableSales.length > 0 && (
-        <section className="mt-8 border-t border-neutral-200 px-4 pt-8 lg:mt-12 lg:px-0 lg:pt-10 dark:border-neutral-800">
-          <PriceHistoryChart
-            data={comparableSales}
-            specLabel={comparableSpec}
-            locale={locale}
+      {/* What this car is worth, from both sides: what comparable cars actually
+          sold for, and what the buyer's own bid would land at. Two columns of
+          one section because they answer the same question — the chart hides
+          when a grade has no sales at all, and the calculator then takes the
+          full width rather than sitting in half of one. */}
+      <section className="mt-8 border-t border-neutral-200 px-4 pt-8 lg:mt-12 lg:px-0 lg:pt-10 dark:border-neutral-800">
+        <div
+          className={`grid gap-8 lg:gap-6 ${
+            comparableSales.length > 0
+              ? "lg:grid-cols-[7fr_3fr] lg:items-stretch"
+              : ""
+          }`}
+        >
+          {comparableSales.length > 0 && (
+            <PriceHistoryChart
+              data={comparableSales}
+              specLabel={comparableSpec}
+              locale={locale}
+            />
+          )}
+
+          <JapanPriceCalculator
+            auctionName={car.AUCTION}
+            manufactureYear={Number(car.YEAR) || 0}
+            engineCc={Number(car.ENG_V) || 0}
+            chassis={car.KUZOV}
+            defaultPriceJpy={startNum || Number(car.FINISH) || undefined}
           />
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Spacer so the mobile sticky bid bar never covers the last content. */}
       <div className="h-20 lg:hidden" aria-hidden />

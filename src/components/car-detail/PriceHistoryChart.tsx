@@ -181,7 +181,7 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
   // and every other field rides along for the tooltip to read.
   if (!data.length) {
     return (
-      <div>
+      <div className="flex h-full min-w-0 flex-col">
         {heading}
         <p className="rounded-2xl border border-dashed border-neutral-200 px-4 py-10 text-center text-[13px] text-neutral-400 dark:border-neutral-800">
           {t("noData")}
@@ -191,12 +191,15 @@ export default function PriceHistoryChart({ data, specLabel, locale }: Props) {
   }
 
   return (
-    <div>
+    <div className="flex h-full min-w-0 flex-col">
       {heading}
 
       {/* Heights carry the card's own p-4, so the plot itself still gets the
-          224/256/288px it had before the padding moved inside. */}
-      <div className="h-64 w-full rounded-2xl border border-neutral-200 p-4 sm:h-72 lg:h-80 dark:border-neutral-800">
+          224/256/288px it had before the padding moved inside. `flex-1` over a
+          fixed height so the card can grow to match the calculator beside it —
+          recharts still gets a resolved height either way, from the grid row on
+          `lg` and from the minimum below it. */}
+      <div className="min-h-64 w-full flex-1 rounded-2xl border border-neutral-200 p-4 sm:min-h-72 lg:min-h-80 dark:border-neutral-800">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}

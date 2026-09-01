@@ -14,8 +14,11 @@ export type KoreaOptionGroup = {
 };
 
 /**
- * Normalized 성능점검 (government performance inspection). Detail only; null when
- * the car has no inspection on file. Text values stay in Korean (the source).
+ * Normalized 성능점검 (government performance inspection), from
+ * `GET /api/korea/{id}/inspection` (`data`). It is NOT part of the detail row:
+ * the read costs Encar an upstream call, so it is made only when a buyer opens
+ * the report. `null` means nothing to show — none on file, or unreachable.
+ * Text values stay in Korean (the source).
  */
 export type KoreaInspection = {
   state: string | null;
@@ -40,8 +43,9 @@ export type KoreaInsuranceAccident = {
 };
 
 /**
- * Normalized 보험이력 (insurance history). Detail only; null when the car has
- * no open record. Costs are full KRW.
+ * Normalized 보험이력 (insurance history), from `GET /api/korea/{id}/insurance`
+ * (`data`). On-demand for the same reason as KoreaInspection, and `null` on the
+ * same cases. Costs are full KRW.
  */
 export type KoreaInsurance = {
   first_registered: string | null;
@@ -103,10 +107,6 @@ export type KoreaListing = {
   option_count?: number | null;
   /** Standard options grouped by category (detail only). */
   options?: KoreaOptionGroup[];
-  /** Government performance-inspection summary (detail only, may be null). */
-  inspection?: KoreaInspection | null;
-  /** Insurance-history (보험이력) summary (detail only, may be null). */
-  insurance?: KoreaInsurance | null;
   /** Official encar.com listing page (detail only) — the "view source" link. */
   listing_url?: string | null;
   thumb?: string | null;

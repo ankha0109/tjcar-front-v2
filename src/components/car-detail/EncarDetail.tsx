@@ -6,16 +6,13 @@ import CarBreadcrumb, { type Crumb } from "./CarBreadcrumb";
 import KoreaDetailExtras from "./KoreaDetailExtras";
 import KoreaLandedPriceCard from "./KoreaLandedPriceCard";
 import KoreaOptionsPanel from "./KoreaOptionsPanel";
+import OrderInquiry from "./OrderInquiry";
 import { formatMnt } from "@/lib/bidConfig";
 import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { getDevice } from "@/lib/device";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
 import type { CarSource } from "@/types/car";
-import type {
-  KoreaInspection,
-  KoreaInsurance,
-  KoreaOptionGroup,
-} from "@/types/korea";
+import type { KoreaOptionGroup } from "@/types/korea";
 import type { VehicleCostResult } from "@/types/vehicleCost";
 import {
   ChassisIcon,
@@ -44,10 +41,12 @@ type Props = {
   enableCompare?: boolean;
   /**
    * Encar listing facts that don't fit the AJES-shaped fixture: fixed-price
-   * money, the extra spec fields, grouped options and the government
-   * performance inspection.
+   * money, the extra spec fields and the grouped options. The condition
+   * reports are not here — they are fetched by id when a buyer opens them.
    */
   encar?: {
+    /** Encar listing id, for the on-demand condition-report lookups. */
+    listingId: string;
     priceKrw: number | null;
     priceMnt: number | null;
     /** New-car (factory) KRW price, shown as context under the asking price. */
@@ -67,8 +66,6 @@ type Props = {
     /** YYYYMM first-registration month. */
     yearMonth?: string | null;
     options?: KoreaOptionGroup[];
-    inspection?: KoreaInspection | null;
-    insurance?: KoreaInsurance | null;
   };
   /**
    * Landed-cost breakdown. The page maps Encar's fuel type to an excise class
@@ -294,32 +291,6 @@ export default async function EncarDetail({
             />
           )}
 
-          {/* The source listing, kept from the old price hero. */}
-          {encar?.officialUrl && (
-            <a
-              href={encar.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-neutral-200 text-[13px] font-semibold text-neutral-900 transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
-            >
-              {t("encar.officialLink")}
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-3.5 w-3.5"
-                aria-hidden
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-            </a>
-          )}
-
           {/* Specs — one card, the Japan lot page's icon grid */}
           <section className="flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
             <div className="grid grid-cols-3 gap-x-3 gap-y-4">
@@ -352,13 +323,40 @@ export default async function EncarDetail({
             )}
           </section>
 
-          {/* Encar performance inspection + insurance history */}
-          {encar && (
-            <KoreaDetailExtras
-              inspection={encar.inspection}
-              insurance={encar.insurance}
-            />
+          {/* Order CTA — the last thing under the car's own facts, so the
+              buyer has the price and the specs before it. Opens the contact
+              sheet; nothing is submitted here, the conversation moves to
+              Messenger or the phone. */}
+          <OrderInquiry carTitle={title} />
+
+          {/* The source listing, kept from the old price hero. */}
+          {encar?.officialUrl && (
+            <a
+              href={encar.officialUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-neutral-200 text-[13px] font-semibold text-neutral-900 transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
+            >
+              {t("encar.officialLink")}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-3.5 w-3.5"
+                aria-hidden
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
           )}
+
+          {/* Encar performance inspection + insurance history, on demand */}
+          {encar && <KoreaDetailExtras listingId={encar.listingId} />}
 
           {/* Mobile-only options placement (desktop shows them under the gallery) */}
           {encar && (
@@ -389,40 +387,17 @@ export default async function EncarDetail({
                 </span>
               </div>
               {/* Wishlist + compare sit here below `lg`, where the title band
-                  hides them — exactly one copy at any width. The listing link
-                  drops its label to fit beside them; the labelled copy is in
-                  the info column, under the price card. */}
+                  hides them — exactly one copy at any width. The order CTA
+                  holds the last slot: the Encar link used to, unlabelled, but
+                  four controls do not fit a 360px bar and the labelled copy of
+                  that link is in the info column anyway. */}
               <div className="flex shrink-0 items-center gap-2">
                 <CarActionButtons
                   item={wishlistItem}
                   enableCompare={enableCompare}
                   variant="bar"
                 />
-                {encar.officialUrl && (
-                  <a
-                    href={encar.officialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    aria-label={t("encar.officialLink")}
-                    title={t("encar.officialLink")}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
-                      aria-hidden
-                    >
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
-                )}
+                <OrderInquiry carTitle={title} variant="bar" />
               </div>
             </div>
           </div>

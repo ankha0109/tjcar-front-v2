@@ -1178,6 +1178,34 @@
         "VALIDATION_ERROR": "The listing is missing information needed to calculate the cost."
       }
     },
+    "japanCalculator": {
+      "title": "Calculate with your own price",
+      "intro": "Enter the yen price you plan to bid and see the full cost of landing this car in Mongolia.",
+      "placeholder": "Your bid",
+      "inputLabel": "Your bid, in yen",
+      "submit": "Calculate",
+      "hintLabel": "Details",
+      "enterPrice": "Enter your bid in yen.",
+      "disclaimer": "Includes the car price, Japan-side costs, shipping, and Mongolian customs duty, excise tax and VAT. Bank charges, domestic transport and other extras are not included.",
+      "note": "This estimate can change with the exchange rate of the day, and with the car's engine displacement, build year and shipping terms.",
+      "lines": {
+        "BASE_PRICE": "Base price",
+        "JAPAN_COST": "Japan-side costs",
+        "JAPAN_SUBTOTAL_MNT": "Japan total (MNT)",
+        "FREIGHT": "Shipping",
+        "EXCISE_TAX": "Excise tax",
+        "CUSTOMS_AND_VAT": "Customs duty / VAT",
+        "TOTAL": "Total"
+      },
+      "error": {
+        "AUCTION_NOT_FOUND": "No shipping price is on file for this auction house, so the cost cannot be calculated. Please contact an operator.",
+        "EXCHANGE_RATE_UNAVAILABLE": "Exchange rates are temporarily unavailable. Please try again shortly.",
+        "INVALID_MANUFACTURE_DATE": "This lot is missing its build year, so the cost cannot be calculated.",
+        "INVALID_ENGINE_CC": "This lot is missing its engine displacement, so the cost cannot be calculated.",
+        "VALIDATION_ERROR": "This lot is missing information needed to calculate the cost.",
+        "NETWORK": "Something went wrong while calculating. Please try again."
+      }
+    },
     "rateInfo": {
       "title": "About the rating",
       "intro": "RATE is the overall condition grade the independent auction inspector gives the car — the scale runs from S down to 1, and the lower it goes the rougher the car. Codes such as 99, X or *** are NOT high scores: they mark a car that was never repaired after a crash or engine failure.",
@@ -1381,10 +1409,22 @@
       "startLabel": "Start price",
       "avgPrefix": "Avg"
     },
+    "order": {
+      "cta": "Place an order",
+      "intro": "Reach us through any of the channels below. This car's details are sent automatically.",
+      "messengerLabel": "Messenger",
+      "messengerHint": "Chat on Facebook Messenger",
+      "facebookLabel": "Facebook",
+      "facebookHint": "Open our Facebook page",
+      "phoneHint": "Call us"
+    },
     "encar": {
       "priceLabel": "Price",
       "newPriceLabel": "New car price (Korea)",
       "officialLink": "Official listing (Encar)",
+      "reportEmpty": "No report is on file for this car.",
+      "reportError": "The report could not be loaded. Please try again in a moment.",
+      "reportRetry": "Try again",
       "inspection": {
         "title": "Inspection report",
         "flood": "Flood damage",

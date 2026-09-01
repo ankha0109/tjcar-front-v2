@@ -47,6 +47,7 @@ export default async function KoreaDetailPage({ params }: Props) {
       enableCompare
       landedCost={{ result: landedCost }}
       encar={{
+        listingId: id,
         priceKrw: listing.price_krw ?? null,
         priceMnt: listing.price_mnt ?? null,
         newPriceKrw: listing.new_price_krw ?? null,
@@ -57,8 +58,6 @@ export default async function KoreaDetailPage({ params }: Props) {
         seatCount: listing.seat_count ?? null,
         yearMonth: listing.year_month ?? null,
         options: listing.options,
-        inspection: listing.inspection,
-        insurance: listing.insurance,
       }}
     />
   );

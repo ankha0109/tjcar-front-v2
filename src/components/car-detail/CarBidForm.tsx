@@ -20,10 +20,8 @@ type Props = {
   auctionId: string;
   /** JPY start price (auction opening price). */
   startPrice: number;
-  /** Minimum acceptable MNT bid, from POST /calculator. */
+  /** Minimum acceptable MNT bid — `START_LANDED_MNT` off the lot payload. */
   minAmount: number;
-  /** Calculator request still in flight. */
-  loadingMin: boolean;
   /** Whether the user may switch currency (v1: user.type === 2). */
   canChooseCurrency: boolean;
   /** Live JPY → MNT rate, for the approximate MNT preview on JPY bids. */
@@ -36,7 +34,6 @@ export default function CarBidForm({
   auctionId,
   startPrice,
   minAmount,
-  loadingMin,
   canChooseCurrency,
   jpyRate,
   onSubmitted,
@@ -236,7 +233,7 @@ export default function CarBidForm({
         </div>
       )}
 
-      <BrandButton block size="large" htmlType="submit" loading={loadingMin}>
+      <BrandButton block size="large" htmlType="submit">
         {t("submit")}
       </BrandButton>
     </Form>
