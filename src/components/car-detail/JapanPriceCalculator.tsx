@@ -42,7 +42,7 @@ function isRefusal(status: number): boolean {
 }
 
 /**
- * "Өөрийн үнээр тооцоолох" — the buyer types the yen they intend to bid and
+ * "Үнийн тооцоолуур" — the buyer types the yen they intend to bid and
  * gets the full tugrik breakdown for it.
  *
  * The tiles above answer "what will this car cost" on a price the buyer did not

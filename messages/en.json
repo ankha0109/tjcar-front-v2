@@ -1179,8 +1179,8 @@
       }
     },
     "japanCalculator": {
-      "title": "Calculate with your own price",
-      "intro": "Enter the yen price you plan to bid and see the full cost of landing this car in Mongolia.",
+      "title": "Price calculator",
+      "intro": "Enter the price in Japan and calculate the full cost of landing this car in Mongolia.",
       "placeholder": "Your bid",
       "inputLabel": "Your bid, in yen",
       "submit": "Calculate",
