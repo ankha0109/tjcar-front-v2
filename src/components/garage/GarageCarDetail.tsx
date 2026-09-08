@@ -1,31 +1,39 @@
+import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import CarActionButtons from "@/components/car-detail/CarActionButtons";
 import CarBreadcrumb from "@/components/car-detail/CarBreadcrumb";
 import CarGallery from "@/components/car-detail/CarGallery";
+import RateCard from "@/components/car-detail/RateCard";
+import {
+  ChassisIcon,
+  ColorIcon,
+  EngineIcon,
+  MileageIcon,
+  YearIcon,
+} from "@/components/icons/CarSpecIcons";
+import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { carResourceToFixture, carTitle } from "@/lib/carFixtures";
 import { getDevice } from "@/lib/device";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
 import type { CarResource } from "@/types/car";
-import { formatMileage } from "@/utils/carFormat";
+import { getColorSwatch } from "@/utils/carColor";
+import { formatEngineWithPower, formatMileage } from "@/utils/carFormat";
+import CarDescription from "./CarDescription";
 import GarageContactCard from "./GarageContactCard";
-import { SoldBadge, StockBadge } from "./StockBadge";
+import GaragePriceCard from "./GaragePriceCard";
+import { SoldBadge } from "./StockBadge";
 
 type Props = { car: CarResource };
-
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(
-    value,
-  );
-}
 
 /**
  * Detail page for a car we already own (`GET /cars/{id}`, route `/garage/{id}`).
  *
- * Same shell as the auction and Encar pages — gallery left, facts right — but
- * every auction affordance is gone: there is nothing to bid on, no inspection
- * sheet, no comparable-sales chart and no landed-price estimate, because the
- * tugrik price is final and the car is already bought. The bid panel's slot goes
- * to {@link GarageContactCard}.
+ * Built on the Japan lot page's shell — full-width title band above the photos,
+ * gallery left, a column of cards right — with every auction affordance gone:
+ * there is nothing to bid on, no inspection sheet, no comparable-sales chart and
+ * no landed-price estimate, because the tugrik price is final and the car is
+ * already bought. The bid panel's slot goes to the price tile, the seller's
+ * write-up and {@link GarageContactCard}.
  *
  * It does not reuse `EncarDetail`: that component's landed-price card, options
  * panel and inspection block are all gated behind its Encar-only `encar` prop,
@@ -55,173 +63,153 @@ export default async function GarageCarDetail({ car }: Props) {
   const images = car.images ?? [];
 
   const mileage = formatMileage(Number(fixture.MILEAGE) || undefined, tFmt);
-  const engineCc = parseInt(fixture.ENG_V, 10);
-  const engine = Number.isFinite(engineCc)
-    ? `${formatNumber(engineCc)}cc`
-    : undefined;
-  // `COLOR` is hand-typed free-text Mongolian ("Сувдан цагаан"), which neither
-  // the Korean colour map nor the AJES word-splitting can key off — so it prints
-  // raw, with no swatch rather than a misleading grey one.
+  // No `PW` in the nine hand-typed `car_data` keys, so this is displacement
+  // alone — "2,000CC", formatted by the same helper the lot pages use.
+  const engine = formatEngineWithPower(Number(fixture.ENG_V) || undefined, undefined);
+  // `COLOR` is hand-typed free-text ("Хар", "Сувдан цагаан"), which is exactly
+  // what the swatch map keys off — it carries Mongolian names and falls back to
+  // the last matching word, so "Сувдан цагаан" still resolves to white. An
+  // unrecognised name gets the same grey dot it does on the lot pages.
   const color = fixture.COLOR || undefined;
 
   const wishlistItem = wishlistItemFromFixture(fixture, "stock", car.price);
 
-  const quickSpecs: Array<{ label: string; value: string | undefined }> = [
-    { label: t("specs.year"), value: fixture.YEAR || undefined },
-    { label: t("specs.mileage"), value: mileage },
-    { label: t("specs.engine"), value: engine },
-    { label: t("specs.color"), value: color },
-    { label: t("specs.rate"), value: fixture.RATE || undefined },
-    { label: t("specs.grade"), value: fixture.GRADE || undefined },
-  ];
-
-  const detailedRows: Array<{ label: string; value: string | undefined }> = [
-    { label: tg("specs.marka"), value: fixture.MARKA_NAME || undefined },
-    { label: tg("specs.model"), value: fixture.MODEL_NAME || undefined },
-    { label: t("specs.year"), value: fixture.YEAR || undefined },
-    { label: t("specs.mileage"), value: mileage },
-    { label: t("specs.engine"), value: engine },
-    { label: t("specs.color"), value: color },
-    { label: t("specs.rate"), value: fixture.RATE || undefined },
-    { label: t("specs.grade"), value: fixture.GRADE || undefined },
-    { label: t("specs.chassis"), value: fixture.KUZOV || undefined },
+  // Brand, model and grade are in the title band (and, on the phone shell, in
+  // the sticky header's two lines), so they are deliberately absent here — this
+  // grid holds only what the title cannot say. Empty cells are dropped rather
+  // than shown as a dash: `KUZOV` is null on most stock rows.
+  const specs: Array<{
+    label: string;
+    value: string | undefined;
+    icon: ReactNode;
+  }> = [
+    { label: t("specs.year"), value: fixture.YEAR || undefined, icon: <YearIcon /> },
+    { label: t("specs.mileage"), value: mileage, icon: <MileageIcon /> },
+    { label: t("specs.engine"), value: engine, icon: <EngineIcon /> },
     {
-      label: tg("specs.purchaseType"),
-      value: car.type ? tg(`type.${car.type}`) : undefined,
+      label: t("specs.color"),
+      value: color,
+      icon: <ColorIcon swatch={getColorSwatch(color ?? "")} />,
     },
-  ].filter((row) => row.value);
+    {
+      label: t("specs.chassis"),
+      value: fixture.KUZOV || undefined,
+      icon: <ChassisIcon />,
+    },
+  ].filter((spec) => spec.value);
 
   return (
     <article className="mx-auto w-full max-w-7xl px-0 lg:px-6 lg:py-8">
+      {/* Title band — breadcrumb plus the title/actions row, both full page
+          width above the gallery. Skipped on the phone shell, whose sticky
+          header already carries the title and grade. */}
       {showTitleHeader && (
-        <CarBreadcrumb
-          ariaLabel={t("breadcrumb.aria")}
-          className="px-4 pt-5 pb-3 lg:px-0 lg:pt-0"
-          items={[
-            { label: t("breadcrumb.home"), href: "/" },
-            { label: tNav("ready"), href: "/garage" },
-            { label: title },
-          ]}
-        />
+        <>
+          <CarBreadcrumb
+            ariaLabel={t("breadcrumb.aria")}
+            className="px-4 pt-5 pb-3 lg:px-0 lg:pt-0"
+            items={[
+              { label: t("breadcrumb.home"), href: "/" },
+              { label: tNav("ready"), href: "/garage" },
+              { label: title },
+            ]}
+          />
+          <header className="flex items-center justify-between gap-3 px-4 pb-6 lg:px-0">
+            {/* Grade trails the title on the same baseline rather than taking
+                its own line — the band is above the fold, so the row saved is
+                worth more than the separation. */}
+            <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+              <h1 className="text-2xl font-bold leading-tight text-neutral-900 lg:text-[28px] dark:text-neutral-100">
+                {title}
+              </h1>
+              {fixture.GRADE && (
+                <span className="text-2xl font-normal leading-tight text-neutral-600 lg:text-[28px] dark:text-neutral-400">
+                  {fixture.GRADE}
+                </span>
+              )}
+            </div>
+            {/* Below `lg` the actions live in the sticky bar instead, so
+                exactly one copy of the heart exists at any width — including a
+                narrow desktop-shell window, which still renders this header.
+                No `enableCompare`: `GET /compare` cannot re-fetch a local
+                stock id, so stock cars are wishlist-only. */}
+            <div className="hidden shrink-0 lg:block">
+              <CarActionButtons item={wishlistItem} />
+            </div>
+          </header>
+        </>
       )}
 
-      <div className="lg:grid lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-10">
+      {/* Flex, not grid: the write-up makes the info column taller than the
+          gallery, and each column should end where its own content does. */}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:gap-x-10">
         {/* Gallery — full-bleed on mobile (no side padding). `sizeVariants` is
             off because our own CDN keeps its variants in the file name, not in a
             `&w=` query suffix like the auction host. */}
-        <div className="lg:order-1">
-          <div className="pt-2 lg:p-0">
-            <CarGallery images={images} alt={title} sizeVariants={false} />
-          </div>
+        <div className="pt-2 lg:min-w-0 lg:grow-[1.4] lg:basis-0 lg:pt-0">
+          <CarGallery images={images} alt={title} sizeVariants={false} />
         </div>
 
-        {/* Info column */}
-        <div className="flex flex-col gap-5 px-4 py-5 lg:order-2 lg:py-0">
-          {/* Skipped on the phone shell, whose sticky header already carries the
-              title — two <h1>s for one car otherwise. Year/grade/colour all
-              repeat in the quick specs below, so nothing is lost. */}
-          {showTitleHeader && (
-            <header className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <h1 className="text-2xl font-bold leading-tight text-neutral-900 lg:text-[28px] dark:text-neutral-100">
-                  {title}
-                </h1>
-                <div className="flex flex-wrap items-center gap-2 text-[13px] text-neutral-600 dark:text-neutral-400">
-                  {fixture.YEAR && <span>{fixture.YEAR}</span>}
-                  {fixture.GRADE && (
-                    <>
-                      <span aria-hidden>·</span>
-                      <span>{fixture.GRADE}</span>
-                    </>
-                  )}
-                  {color && (
-                    <>
-                      <span aria-hidden>·</span>
-                      <span>{color}</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              {/* Below `lg` the actions live in the sticky bar instead, so
-                  exactly one copy of the heart exists at any width — including a
-                  narrow desktop-shell window, which still renders this header.
-                  No `enableCompare`: `GET /compare` cannot re-fetch a local
-                  stock id, so stock cars are wishlist-only. */}
-              <div className="hidden shrink-0 lg:block">
-                <CarActionButtons item={wishlistItem} />
-              </div>
-            </header>
-          )}
-
-          {/* Price hero. A sold car shows the status in the price's place —
-              branching on `status`, never on `status_label`, which the backend
-              returns as "Идэвхтэй" for sold cars too. */}
-          <section className="rounded-2xl bg-neutral-900 p-4 ring-1 ring-white/10 dark:bg-neutral-800">
-            <div className="text-[11px] font-semibold uppercase text-neutral-400">
-              {isSold ? tg("tabs.sold") : tg("priceLabel")}
-            </div>
-            {isSold ? (
-              <div className="mt-1 text-3xl font-extrabold leading-none text-neutral-500">
-                {tg("sold")}
-              </div>
-            ) : (
-              <div className="mt-1 text-4xl font-extrabold leading-none text-emerald-400">
-                ₮{formatNumber(car.price)}
-              </div>
+        {/* Info column. `px-4` is the mobile gutter the full-bleed gallery
+            forces onto the children (the article itself is `px-0` below `lg`);
+            on desktop the article's own `lg:px-6` already provides it, so this
+            has to drop or the column sits 16px inside its track — a right edge
+            that misses the header's. */}
+        <div className="flex flex-col gap-5 px-4 py-5 lg:min-w-0 lg:grow lg:basis-0 lg:px-0 lg:py-0">
+          {/* Price, then the grade it was bought at. The two are one unit — a
+              tighter gap than the column's, so the strip reads as a footnote to
+              the number rather than the next section. The grade does not share
+              the price's row: on a car we have already bought and inspected it
+              is evidence, not a headline, and splitting the row two ways left
+              both halves looking equally important. */}
+          <div className="flex flex-col gap-2.5">
+            <GaragePriceCard
+              price={car.price}
+              isSold={isSold}
+              type={car.type}
+              arrivalDate={car.arrival_date}
+            />
+            {fixture.RATE && (
+              <RateCard
+                rate={fixture.RATE}
+                label={t("specs.rate")}
+                variant="bar"
+              />
             )}
+          </div>
 
-            {!isSold && car.type && (
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3">
-                <StockBadge type={car.type} label={tg(`type.${car.type}`)} />
-                {/* Only ever set on `arriving_soon` cars upstream. */}
-                {car.arrival_date && (
-                  <span className="text-[12px] text-neutral-400">
-                    {tg("arrivalLabel")}: {car.arrival_date}
+          {/* Specs — one card, the Japan lot page's icon grid. Filled rather
+              than the outline that page uses: here it has the write-up and the
+              contact card under it, and an unfilled card between two filled
+              ones reads as a hole in dark mode, where the page is near-black
+              and the cards are not. */}
+          <section className="rounded-2xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
+            {/* Two columns, not the lot page's three: a stock row carries four
+                or five facts against an auction lot's eleven, and at three the
+                cells are narrow enough to truncate "Мөнгөлөг" while the last
+                row sits two thirds empty. */}
+            <div className="grid grid-cols-2 gap-x-3 gap-y-4">
+              {specs.map(({ label, value, icon }) => (
+                <div key={label} className="flex items-center gap-1.25">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-neutral-0 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+                    {icon}
                   </span>
-                )}
-              </div>
-            )}
-          </section>
-
-          {/* Quick specs */}
-          <section className="grid grid-cols-3 gap-2">
-            {quickSpecs.map(({ label, value }) => (
-              <div
-                key={label}
-                className="flex flex-col gap-0.5 rounded-xl border border-neutral-200/80 bg-white px-3 py-2.5 dark:border-neutral-800 dark:bg-neutral-900"
-              >
-                <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
-                  {label}
-                </span>
-                <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
-                  {value || "-"}
-                </span>
-              </div>
-            ))}
-          </section>
-
-          {/* Full spec table. Rows with no value are dropped rather than shown
-              as a dash — `KUZOV` is empty on most rows and `GRADE` on some. */}
-          <section>
-            <h2 className="mb-3 text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
-              {t("specs.fullTitle")}
-            </h2>
-            <dl className="overflow-hidden rounded-2xl border border-neutral-200 bg-white text-[13px] dark:border-neutral-800 dark:bg-neutral-900">
-              {detailedRows.map((row, idx) => (
-                <div
-                  key={row.label}
-                  className={`flex items-start gap-4 px-4 py-3 ${idx > 0 ? "border-t border-neutral-100 dark:border-neutral-800" : ""}`}
-                >
-                  <dt className="w-32 shrink-0 text-neutral-500 dark:text-neutral-400">
-                    {row.label}
-                  </dt>
-                  <dd className="flex-1 font-medium text-neutral-900 dark:text-neutral-100">
-                    {row.value}
-                  </dd>
+                  <div className="flex min-w-0 flex-col gap-0 leading-normal">
+                    <span className="text-[11px] font-medium uppercase text-neutral-400 dark:text-neutral-500">
+                      {label}
+                    </span>
+                    <span className="truncate text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+                      {value}
+                    </span>
+                  </div>
                 </div>
               ))}
-            </dl>
+            </div>
           </section>
+
+          {/* The seller's own write-up. Hides itself when the field is empty,
+              which is every car registered before the editor existed. */}
+          <CarDescription html={car.description} />
 
           <GarageContactCard />
         </div>
@@ -233,13 +221,14 @@ export default async function GarageCarDetail({ car }: Props) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-col">
             <span className="text-[11px] font-semibold uppercase text-neutral-400">
-              {isSold ? tg("tabs.sold") : tg("priceLabel")}
+              {isSold ? tg("statusLabel") : tg("priceLabel")}
             </span>
             {isSold ? (
               <SoldBadge label={tg("sold")} className="mt-0.5 self-start" />
             ) : (
-              <span className="truncate text-base font-bold text-neutral-900 dark:text-neutral-100">
-                ₮{formatNumber(car.price)}
+              <span className="flex items-center gap-0.5 text-base font-bold text-neutral-900 dark:text-neutral-100">
+                <TugrigIcon size={15} className="shrink-0" />
+                <span className="truncate">{car.price.toLocaleString()}</span>
               </span>
             )}
           </div>

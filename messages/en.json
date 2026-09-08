@@ -760,7 +760,7 @@
         "china": "CN"
       },
       "grade": {
-        "label": "Auction grade",
+        "label": "Vehicle grade",
         "tier": {
           "pristine": "Pristine",
           "good": "Good",
@@ -956,6 +956,7 @@
     },
     "sold": "Sold",
     "priceLabel": "Price",
+    "statusLabel": "Status",
     "arrivalLabel": "Arrives in Mongolia",
     "specs": {
       "marka": "Manufacturer",
@@ -967,6 +968,9 @@
       "subtitle": "Call us for details or to book a viewing.",
       "messenger": "Send a message",
       "cta": "Contact us"
+    },
+    "description": {
+      "title": "About this car"
     },
     "empty": {
       "title": "No results",

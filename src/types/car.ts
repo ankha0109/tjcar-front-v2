@@ -143,6 +143,12 @@ export type CarData = {
 export type CarResource = {
   id: number;
   car_data: CarData;
+  /**
+   * Admin-authored sales copy, stored as Tiptap HTML (`<p>`, `<strong>`, lists)
+   * — the same editor and trust model as a blog post's body, so it renders
+   * unsanitized. Null on every car registered before the field existed.
+   */
+  description: string | null;
   price: number;
   images: string[];
   arrival_date: string | null;

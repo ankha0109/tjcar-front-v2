@@ -9,8 +9,14 @@ import { getGradeInfo, type GradeTier } from "@/utils/auctionGrade";
 type Props = {
   /** Overall inspection grade (e.g. "S", "5", "4.5", "R"). */
   rate: string;
-  /** Localized "RATE" label. */
+  /** Localized "RATE" label. Only the tile reads it — the bar writes its own. */
   label: string;
+  /**
+   * "tile" — the Japan lot page's square headline card, paired with the landed
+   * price. "bar" — a one-line strip for pages where the grade is supporting
+   * evidence rather than a headline (`/garage/[id]`, where the price leads).
+   */
+  variant?: "tile" | "bar";
 };
 
 /**
@@ -51,21 +57,151 @@ const LEGEND_BADGE: Record<GradeTier, string> = {
   unknown: "bg-neutral-400",
 };
 
+function InfoGlyph() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <path d="M12 17h.01" />
+    </svg>
+  );
+}
+
 /**
- * Standalone square card for the auction inspection grade (RATE) — the single
- * most important quality signal, so it gets its own tile. The colour comes from
- * {@link getGradeInfo}, the same helper the list badges use, so one lot never
- * reads emerald here and black on the card it came from. An info button opens a
- * modal legend that decodes every grade.
+ * The auction inspection grade (RATE), with a modal legend that decodes every
+ * grade. The colour comes from {@link getGradeInfo}, the same helper the list
+ * badges use, so one lot never reads emerald here and black on the card it came
+ * from.
+ *
+ * Two shells over one legend. On a Japan lot the grade is a headline fact and
+ * takes a square tile beside the landed price; on an in-stock car it is
+ * supporting evidence for a car we already bought and inspected, so it collapses
+ * to a one-line bar under the price — which there spells out what the symbol
+ * means ("Дуудлагын үнэлгээ · Сайн") instead of leaving a bare "4" on screen.
  */
-export default function RateCard({ rate, label }: Props) {
+export default function RateCard({ rate, label, variant = "tile" }: Props) {
   const t = useTranslations("carDetail.rateInfo");
+  // The tier words the list cards already use — no second translation of
+  // "good"/"average" for this page.
+  const tGrade = useTranslations("car.card.grade");
   const [open, setOpen] = useState(false);
 
   const value = rate?.trim() || "-";
   const current = value.toUpperCase();
   const info = getGradeInfo(value);
   const grades = t.raw("grades") as Record<string, string>;
+
+  const modal = (
+    <Modal
+      open={open}
+      onCancel={() => setOpen(false)}
+      footer={null}
+      title={t("title")}
+      centered
+    >
+      <p className="mb-4 text-[13px] leading-relaxed text-neutral-600 dark:text-neutral-300">
+        {t("intro")}
+      </p>
+      <ul className="flex flex-col gap-1.5">
+        {RATE_GRADES.map(({ code, key, matches }) => {
+          const active = (matches as readonly string[]).includes(current);
+          const tier = getGradeInfo(code)?.tier ?? "unknown";
+          return (
+            <li
+              key={key}
+              className={cn(
+                "flex items-start gap-2.5 rounded-lg px-2 py-1.5",
+                // Neutral, never emerald: the highlighted row is just as often
+                // the worst grade on the list as the best one.
+                active &&
+                  "bg-neutral-100 ring-1 ring-neutral-300 dark:bg-neutral-800 dark:ring-neutral-600",
+              )}
+            >
+              <span
+                className={cn(
+                  "mt-px inline-flex min-w-9 justify-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white",
+                  LEGEND_BADGE[tier],
+                )}
+              >
+                {code}
+              </span>
+              <span className="text-[12.5px] leading-snug text-neutral-600 dark:text-neutral-300">
+                {grades[key]}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-4 text-[12px] leading-relaxed text-neutral-400 dark:text-neutral-500">
+        {t("note")}
+      </p>
+    </Modal>
+  );
+
+  if (variant === "bar") {
+    // The whole strip is the trigger, not a 24px icon at the end of it — this
+    // sits under a 34px price where a lone info dot would be easy to miss and
+    // hard to hit. The text is its own accessible name.
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          className="flex w-full items-center gap-2.5 rounded-2xl border border-neutral-200 bg-white py-2.5 pr-3 pl-2.5 text-left transition-colors pointer-fine:hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:pointer-fine:hover:bg-neutral-800/60"
+        >
+          {/* Tier colour as a rail rather than a filled badge: at this size a
+              coloured block beside the price competes with it. `bg-current`
+              rather than `classes.dot`, so the rail cannot drift from the grade
+              beside it — the `good` tier's dot is sky while its text is
+              emerald, which put two colours on one reading. */}
+          <span
+            className={cn(
+              "flex items-center gap-2.5",
+              info?.classes.text ?? "text-neutral-400 dark:text-neutral-500",
+            )}
+          >
+            <span
+              aria-hidden
+              className="h-7 w-1 shrink-0 rounded-full bg-current"
+            />
+            <span className="text-[17px] font-extrabold leading-none">
+              {info?.symbol ?? value}
+            </span>
+          </span>
+          <span className="min-w-0 flex-1 truncate text-[13px] text-neutral-500 dark:text-neutral-400">
+            {tGrade("label")}
+            {/* Only when the grade actually decodes. Our own stock rows are
+                hand-typed and a good few say "CLEAN", which lands on the
+                unknown tier — trailing "· Тодорхойгүй" after it would read as a
+                verdict on the car rather than on our data. */}
+            {info && info.tier !== "unknown" && (
+              <>
+                <span aria-hidden> · </span>
+                <span className="font-semibold text-neutral-900 dark:text-neutral-100">
+                  {tGrade(`tier.${info.tier}`)}
+                </span>
+              </>
+            )}
+          </span>
+          <span className="shrink-0 text-neutral-400 dark:text-neutral-500">
+            <InfoGlyph />
+          </span>
+        </button>
+        {modal}
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-between gap-2 rounded-2xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
@@ -77,22 +213,9 @@ export default function RateCard({ rate, label }: Props) {
           type="button"
           onClick={() => setOpen(true)}
           aria-label={t("title")}
-          className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+          className="-mt-1 -mr-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <path d="M12 17h.01" />
-          </svg>
+          <InfoGlyph />
         </button>
       </div>
 
@@ -105,50 +228,7 @@ export default function RateCard({ rate, label }: Props) {
         {value}
       </div>
 
-      <Modal
-        open={open}
-        onCancel={() => setOpen(false)}
-        footer={null}
-        title={t("title")}
-        centered
-      >
-        <p className="mb-4 text-[13px] leading-relaxed text-neutral-600 dark:text-neutral-300">
-          {t("intro")}
-        </p>
-        <ul className="flex flex-col gap-1.5">
-          {RATE_GRADES.map(({ code, key, matches }) => {
-            const active = (matches as readonly string[]).includes(current);
-            const tier = getGradeInfo(code)?.tier ?? "unknown";
-            return (
-              <li
-                key={key}
-                className={cn(
-                  "flex items-start gap-2.5 rounded-lg px-2 py-1.5",
-                  // Neutral, never emerald: the highlighted row is just as often
-                  // the worst grade on the list as the best one.
-                  active &&
-                    "bg-neutral-100 ring-1 ring-neutral-300 dark:bg-neutral-800 dark:ring-neutral-600",
-                )}
-              >
-                <span
-                  className={cn(
-                    "mt-px inline-flex min-w-9 justify-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white",
-                    LEGEND_BADGE[tier],
-                  )}
-                >
-                  {code}
-                </span>
-                <span className="text-[12.5px] leading-snug text-neutral-600 dark:text-neutral-300">
-                  {grades[key]}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-        <p className="mt-4 text-[12px] leading-relaxed text-neutral-400 dark:text-neutral-500">
-          {t("note")}
-        </p>
-      </Modal>
+      {modal}
     </div>
   );
 }

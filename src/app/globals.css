@@ -941,3 +941,14 @@ a {
 :root[data-theme="dark"] .post-body th {
   background: #18181b;
 }
+
+/* In-stock car write-up (`GET /cars/{id}` → `description`). Same Tiptap HTML as
+   a blog post, printed in the detail page's info column instead of a 680px
+   article — so only the size comes down here. The vertical rhythm is left to
+   `.post-body`: the editor marks its sections with empty paragraphs, and those
+   only read as breaks while the paragraphs around them keep their full prose
+   margins. */
+.car-description {
+  font-size: 14px;
+  line-height: 1.6;
+}

@@ -14,6 +14,14 @@ export default async function MobileHeaderGarageCarDetail({ params }: Props) {
   const device = await getDevice();
   if (device !== "mobile") return null;
   const car = await getCar(id);
-  const title = car ? carTitle(carResourceToFixture(car)) : "";
-  return <MobileHeader back={{ href: "/garage" }} title={title} />;
+  // Grade rides as the header's second line (the Japan lot page does the same),
+  // which is why the page body leaves it out of the phone spec grid.
+  const fixture = car ? carResourceToFixture(car) : null;
+  return (
+    <MobileHeader
+      back={{ href: "/garage" }}
+      title={fixture ? carTitle(fixture) : ""}
+      subtitle={fixture?.GRADE || undefined}
+    />
+  );
 }

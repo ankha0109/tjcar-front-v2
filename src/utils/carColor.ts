@@ -7,6 +7,9 @@ const COLOR_SWATCH: Record<string, ColorSwatch> = {
   саарал: { bg: "#7c8088" },
   мөнгөлөг: { bg: "#cdd2d8" },
   цэнхэр: { bg: "#2858a7" },
+  // "Хар хөх" (navy) is how stock cars are colour-typed, and without this the
+  // word-by-word fallback lands on "хар" and paints a navy car black.
+  хөх: { bg: "#2858a7" },
   улаан: { bg: "#c8302d" },
   ногоон: { bg: "#2c7a4b" },
   шар: { bg: "#e7bc1a" },
