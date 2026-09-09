@@ -9,14 +9,17 @@ import { getGradeInfo, type GradeTier } from "@/utils/auctionGrade";
 type Props = {
   /** Overall inspection grade (e.g. "S", "5", "4.5", "R"). */
   rate: string;
-  /** Localized "RATE" label. Only the tile reads it — the bar writes its own. */
+  /**
+   * Localized "RATE" label. The tile prints it; the inline chip has no room for
+   * it and spends it on the button's accessible name instead.
+   */
   label: string;
   /**
    * "tile" — the Japan lot page's square headline card, paired with the landed
-   * price. "bar" — a one-line strip for pages where the grade is supporting
-   * evidence rather than a headline (`/garage/[id]`, where the price leads).
+   * price. "inline" — a bare chip that rides the price row on `/garage/[id]`,
+   * where the grade is supporting evidence rather than a headline.
    */
-  variant?: "tile" | "bar";
+  variant?: "tile" | "inline";
 };
 
 /**
@@ -86,14 +89,12 @@ function InfoGlyph() {
  * Two shells over one legend. On a Japan lot the grade is a headline fact and
  * takes a square tile beside the landed price; on an in-stock car it is
  * supporting evidence for a car we already bought and inspected, so it collapses
- * to a one-line bar under the price — which there spells out what the symbol
- * means ("Дуудлагын үнэлгээ · Сайн") instead of leaving a bare "4" on screen.
+ * to a chip on the left of the price row — the grade alone, no decoded wording:
+ * the right half of that row belongs to the number, and a good few of our own
+ * hand-typed stock grades ("CLEAN") decode to nothing anyway.
  */
 export default function RateCard({ rate, label, variant = "tile" }: Props) {
   const t = useTranslations("carDetail.rateInfo");
-  // The tier words the list cards already use — no second translation of
-  // "good"/"average" for this page.
-  const tGrade = useTranslations("car.card.grade");
   const [open, setOpen] = useState(false);
 
   const value = rate?.trim() || "-";
@@ -148,17 +149,19 @@ export default function RateCard({ rate, label, variant = "tile" }: Props) {
     </Modal>
   );
 
-  if (variant === "bar") {
-    // The whole strip is the trigger, not a 24px icon at the end of it — this
-    // sits under a 34px price where a lone info dot would be easy to miss and
-    // hard to hit. The text is its own accessible name.
+  if (variant === "inline") {
+    // The whole chip is the trigger, not a lone 16px dot: it sits beside a 30px
+    // price, where an icon-sized target would be easy to miss and hard to hit.
+    // `truncate` because the grade is not always a symbol — our hand-typed stock
+    // rows say things like "CLEAN", and the price must keep its half of the row.
     return (
       <>
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
-          className="flex w-full items-center gap-2.5 rounded-2xl border border-neutral-200 bg-white py-2.5 pr-3 pl-2.5 text-left transition-colors pointer-fine:hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:pointer-fine:hover:bg-neutral-800/60"
+          aria-label={`${label}: ${info?.symbol ?? value}`}
+          className="flex min-w-0 shrink items-center gap-2 rounded-xl bg-neutral-100 py-1.5 pr-2 pl-2.5 transition-colors pointer-fine:hover:bg-neutral-200/70 dark:bg-neutral-800 dark:pointer-fine:hover:bg-neutral-700"
         >
           {/* Tier colour as a rail rather than a filled badge: at this size a
               coloured block beside the price competes with it. `bg-current`
@@ -167,32 +170,17 @@ export default function RateCard({ rate, label, variant = "tile" }: Props) {
               emerald, which put two colours on one reading. */}
           <span
             className={cn(
-              "flex items-center gap-2.5",
-              info?.classes.text ?? "text-neutral-400 dark:text-neutral-500",
+              "flex min-w-0 items-center gap-2",
+              info?.classes.text ?? "text-neutral-500 dark:text-neutral-400",
             )}
           >
             <span
               aria-hidden
-              className="h-7 w-1 shrink-0 rounded-full bg-current"
+              className="h-6 w-1 shrink-0 rounded-full bg-current"
             />
-            <span className="text-[17px] font-extrabold leading-none">
+            <span className="truncate text-[18px] font-extrabold leading-none">
               {info?.symbol ?? value}
             </span>
-          </span>
-          <span className="min-w-0 flex-1 truncate text-[13px] text-neutral-500 dark:text-neutral-400">
-            {tGrade("label")}
-            {/* Only when the grade actually decodes. Our own stock rows are
-                hand-typed and a good few say "CLEAN", which lands on the
-                unknown tier — trailing "· Тодорхойгүй" after it would read as a
-                verdict on the car rather than on our data. */}
-            {info && info.tier !== "unknown" && (
-              <>
-                <span aria-hidden> · </span>
-                <span className="font-semibold text-neutral-900 dark:text-neutral-100">
-                  {tGrade(`tier.${info.tier}`)}
-                </span>
-              </>
-            )}
           </span>
           <span className="shrink-0 text-neutral-400 dark:text-neutral-500">
             <InfoGlyph />

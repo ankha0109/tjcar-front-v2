@@ -11,7 +11,6 @@ import {
   MileageIcon,
   YearIcon,
 } from "@/components/icons/CarSpecIcons";
-import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import { carResourceToFixture, carTitle } from "@/lib/carFixtures";
 import { getDevice } from "@/lib/device";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
@@ -156,27 +155,25 @@ export default async function GarageCarDetail({ car }: Props) {
             has to drop or the column sits 16px inside its track — a right edge
             that misses the header's. */}
         <div className="flex flex-col gap-5 px-4 py-5 lg:min-w-0 lg:grow lg:basis-0 lg:px-0 lg:py-0">
-          {/* Price, then the grade it was bought at. The two are one unit — a
-              tighter gap than the column's, so the strip reads as a footnote to
-              the number rather than the next section. The grade does not share
-              the price's row: on a car we have already bought and inspected it
-              is evidence, not a headline, and splitting the row two ways left
-              both halves looking equally important. */}
-          <div className="flex flex-col gap-2.5">
-            <GaragePriceCard
-              price={car.price}
-              isSold={isSold}
-              type={car.type}
-              arrivalDate={car.arrival_date}
-            />
-            {fixture.RATE && (
-              <RateCard
-                rate={fixture.RATE}
-                label={t("specs.rate")}
-                variant="bar"
-              />
-            )}
-          </div>
+          {/* One card: the grade rides the price's row from the left, as a bare
+              chip. On a car we have already bought and inspected the grade is
+              evidence rather than a headline, and it does not need its own
+              strip — or the word for what it means — to say so. */}
+          <GaragePriceCard
+            price={car.price}
+            isSold={isSold}
+            type={car.type}
+            arrivalDate={car.arrival_date}
+            rate={
+              fixture.RATE ? (
+                <RateCard
+                  rate={fixture.RATE}
+                  label={t("specs.rate")}
+                  variant="inline"
+                />
+              ) : null
+            }
+          />
 
           {/* Specs — one card, the Japan lot page's icon grid. Filled rather
               than the outline that page uses: here it has the write-up and the
@@ -226,9 +223,11 @@ export default async function GarageCarDetail({ car }: Props) {
             {isSold ? (
               <SoldBadge label={tg("sold")} className="mt-0.5 self-start" />
             ) : (
-              <span className="flex items-center gap-0.5 text-base font-bold text-neutral-900 dark:text-neutral-100">
-                <TugrigIcon size={15} className="shrink-0" />
-                <span className="truncate">{car.price.toLocaleString()}</span>
+              <span className="truncate text-base font-bold text-neutral-900 dark:text-neutral-100">
+                {car.price.toLocaleString()}
+                <span className="ml-1 font-semibold text-neutral-400 dark:text-neutral-500">
+                  ₮
+                </span>
               </span>
             )}
           </div>

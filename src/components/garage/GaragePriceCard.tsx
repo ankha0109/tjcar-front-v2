@@ -1,5 +1,5 @@
+import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
-import { TugrigIcon } from "@/components/icons/TugrigIcon";
 import type { CarType } from "@/types/car";
 import { StockBadge } from "./StockBadge";
 
@@ -11,12 +11,19 @@ type Props = {
   type: CarType | null;
   /** `Y-m-d`, and only ever set on `arriving_soon` cars. */
   arrivalDate: string | null;
+  /**
+   * The inspection grade, as `RateCard`'s inline chip — it shares the price's
+   * row from the left. A slot rather than a `rate: string`, because the chip is
+   * a client component with its own modal and this card is a server one.
+   */
+  rate?: ReactNode;
 };
 
 /**
  * Headline price for an in-stock car, across the full width of the info column.
  * There is no estimate here — the tugrik price is what the car costs — so it is
- * the largest thing on the page and nothing shares its row.
+ * the largest thing on the page, and the only thing that shares its row is the
+ * grade chip, pinned to the far left with the number against the right edge.
  *
  * The stock badge rides the label's line instead of a divided footer: it is a
  * qualifier on the price ("this much, once it lands"), and putting it there
@@ -33,6 +40,7 @@ export default async function GaragePriceCard({
   isSold,
   type,
   arrivalDate,
+  rate,
 }: Props) {
   const t = await getTranslations("garage");
 
@@ -49,23 +57,30 @@ export default async function GaragePriceCard({
         )}
       </div>
 
-      {isSold ? (
-        <div className="mt-2.5 text-[26px] font-extrabold leading-none text-neutral-500 dark:text-neutral-400">
-          {t("sold")}
-        </div>
-      ) : (
-        <div className="mt-2.5 flex items-center gap-1">
-          {/* Sized to the digits' cap height, and left at its own hairline
-              weight — a currency mark set as heavy as the number fights it. */}
-          <TugrigIcon
-            className="h-7 w-7 shrink-0 text-neutral-900 lg:h-8 lg:w-8 dark:text-neutral-100"
-            aria-hidden
-          />
-          <span className="text-[30px] font-extrabold leading-none text-neutral-900 lg:text-[34px] dark:text-neutral-100">
-            {price.toLocaleString()}
+      {/* Grade left, number right. `flex-wrap` is the escape hatch, not the
+          layout: a nine-digit price next to a spelled-out grade ("CLEAN") runs
+          out of room on a 360px phone, and dropping to a second line beats
+          shrinking the headline for every car to fit the widest one. Without a
+          grade the row has one child and the number simply stays left, where it
+          has always been. */}
+      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        {rate}
+        {isSold ? (
+          <span className="text-[26px] font-extrabold leading-none text-neutral-500 dark:text-neutral-400">
+            {t("sold")}
           </span>
-        </div>
-      )}
+        ) : (
+          <span className="text-[26px] font-extrabold leading-none text-neutral-900 lg:text-[30px] dark:text-neutral-100">
+            {price.toLocaleString()}
+            {/* Trailing, the way a price is spoken and written here. Lighter
+                than the digits: a currency mark set as heavy as the number
+                fights it. */}
+            <span className="ml-1.5 text-[0.75em] font-bold text-neutral-400 dark:text-neutral-500">
+              ₮
+            </span>
+          </span>
+        )}
+      </div>
 
       {!isSold && arrivalDate && (
         <p className="mt-2.5 text-[12px] text-neutral-500 dark:text-neutral-400">
