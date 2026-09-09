@@ -942,13 +942,95 @@ a {
   background: #18181b;
 }
 
-/* In-stock car write-up (`GET /cars/{id}` → `description`). Same Tiptap HTML as
-   a blog post, printed in the detail page's info column instead of a 680px
-   article — so only the size comes down here. The vertical rhythm is left to
-   `.post-body`: the editor marks its sections with empty paragraphs, and those
-   only read as breaks while the paragraphs around them keep their full prose
-   margins. */
+/* In-stock car write-up (`GET /cars/{id}` → `description`), printed to look the
+   way the author saw it while typing — the admin's Tiptap editor
+   (`tjcar-admin/src/components/editor/RichTextEditor.module.scss`): line-height
+   1.7, paragraphs stacked with NO gap between them, 0.75em of air above every
+   other block, and an empty paragraph standing as a blank line.
+
+   That is not a stylistic preference, it is how these are written. Authors type
+   one "• …" spec per paragraph and separate sections with empty ones, so
+   `.post-body`'s 1.1em prose margins turn a tight list loose and then swallow
+   the section breaks whole — adjacent margins collapse, and an empty <p> of
+   zero height adds nothing between them.
+
+   Only the rhythm is copied, never the editor's colours: it is light-mode only
+   and this page has a dark theme. Sizes are relative because the editor sits at
+   the browser's 16px while this column runs at 14px. Every rule here matches the
+   specificity of the `.post-body` rule it overrides ((0,1,1) either way), so
+   what settles it is source order — this block must stay last in the file. */
 .car-description {
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+
+/* The editor's page-wide `* { margin: 0 }`. */
+.car-description
+  :is(p, h2, h3, h4, ul, ol, li, blockquote, figure, img, pre, hr, table) {
+  margin: 0;
+}
+
+/* Then its one rhythm rule, `> * + * { margin-top: 0.75em }` — with paragraphs
+   left out, which is what makes two of them touch. Same specificity as the
+   reset above and written after it, so it wins for the blocks it names. */
+.car-description
+  > *
+  + :is(h2, h3, h4, ul, ol, blockquote, figure, img, pre, hr, table) {
+  margin-top: 0.75em;
+}
+
+/* The author's blank line. In the editor an empty paragraph holds a <br> and
+   takes a full line; what Tiptap saves is a bare <p></p>, which collapses to
+   nothing without a height of its own. */
+.car-description p:empty {
+  min-height: 1.7em;
+}
+
+/* The editor sets no heading line-height, so headings ride the same 1.7 as the
+   text; 22px and 18px against its 16px base. */
+.car-description :is(h2, h3, h4) {
+  line-height: inherit;
+}
+
+.car-description h2 {
+  font-size: 1.375em;
+}
+
+.car-description h3 {
+  font-size: 1.125em;
+}
+
+.car-description h4 {
+  font-size: 1em;
+}
+
+.car-description :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+/* Upright and neutral, the way the editor draws it — `.post-body` italicises
+   its quotes and rules them in the brand orange. */
+.car-description blockquote {
+  border-left: 3px solid #e4e4e7;
+  color: #52525b;
+  font-style: normal;
+  padding: 0 0 0 12px;
+}
+
+:root[data-theme="dark"] .car-description blockquote {
+  border-left-color: #27272a;
+  color: #a1a1aa;
+}
+
+.car-description img {
+  border-radius: 6px;
+}
+
+.car-description hr {
+  border-top-color: #e8e8e8;
+}
+
+:root[data-theme="dark"] .car-description hr {
+  border-top-color: #27272a;
 }

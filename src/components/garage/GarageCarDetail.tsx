@@ -11,6 +11,7 @@ import {
   MileageIcon,
   YearIcon,
 } from "@/components/icons/CarSpecIcons";
+import { formatMnt } from "@/lib/bidConfig";
 import { carResourceToFixture, carTitle } from "@/lib/carFixtures";
 import { getDevice } from "@/lib/device";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
@@ -20,6 +21,7 @@ import { formatEngineWithPower, formatMileage } from "@/utils/carFormat";
 import CarDescription from "./CarDescription";
 import GarageContactCard from "./GarageContactCard";
 import GaragePriceCard from "./GaragePriceCard";
+import GarageStatusCard from "./GarageStatusCard";
 import { SoldBadge } from "./StockBadge";
 
 type Props = { car: CarResource };
@@ -72,6 +74,10 @@ export default async function GarageCarDetail({ car }: Props) {
   const color = fixture.COLOR || undefined;
 
   const wishlistItem = wishlistItemFromFixture(fixture, "stock", car.price);
+
+  // One element, two placements: beside the grade when there is one, alone when
+  // there is not.
+  const priceTile = <GaragePriceCard price={car.price} isSold={isSold} />;
 
   // Brand, model and grade are in the title band (and, on the phone shell, in
   // the sticky header's two lines), so they are deliberately absent here — this
@@ -155,25 +161,33 @@ export default async function GarageCarDetail({ car }: Props) {
             has to drop or the column sits 16px inside its track — a right edge
             that misses the header's. */}
         <div className="flex flex-col gap-5 px-4 py-5 lg:min-w-0 lg:grow lg:basis-0 lg:px-0 lg:py-0">
-          {/* One card: the grade rides the price's row from the left, as a bare
-              chip. On a car we have already bought and inspected the grade is
-              evidence rather than a headline, and it does not need its own
-              strip — or the word for what it means — to say so. */}
-          <GaragePriceCard
-            price={car.price}
-            isSold={isSold}
-            type={car.type}
-            arrivalDate={car.arrival_date}
-            rate={
-              fixture.RATE ? (
-                <RateCard
-                  rate={fixture.RATE}
-                  label={t("specs.rate")}
-                  variant="inline"
-                />
-              ) : null
-            }
-          />
+          {/* Where the car is, first and large. Dropped once sold: the price
+              tile's whole face already reads "Зарагдсан", and the shipping
+              stage of a car someone else drove off in is not news. */}
+          {!isSold && car.type && (
+            <GarageStatusCard
+              type={car.type}
+              label={tg(`type.${car.type}`)}
+              caption={tg("statusLabel")}
+              arrivalDate={car.arrival_date}
+              arrivalLabel={tg("arrivalLabel")}
+            />
+          )}
+
+          {/* Headline tiles — inspection grade + the tugrik asking price, the
+              Japan lot page's 2/5 – 3/5 pairing, down to the grid. A stock row
+              with no grade — `RATE` is hand-typed and sometimes blank — gives
+              the price the whole width instead of a hole. */}
+          {fixture.RATE ? (
+            <div className="grid grid-cols-5 gap-3">
+              <div className="col-span-2">
+                <RateCard rate={fixture.RATE} label={t("specs.rate")} />
+              </div>
+              <div className="col-span-3">{priceTile}</div>
+            </div>
+          ) : (
+            priceTile
+          )}
 
           {/* Specs — one card, the Japan lot page's icon grid. Filled rather
               than the outline that page uses: here it has the write-up and the
@@ -224,10 +238,7 @@ export default async function GarageCarDetail({ car }: Props) {
               <SoldBadge label={tg("sold")} className="mt-0.5 self-start" />
             ) : (
               <span className="truncate text-base font-bold text-neutral-900 dark:text-neutral-100">
-                {car.price.toLocaleString()}
-                <span className="ml-1 font-semibold text-neutral-400 dark:text-neutral-500">
-                  ₮
-                </span>
+                {formatMnt(car.price)}
               </span>
             )}
           </div>

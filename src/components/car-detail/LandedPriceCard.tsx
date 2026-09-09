@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Modal } from "antd";
 import { useTranslations } from "next-intl";
-import { formatMnt } from "@/lib/bidConfig";
+import PriceTile from "./PriceTile";
 
 type Props = {
   /** Landed MNT price from `GET /japan/{id}` (`PRICE_MNT`); null when unpriceable. */
@@ -12,10 +12,11 @@ type Props = {
 
 /**
  * "Гар дээр ирэх дундаж үнэ" — the estimated MNT price to land the car in
- * Mongolia (auction + Japan fees + shipping + import taxes). Square tile paired
- * with {@link RateCard}; a help icon opens the breakdown explanation. On the
- * Japan auction page the JPY start price is hidden, so this is the headline
- * number a buyer anchors their bid to.
+ * Mongolia (auction + Japan fees + shipping + import taxes). {@link PriceTile}
+ * paired with {@link RateCard}; a help icon opens the breakdown explanation. On
+ * the Japan auction page the JPY start price is hidden, so this is the headline
+ * number a buyer anchors their bid to. `/garage/{id}` prints its asking price
+ * through the same tile, so the two pages cannot drift apart.
  *
  * The figure arrives with the lot payload. It used to be fetched here with
  * `POST /calculator`, which put a spinner on the page's headline number and
@@ -31,11 +32,9 @@ export default function LandedPriceCard({ priceMnt }: Props) {
   const paragraphs = (t.raw("infoParagraphs") as string[]) ?? [];
 
   return (
-    <div className="flex flex-col justify-between gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
-      <div className="flex items-start justify-between gap-1">
-        <div className="text-[11px] font-semibold uppercase leading-tight text-neutral-500 dark:text-neutral-400">
-          {t("title")}
-        </div>
+    <PriceTile
+      label={t("title")}
+      action={
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -57,20 +56,10 @@ export default function LandedPriceCard({ priceMnt }: Props) {
             <path d="M12 17h.01" />
           </svg>
         </button>
-      </div>
-
-      <div>
-        {average > 0 ? (
-          <div className="text-[22px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
-            {formatMnt(average)}
-          </div>
-        ) : (
-          <div className="text-[15px] font-semibold text-neutral-500 dark:text-neutral-400">
-            {t("unknown")}
-          </div>
-        )}
-      </div>
-
+      }
+      amount={average > 0 ? average : null}
+      fallback={t("unknown")}
+    >
       <Modal
         open={open}
         onCancel={() => setOpen(false)}
@@ -86,6 +75,6 @@ export default function LandedPriceCard({ priceMnt }: Props) {
           ))}
         </div>
       </Modal>
-    </div>
+    </PriceTile>
   );
 }
