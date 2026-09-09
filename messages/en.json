@@ -1211,20 +1211,20 @@
     },
     "rateInfo": {
       "title": "About the rating",
-      "intro": "RATE is the overall condition grade the independent auction inspector gives the car — the scale runs from S down to 1, and the lower it goes the rougher the car. Codes such as 99, X or *** are NOT high scores: they mark a car that was never repaired after a crash or engine failure.",
+      "intro": "RATE is the overall condition grade that Japan's official appraisal body gives the car.",
       "note": "The grade is the inspector's judgment, so always confirm the details on the evaluation sheet before you decide.",
       "grades": {
         "1": "Flood-damaged or heavily modified",
         "2": "Worn, heavy wear or rust",
         "3": "Average, visible scratches and dents",
-        "4": "Good, normal condition for its age",
+        "4": "Good grade, interior shows little wear",
         "5": "Excellent, very clean",
         "6": "Almost new, virtually no wear",
         "S": "New or nearly new, very low mileage",
         "4_5": "Very good, minor wear",
         "3_5": "Above average, may need minor repair",
-        "R": "Accident / repair history (bodywork repaired)",
-        "RA": "Lightly repaired (minor accident)",
+        "R": "Damaged body panel replaced or repaired",
+        "RA": "Lightly damaged part replaced or repaired",
         "grounded": "Worst of all: never repaired after a crash or engine failure, or not inspected at all (99, X, ***, 0)"
       }
     },
