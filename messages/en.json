@@ -433,6 +433,8 @@
       "active": "Active",
       "done": "Done",
       "search": "Search",
+      "close": "Close",
+      "noResults": "No results",
       "lot": {
         "label": "LOT number"
       },
@@ -462,6 +464,10 @@
       "location": {
         "label": "Auction location",
         "hint": "Marketplace location"
+      },
+      "premium": {
+        "label": "Show premium (USS) lots",
+        "short": "USS"
       }
     },
     "schedule": {

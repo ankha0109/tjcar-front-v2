@@ -15,6 +15,7 @@ import {
 } from "@/components/cards/views/viewMode";
 import JapanAuctionFilters, {
   JapanAuctionFilterChips,
+  PremiumLotsToggle,
 } from "@/components/cards/JapanAuctionFilters";
 import JapanHolidayNotice from "@/components/cards/JapanHolidayNotice";
 import InfiniteScrollSentinel from "@/components/cards/views/InfiniteScrollSentinel";
@@ -159,6 +160,7 @@ export default function AuctionBrowser({
           value={filters}
           onChange={changeFilters}
           options={filterOptions}
+          showPremiumToggle
         />
 
         <div className="min-w-0 flex-1">
@@ -181,7 +183,19 @@ export default function AuctionBrowser({
                 days={days}
               />
             </div>
-            <div className="shrink-0">
+            <div className="flex shrink-0 items-center gap-2">
+              {/* Below lg the filter rail is collapsed behind pills, so the
+                  premium switch rides with the view-mode control instead —
+                  the one row that is always on screen. */}
+              <div className="lg:hidden">
+                <PremiumLotsToggle
+                  compact
+                  checked={filters.showPremium}
+                  onChange={(next) =>
+                    changeFilters({ ...filters, showPremium: next })
+                  }
+                />
+              </div>
               <ViewModeSwitcher
                 value={viewMode}
                 onChange={handleViewModeChange}

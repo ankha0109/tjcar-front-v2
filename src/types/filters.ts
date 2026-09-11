@@ -13,6 +13,12 @@ export type FilterValues = {
   mileageTo: number | null;
   location: string | null;
   date: string | null;
+  /**
+   * USS premium lots included in the list. True by default: a guest lands on
+   * the whole board and opts out, rather than discovering a filter hid rows.
+   * False maps to `auction_type=2` — see `PremiumLotsToggle`.
+   */
+  showPremium: boolean;
 };
 
 export const EMPTY_FILTERS: FilterValues = {
@@ -30,9 +36,12 @@ export const EMPTY_FILTERS: FilterValues = {
   mileageTo: null,
   location: null,
   date: null,
+  showPremium: true,
 };
 
-// `date` is intentionally excluded — it's primary day-tab navigation, not a chip-style filter.
+// `date` and `showPremium` are intentionally excluded — the first is primary day-tab navigation
+// and the second a viewing scope that sits beside the view-mode switcher. Both
+// survive "clear filters" for the same reason: neither is a search criterion.
 export function isFiltersEmpty(f: FilterValues): boolean {
   return (
     !f.marka &&
@@ -69,6 +78,8 @@ export function filtersToQuery(
   if (f.mileageTo != null) q.mileageTo = f.mileageTo;
   if (f.location) q.location = f.location;
   if (f.date) q.date = f.date;
+  // Only the non-default is serialised, so the common URL stays clean.
+  if (!f.showPremium) q.premium = 0;
   return q;
 }
 
@@ -95,6 +106,9 @@ export function filtersToAuctionQuery(
   if (f.mileageTo != null) q.millage_end = f.mileageTo;
   if (f.location) q.auction = f.location;
   if (f.date) q.start_date = f.date;
+  // Premium on is the unfiltered board, so it sends nothing at all; only the
+  // opt-out narrows the query, to the free (non-USS) lots.
+  if (!f.showPremium) q.auction_type = 2;
   return q;
 }
 
@@ -136,6 +150,9 @@ export function queryToFilters(p: SearchParamRecord): FilterValues {
     mileageTo: pickInt(p, "mileageTo"),
     location: pickString(p, "location"),
     date: pickDate(p, "date"),
+    // Anything but an explicit "0" is the default-on board, so a malformed or
+    // absent param can never silently hide rows.
+    showPremium: pickString(p, "premium") !== "0",
   };
 }
 

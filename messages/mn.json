@@ -433,6 +433,8 @@
       "active": "Идэвхтэй",
       "done": "Болсон",
       "search": "Хайх",
+      "close": "Хаах",
+      "noResults": "Илэрц олдсонгүй",
       "lot": {
         "label": "LOT дугаар"
       },
@@ -462,6 +464,10 @@
       "location": {
         "label": "Auction байршил",
         "hint": "Дуудлагын зах зээлийн байршил"
+      },
+      "premium": {
+        "label": "Premium (USS) лот харуулах",
+        "short": "USS"
       }
     },
     "schedule": {

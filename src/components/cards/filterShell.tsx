@@ -1,9 +1,10 @@
 "use client";
 
 import { Children, useRef, useState } from "react";
-import { Button, DatePicker, Drawer, Input } from "antd";
+import { Button, DatePicker, Input } from "antd";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
+import BottomSheet from "@/components/ui/BottomSheet";
 import { cn } from "@/utils";
 
 /**
@@ -62,6 +63,31 @@ export type FieldDef = {
   control: React.ReactNode;
   mobile: MobileControl;
   clear: () => void;
+};
+
+/**
+ * How tall each control wants its sheet, and who owns the scrolling.
+ *
+ * Anything with a list takes a fixed share of the screen rather than its content
+ * height: filtering a thousand marks down to two rows must not collapse the
+ * sheet onto the keyboard. A range's columns scroll independently, so the sheet
+ * body must not scroll them together. Only a lone text input is short enough to
+ * size itself — the date field needs room for its calendar, which opens inside
+ * the sheet.
+ */
+const sheetShape = (
+  m: MobileControl,
+): { snap: "auto" | number; scrollable: boolean } => {
+  switch (m.type) {
+    case "single":
+      return { snap: 0.6, scrollable: true };
+    case "range":
+      return { snap: 0.6, scrollable: false };
+    case "date":
+      return { snap: 0.6, scrollable: true };
+    case "text":
+      return { snap: "auto", scrollable: true };
+  }
 };
 
 /** Short "from–to" label for range pills and chips ("…" for an open bound). */
@@ -169,12 +195,15 @@ export default function FilterShell({
 }) {
   const t = useTranslations("featured.filters");
   const [openField, setOpenField] = useState<string | null>(null);
-  const drawerBodyRef = useRef<HTMLDivElement>(null);
+  const sheetBodyRef = useRef<HTMLDivElement>(null);
 
   // One per field with anything set — a from–to range counts once, matching the
   // chip row rather than the raw number of bounds.
   const totalCount = fields.filter((f) => f.active).length;
   const activeField = fields.find((f) => f.key === openField) ?? null;
+  const shape = activeField
+    ? sheetShape(activeField.mobile)
+    : { snap: 0.6, scrollable: true };
 
   const renderMobileControl = (m: MobileControl) => {
     switch (m.type) {
@@ -184,6 +213,7 @@ export default function FilterShell({
             options={m.options}
             selected={m.value}
             searchPlaceholder={t("search")}
+            emptyLabel={t("noResults")}
             onSelect={(v) => {
               m.onSelect(v);
               setOpenField(null);
@@ -194,31 +224,35 @@ export default function FilterShell({
         return <RangeColumns from={m.from} to={m.to} />;
       case "date":
         return (
-          <DatePicker
-            placeholder={m.placeholder}
-            allowClear
-            inputReadOnly
-            value={m.value ? dayjs(m.value) : null}
-            onChange={(d) => {
-              m.onChange(d ? d.format("YYYY-MM-DD") : null);
-              if (d) setOpenField(null);
-            }}
-            variant="filled"
-            format="YYYY-MM-DD"
-            style={{ width: "100%" }}
-            getPopupContainer={() => drawerBodyRef.current ?? document.body}
-          />
+          <div className="pt-1">
+            <DatePicker
+              placeholder={m.placeholder}
+              allowClear
+              inputReadOnly
+              value={m.value ? dayjs(m.value) : null}
+              onChange={(d) => {
+                m.onChange(d ? d.format("YYYY-MM-DD") : null);
+                if (d) setOpenField(null);
+              }}
+              variant="filled"
+              format="YYYY-MM-DD"
+              style={{ width: "100%" }}
+              getPopupContainer={() => sheetBodyRef.current ?? document.body}
+            />
+          </div>
         );
       case "text":
         return (
-          <Input
-            placeholder={m.placeholder}
-            allowClear
-            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
-            value={m.value}
-            onChange={(e) => m.onChange(e.target.value)}
-            variant="filled"
-          />
+          <div className="pt-1">
+            <Input
+              placeholder={m.placeholder}
+              allowClear
+              prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+              value={m.value}
+              onChange={(e) => m.onChange(e.target.value)}
+              variant="filled"
+            />
+          </div>
         );
     }
   };
@@ -291,20 +325,15 @@ export default function FilterShell({
         </div>
       </aside>
 
-      {/* Mobile per-field bottom drawer */}
-      <Drawer
-        open={openField != null}
+      {/* Mobile per-field bottom sheet — drag the grabber to resize. */}
+      <BottomSheet
+        open={activeField != null}
         onClose={() => setOpenField(null)}
-        placement="bottom"
-        size="auto"
         title={activeField?.label}
-        rootClassName="tj-filters"
-        styles={{
-          header: { padding: "16px 20px" },
-          body: { padding: "20px" },
-          footer: { padding: 16 },
-          section: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
-        }}
+        closeLabel={t("close")}
+        className="tj-filters"
+        snap={shape.snap}
+        scrollable={shape.scrollable}
         footer={
           activeField ? (
             <div className="flex items-center justify-between gap-2">
@@ -333,10 +362,15 @@ export default function FilterShell({
           ) : null
         }
       >
-        <div ref={drawerBodyRef} className="relative">
+        {/* `h-full` when the content owns its scrollers, `min-h-full` when the
+            sheet body does — so an empty list still fills the sheet. */}
+        <div
+          ref={sheetBodyRef}
+          className={cn("relative", shape.scrollable ? "min-h-full" : "h-full")}
+        >
           {activeField && renderMobileControl(activeField.mobile)}
         </div>
-      </Drawer>
+      </BottomSheet>
     </>
   );
 }
@@ -397,12 +431,14 @@ function OptionList({
   selected,
   onSelect,
   searchPlaceholder,
+  emptyLabel,
   searchThreshold = 8,
 }: {
   options: { value: string; label: React.ReactNode; searchText: string }[];
   selected: string | null;
   onSelect: (value: string) => void;
   searchPlaceholder: string;
+  emptyLabel: string;
   searchThreshold?: number;
 }) {
   const [query, setQuery] = useState("");
@@ -413,23 +449,28 @@ function OptionList({
           o.searchText.toLowerCase().includes(query.toLowerCase()),
         )
       : options;
+  // The sheet owns the height now, so the list has no cap of its own — it just
+  // fills whatever the user dragged the sheet to.
   return (
-    <div className="flex flex-col">
+    <div className="flex min-h-full flex-col">
       {showSearch && (
-        <Input
-          placeholder={searchPlaceholder}
-          allowClear
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
-          variant="filled"
-          className="mb-2"
-        />
+        // Pinned to the top of the sheet body: the box the keyboard is serving
+        // must not scroll away under the user's own typing.
+        <div className="sticky top-0 z-10 -mx-1 bg-white px-1 pb-2 pt-1 dark:bg-neutral-900">
+          <Input
+            placeholder={searchPlaceholder}
+            allowClear
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            prefix={<SearchIcon className="h-3.5 w-3.5 text-neutral-400" />}
+            variant="filled"
+          />
+        </div>
       )}
-      <div className="-mx-1 max-h-[50vh] overflow-y-auto">
+      <div className="-mx-1 flex flex-1 flex-col">
         {filtered.length === 0 ? (
-          <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
-            -
+          <div className="flex flex-1 items-center justify-center px-3 py-10 text-center text-[13px] text-neutral-400">
+            {emptyLabel}
           </div>
         ) : (
           filtered.map((o, i) => {
@@ -459,14 +500,21 @@ function OptionList({
 
 function RangeColumns({ from, to }: { from?: RangeCol; to?: RangeCol }) {
   const cols = [from, to].filter((c): c is RangeCol => !!c);
+  // Each column scrolls on its own and together they fill the sheet, so dragging
+  // the sheet taller makes both lists longer.
   return (
-    <div className={cn("grid gap-3", cols.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
+    <div
+      className={cn(
+        "grid h-full gap-3 pt-1",
+        cols.length > 1 ? "grid-cols-2" : "grid-cols-1",
+      )}
+    >
       {cols.map((col) => (
-        <div key={col.placeholder} className="min-w-0">
-          <div className="mb-1.5 text-[11px] font-semibold uppercase text-neutral-500">
+        <div key={col.placeholder} className="flex min-h-0 min-w-0 flex-col">
+          <div className="mb-1.5 shrink-0 text-[11px] font-semibold uppercase text-neutral-500">
             {col.placeholder}
           </div>
-          <div className="max-h-[45vh] overflow-y-auto rounded-lg border border-neutral-100 dark:border-neutral-800">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-lg border border-neutral-100 dark:border-neutral-800">
             {col.options.length === 0 ? (
               <div className="px-3 py-6 text-center text-[13px] text-neutral-400">
                 -
