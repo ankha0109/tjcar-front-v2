@@ -14,7 +14,10 @@ import {
   type SearchMode,
 } from "@/lib/reportSearch";
 import ReportLookupModal from "./ReportLookupModal";
+import ReportPriceTag from "./ReportPriceTag";
+import ReportSaleCountdown from "./ReportSaleCountdown";
 import SampleReportModal from "./SampleReportModal";
+import type { ReportPricing } from "@/services/config";
 import soyombo from "../../../public/images/32px-Soyombo_red.png";
 
 // Brand-warm gradient for the lookup card's BorderBeam.
@@ -62,12 +65,13 @@ function syncUrl(query: { plate?: string; vin?: string }) {
 }
 
 type Props = {
-  /** Effective price in MNT, resolved server-side from GET /config. */
-  price: number;
+  /** List/promo price, resolved server-side from GET /config. */
+  pricing: ReportPricing;
 };
 
-export default function ReportHero({ price }: Props) {
+export default function ReportHero({ pricing }: Props) {
   const t = useTranslations("reportLanding.hero");
+  const tp = useTranslations("reportPrice");
   const [mode, setMode] = useState<SearchMode>("plate");
   const [value, setValue] = useState("");
   const [error, setError] = useState<SearchError>(null);
@@ -170,6 +174,25 @@ export default function ReportHero({ price }: Props) {
           >
             {t("subheading")}
           </p>
+
+          {/* Promo banner. Absent entirely at list price, so the hero keeps
+              quoting no number at all outside a sale — same as before. */}
+          {pricing.discounted ? (
+            <div
+              className="hero-reveal mt-6 flex justify-center"
+              style={{ animationDelay: "170ms" }}
+            >
+              <div className="inline-flex flex-col items-center gap-1 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-3">
+                <div className="flex flex-wrap items-baseline justify-center gap-x-2.5 gap-y-1">
+                  <span className="text-[11px] font-semibold uppercase text-primary">
+                    {tp("saleLabel")}
+                  </span>
+                  <ReportPriceTag pricing={pricing} size="lg" />
+                </div>
+                <ReportSaleCountdown endsAt={pricing.endsAt} />
+              </div>
+            </div>
+          ) : null}
 
           {/* Lookup form — the hero's focal point */}
           <form
@@ -297,7 +320,7 @@ export default function ReportHero({ price }: Props) {
 
       <ReportLookupModal
         open={lookupOpen}
-        price={price}
+        pricing={pricing}
         plate={lookup.plate}
         vin={lookup.vin}
         onClose={closeLookup}

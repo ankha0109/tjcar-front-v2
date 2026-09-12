@@ -7,17 +7,19 @@ import { useTranslations } from "next-intl";
 import { Button, Modal, Skeleton } from "antd";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError } from "@/services/Api";
+import type { ReportPricing } from "@/services/config";
 import { createReport, searchPlate, searchVin } from "@/services/reports";
 import {
   isExistingReport,
   plateChassisNo,
   type VinSearchResult,
 } from "@/types/report";
+import ReportPriceTag from "./ReportPriceTag";
 
 type Props = {
   open: boolean;
-  /** Effective price in MNT, resolved server-side from GET /config. */
-  price: number;
+  /** List/promo price, resolved server-side from GET /config. */
+  pricing: ReportPricing;
   /** Exactly one of these arrives from the form that opened the modal. */
   plate?: string;
   vin?: string;
@@ -51,7 +53,7 @@ type LookupOutcome =
  */
 export default function ReportLookupModal({
   open,
-  price,
+  pricing,
   plate,
   vin,
   onClose,
@@ -240,9 +242,7 @@ export default function ReportLookupModal({
           <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-neutral-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:bg-neutral-900">
             <div>
               <p className="text-[12.5px] text-neutral-500">{t("priceLabel")}</p>
-              <p className="text-[22px] font-semibold text-neutral-900 dark:text-neutral-50">
-                {price.toLocaleString("mn-MN")}₮
-              </p>
+              <ReportPriceTag pricing={pricing} size="lg" className="mt-0.5" />
             </div>
 
             {isAuthed ? (

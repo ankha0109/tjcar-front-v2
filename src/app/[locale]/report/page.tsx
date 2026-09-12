@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogSite } from "@/lib/site";
-import { effectiveReportPrice, getConfig } from "@/services/config";
+import { getConfig, reportPricing } from "@/services/config";
 import ReportJsonLd from "@/components/report/ReportJsonLd";
 import ReportHero from "@/components/report/ReportHero";
 import ReportCompare from "@/components/report/ReportCompare";
@@ -55,16 +55,16 @@ export default async function ReportPage({
   // here — a promo has to move all of them at once, or the page contradicts
   // itself. `getConfig` is cached for an hour, and the locale layout has
   // already read it, so this is free.
-  const price = effectiveReportPrice(await getConfig());
+  const pricing = reportPricing(await getConfig());
 
   return (
     <>
-      <ReportJsonLd locale={locale} price={price} />
-      <ReportHero price={price} />
+      <ReportJsonLd locale={locale} pricing={pricing} />
+      <ReportHero pricing={pricing} />
       <ReportCompare />
       <ReportFeatures />
       <ReportPdfPreview />
-      <ReportSteps price={price} />
+      <ReportSteps pricing={pricing} />
       <ReportAudience />
       <ReportFAQ />
     </>

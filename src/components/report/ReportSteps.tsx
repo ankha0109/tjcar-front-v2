@@ -2,6 +2,8 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
+import ReportPriceTag from "./ReportPriceTag";
+import type { ReportPricing } from "@/services/config";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 
@@ -52,7 +54,11 @@ const STEPS = [
   { key: "receive", Icon: PdfIcon },
 ] as const;
 
-export default async function ReportSteps({ price }: { price: number }) {
+export default async function ReportSteps({
+  pricing,
+}: {
+  pricing: ReportPricing;
+}) {
   const t = await getTranslations("reportLanding.steps");
 
   return (
@@ -90,22 +96,30 @@ export default async function ReportSteps({ price }: { price: number }) {
                   <h3 className="mt-1.5 text-[15.5px] font-semibold text-neutral-900 dark:text-neutral-50">
                     {t(`items.${key}.title`)}
                   </h3>
-                  {/* Only the `pay` body carries {price}; ICU ignores the
-                      value for the two that don't. */}
                   <p className="mt-1.5 text-[13.5px] leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {t(`items.${key}.body`, { price })}
+                    {t(`items.${key}.body`)}
                   </p>
+                  {/* The `pay` body ends on a colon — the price itself is the
+                      tag, so a promo shows up here as a struck-through list
+                      price rather than a silently different number. */}
                   {key === "pay" ? (
-                    <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-1 pl-1 pr-3 text-[12px] font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
-                      <Image
-                        src="/images/qpay_logo.jpeg"
-                        alt="QPay"
-                        width={40}
-                        height={40}
-                        className="h-5 w-5 rounded-md"
+                    <>
+                      <ReportPriceTag
+                        pricing={pricing}
+                        size="lg"
+                        className="mt-2"
                       />
-                      {t("payMethod")}
-                    </span>
+                      <span className="mt-3 flex w-fit items-center gap-2 rounded-full border border-neutral-200 bg-white py-1 pl-1 pr-3 text-[12px] font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+                        <Image
+                          src="/images/qpay_logo.jpeg"
+                          alt="QPay"
+                          width={40}
+                          height={40}
+                          className="h-5 w-5 rounded-md"
+                        />
+                        {t("payMethod")}
+                      </span>
+                    </>
                   ) : null}
                 </div>
               </li>

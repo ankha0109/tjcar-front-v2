@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
+import type { ReportPricing } from "@/services/config";
 import { REPORT_FAQ_KEYS } from "./reportFaqKeys";
 
 function JsonLdScript({ data }: { data: object }) {
@@ -16,11 +17,11 @@ function JsonLdScript({ data }: { data: object }) {
 /** FAQPage + Service structured data for the /report landing page. */
 export default async function ReportJsonLd({
   locale,
-  price,
+  pricing,
 }: {
   locale: string;
-  /** Effective price in MNT, the same one the page shows. */
-  price: number;
+  /** List/promo price — the same one the page shows. */
+  pricing: ReportPricing;
 }) {
   const t = await getTranslations({ locale, namespace: "reportLanding" });
 
@@ -57,8 +58,13 @@ export default async function ReportJsonLd({
       "@type": "Offer",
       // Search engines quote this in the result snippet, so a stale number here
       // is a price the customer sees before ever loading the page.
-      price: String(price),
+      price: String(pricing.price),
       priceCurrency: "MNT",
+      // A promo price without a deadline reads to Google as the standing price.
+      // `endsAt` is an ISO instant; schema.org wants the date part.
+      ...(pricing.discounted
+        ? { priceValidUntil: pricing.endsAt.slice(0, 10) }
+        : {}),
       availability: "https://schema.org/InStock",
     },
   };

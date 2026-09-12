@@ -1,9 +1,20 @@
 import { getTranslations } from "next-intl/server";
 import ReportCtaButton from "./ReportCtaButton";
 import Reveal from "@/components/ui/Reveal";
+import type { ReportPricing } from "@/services/config";
 
-/** §5.10 final CTA banner + the §11 footer disclaimer small print. */
-export default async function ReportFinalCta() {
+/**
+ * §5.10 final CTA banner + the §11 footer disclaimer small print.
+ *
+ * Not mounted on `/report` today. It still takes `pricing` because both strings
+ * it renders quote the price from `GET /config`: hardcoding either would put a
+ * stale number one import away from being live again.
+ */
+export default async function ReportFinalCta({
+  pricing,
+}: {
+  pricing: ReportPricing;
+}) {
   const t = await getTranslations("reportLanding.finalCta");
   const tf = await getTranslations("reportLanding.footerNote");
   const tb = await getTranslations("reportLanding.hero.badges");
@@ -27,13 +38,13 @@ export default async function ReportFinalCta() {
           <div className="relative">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11.5px] font-medium text-white/85 backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              {tb("price")}
+              {tb("price", { price: pricing.price })}
             </span>
             <h2 className="mx-auto mt-5 max-w-2xl text-balance text-[26px] font-semibold leading-tight text-white md:text-[36px]">
               {t("heading")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[13.5px] leading-relaxed text-white/70 md:text-[15px]">
-              {t("subheading")}
+              {t("subheading", { price: pricing.price })}
             </p>
             <div className="mt-8 flex justify-center">
               <ReportCtaButton targetId="report-check">

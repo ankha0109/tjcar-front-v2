@@ -106,7 +106,12 @@ function BentoCard({
   );
 }
 
-export default function BentoGrid() {
+/**
+ * Not mounted today — `Home` renders `DesktopHome`/`MobileHome`. `price` is
+ * required anyway: the report card's badge quotes the live price from
+ * `GET /config`, so whoever remounts this has to hand it one.
+ */
+export default function BentoGrid({ price }: { price: number }) {
   const t = useTranslations("homeBento");
 
   return (
@@ -166,7 +171,7 @@ export default function BentoGrid() {
           title={t("report.title")}
           description={t("report.description")}
           cta={t("report.cta")}
-          badge={t("report.priceBadge")}
+          badge={t("report.priceBadge", { price })}
           className="md:col-span-3"
         />
       </div>
