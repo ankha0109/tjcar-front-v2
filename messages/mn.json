@@ -15,9 +15,30 @@
       "priceDesc": "Үнэ: ихээс"
     },
     "filters": {
+      "category": "Төрөл",
+      "categoryCar": "Суудлын",
+      "categoryTruck": "Ачааны",
+      "form": "Хэлбэр",
+      "capacity": "Даац",
+      "capacityValue": "{tons} тн",
       "modelNeedsBrand": "Эхлээд үйлдвэрлэгч сонгоно",
       "fuel": "Шатахуун",
       "transmission": "Хурдны хайрцаг"
+    },
+    "forms": {
+      "cargo": "Ачааны тэвш",
+      "wing-body": "Фургон / тагттай",
+      "bus": "Автобус",
+      "dump": "Самосвал / барилгын",
+      "crane": "Кран",
+      "tank": "Цистерн",
+      "camper": "Кемпер",
+      "waste": "Хог / хүнс тээвэр",
+      "live-fish": "Загас тээвэр",
+      "tow": "Чирэгч / машин тээвэр",
+      "tractor": "Тягач",
+      "trailer": "Чиргүүл",
+      "other": "Бусад"
     }
   },
   "compare": {
@@ -1381,7 +1402,9 @@
       "bodyType": "Төрөл",
       "regMonth": "Анх бүртгэсэн",
       "drivetrain": "Хөтлөгч",
-      "location": "Хот"
+      "location": "Хот",
+      "form": "Хэлбэр",
+      "capacity": "Даац"
     },
     "fuel": {
       "petrol": "Бензин",

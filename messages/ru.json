@@ -15,9 +15,30 @@
       "priceDesc": "Цена: по убыванию"
     },
     "filters": {
+      "category": "Тип",
+      "categoryCar": "Легковые",
+      "categoryTruck": "Грузовые",
+      "form": "Форма",
+      "capacity": "Грузоподъёмность",
+      "capacityValue": "{tons} т",
       "modelNeedsBrand": "Сначала выберите марку",
       "fuel": "Топливо",
       "transmission": "Коробка передач"
+    },
+    "forms": {
+      "cargo": "Бортовой",
+      "wing-body": "Фургон / изотерм",
+      "bus": "Автобус",
+      "dump": "Самосвал / стройтехника",
+      "crane": "Кран",
+      "tank": "Цистерна",
+      "camper": "Автодом",
+      "waste": "Мусоровоз",
+      "live-fish": "Живая рыба",
+      "tow": "Эвакуатор / автовоз",
+      "tractor": "Тягач",
+      "trailer": "Прицеп",
+      "other": "Прочее"
     }
   },
   "compare": {
@@ -1396,7 +1417,9 @@
       "bodyType": "Тип кузова",
       "regMonth": "Первая регистрация",
       "drivetrain": "Привод",
-      "location": "Расположение"
+      "location": "Расположение",
+      "form": "Форма",
+      "capacity": "Грузоподъёмность"
     },
     "fuel": {
       "petrol": "Бензин",

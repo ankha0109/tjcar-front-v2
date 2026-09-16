@@ -24,8 +24,19 @@ function imageUrls(listing: KoreaListing): string[] {
  * apply the Japanese auction CDN image-sizing when `source === "japan"`, so
  * Encar photo URLs pass through untouched. `price.mnt` is the server-computed
  * value (KRW × config rate); `original` carries the raw KRW price.
+ *
+ * @param opts.formLabel resolves a truck form slug to a localized label. Truck
+ *   rows carry no `body_type`, so without it the card's body-type chip would be
+ *   empty on every truck.
  */
-export function koreaListingToCarItem(listing: KoreaListing): CarItem {
+export function koreaListingToCarItem(
+  listing: KoreaListing,
+  opts: { formLabel?: (slug: string) => string } = {},
+): CarItem {
+  const bodyType =
+    listing.body_type ||
+    (listing.form && opts.formLabel ? opts.formLabel(listing.form) : undefined);
+
   return {
     id: str(listing.id),
     source: "korea",
@@ -42,7 +53,7 @@ export function koreaListingToCarItem(listing: KoreaListing): CarItem {
     engineCc: num(listing.displacement),
     transmission: listing.transmission || undefined,
     color: listing.color || undefined,
-    bodyType: listing.body_type || undefined,
+    bodyType: bodyType || undefined,
     location: listing.region || undefined,
   };
 }
@@ -53,7 +64,14 @@ export function koreaListingToCarItem(listing: KoreaListing): CarItem {
  * stay empty. Pricing + the official Encar link render from EncarDetail's `encar`
  * prop, not from the fixture.
  */
-export function koreaListingToFixture(listing: KoreaListing): CarFixture {
+export function koreaListingToFixture(
+  listing: KoreaListing,
+  opts: { formLabel?: (slug: string) => string } = {},
+): CarFixture {
+  const bodyType =
+    listing.body_type ||
+    (listing.form && opts.formLabel ? opts.formLabel(listing.form) : "");
+
   return {
     ID: str(listing.id),
     LOT: "",
@@ -70,7 +88,7 @@ export function koreaListingToFixture(listing: KoreaListing): CarFixture {
     TOWN: str(listing.region),
     ENG_V: listing.displacement ? String(listing.displacement) : "",
     PW: "",
-    KUZOV: str(listing.body_type),
+    KUZOV: str(bodyType),
     GRADE: str(listing.trim),
     COLOR: str(listing.color),
     KPP: str(listing.transmission),

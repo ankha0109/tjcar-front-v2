@@ -58,6 +58,8 @@ export default async function KoreaDetailPage({ params }: Props) {
         seatCount: listing.seat_count ?? null,
         yearMonth: listing.year_month ?? null,
         options: listing.options,
+        form: listing.form ?? null,
+        capacityTons: listing.capacity_tons ?? null,
       }}
     />
   );

@@ -24,6 +24,7 @@ import {
   type KoreaFilterValues,
   type KoreaOrdering,
   koreaFiltersToQuery,
+  koreaFormLabelKey,
 } from "@/types/korea";
 import { useKoreaInfinite, type KoreaPage } from "@/hooks/useKoreaInfinite";
 import { useFilterScrollReset } from "@/utils/useFilterScrollReset";
@@ -55,6 +56,7 @@ export default function KoreaBrowser({
   const t = useTranslations("auctions");
   const tSchedule = useTranslations("featured.schedule");
   const tSort = useTranslations("korea.sort");
+  const tk = useTranslations("korea");
   const router = useRouter();
   const pathname = usePathname();
   const [, startTransition] = useTransition();
@@ -117,13 +119,15 @@ export default function KoreaBrowser({
     const seen = new Set<string>();
     const out: CarItem[] = [];
     for (const listing of listings) {
-      const item = koreaListingToCarItem(listing);
+      const item = koreaListingToCarItem(listing, {
+        formLabel: (slug) => tk(koreaFormLabelKey(slug)),
+      });
       if (seen.has(item.id)) continue;
       seen.add(item.id);
       out.push(item);
     }
     return out;
-  }, [listings]);
+  }, [listings, tk]);
 
   return (
     <section

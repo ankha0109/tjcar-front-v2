@@ -12,7 +12,7 @@ import { parseImages, type CarFixture, carTitle } from "@/lib/carFixtures";
 import { getDevice } from "@/lib/device";
 import { wishlistItemFromFixture } from "@/lib/wishlist";
 import type { CarSource } from "@/types/car";
-import type { KoreaOptionGroup } from "@/types/korea";
+import { koreaFormLabelKey, type KoreaOptionGroup } from "@/types/korea";
 import type { VehicleCostResult } from "@/types/vehicleCost";
 import {
   ChassisIcon,
@@ -66,6 +66,10 @@ type Props = {
     /** YYYYMM first-registration month. */
     yearMonth?: string | null;
     options?: KoreaOptionGroup[];
+    /** Truck body form slug (`cargo`, `camper`, …); null on a car. */
+    form?: string | null;
+    /** Rated payload in tonnes; null when Encar files it as 기타. */
+    capacityTons?: number | null;
   };
   /**
    * Landed-cost breakdown. The page maps Encar's fuel type to an excise class
@@ -110,6 +114,7 @@ export default async function EncarDetail({
   // Breadcrumb reuses the site nav's own label for /korea rather than a second
   // translation of the same thing.
   const tNav = await getTranslations("header.nav");
+  const tKorea = await getTranslations("korea");
 
   // The phone shell renders the title as an <h1> in its sticky header
   // (`@mobileHeader/korea/[id]`), so the in-page title band is for the desktop
@@ -202,6 +207,17 @@ export default async function EncarDetail({
       label: t("specs.bodyType"),
       value: car.KUZOV || undefined,
       icon: <ChassisIcon />,
+    },
+    {
+      label: t("specs.form"),
+      value: encar?.form ? tKorea(koreaFormLabelKey(encar.form)) : undefined,
+      icon: <ChassisIcon />,
+    },
+    {
+      label: t("specs.capacity"),
+      value: encar?.capacityTons
+        ? tKorea("filters.capacityValue", { tons: String(encar.capacityTons) })
+        : undefined,
     },
     {
       label: t("specs.seats"),

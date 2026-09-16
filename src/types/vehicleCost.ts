@@ -98,6 +98,10 @@ export type VehicleCost = {
     exciseMode: "HYBRID" | "NON_HYBRID";
     /** Ready-made Mongolian notices, e.g. the build month is unknown. */
     warnings: string[];
+    /** Which Encar catalogue the listing came from; null on a manual quote. */
+    vehicleCategory: "car" | "truck" | null;
+    /** Truck body form slug — `camper` is the one that still pays. */
+    vehicleForm: string | null;
   };
   /** `source` is ASSUMED wherever the manufacture month was not stated. */
   age: {
@@ -123,6 +127,8 @@ export type VehicleCost = {
       vatBaseMNT: number;
       vatMNT: number;
       totalTaxMNT: number;
+      /** Why the excise was waived, or null when it was charged. */
+      exciseExemptReason: "SEAT_COUNT" | "CARGO_VEHICLE" | null;
     };
     additionalCostsMNT: AdditionalCost[];
     /** §9.4 landed cost — excludes any caller-supplied additional costs. */
