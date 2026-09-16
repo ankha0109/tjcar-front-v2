@@ -197,7 +197,7 @@ export default function CarSearchSection({ japanBrands, filterOptions }: Props) 
 
   // ── Korea tab — its own catalogue (`/korea/models`) and its own vocabulary;
   // chassis / rate / lot are AJES-only and have no Korea counterpart.
-  const koreaModels = useKoreaModels(koreaFilters.make);
+  const koreaModels = useKoreaModels(koreaFilters.make, koreaFilters.category);
 
   const koreaBrandOptions = useMemo(
     () => KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label })),

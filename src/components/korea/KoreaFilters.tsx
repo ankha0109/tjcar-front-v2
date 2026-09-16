@@ -10,12 +10,16 @@ import FilterShell, {
 } from "@/components/cards/filterShell";
 import {
   EMPTY_KOREA_FILTERS,
-  KOREA_BRANDS,
   KOREA_FUELS,
   KOREA_TRANSMISSIONS,
+  KOREA_TRUCK_CAPACITIES,
+  KOREA_TRUCK_FORMS,
   KRW_PRICE_STEPS,
   isKoreaFiltersEmpty,
-  koreaBrandLabel,
+  koreaBrandLabelFor,
+  koreaBrandsFor,
+  koreaFormLabelKey,
+  type KoreaCategory,
   type KoreaFilterValues,
   type KoreaModelGroup,
 } from "@/types/korea";
@@ -53,7 +57,7 @@ export default function KoreaFilters({ value, onChange }: Props) {
   const tFuel = useTranslations("carDetail.fuel");
   const tTrans = useTranslations("car.card.transmission");
 
-  const models = useKoreaModels(value.make);
+  const models = useKoreaModels(value.make, value.category);
 
   const set = <K extends keyof KoreaFilterValues>(
     key: K,
@@ -67,9 +71,49 @@ export default function KoreaFilters({ value, onChange }: Props) {
     onChange({ ...value, make: v, model: null });
   };
 
+  // A truck make, model, form and capacity mean nothing in the car catalogue
+  // (the backend 422s a slug from the wrong one), so switching clears them.
+  const setCategory = (next: KoreaCategory) => {
+    onChange({
+      ...value,
+      category: next,
+      make: null,
+      model: null,
+      form: null,
+      capacity: null,
+    });
+  };
+
   const brandOptions = useMemo(
-    () => KOREA_BRANDS.map((b) => ({ value: b.slug, label: b.label })),
-    [],
+    () =>
+      koreaBrandsFor(value.category).map((b) => ({
+        value: b.slug,
+        label: b.label,
+      })),
+    [value.category],
+  );
+
+  const categoryOptions = [
+    { value: "car", label: tk("filters.categoryCar") },
+    { value: "truck", label: tk("filters.categoryTruck") },
+  ];
+
+  const formOptions = useMemo(
+    () =>
+      KOREA_TRUCK_FORMS.map((slug) => ({
+        value: slug,
+        label: tk(koreaFormLabelKey(slug)),
+      })),
+    [tk],
+  );
+
+  const capacityOptions = useMemo(
+    () =>
+      KOREA_TRUCK_CAPACITIES.map((tons) => ({
+        value: tons,
+        label: tk("filters.capacityValue", { tons }),
+      })),
+    [tk],
   );
 
   const modelOptions = useMemo(
@@ -140,10 +184,36 @@ export default function KoreaFilters({ value, onChange }: Props) {
 
   const fields: FieldDef[] = [
     {
+      key: "category",
+      label: tk("filters.category"),
+      active: value.category === "truck",
+      summary: value.category === "truck" ? tk("filters.categoryTruck") : null,
+      clear: () => setCategory("car"),
+      control: (
+        <Select
+          options={categoryOptions}
+          value={value.category}
+          onChange={(v) => setCategory(v as KoreaCategory)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      ),
+      mobile: {
+        type: "single",
+        options: categoryOptions.map((o) => ({
+          value: o.value,
+          label: o.label,
+          searchText: o.label,
+        })),
+        value: value.category,
+        onSelect: (v) => setCategory(v === "truck" ? "truck" : "car"),
+      },
+    },
+    {
       key: "make",
       label: t("placeholders.marka"),
       active: !!value.make,
-      summary: value.make ? koreaBrandLabel(value.make) : null,
+      summary: value.make ? koreaBrandLabelFor(value.category, value.make) : null,
       clear: () => setMake(null),
       control: (
         <Select
@@ -203,6 +273,68 @@ export default function KoreaFilters({ value, onChange }: Props) {
         onSelect: (v) => set("model", v),
       },
     },
+    ...(value.category === "truck"
+      ? [
+          {
+            key: "form",
+            label: tk("filters.form"),
+            active: !!value.form,
+            summary: value.form ? tk(koreaFormLabelKey(value.form)) : null,
+            clear: () => set("form", null),
+            control: (
+              <Select
+                placeholder={tk("filters.form")}
+                allowClear
+                options={formOptions}
+                value={value.form ?? undefined}
+                onChange={(v) => set("form", v ?? null)}
+                variant="filled"
+                style={{ width: "100%" }}
+              />
+            ),
+            mobile: {
+              type: "single" as const,
+              options: formOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+                searchText: o.label,
+              })),
+              value: value.form,
+              onSelect: (v: string | null) => set("form", v),
+            },
+          },
+          {
+            key: "capacity",
+            label: tk("filters.capacity"),
+            active: !!value.capacity,
+            summary: value.capacity
+              ? tk("filters.capacityValue", { tons: value.capacity })
+              : null,
+            clear: () => set("capacity", null),
+            control: (
+              <Select
+                placeholder={tk("filters.capacity")}
+                allowClear
+                options={capacityOptions}
+                value={value.capacity ?? undefined}
+                onChange={(v) => set("capacity", v ?? null)}
+                variant="filled"
+                style={{ width: "100%" }}
+              />
+            ),
+            mobile: {
+              type: "single" as const,
+              options: capacityOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+                searchText: o.label,
+              })),
+              value: value.capacity,
+              onSelect: (v: string | null) => set("capacity", v),
+            },
+          },
+        ]
+      : []),
     {
       key: "year",
       label: t("year.label"),
@@ -393,10 +525,11 @@ export default function KoreaFilters({ value, onChange }: Props) {
 
 export function KoreaFilterChips({ value, onChange }: Props) {
   const t = useTranslations("featured.filters");
+  const tk = useTranslations("korea");
   const tFuel = useTranslations("carDetail.fuel");
   const tTrans = useTranslations("car.card.transmission");
   // Served from the react-query cache the filter select already filled.
-  const models = useKoreaModels(value.make);
+  const models = useKoreaModels(value.make, value.category);
 
   const set = <K extends keyof KoreaFilterValues>(
     key: K,
@@ -407,10 +540,26 @@ export function KoreaFilterChips({ value, onChange }: Props) {
 
   type Chip = { key: string; label: string; onRemove: () => void };
   const chips: Chip[] = [];
+  if (value.category === "truck")
+    chips.push({
+      key: "category",
+      label: tk("filters.categoryTruck"),
+      onRemove: () =>
+        onChange({
+          ...value,
+          category: "car",
+          make: null,
+          model: null,
+          form: null,
+          capacity: null,
+        }),
+    });
   if (value.make)
     chips.push({
       key: "make",
-      label: t("chips.marka", { value: koreaBrandLabel(value.make) }),
+      label: t("chips.marka", {
+        value: koreaBrandLabelFor(value.category, value.make),
+      }),
       onRemove: () => set("make", null),
     });
   if (value.model) {
@@ -423,6 +572,18 @@ export function KoreaFilterChips({ value, onChange }: Props) {
       onRemove: () => set("model", null),
     });
   }
+  if (value.category === "truck" && value.form)
+    chips.push({
+      key: "form",
+      label: tk(koreaFormLabelKey(value.form)),
+      onRemove: () => set("form", null),
+    });
+  if (value.category === "truck" && value.capacity)
+    chips.push({
+      key: "capacity",
+      label: tk("filters.capacityValue", { tons: value.capacity }),
+      onRemove: () => set("capacity", null),
+    });
   if (value.yearFrom != null || value.yearTo != null)
     chips.push({
       key: "year",

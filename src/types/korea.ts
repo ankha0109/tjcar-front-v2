@@ -73,6 +73,9 @@ export type KoreaModelGroup = {
   count: number;
 };
 
+/** Which Encar catalogue a listing or filter set belongs to. */
+export type KoreaCategory = "car" | "truck";
+
 /**
  * One vehicle from `GET /api/korea` (`data[]`) or `/api/korea/{id}` (`data`).
  * Detail-only fields are absent on list rows.
@@ -111,6 +114,14 @@ export type KoreaListing = {
   listing_url?: string | null;
   thumb?: string | null;
   photos?: KoreaPhoto[];
+  /** Which Encar catalogue this row came from. */
+  category?: KoreaCategory;
+  /** Truck body form slug (`cargo`, `camper`, …) — truck rows only. */
+  form?: string | null;
+  /** Encar's finer form name, in Korean (파워게이트) — truck rows only. */
+  form_detail?: string | null;
+  /** Rated payload in tonnes; null when Encar files it as 기타. */
+  capacity_tons?: number | null;
 };
 
 /**
@@ -174,6 +185,79 @@ export function koreaBrandLabel(slug: string): string {
   return koreaBrand(slug)?.label ?? slug;
 }
 
+/**
+ * Truck-section makes. Mirrors `EncarListingService::TRUCK_BRANDS` — the slugs
+ * overlap with KOREA_BRANDS where a make sells both, but the lists are not
+ * interchangeable (the backend 422s a slug from the wrong catalogue).
+ */
+export const KOREA_TRUCK_BRANDS: ReadonlyArray<{
+  slug: string;
+  label: string;
+  logo?: string;
+}> = [
+  { slug: "hyundai", label: "Hyundai" },
+  { slug: "kia", label: "Kia" },
+  { slug: "tata-daewoo", label: "Tata Daewoo" },
+  { slug: "volvo", label: "Volvo" },
+  { slug: "daewoo-bus", label: "Daewoo Bus" },
+  { slug: "man", label: "MAN" },
+  { slug: "kg-mobility", label: "KG Mobility", logo: "SsangYong" },
+  { slug: "isuzu", label: "Isuzu" },
+  { slug: "scania", label: "Scania" },
+  { slug: "mercedes-benz", label: "Mercedes-Benz" },
+  { slug: "renault-korea", label: "Renault Korea", logo: "Renault" },
+  { slug: "iveco", label: "Iveco" },
+  { slug: "byd", label: "BYD" },
+  { slug: "chevrolet", label: "Chevrolet" },
+  { slug: "ford", label: "Ford" },
+];
+
+export function koreaBrandsFor(category: KoreaCategory) {
+  return category === "truck" ? KOREA_TRUCK_BRANDS : KOREA_BRANDS;
+}
+
+export function koreaBrandLabelFor(
+  category: KoreaCategory,
+  slug: string,
+): string {
+  return koreaBrandsFor(category).find((b) => b.slug === slug)?.label ?? slug;
+}
+
+/** Truck body forms the backend accepts (labels via `korea.forms.*`). */
+export const KOREA_TRUCK_FORMS = [
+  "cargo",
+  "wing-body",
+  "bus",
+  "dump",
+  "crane",
+  "tank",
+  "camper",
+  "waste",
+  "live-fish",
+  "tow",
+  "tractor",
+  "trailer",
+  "other",
+] as const;
+
+/** Tonnages the backend accepts for `capacity` (sent as-is). */
+export const KOREA_TRUCK_CAPACITIES = [
+  "1",
+  "1.2",
+  "2.5",
+  "3.5",
+  "4.5",
+  "5",
+  "8.5",
+  "14",
+  "25",
+] as const;
+
+/** `korea.forms.*` message key for a truck form slug. */
+export function koreaFormLabelKey(slug: string): string {
+  return `forms.${slug}`;
+}
+
 /** `fuel` filter values the backend accepts (labels via `carDetail.fuel.*`). */
 export const KOREA_FUELS = [
   "petrol",
@@ -213,10 +297,16 @@ export const KOREA_ORDERINGS = ["price", "-price"] as const;
 export type KoreaOrdering = (typeof KOREA_ORDERINGS)[number];
 
 export type KoreaFilterValues = {
+  /** Which catalogue to search. `car` is the default and stays out of the URL. */
+  category: KoreaCategory;
   /** Brand slug from KOREA_BRANDS (the backend rejects anything else). */
   make: string | null;
   /** Korean model-group name exactly as `GET /korea/models` returns it. */
   model: string | null;
+  /** Truck body form slug — only meaningful when `category` is `truck`. */
+  form: string | null;
+  /** Tonnage string as the backend lists it (`1`, `2.5`) — truck only. */
+  capacity: string | null;
   yearFrom: number | null;
   yearTo: number | null;
   /** Full KRW bounds (Encar prices are KRW). */
@@ -234,8 +324,11 @@ export type KoreaFilterValues = {
 };
 
 export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
+  category: "car",
   make: null,
   model: null,
+  form: null,
+  capacity: null,
   yearFrom: null,
   yearTo: null,
   priceFrom: null,
@@ -249,8 +342,11 @@ export const EMPTY_KOREA_FILTERS: KoreaFilterValues = {
 /** `ordering` is deliberately excluded — a sort choice is not an active filter. */
 export function isKoreaFiltersEmpty(f: KoreaFilterValues): boolean {
   return (
+    f.category === "car" &&
     !f.make &&
     !f.model &&
+    !f.form &&
+    !f.capacity &&
     f.yearFrom == null &&
     f.yearTo == null &&
     f.priceFrom == null &&
@@ -270,8 +366,12 @@ export function koreaFiltersToQuery(
   f: KoreaFilterValues,
 ): Record<string, string | number> {
   const q: Record<string, string | number> = {};
+  // `car` is the backend default; leaving it out keeps existing URLs identical.
+  if (f.category === "truck") q.category = "truck";
   if (f.make) q.brand = f.make;
   if (f.model) q.model = f.model;
+  if (f.category === "truck" && f.form) q.form = f.form;
+  if (f.category === "truck" && f.capacity) q.capacity = f.capacity;
   if (f.yearFrom != null) q.min_year = f.yearFrom;
   if (f.yearTo != null) q.max_year = f.yearTo;
   if (f.priceFrom != null) q.min_price = f.priceFrom;
@@ -308,9 +408,15 @@ function pickOrdering(p: SearchParamRecord): KoreaOrdering | null {
 
 /** Parse the URL search params (backend param names) back into UI filters. */
 export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
+  const category: KoreaCategory =
+    pickString(p, "category") === "truck" ? "truck" : "car";
+
   return {
+    category,
     make: pickString(p, "brand"),
     model: pickString(p, "model"),
+    form: category === "truck" ? pickString(p, "form") : null,
+    capacity: category === "truck" ? pickString(p, "capacity") : null,
     yearFrom: pickInt(p, "min_year"),
     yearTo: pickInt(p, "max_year"),
     priceFrom: pickInt(p, "min_price"),

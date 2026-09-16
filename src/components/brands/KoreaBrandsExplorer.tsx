@@ -37,7 +37,9 @@ export default function KoreaBrandsExplorer({ initialBrand }: Props) {
     return q && KOREA_BRANDS.some((b) => b.slug === q) ? q : initialBrand;
   }, [params, initialBrand]);
 
-  const { data, isLoading } = useKoreaModels(selected);
+  // This explorer only ever browses `KOREA_BRANDS` (the car catalogue) — the
+  // truck section has no brands page of its own yet.
+  const { data, isLoading } = useKoreaModels(selected, "car");
 
   // Encar's own name is the filter value; the English translation is display
   // only and is null for model lines that have none.
