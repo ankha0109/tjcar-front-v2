@@ -406,6 +406,30 @@ function pickOrdering(p: SearchParamRecord): KoreaOrdering | null {
     : null;
 }
 
+/** A hand-edited `?form=` would 422 the backend, so unknown slugs drop out. */
+function pickForm(p: SearchParamRecord): string | null {
+  const s = pickString(p, "form");
+  return s && (KOREA_TRUCK_FORMS as readonly string[]).includes(s) ? s : null;
+}
+
+/** A hand-edited `?capacity=` would 422 the backend, so unknown tonnages drop out. */
+function pickCapacity(p: SearchParamRecord): string | null {
+  const s = pickString(p, "capacity");
+  return s && (KOREA_TRUCK_CAPACITIES as readonly string[]).includes(s)
+    ? s
+    : null;
+}
+
+/**
+ * A hand-edited or stale `?brand=` — including one left over from switching
+ * `category` — would 422 the backend, so a slug outside the requested
+ * category's own catalogue drops out.
+ */
+function pickMake(p: SearchParamRecord, category: KoreaCategory): string | null {
+  const s = pickString(p, "brand");
+  return s && koreaBrandsFor(category).some((b) => b.slug === s) ? s : null;
+}
+
 /** Parse the URL search params (backend param names) back into UI filters. */
 export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
   const category: KoreaCategory =
@@ -413,10 +437,10 @@ export function queryToKoreaFilters(p: SearchParamRecord): KoreaFilterValues {
 
   return {
     category,
-    make: pickString(p, "brand"),
+    make: pickMake(p, category),
     model: pickString(p, "model"),
-    form: category === "truck" ? pickString(p, "form") : null,
-    capacity: category === "truck" ? pickString(p, "capacity") : null,
+    form: category === "truck" ? pickForm(p) : null,
+    capacity: category === "truck" ? pickCapacity(p) : null,
     yearFrom: pickInt(p, "min_year"),
     yearTo: pickInt(p, "max_year"),
     priceFrom: pickInt(p, "min_price"),

@@ -62,15 +62,11 @@ export function koreaListingToCarItem(
  * Map a Korea catalog vehicle into the AJES-shaped `CarFixture` the detail UI
  * reads. Catalog vehicles have no auction/inspection semantics, so those fields
  * stay empty. Pricing + the official Encar link render from EncarDetail's `encar`
- * prop, not from the fixture.
+ * prop, not from the fixture. The detail page renders its own Form row, so a
+ * truck's body type is left for `body_type` alone (no `formLabel` fallback).
  */
-export function koreaListingToFixture(
-  listing: KoreaListing,
-  opts: { formLabel?: (slug: string) => string } = {},
-): CarFixture {
-  const bodyType =
-    listing.body_type ||
-    (listing.form && opts.formLabel ? opts.formLabel(listing.form) : "");
+export function koreaListingToFixture(listing: KoreaListing): CarFixture {
+  const bodyType = listing.body_type || "";
 
   return {
     ID: str(listing.id),
