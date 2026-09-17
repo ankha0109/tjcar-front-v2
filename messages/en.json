@@ -18,7 +18,7 @@
       "category": "Type",
       "categoryCar": "Passenger",
       "categoryTruck": "Commercial",
-      "form": "Form",
+      "form": "Purpose",
       "capacity": "Payload",
       "capacityValue": "{tons} t",
       "modelNeedsBrand": "Pick a make first",

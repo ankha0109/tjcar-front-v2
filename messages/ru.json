@@ -18,7 +18,7 @@
       "category": "Тип",
       "categoryCar": "Легковые",
       "categoryTruck": "Грузовые",
-      "form": "Форма",
+      "form": "Назначение",
       "capacity": "Грузоподъёмность",
       "capacityValue": "{tons} т",
       "modelNeedsBrand": "Сначала выберите марку",
