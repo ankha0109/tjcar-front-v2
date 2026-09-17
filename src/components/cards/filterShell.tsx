@@ -51,7 +51,10 @@ export type MobileControl =
       value: string;
       onChange: (v: string) => void;
       placeholder: string;
-    };
+    }
+  // Too important to hide behind a pill: the field's desktop `control` renders
+  // as-is above the pill row, always visible, and gets no pill or sheet.
+  | { type: "inline" };
 
 // One flat list — no collapse, no group headings. Array order is the panel
 // order AND the mobile pill order, so the fields buyers filter by first lead.
@@ -86,6 +89,7 @@ const sheetShape = (
     case "date":
       return { snap: 0.6, scrollable: true };
     case "text":
+    case "inline":
       return { snap: "auto", scrollable: true };
   }
 };
@@ -200,6 +204,8 @@ export default function FilterShell({
   // One per field with anything set — a from–to range counts once, matching the
   // chip row rather than the raw number of bounds.
   const totalCount = fields.filter((f) => f.active).length;
+  const inlineFields = fields.filter((f) => f.mobile.type === "inline");
+  const pillFields = fields.filter((f) => f.mobile.type !== "inline");
   const activeField = fields.find((f) => f.key === openField) ?? null;
   const shape = activeField
     ? sheetShape(activeField.mobile)
@@ -254,16 +260,23 @@ export default function FilterShell({
             />
           </div>
         );
+      case "inline":
+        return null;
     }
   };
 
   return (
     <>
-      {/* Mobile pill row — visible below lg */}
+      {/* Mobile inline fields + pill row — visible below lg */}
       <div className="mb-3 lg:hidden">
+        {inlineFields.map((f) => (
+          <div key={f.key} className="mb-2.5">
+            {f.control}
+          </div>
+        ))}
         <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex items-center gap-2">
-            {fields.map((f) => (
+            {pillFields.map((f) => (
               <FilterPill
                 key={f.key}
                 label={f.label}

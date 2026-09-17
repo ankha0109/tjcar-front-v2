@@ -25,6 +25,7 @@ import {
 } from "@/types/korea";
 import { MILEAGE_STEPS, YEAR_OPTIONS } from "@/types/filters";
 import { useKoreaModels } from "@/hooks/useKoreaModels";
+import KoreaCategoryCards from "@/components/korea/KoreaCategoryCards";
 import { cn } from "@/utils";
 
 type Props = {
@@ -92,11 +93,6 @@ export default function KoreaFilters({ value, onChange }: Props) {
       })),
     [value.category],
   );
-
-  const categoryOptions = [
-    { value: "car", label: tk("filters.categoryCar") },
-    { value: "truck", label: tk("filters.categoryTruck") },
-  ];
 
   const formOptions = useMemo(
     () =>
@@ -190,24 +186,10 @@ export default function KoreaFilters({ value, onChange }: Props) {
       summary: value.category === "truck" ? tk("filters.categoryTruck") : null,
       clear: () => setCategory("car"),
       control: (
-        <Select
-          options={categoryOptions}
-          value={value.category}
-          onChange={(v) => setCategory(v as KoreaCategory)}
-          variant="filled"
-          style={{ width: "100%" }}
-        />
+        <KoreaCategoryCards value={value.category} onChange={setCategory} />
       ),
-      mobile: {
-        type: "single",
-        options: categoryOptions.map((o) => ({
-          value: o.value,
-          label: o.label,
-          searchText: o.label,
-        })),
-        value: value.category,
-        onSelect: (v) => setCategory(v === "truck" ? "truck" : "car"),
-      },
+      // Two options that decide the whole catalogue — one tap, never a sheet.
+      mobile: { type: "inline" },
     },
     {
       key: "make",
