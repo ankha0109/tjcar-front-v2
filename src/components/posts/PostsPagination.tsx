@@ -37,8 +37,8 @@ const BASE_ITEM =
 
 /**
  * Server-rendered pagination — plain `?page=N` links so every page is
- * crawlable. The API's `links.next` / `links.prev` point at the backend host,
- * so hrefs are always rebuilt here.
+ * crawlable. The API sends no page URLs (only `meta` numbers), so hrefs are
+ * built here.
  */
 export default function PostsPagination({
   currentPage,
