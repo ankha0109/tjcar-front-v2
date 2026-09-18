@@ -131,7 +131,7 @@ export default function ReportStatus({
         <Alert
           type="warning"
           showIcon
-          message={t("stalledTitle")}
+          title={t("stalledTitle")}
           description={t("stalledBody")}
         />
       ) : null}

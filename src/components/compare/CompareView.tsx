@@ -58,7 +58,7 @@ export default function CompareView({ entries }: Props) {
   return (
     <div className="flex flex-col gap-4">
       {missingCount > 0 && (
-        <Alert type="warning" showIcon message={t("compare.notice.missing")} />
+        <Alert type="warning" showIcon title={t("compare.notice.missing")} />
       )}
       <CompareTable cars={cars} onRemove={handleRemove} />
     </div>
