@@ -55,12 +55,13 @@ export default async function ReportPage({
   // here — a promo has to move all of them at once, or the page contradicts
   // itself. `getConfig` is cached for an hour, and the locale layout has
   // already read it, so this is free.
-  const pricing = reportPricing(await getConfig());
+  const config = await getConfig();
+  const pricing = reportPricing(config);
 
   return (
     <>
       <ReportJsonLd locale={locale} pricing={pricing} />
-      <ReportHero pricing={pricing} />
+      <ReportHero pricing={pricing} maintenance={config.reportMaintenance} />
       <ReportCompare />
       <ReportFeatures />
       <ReportPdfPreview />

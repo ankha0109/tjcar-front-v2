@@ -19,6 +19,11 @@ export type SiteConfig = {
   reportDiscountPrice: number;
   /** Last day the promo applies, "YYYY-MM-DD". Empty when unset. */
   reportDiscountEndDate: string;
+  /**
+   * True while the report service is closed for maintenance (`report-maintenance`
+   * = "1"). The API refuses new report lookups and orders with 503 meanwhile.
+   */
+  reportMaintenance: boolean;
 };
 
 const EMPTY_CONFIG: SiteConfig = {
@@ -28,6 +33,7 @@ const EMPTY_CONFIG: SiteConfig = {
   reportPrice: 0,
   reportDiscountPrice: 0,
   reportDiscountEndDate: "",
+  reportMaintenance: false,
 };
 
 /**
@@ -57,6 +63,7 @@ export const getConfig = cache(async (): Promise<SiteConfig> => {
       reportPrice: Number(data?.["report-price"]) || 0,
       reportDiscountPrice: Number(data?.["report-discount-price"]) || 0,
       reportDiscountEndDate: data?.["report-discount-end-date"] ?? "",
+      reportMaintenance: data?.["report-maintenance"] === "1",
     };
   } catch {
     return EMPTY_CONFIG;

@@ -14,6 +14,7 @@ import {
   plateChassisNo,
   type VinSearchResult,
 } from "@/types/report";
+import ReportMaintenanceNotice from "./ReportMaintenanceNotice";
 import ReportPriceTag from "./ReportPriceTag";
 
 type Props = {
@@ -187,6 +188,15 @@ export default function ReportLookupModal({
       return {
         title: t("title"),
         body: <Skeleton active paragraph={{ rows: 4 }} />,
+      };
+    }
+
+    // The API closed the service after the hour-cached /config was read, so
+    // the hero still offered the form. Same notice the hero would show.
+    if (lookup.error instanceof ApiError && lookup.error.status === 503) {
+      return {
+        title: t("title"),
+        body: <ReportMaintenanceNotice />,
       };
     }
 

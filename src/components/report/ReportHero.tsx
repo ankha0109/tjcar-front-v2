@@ -14,6 +14,7 @@ import {
   type SearchMode,
 } from "@/lib/reportSearch";
 import ReportLookupModal from "./ReportLookupModal";
+import ReportMaintenanceNotice from "./ReportMaintenanceNotice";
 import ReportPriceTag from "./ReportPriceTag";
 import ReportSaleCountdown from "./ReportSaleCountdown";
 import SampleReportModal from "./SampleReportModal";
@@ -67,9 +68,11 @@ function syncUrl(query: { plate?: string; vin?: string }) {
 type Props = {
   /** List/promo price, resolved server-side from GET /config. */
   pricing: ReportPricing;
+  /** Report service closed: the lookup form gives way to the maintenance notice. */
+  maintenance: boolean;
 };
 
-export default function ReportHero({ pricing }: Props) {
+export default function ReportHero({ pricing, maintenance }: Props) {
   const t = useTranslations("reportLanding.hero");
   const tp = useTranslations("reportPrice");
   const [mode, setMode] = useState<SearchMode>("plate");
@@ -84,6 +87,9 @@ export default function ReportHero({ pricing }: Props) {
   // URL. Read from `window` rather than `useSearchParams`, which would force a
   // Suspense/CSR bailout and drag the whole landing page client-side.
   useEffect(() => {
+    // Links from the home panel still carry ?plate=/?vin=; with the service
+    // closed there is nothing to look up, so the notice is all they get.
+    if (maintenance) return;
     const params = new URLSearchParams(window.location.search);
     const plate = params.get("plate");
     const vin = params.get("vin");
@@ -104,7 +110,7 @@ export default function ReportHero({ pricing }: Props) {
     setLookup(reportSearchQuery(nextMode, next));
     setLookupOpen(true);
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
+  }, [maintenance]);
 
   function switchMode(next: SearchMode) {
     setMode(next);
@@ -177,7 +183,7 @@ export default function ReportHero({ pricing }: Props) {
 
           {/* Promo banner. Absent entirely at list price, so the hero keeps
               quoting no number at all outside a sale — same as before. */}
-          {pricing.discounted ? (
+          {pricing.discounted && !maintenance ? (
             <div
               className="hero-reveal mt-6 flex justify-center"
               style={{ animationDelay: "170ms" }}
@@ -194,98 +200,109 @@ export default function ReportHero({ pricing }: Props) {
             </div>
           ) : null}
 
-          {/* Lookup form — the hero's focal point */}
-          <form
-            id="report-check"
-            onSubmit={handleSubmit}
-            noValidate
-            className="hero-reveal mx-auto mt-8 w-full max-w-lg scroll-mt-24"
-            style={{ animationDelay: "220ms" }}
-          >
-            <Segmented<SearchMode>
-              value={mode}
-              onChange={switchMode}
-              options={[
-                { label: t("form.modePlate"), value: "plate" },
-                { label: t("form.modeVin"), value: "vin" },
-              ]}
-              className="mb-3"
-            />
-            <label htmlFor="report-vin-input" className="sr-only">
-              {mode === "plate" ? t("form.plateLabel") : t("form.label")}
-            </label>
-            {/* duration/size need antd >= 6.5. Keep `size` shorter than the
-                card's side edge — a longer segment wraps both corners of the
-                low card at once and reads as two separate beams. */}
-            <BorderBeam
-              color={CHECK_BEAM_COLOR}
-              outset={0}
-              duration={3}
-              size={70}
+          {/* Lookup form — the hero's focal point. Keeps the #report-check
+              anchor while closed, so ReportFinalCta still scrolls here. */}
+          {maintenance ? (
+            <div
+              id="report-check"
+              className="hero-reveal mx-auto mt-8 w-full max-w-lg scroll-mt-24 text-left"
+              style={{ animationDelay: "220ms" }}
             >
-              <div
-                className={cn(
-                  "relative flex flex-col gap-2 overflow-hidden rounded-2xl border bg-white p-2 shadow-[0_24px_55px_-28px_rgba(0,0,0,0.28)] transition-colors sm:flex-row sm:items-center dark:bg-neutral-900",
-                  error
-                    ? "border-red/60"
-                    : "border-neutral-200 focus-within:border-primary/50 dark:border-neutral-800 dark:focus-within:border-primary/50",
-                )}
+              <ReportMaintenanceNotice />
+            </div>
+          ) : (
+              <form
+                id="report-check"
+                onSubmit={handleSubmit}
+                noValidate
+                className="hero-reveal mx-auto mt-8 w-full max-w-lg scroll-mt-24"
+                style={{ animationDelay: "220ms" }}
               >
-                <Input
-                  id="report-vin-input"
-                  size="large"
-                  variant="borderless"
-                  value={value}
-                  prefix={
-                    mode === "plate" ? (
-                      <Image
-                        src={soyombo}
-                        alt=""
-                        aria-hidden="true"
-                        className="mr-1 h-5 w-auto"
-                      />
-                    ) : (
-                      <SearchIcon
-                        aria-hidden="true"
-                        className="mr-1 h-4 w-4 text-neutral-400"
-                      />
-                    )
-                  }
-                  aria-invalid={error ? true : undefined}
-                  aria-describedby={error ? "report-vin-error" : undefined}
-                  onChange={(e) => {
-                    setValue(normalizeFor(mode, e.target.value));
-                    if (error) setError(null);
-                  }}
-                  placeholder={
-                    mode === "plate"
-                      ? t("form.platePlaceholder")
-                      : t("form.placeholder")
-                  }
-                  className="min-h-11! flex-1"
-                  allowClear
+                <Segmented<SearchMode>
+                  value={mode}
+                  onChange={switchMode}
+                  options={[
+                    { label: t("form.modePlate"), value: "plate" },
+                    { label: t("form.modeVin"), value: "vin" },
+                  ]}
+                  className="mb-3"
                 />
-                <Button
-                  color="default"
-                  variant="solid"
-                  size="large"
-                  htmlType="submit"
-                  className="min-h-12! w-full rounded-xl! px-6! font-semibold! sm:w-auto"
+                <label htmlFor="report-vin-input" className="sr-only">
+                  {mode === "plate" ? t("form.plateLabel") : t("form.label")}
+                </label>
+                {/* duration/size need antd >= 6.5. Keep `size` shorter than the
+                    card's side edge — a longer segment wraps both corners of the
+                    low card at once and reads as two separate beams. */}
+                <BorderBeam
+                  color={CHECK_BEAM_COLOR}
+                  outset={0}
+                  duration={3}
+                  size={70}
                 >
-                  {t("form.submit")}
-                </Button>
-              </div>
-            </BorderBeam>
-            {error ? (
-              <p
-                id="report-vin-error"
-                role="alert"
-                className="mt-2.5 text-[12.5px] font-medium text-red"
-              >
-                {t(`form.errors.${error}`)}
-              </p>
-            ) : null}
-          </form>
+                  <div
+                    className={cn(
+                      "relative flex flex-col gap-2 overflow-hidden rounded-2xl border bg-white p-2 shadow-[0_24px_55px_-28px_rgba(0,0,0,0.28)] transition-colors sm:flex-row sm:items-center dark:bg-neutral-900",
+                      error
+                        ? "border-red/60"
+                        : "border-neutral-200 focus-within:border-primary/50 dark:border-neutral-800 dark:focus-within:border-primary/50",
+                    )}
+                  >
+                    <Input
+                      id="report-vin-input"
+                      size="large"
+                      variant="borderless"
+                      value={value}
+                      prefix={
+                        mode === "plate" ? (
+                          <Image
+                            src={soyombo}
+                            alt=""
+                            aria-hidden="true"
+                            className="mr-1 h-5 w-auto"
+                          />
+                        ) : (
+                          <SearchIcon
+                            aria-hidden="true"
+                            className="mr-1 h-4 w-4 text-neutral-400"
+                          />
+                        )
+                      }
+                      aria-invalid={error ? true : undefined}
+                      aria-describedby={error ? "report-vin-error" : undefined}
+                      onChange={(e) => {
+                        setValue(normalizeFor(mode, e.target.value));
+                        if (error) setError(null);
+                      }}
+                      placeholder={
+                        mode === "plate"
+                          ? t("form.platePlaceholder")
+                          : t("form.placeholder")
+                      }
+                      className="min-h-11! flex-1"
+                      allowClear
+                    />
+                    <Button
+                      color="default"
+                      variant="solid"
+                      size="large"
+                      htmlType="submit"
+                      className="min-h-12! w-full rounded-xl! px-6! font-semibold! sm:w-auto"
+                    >
+                      {t("form.submit")}
+                    </Button>
+                  </div>
+                </BorderBeam>
+                {error ? (
+                  <p
+                    id="report-vin-error"
+                    role="alert"
+                    className="mt-2.5 text-[12.5px] font-medium text-red"
+                  >
+                    {t(`form.errors.${error}`)}
+                  </p>
+                ) : null}
+              </form>
+          )}
 
           <div
             className="hero-reveal mt-6 flex flex-wrap items-center justify-center gap-3"

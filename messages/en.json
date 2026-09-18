@@ -1879,6 +1879,10 @@
     "noModels": "No models found",
     "unavailable": "Catalogue is temporarily unavailable. Please try again."
   },
+  "reportMaintenance": {
+    "title": "Report service temporarily closed",
+    "body": "The report service is under maintenance. Please visit our <link>Facebook page</link> for updates."
+  },
   "reportCheck": {
     "title": "Check vehicle history",
     "foundTitle": "Vehicle found",
