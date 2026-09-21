@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { App, Button } from "antd";
 import { useTranslations } from "next-intl";
 import BrandButton from "@/components/ui/BrandButton";
@@ -10,38 +10,43 @@ import BankAccountCard from "./BankAccountCard";
 import ContractModal from "./ContractModal";
 import { cn } from "@/utils";
 
-/** Remembers the contract acceptance so returning customers skip step 1. */
-const AGREED_KEY = "tjcar-wallet-contract-agreed";
+type StepNumber = 1 | 2 | 3;
+type StepStatus = "done" | "active" | "locked";
 
 /**
  * The three-step top-up flow, ported from v1's `BalanceInfo` modal and shown
  * inside {@link WalletTopUpDrawer}.
  *
- * v1 hid the bank details behind the contract dialog; here the details are
- * always readable (nothing about them is secret) and the acceptance instead
- * gates the *request* — the step that actually tells the office to credit an
- * account. Money never moves through this UI: the customer wires the amount
- * themselves and an admin confirms it by hand.
+ * The steps unlock strictly in order: the bank details appear only once the
+ * contract is accepted, and the request only once the customer says the money
+ * is wired. Nothing is remembered — the drawer unmounts on close
+ * (`destroyOnHidden`), so every top-up starts again at the contract. Money
+ * never moves through this UI: the customer wires the amount themselves and an
+ * admin confirms it by hand.
  */
 export default function WalletTopUp() {
   const t = useTranslations("dashboard.wallet");
   const { modal } = App.useApp();
 
+  const [step, setStep] = useState<StepNumber>(1);
   const [contractOpen, setContractOpen] = useState(false);
-  const [agreed, setAgreed] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
-  // Read after mount — localStorage is not available during SSR and reading it
-  // in render would desync the first client paint.
-  useEffect(() => {
-    setAgreed(window.localStorage.getItem(AGREED_KEY) === "1");
-  }, []);
+  const listRef = useRef<HTMLOListElement>(null);
 
-  const acceptContract = () => {
-    setAgreed(true);
-    window.localStorage.setItem(AGREED_KEY, "1");
-  };
+  // Bring the step that just unlocked into view — on a phone the bank card
+  // pushes it below the drawer's fold. Step 1 is where the drawer opens, so the
+  // first render has nothing to scroll to.
+  useEffect(() => {
+    if (step === 1) return;
+    listRef.current
+      ?.querySelector(`[data-step="${step}"]`)
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [step]);
+
+  const statusOf = (n: StepNumber): StepStatus =>
+    n < step ? "done" : n === step ? "active" : "locked";
 
   const sendRequest = async () => {
     setSending(true);
@@ -73,13 +78,18 @@ export default function WalletTopUp() {
         {t("howDescription")}
       </p>
 
-      <ol>
-        <Step step={1} title={t("step1Title")} body={t("step1Body")} done={agreed}>
+      <ol ref={listRef}>
+        <Step
+          step={1}
+          status={statusOf(1)}
+          title={t("step1Title")}
+          body={t("step1Body")}
+        >
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={() => setContractOpen(true)}>
               {t("viewContract")}
             </Button>
-            {agreed && (
+            {step > 1 && (
               <span className="text-[12.5px] text-emerald-600 dark:text-emerald-400">
                 {t("contractAgreed")}
               </span>
@@ -87,26 +97,34 @@ export default function WalletTopUp() {
           </div>
         </Step>
 
-        <Step step={2} title={t("step2Title")} body={t("step2Body")}>
+        <Step
+          step={2}
+          status={statusOf(2)}
+          title={t("step2Title")}
+          body={t("step2Body")}
+        >
           <BankAccountCard />
+          {step === 2 && (
+            <div className="mt-4">
+              <BrandButton size="large" onClick={() => setStep(3)}>
+                {t("transferDone")}
+              </BrandButton>
+            </div>
+          )}
         </Step>
 
-        <Step step={3} title={t("step3Title")} body={t("step3Body")} last>
+        <Step
+          step={3}
+          status={sent ? "done" : statusOf(3)}
+          title={t("step3Title")}
+          body={t("step3Body")}
+          last
+        >
           <div className="flex flex-wrap items-center gap-3">
-            <BrandButton
-              size="large"
-              loading={sending}
-              disabled={!agreed}
-              onClick={sendRequest}
-            >
+            <BrandButton size="large" loading={sending} onClick={sendRequest}>
               {sent ? t("requestAgainCta") : t("requestCta")}
             </BrandButton>
-            {!agreed && (
-              <span className="text-[12.5px] text-neutral-500 dark:text-neutral-400">
-                {t("requestNeedsContract")}
-              </span>
-            )}
-            {sent && agreed && (
+            {sent && (
               <span className="text-[12.5px] text-emerald-600 dark:text-emerald-400">
                 {t("requestSentInline")}
               </span>
@@ -123,39 +141,53 @@ export default function WalletTopUp() {
       <ContractModal
         open={contractOpen}
         onClose={() => setContractOpen(false)}
-        onAgree={acceptContract}
+        // Once accepted, the button reopens the contract read-only.
+        onAgree={step === 1 ? () => setStep(2) : undefined}
       />
     </div>
   );
 }
 
+/**
+ * One row of the vertical stepper. A locked step shows only its number and
+ * title, so the customer sees how far the flow goes without anything to act on
+ * before its turn.
+ */
 function Step({
   step,
+  status,
   title,
   body,
-  done,
   last,
   children,
 }: {
-  step: number;
+  step: StepNumber;
+  status: StepStatus;
   title: string;
   body: string;
-  done?: boolean;
   last?: boolean;
   children: React.ReactNode;
 }) {
+  const locked = status === "locked";
+
   return (
-    <li className="flex gap-4">
+    <li
+      data-step={step}
+      aria-current={status === "active" ? "step" : undefined}
+      className="flex gap-4"
+    >
       <div className="flex flex-col items-center">
         <span
           className={cn(
             "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold",
-            done
-              ? "bg-emerald-500 text-white"
-              : "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900",
+            status === "done" && "bg-emerald-500 text-white",
+            status === "active" &&
+              "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900",
+            locked &&
+              "bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500",
           )}
         >
-          {done ? <CheckIcon /> : step}
+          {status === "done" ? <CheckIcon /> : step}
         </span>
         {!last && (
           <span
@@ -166,13 +198,24 @@ function Step({
       </div>
 
       <div className={cn("min-w-0 flex-1", last ? "pb-0" : "pb-7")}>
-        <h3 className="text-[14.5px] font-semibold text-neutral-900 dark:text-neutral-100">
+        <h3
+          className={cn(
+            "text-[14.5px] font-semibold",
+            locked
+              ? "text-neutral-400 dark:text-neutral-500"
+              : "text-neutral-900 dark:text-neutral-100",
+          )}
+        >
           {title}
         </h3>
-        <p className="mt-1 max-w-prose text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-          {body}
-        </p>
-        <div className="mt-3.5">{children}</div>
+        {!locked && (
+          <>
+            <p className="mt-1 max-w-prose text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+              {body}
+            </p>
+            <div className="mt-3.5">{children}</div>
+          </>
+        )}
       </div>
     </li>
   );
