@@ -1472,7 +1472,7 @@
         "title": "Insurance history",
         "clean": "No accident history",
         "accidentBadge": "{count} accidents",
-        "totalLoss": "Total-loss history",
+        "totalLoss": "Serious accident history",
         "theft": "Theft history",
         "flood": "Flood damage history",
         "governmentUse": "Ex-government use",
