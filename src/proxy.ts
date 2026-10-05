@@ -101,7 +101,10 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
+  // `robots.txt` has to stay out of here: next-intl otherwise redirects it to
+  // `/mn/robots.txt`, which 404s, and the crawler rules in `app/robots.ts` are
+  // never served — the catalogue walkers it bans then spend the AJES quota.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|images|webmanifest|manifest|icon|sw|.*\\.svg).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|images|webmanifest|manifest|icon|sw|.*\\.svg).*)",
   ],
 };
