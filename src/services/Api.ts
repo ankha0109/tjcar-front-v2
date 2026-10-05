@@ -1,4 +1,9 @@
 import { signOut } from "next-auth/react";
+import {
+  GATE_REFRESH_PATH,
+  GATE_REFUSAL_HEADER,
+  GATE_REFUSAL_STALE_PASS,
+} from "@/lib/proxyGate";
 import { buildQuery, type QueryParams } from "@/utils/buildQuery";
 
 let signingOut = false;
@@ -19,6 +24,33 @@ function handleUnauthorized(): void {
   void signOut({ redirect: false }).finally(() => {
     signingOut = false;
   });
+}
+
+let renewingGatePass: Promise<void> | null = null;
+
+/**
+ * The proxy refused a Japan or Korea read because this tab's visitor pass has
+ * lapsed. It lasts an hour and is otherwise only reissued with a page request,
+ * so a tab left open on one list — scrolling it, or simply forgotten and come
+ * back to — outlives it. Ask for a fresh one; the caller then retries once.
+ *
+ * Shared between concurrent callers so a burst of refused requests costs one
+ * renewal, not one each.
+ */
+function renewGatePass(): Promise<void> {
+  renewingGatePass ??= fetch(GATE_REFRESH_PATH, {
+    method: "HEAD",
+    cache: "no-store",
+  })
+    .then(
+      () => undefined,
+      () => undefined,
+    )
+    .finally(() => {
+      renewingGatePass = null;
+    });
+
+  return renewingGatePass;
 }
 
 function readLocaleFromCookie(): string {
@@ -72,11 +104,22 @@ const Api = () => {
       }
     }
 
-    const response = await fetch(`${baseURL}${url}`, {
-      ...restOptions,
-      headers,
-      body: finalBody,
-    });
+    const send = () =>
+      fetch(`${baseURL}${url}`, {
+        ...restOptions,
+        headers,
+        body: finalBody,
+      });
+
+    let response = await send();
+
+    if (
+      response.status === 403 &&
+      response.headers.get(GATE_REFUSAL_HEADER) === GATE_REFUSAL_STALE_PASS
+    ) {
+      await renewGatePass();
+      response = await send();
+    }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

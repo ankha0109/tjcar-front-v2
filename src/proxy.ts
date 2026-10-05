@@ -2,8 +2,14 @@ import createIntlMiddleware from "next-intl/middleware";
 import { getToken } from "next-auth/jwt";
 import { NextResponse, userAgent, type NextRequest } from "next/server";
 import { routing } from "@/i18n/routing";
-import { SESSION_TOKEN_COOKIE } from "@/lib/authCookies";
+import { COMMON_COOKIE_OPTIONS, SESSION_TOKEN_COOKIE } from "@/lib/authCookies";
 import { DEVICE_COOKIE, type Device } from "@/lib/device";
+import {
+  GATE_COOKIE,
+  GATE_REFRESH_PATH,
+  GATE_TTL_SECONDS,
+} from "@/lib/proxyGate";
+import { gateSecret, mintGateToken } from "@/lib/proxyGateToken";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -44,8 +50,38 @@ function getLocaleFromPath(pathname: string): string {
   return routing.defaultLocale;
 }
 
+/**
+ * Hand the visitor the pass the `/api/v1` proxy asks for on Japan and Korea
+ * reads. `/api` is outside this file's matcher, so a script that calls the proxy
+ * directly never passes through here and never holds one — a browser gets it
+ * with the page and sends it back on its own, same-origin.
+ *
+ * It is a speed bump, not a wall: a scraper that loads a page first is handed a
+ * pass like anyone else.
+ */
+function issueGatePass(req: NextRequest, res: NextResponse): void {
+  const secret = gateSecret();
+  if (!secret) return;
+
+  res.cookies.set(
+    GATE_COOKIE,
+    mintGateToken(secret, req.headers.get("user-agent") ?? ""),
+    { ...COMMON_COOKIE_OPTIONS, maxAge: GATE_TTL_SECONDS },
+  );
+}
+
 export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
+
+  if (pathname === GATE_REFRESH_PATH) {
+    const res = new NextResponse(null, {
+      status: 204,
+      headers: { "Cache-Control": "no-store" },
+    });
+    issueGatePass(req, res);
+    return res;
+  }
+
   const pathWithoutLocale = stripLocale(pathname);
   const locale = getLocaleFromPath(pathname);
 
@@ -96,6 +132,8 @@ export async function proxy(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 365,
     });
   }
+
+  issueGatePass(req, intlResponse);
 
   return intlResponse;
 }

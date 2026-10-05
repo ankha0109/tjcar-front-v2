@@ -15,7 +15,8 @@ export const getCompare = cache(
       const res = await ServerApi.get<{ data: CompareEntry[] }>(
         "/compare",
         { items },
-        { cache: "no-store" },
+        // A Japan entry is an AJES read, and the API budgets those by audience.
+        { cache: "no-store", forwardUserAgent: true },
       );
       return res.data;
     } catch (err) {
