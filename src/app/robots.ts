@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { SITE_URL } from "@/lib/site";
 
 /**
  * Every `/japan/{id}` page is server-rendered, and rendering one costs the
@@ -80,6 +79,5 @@ export default function robots(): MetadataRoute.Robots {
       },
       { userAgent: CATALOGUE_WALKERS, disallow: "/" },
     ],
-    host: SITE_URL,
   };
 }
