@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import EncarDetail from "@/components/car-detail/EncarDetail";
 import { getKoreaListing } from "@/services/korea";
 import { calculateVehicleCost } from "@/services/vehicleCost";
@@ -12,6 +12,13 @@ import type { VehicleCostResult } from "@/types/vehicleCost";
 type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
+
+/**
+ * Our fee on a Korean import. The calculator adds nothing the caller does not
+ * ask for, so the page asks: the API appends it as the last row, under the
+ * taxes, and counts it into the total.
+ */
+const BROKERAGE_FEE_MNT = 500_000;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -27,6 +34,7 @@ export default async function KoreaDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const listing = await getKoreaListing(id);
   if (!listing) notFound();
+  const t = await getTranslations("carDetail.koreaLanded");
 
   // Encar's fuel type pins the excise class outright, so the landed cost is
   // computed here and lands in the first paint. Only a listing with no usable
@@ -37,6 +45,13 @@ export default async function KoreaDetailPage({ params }: Props) {
         country: "KOREA",
         koreaListingId: Number(id),
         powertrain,
+        additionalCostsMNT: [
+          {
+            code: "BROKERAGE_FEE",
+            name: t("brokerageFee"),
+            amountMNT: BROKERAGE_FEE_MNT,
+          },
+        ],
       })
     : null;
 

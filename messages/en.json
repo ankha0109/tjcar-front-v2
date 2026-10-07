@@ -1199,8 +1199,9 @@
     },
     "koreaLanded": {
       "title": "Total landed cost in Mongolia",
-      "hintLabel": "Details",
-      "disclaimer": "Includes the car price, shipping, and Mongolian customs duty, excise tax and VAT. Bank charges, brokerage, domestic transport and other extras are not included.",
+      "showCalculation": "Show the calculation",
+      "hideCalculation": "Hide the calculation",
+      "brokerageFee": "Brokerage fee",
       "unknownPowertrain": "This listing does not state the powertrain, so the cost cannot be calculated. Please contact an operator.",
       "error": {
         "EXCHANGE_RATE_UNAVAILABLE": "Exchange rates are temporarily unavailable. Please try again shortly.",

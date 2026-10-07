@@ -109,7 +109,7 @@ function Table({
                 <Hint text={row.hint} label={hintLabel} />
               )}
             </dt>
-            <dd className="shrink-0 text-[13px] font-medium tabular-nums text-neutral-800 dark:text-neutral-100">
+            <dd className="shrink-0 text-[13px] font-medium text-neutral-800 dark:text-neutral-100">
               {row.value}
             </dd>
           </div>
@@ -120,7 +120,7 @@ function Table({
         <span className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
           {totalLabel}
         </span>
-        <span className="shrink-0 text-[22px] font-extrabold leading-tight tabular-nums text-neutral-900 dark:text-neutral-100">
+        <span className="shrink-0 text-[22px] font-extrabold leading-tight text-neutral-900 dark:text-neutral-100">
           {totalValue}
         </span>
       </div>
