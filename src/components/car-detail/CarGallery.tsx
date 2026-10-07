@@ -28,7 +28,19 @@ type Props = {
    * per gallery: Korea/Encar lots stay on `"card"` deliberately.
    */
   stripSize?: AuctionImageSize;
+  /**
+   * Thumbnails per row in the desktop grid. More columns means smaller
+   * thumbnails — the grid always spans the gallery's width. The phone strip is
+   * a scrolling row and ignores this.
+   */
+  stripColumns?: keyof typeof STRIP_COLUMNS;
 };
+
+/** Spelled out so Tailwind sees each class name. */
+const STRIP_COLUMNS = {
+  6: "lg:grid-cols-6",
+  8: "lg:grid-cols-8",
+} as const;
 
 /**
  * Car photo gallery: an Embla carousel (full-bleed on mobile) with a synced
@@ -42,6 +54,7 @@ export default function CarGallery({
   alt,
   sizeVariants = true,
   stripSize = "card",
+  stripColumns = 6,
 }: Props) {
   const t = useTranslations("carDetail.gallery");
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
@@ -249,7 +262,12 @@ export default function CarGallery({
 
       {/* Thumbnail strip — scrollable row on mobile, grid on desktop */}
       {hasMany && (
-        <ul className="flex gap-2 overflow-x-auto px-3 pb-1 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0 lg:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ul
+          className={cn(
+            "flex gap-2 overflow-x-auto px-3 pb-1 lg:grid lg:overflow-visible lg:px-0 lg:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            STRIP_COLUMNS[stripColumns],
+          )}
+        >
           {images.map((src, idx) => (
             <li key={src} className="shrink-0">
               <button

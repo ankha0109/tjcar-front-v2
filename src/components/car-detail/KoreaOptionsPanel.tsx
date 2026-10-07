@@ -11,11 +11,16 @@ type Props = {
 
 /**
  * Grouped standard-option checklist for the Korea detail page, shown beneath
- * the gallery (desktop) / at the end of the info column (mobile). Each Encar
- * category renders as its own card — icon, localized label, item count and a
- * check-marked list — so a 30+ option car stays scannable instead of a chip
- * cloud. Names arrive as canonical English and localize via the shared
- * dictionary.
+ * the gallery (desktop) / at the end of the info column (mobile).
+ *
+ * One card, and nothing inside it is a card: each Encar category is a band
+ * under a hairline — icon, localized label, item count, then its check-marked
+ * list — so a 30+ option car stays scannable without boxes nested in a box.
+ *
+ * The lists go two-up by the panel's own width (a container query), not the
+ * viewport's: the same panel sits in a ~695px column on desktop and a ~360px
+ * one on a phone, and only the first has room for two columns of names. Names
+ * arrive as canonical English and localize via the shared dictionary.
  */
 export default async function KoreaOptionsPanel({ options }: Props) {
   if (!options || options.length === 0) return null;
@@ -26,41 +31,36 @@ export default async function KoreaOptionsPanel({ options }: Props) {
   const total = options.reduce((n, group) => n + group.items.length, 0);
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
-      <div className="flex items-center gap-2">
-        <h2 className="text-[14px] font-semibold text-neutral-900 dark:text-neutral-100">
-          {t("options.title")}
-        </h2>
-        <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-neutral-100 px-1.5 text-[11px] font-semibold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+    <section className="@container rounded-2xl border border-neutral-200 p-5 dark:border-neutral-800">
+      <h2 className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
+        {t("options.title")}
+        <span className="ml-2 font-medium text-neutral-500 dark:text-neutral-400">
           {total}
         </span>
-      </div>
+      </h2>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-1 divide-y divide-neutral-100 dark:divide-neutral-800">
         {options.map((group) => (
-          <div
-            key={group.category}
-            className="flex flex-col gap-2.5 rounded-xl border border-neutral-100 bg-neutral-50/60 p-3 dark:border-neutral-800 dark:bg-neutral-900/60"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white text-neutral-500 ring-1 ring-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-700">
-                  <CategoryIcon category={group.category} />
-                </span>
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                  {localizeKoreaOptionCategory(group.category, locale)}
-                </span>
-              </div>
-              <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
+          <div key={group.category} className="py-4 last:pb-0">
+            <h3 className="flex items-center gap-2 text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
+              <span className="text-neutral-400 dark:text-neutral-500">
+                <CategoryIcon category={group.category} />
+              </span>
+              {localizeKoreaOptionCategory(group.category, locale)}
+              <span className="font-medium text-neutral-500 dark:text-neutral-400">
                 {group.items.length}
               </span>
-            </div>
+            </h3>
 
-            <ul className="flex flex-col gap-1.5">
+            {/* Each item carries its own bottom gap, and the list takes the
+                last one back, so a column break never opens on a margin. The
+                check and its gap are as wide as the heading icon and its gap,
+                which lines the names up under the category label. */}
+            <ul className="-mb-2 mt-3 columns-1 gap-x-8 @md:columns-2">
               {group.items.map((item) => (
                 <li
                   key={item}
-                  className="flex items-start gap-2 text-[12.5px] leading-snug text-neutral-700 dark:text-neutral-300"
+                  className="flex break-inside-avoid items-start gap-2.5 pb-2 text-[13px] leading-snug text-neutral-700 dark:text-neutral-300"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ function CategoryIcon({ category }: { category: string }) {
     strokeWidth: "2",
     strokeLinecap: "round",
     strokeLinejoin: "round",
-    className: "h-3.5 w-3.5",
+    className: "h-4 w-4",
     "aria-hidden": true,
   } as const;
 

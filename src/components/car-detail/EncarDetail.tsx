@@ -25,6 +25,7 @@ import {
   TransmissionIcon,
   YearIcon,
 } from "@/components/icons/CarSpecIcons";
+import { cn } from "@/utils";
 import { colorNameKey, getColorSwatch } from "@/utils/carColor";
 import { formatMileage, formatTransmission } from "@/utils/carFormat";
 
@@ -237,7 +238,8 @@ export default async function EncarDetail({
           page width above the gallery. Skipped on the phone shell, whose sticky
           header already carries the title and a back chevron. Below `lg` the
           actions move to the mobile sticky bar, so exactly one copy of them
-          exists at any width. `pt-5 lg:pt-0` on the breadcrumb because
+          exists at any width; the source-listing link beside them moves to
+          the info column the same way. `pt-5 lg:pt-0` on the breadcrumb because
           <article>'s `lg:py-8` does not apply below `lg`, where the band would
           otherwise sit flush under the site header. */}
       {showTitleHeader && (
@@ -265,11 +267,21 @@ export default async function EncarDetail({
                 </span>
               )}
             </div>
-            <div className="hidden shrink-0 lg:block">
+            <div className="hidden shrink-0 items-center gap-2 lg:flex">
               <CarActionButtons
                 item={wishlistItem}
                 enableCompare={enableCompare}
               />
+              {/* The source listing, as a third pill cut to the compare
+                  pill's shape. Below `lg` it is the text link in the info
+                  column's action block instead. */}
+              {encar?.officialUrl && (
+                <OfficialListingLink
+                  href={encar.officialUrl}
+                  label={t("encar.officialLink")}
+                  className="h-9 rounded-full border border-neutral-200 px-3.5 text-neutral-700 transition hover:border-neutral-300 hover:text-neutral-700 active:scale-95 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:text-neutral-300"
+                />
+              )}
             </div>
           </header>
         </>
@@ -278,7 +290,7 @@ export default async function EncarDetail({
         {/* Gallery — full-bleed on mobile (no side padding) */}
         <div className="lg:order-1">
           <div className="pt-2 lg:p-0">
-            <CarGallery images={images} alt={title} />
+            <CarGallery images={images} alt={title} stripColumns={8} />
           </div>
           {/* Options live under the gallery on desktop; on mobile they render
               in the info column instead, so the price stays next to the
@@ -339,40 +351,32 @@ export default async function EncarDetail({
             )}
           </section>
 
-          {/* Order CTA — the last thing under the car's own facts, so the
-              buyer has the price and the specs before it. Opens the contact
-              sheet; nothing is submitted here, the conversation moves to
-              Messenger or the phone. */}
-          <OrderInquiry carTitle={title} />
+          {/* The page's actions as one block, weighted by what they are for.
+              Its gaps are tighter than the column's so the three read
+              together rather than as three more cards. */}
+          <div className="flex flex-col gap-2.5">
+            {/* Order CTA — the last thing under the car's own facts, so the
+                buyer has the price and the specs before it. Opens the contact
+                sheet; nothing is submitted here, the conversation moves to
+                Messenger or the phone. */}
+            <OrderInquiry carTitle={title} />
 
-          {/* The source listing, kept from the old price hero. */}
-          {encar?.officialUrl && (
-            <a
-              href={encar.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-neutral-200 text-[13px] font-semibold text-neutral-900 transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
-            >
-              {t("encar.officialLink")}
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-3.5 w-3.5"
-                aria-hidden
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-            </a>
-          )}
+            {/* Encar performance inspection + insurance history, on demand —
+                two reports of one kind, so one joined control. */}
+            {encar && <KoreaDetailExtras listingId={encar.listingId} />}
 
-          {/* Encar performance inspection + insurance history, on demand */}
-          {encar && <KoreaDetailExtras listingId={encar.listingId} />}
+            {/* The source listing, below `lg` only — from `lg` up it sits in
+                the title band beside wishlist and compare, which this width
+                does not show. It leaves the site, so it gets the least weight
+                here: a text link, not a third button. */}
+            {encar?.officialUrl && (
+              <OfficialListingLink
+                href={encar.officialUrl}
+                label={t("encar.officialLink")}
+                className="self-center rounded py-1.5 text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline lg:hidden dark:text-neutral-400 dark:hover:text-neutral-100"
+              />
+            )}
+          </div>
 
           {/* Mobile-only options placement (desktop shows them under the gallery) */}
           {encar && (
@@ -422,5 +426,48 @@ export default async function EncarDetail({
         </>
       )}
     </article>
+  );
+}
+
+/**
+ * Link out to the listing on Encar. The caller dresses it — a pill in the
+ * title band, a text link in the info column — and has to spell out its text
+ * colours, hover included: antd's reset paints a bare `<a>` blue otherwise.
+ */
+function OfficialListingLink({
+  href,
+  label,
+  className,
+}: {
+  href: string;
+  label: string;
+  className: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer nofollow"
+      className={cn(
+        "flex items-center gap-1.5 text-[13px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 dark:focus-visible:outline-neutral-100",
+        className,
+      )}
+    >
+      {label}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-3.5 w-3.5"
+        aria-hidden
+      >
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+        <polyline points="15 3 21 3 21 9" />
+        <line x1="10" y1="14" x2="21" y2="3" />
+      </svg>
+    </a>
   );
 }

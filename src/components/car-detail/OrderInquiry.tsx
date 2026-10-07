@@ -59,7 +59,7 @@ export default function OrderInquiry({ carTitle, variant = "block" }: Props) {
         className={
           variant === "bar"
             ? "h-10 shrink-0 rounded-xl px-4 text-[13px] font-semibold"
-            : "h-11 w-full rounded-xl text-[13px] font-semibold"
+            : "h-12 w-full rounded-xl text-[14px] font-semibold"
         }
         onClick={handleOpen}
       >

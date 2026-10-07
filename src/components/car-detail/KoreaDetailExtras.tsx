@@ -41,9 +41,19 @@ export default function KoreaDetailExtras({ listingId }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {/* One control with two halves: the reports are the same kind of thing
+          and open the same way, so they share a border instead of standing as
+          two buttons. */}
+      <div className="flex divide-x divide-neutral-200 overflow-hidden rounded-xl border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
         <ReportButton
           label={t("inspection.title")}
+          icon={
+            <>
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              <path d="m9 14 2 2 4-4" />
+            </>
+          }
           onClick={() => {
             setInspectionAsked(true);
             setOpenReport("inspection");
@@ -51,6 +61,13 @@ export default function KoreaDetailExtras({ listingId }: Props) {
         />
         <ReportButton
           label={t("insurance.title")}
+          icon={
+            <>
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </>
+          }
           onClick={() => {
             setInsuranceAsked(true);
             setOpenReport("insurance");
@@ -103,20 +120,26 @@ export default function KoreaDetailExtras({ listingId }: Props) {
   );
 }
 
+/**
+ * One half of the joined report control. `icon` is the stroke paths of a 24px
+ * glyph — each report gets its own, so the halves differ by more than a label.
+ * The label may wrap: on a 320px phone the two halves are ~140px each.
+ */
 function ReportButton({
   label,
+  icon,
   onClick,
 }: {
   label: string;
+  icon: ReactNode;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-neutral-200 text-[13px] font-semibold text-neutral-900 transition hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-900"
+      className="flex min-h-11 min-w-0 flex-1 items-center justify-center gap-2 px-3 py-2 text-[13px]/tight font-semibold text-neutral-900 transition-colors hover:bg-neutral-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:focus-visible:outline-neutral-100"
     >
-      {label}
       <svg
         viewBox="0 0 24 24"
         fill="none"
@@ -124,13 +147,12 @@ function ReportButton({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-3.5 w-3.5"
+        className="h-4 w-4 shrink-0 text-neutral-500 dark:text-neutral-400"
         aria-hidden
       >
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 16v-4" />
-        <path d="M12 8h.01" />
+        {icon}
       </svg>
+      {label}
     </button>
   );
 }
