@@ -45,7 +45,7 @@ export default function BidRow({ bid }: { bid: Bid }) {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <span className="text-[13px] tabular-nums text-neutral-600 dark:text-neutral-300">
+          <span className="text-[13px] text-neutral-600 dark:text-neutral-300">
             {formatBidPrice(bid)}
           </span>
           <BidStatusTag status={bid.status} label={bid.status_label} />

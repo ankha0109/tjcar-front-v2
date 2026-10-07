@@ -85,7 +85,7 @@ export default function MobileAccountCard({ onTopUp }: Props) {
         <p className="text-[11px] font-semibold uppercase text-neutral-500 dark:text-neutral-400">
           {t("balanceLabel")}
         </p>
-        <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-neutral-900 dark:text-neutral-100">
+        <p className="mt-1 text-[32px] font-semibold leading-none text-neutral-900 dark:text-neutral-100">
           {formatMnt(balance)}
         </p>
         <div className="mt-2 flex items-center gap-2">

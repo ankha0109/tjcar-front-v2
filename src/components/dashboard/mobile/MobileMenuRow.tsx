@@ -59,7 +59,7 @@ export default function MobileMenuRow({
         {label}
       </span>
       {badge ? (
-        <span className="shrink-0 rounded-full bg-neutral-100 px-2 text-[12px] font-semibold leading-5 tabular-nums text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+        <span className="shrink-0 rounded-full bg-neutral-100 px-2 text-[12px] font-semibold leading-5 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
           {badge > 99 ? "99+" : badge}
         </span>
       ) : null}

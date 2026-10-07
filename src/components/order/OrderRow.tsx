@@ -57,7 +57,7 @@ export default function OrderRow({ order }: { order: Order }) {
           </div>
 
           <div className="flex items-center gap-2.5">
-            <span className="text-[13px] tabular-nums text-neutral-600 dark:text-neutral-300">
+            <span className="text-[13px] text-neutral-600 dark:text-neutral-300">
               {formatMnt(orderTotalMnt(order))}
             </span>
             <OrderStatusTag status={order.status} label={order.status_label} />

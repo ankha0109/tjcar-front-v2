@@ -107,7 +107,7 @@ function Row({
       <dd className="flex items-center gap-2">
         <span
           className={cn(
-            "text-right tabular-nums text-neutral-900 dark:text-neutral-100",
+            "text-right text-neutral-900 dark:text-neutral-100",
             strong ? "text-[15px] font-semibold" : "text-[13.5px] font-medium",
           )}
         >

@@ -45,7 +45,7 @@ export default async function TermsBody() {
                     href={`#${section.key}`}
                     className="group -ml-px flex gap-3 border-l-2 border-transparent py-2 pl-4 text-[13px] leading-snug text-neutral-500 transition-colors hover:border-primary hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
                   >
-                    <span className="text-[11px] font-semibold tabular-nums text-neutral-300 transition-colors group-hover:text-primary dark:text-neutral-600">
+                    <span className="text-[11px] font-semibold text-neutral-300 transition-colors group-hover:text-primary dark:text-neutral-600">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {t(`sections.${section.key}.title`)}
@@ -71,7 +71,7 @@ export default async function TermsBody() {
                   <div className="flex items-baseline gap-4">
                     <span
                       aria-hidden="true"
-                      className="w-5 shrink-0 text-[12px] font-semibold tabular-nums text-primary/70"
+                      className="w-5 shrink-0 text-[12px] font-semibold text-primary/70"
                     >
                       {number}
                     </span>
@@ -99,7 +99,7 @@ export default async function TermsBody() {
 
                     {section.amount ? (
                       <p className="mt-4 inline-flex items-baseline gap-2.5 rounded-lg border border-neutral-200 bg-neutral-50 px-3.5 py-2 dark:border-neutral-800 dark:bg-neutral-900/60">
-                        <span className="text-[15px] font-semibold tabular-nums text-neutral-900 dark:text-neutral-50">
+                        <span className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-50">
                           {t(`sections.${section.key}.amount`)}
                         </span>
                         <span className="text-[12px] text-neutral-500 dark:text-neutral-400">

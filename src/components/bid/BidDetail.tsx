@@ -75,7 +75,7 @@ export default function BidDetail({ id }: { id: string }) {
 
         <div className="space-y-2 text-right">
           <BidStatusTag status={bid.status} label={bid.status_label} />
-          <p className="text-xl font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+          <p className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
             {formatBidPrice(bid)}
           </p>
           <p className="text-[12px] text-neutral-500">

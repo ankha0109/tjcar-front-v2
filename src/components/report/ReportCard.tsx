@@ -133,7 +133,7 @@ export default function ReportCard({ report }: { report: Report }) {
         <p className="text-[10px] font-semibold uppercase text-neutral-400 dark:text-neutral-500">
           {t("vin")}
         </p>
-        <p className="truncate text-[13px] font-medium tabular-nums text-neutral-800 dark:text-neutral-200">
+        <p className="truncate text-[13px] font-medium text-neutral-800 dark:text-neutral-200">
           {report.vin}
         </p>
       </div>

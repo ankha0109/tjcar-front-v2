@@ -44,7 +44,7 @@ export default function ReportSaleCountdown({ endsAt }: { endsAt: string }) {
   return (
     <p className="text-[12px] text-neutral-600 dark:text-neutral-400">
       {t("countdownLabel")}{" "}
-      <span className="font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+      <span className="font-semibold text-neutral-900 dark:text-neutral-100">
         {days > 0 ? `${t("countdownDays", { days })} ` : ""}
         {clock}
       </span>

@@ -135,7 +135,7 @@ export default function OrderDetail({ id }: { id: string }) {
 
         <div className="space-y-2 text-right">
           <OrderStatusTag status={order.status} label={order.status_label} />
-          <p className="text-xl font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+          <p className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
             {total}
           </p>
         </div>
