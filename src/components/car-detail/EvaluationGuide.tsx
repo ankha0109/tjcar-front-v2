@@ -3,43 +3,14 @@
 import { useState } from "react";
 import { Modal } from "antd";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { MARK_CODES } from "@/lib/auctionMarks";
+import { matchHouse } from "@/lib/auctionSheet/match";
 
-/**
- * Inspection-sheet mark codes, in the order the Japanese auction sheets use
- * them. Each code is localized as a `{ title, description }` pair under
- * `carDetail.evaluationGuide.marks.*`.
- */
-const MARK_CODES = [
-  "A1",
-  "A2",
-  "A3",
-  "E1",
-  "E2",
-  "E3",
-  "U1",
-  "U2",
-  "U3",
-  "W1",
-  "W2",
-  "W3",
-  "S1",
-  "S2",
-  "C1",
-  "C2",
-  "P",
-  "X",
-  "XX",
-  "B1",
-  "B2",
-  "B3",
-  "Y1",
-  "Y2",
-  "Y3",
-  "X1",
-  "R",
-  "RX",
-  "G",
-] as const;
+type Props = {
+  /** The lot's AJES `AUCTION` name — picks which sheet the full guide opens on. */
+  auction?: string;
+};
 
 /**
  * "Үнэлгээний хуудасны заавар" — the legend that decodes the shorthand marks
@@ -48,9 +19,12 @@ const MARK_CODES = [
  * modal with the code → meaning grid, so it never competes with the sheet + AI
  * assistant for vertical space.
  */
-export default function EvaluationGuide() {
+export default function EvaluationGuide({ auction }: Props) {
   const t = useTranslations("carDetail.evaluationGuide");
   const [open, setOpen] = useState(false);
+  // Honda, NAA and the other houses the guide does not draw resolve to nothing;
+  // the link then opens the guide on its default sheet.
+  const house = matchHouse(auction);
 
   return (
     <>
@@ -93,9 +67,31 @@ export default function EvaluationGuide() {
         width={760}
         styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
       >
-        <p className="mb-4 text-[13px] text-neutral-500 dark:text-neutral-400">
-          {t("subtitle")}
-        </p>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+            {t("subtitle")}
+          </p>
+          {/* The marks are only the diagram; the page explains the whole form. */}
+          <Link
+            href={house ? `/auction-sheet?auction=${house}` : "/auction-sheet"}
+            className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-primary hover:underline"
+          >
+            {t("fullGuide")}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </Link>
+        </div>
         <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
           {MARK_CODES.map((code) => (
             <li key={code} className="flex items-start gap-2.5">

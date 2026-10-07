@@ -39,7 +39,7 @@ export default function CarEvaluation({ image, car }: Props) {
           </p>
         </div>
         {/* Mark legend — opens in a modal so it never crowds the sheet + AI chat. */}
-        <EvaluationGuide />
+        <EvaluationGuide auction={car.AUCTION} />
       </div>
 
       {/* Two columns on desktop: the sheet takes the wider share so its marks

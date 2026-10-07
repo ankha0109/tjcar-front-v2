@@ -58,6 +58,7 @@ const CARS_LINKS = [
 const COMPANY_LINKS = [
   { href: "/about", key: "about" as const },
   { href: "/posts", key: "posts" as const },
+  { href: "/auction-sheet", key: "auctionSheet" as const },
   { href: "/contact", key: "contact" as const },
   { href: "/terms", key: "terms" as const },
 ] as const;

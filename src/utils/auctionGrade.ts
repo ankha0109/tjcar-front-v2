@@ -146,3 +146,42 @@ function makeInfo(symbol: string, tier: GradeTier, raw = symbol): GradeInfo {
     classes: TIER_CLASSES[tier],
   };
 }
+
+/**
+ * Overall auction grades, best → worst, shown in the rating legend — the info modal
+ * on a lot and the grade table of the auction sheet guide.
+ * `key` is the (dot-free) message key — next-intl forbids "." in keys — while
+ * `code` is what the badge displays. `matches` lists every raw RATE the row
+ * stands for, which is how the current lot's grade is highlighted: the houses
+ * spell the same verdict several ways (`RB`/`RC` are still repair history,
+ * `99`/`X`/`***` are all "grounded").
+ */
+export const RATE_GRADES = [
+  { code: "S", key: "S", matches: ["S"] },
+  { code: "6", key: "6", matches: ["6"] },
+  { code: "5", key: "5", matches: ["5"] },
+  { code: "4.5", key: "4_5", matches: ["4.5"] },
+  { code: "4", key: "4", matches: ["4"] },
+  { code: "3.5", key: "3_5", matches: ["3.5"] },
+  { code: "3", key: "3", matches: ["3"] },
+  { code: "2", key: "2", matches: ["2"] },
+  { code: "1", key: "1", matches: ["1"] },
+  { code: "RA", key: "RA", matches: ["RA"] },
+  { code: "R", key: "R", matches: ["R", "RB", "RC", "R1", "R2", "R?", "A"] },
+  {
+    code: "99",
+    key: "grounded",
+    matches: ["99", "X", "XX", "0", "*", "**", "***"],
+  },
+] as const;
+
+/** Legend badge fill per tier — the key to the colours the card itself uses. */
+export const LEGEND_BADGE: Record<GradeTier, string> = {
+  pristine: "bg-emerald-600",
+  good: "bg-emerald-600",
+  average: "bg-amber-500",
+  poor: "bg-rose-500",
+  repaired: "bg-orange-500",
+  damaged: "bg-red-600",
+  unknown: "bg-neutral-400",
+};

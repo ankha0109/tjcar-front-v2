@@ -149,7 +149,8 @@
       "ready": "In-stock cars",
       "report": "Accident report",
       "posts": "News & guides",
-      "terms": "Terms of service"
+      "terms": "Terms of service",
+      "auctionSheet": "Auction sheet guide"
     },
     "phone": "+976 7511-5888",
     "hours": "Mon–Sat · 07:30–17:30",
@@ -285,7 +286,8 @@
       "about": "About",
       "posts": "News & guides",
       "contact": "Contact",
-      "terms": "Terms"
+      "terms": "Terms",
+      "auctionSheet": "Auction sheet guide"
     },
     "contact": {
       "heading": "Contact",
@@ -1276,6 +1278,7 @@
     },
     "evaluationGuide": {
       "title": "Inspection sheet guide",
+      "fullGuide": "Full guide to the sheet",
       "subtitle": "What the inspector's shorthand marks mean",
       "noteLabel": "Note:",
       "note": "The exact wording of these marks can differ slightly between auction houses and countries.",
@@ -2054,6 +2057,78 @@
       "heading": "Find us",
       "title": "TJ Car LLC office location on Google Maps",
       "directions": "Open in Google Maps"
+    }
+  },
+  "auctionSheet": {
+    "metadata": {
+      "title": "How to read an auction sheet",
+      "description": "How to read a Japanese auction sheet: an interactive guide that explains every box on the sheets of ten auction houses, including USS, TAA, JU and CAA."
+    },
+    "hero": {
+      "title": "How to read an auction sheet",
+      "subtitle": "A Japanese car is bought off its auction sheet, and every auction house lays its sheet out differently. Pick the house, then point at any box to see what it says."
+    },
+    "explorer": {
+      "pickAuction": "Choose an auction house",
+      "labels": "Label language",
+      "labelsJp": "Japanese",
+      "labelsLocal": "English",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Fit to width",
+      "hintTitle": "Pick a box",
+      "hintTouch": "Tap any box on the sheet, or step through them with the arrows, to read what it means.",
+      "hintMouse": "Point at any box on the sheet. Click to pin the explanation; ← and → step through the boxes.",
+      "prev": "Previous",
+      "next": "Next",
+      "close": "Close",
+      "counter": "{index} / {total}",
+      "sheetAria": "Auction sheet layout of {house}",
+      "typicalNote": "This is the house's usual layout. Auction houses revise their forms from time to time, and some halls use a slightly different sheet. The values written in are made up for illustration.",
+      "fieldsHeading": "What is on this sheet",
+      "fieldsCount": "{count} explained",
+      "groups": {
+        "grade": "Grades",
+        "identity": "Identity",
+        "spec": "Specification",
+        "equipment": "Equipment",
+        "docs": "Documents",
+        "notes": "Notes",
+        "diagram": "Damage diagram"
+      },
+      "houses": {
+        "uss": "USS: Japan's largest network. Every hall, from Tokyo to Nagoya and Osaka, prints the same sheet.",
+        "taa": "TAA: Toyota's auction network, with halls in Kanto, Kinki, Chubu and other regions.",
+        "ju": "JU: the used-car dealers' federation. Each prefecture runs its own hall, so sheets can differ slightly.",
+        "caa": "CAA: halls in Chubu, Gifu, Tohoku and Tokyo.",
+        "mirive": "MIRIVE: halls in Saitama, Aichi and Osaka.",
+        "bayauc": "BAYAUC: Bay Auc in Osaka. The longest sheet of the ten.",
+        "iaa": "IAA Osaka: the densest sheet, with the equipment and damage lists printed in full.",
+        "hero": "HERO: a single hall with a compact sheet.",
+        "arai": "ARAI: halls at Oyama, Bayside and elsewhere, with dedicated van and truck sales.",
+        "laa": "LAA: halls in Kansai, Okayama and Shikoku."
+      }
+    },
+    "grades": {
+      "heading": "Grades",
+      "subtitle": "The first thing to look at. The overall grade is a number or a letter; the interior and the bodywork each get a letter.",
+      "overallHeading": "Overall grade",
+      "sideHeading": "Interior and exterior grades",
+      "side": {
+        "A": "Almost new, no damage or dirt",
+        "B": "Lightly used: small scratches or marks",
+        "C": "Visible scratches, stains or wear; needs cleaning",
+        "D": "Heavy dirt, tears, burns or large damage",
+        "E": "Very poor; repair is unavoidable"
+      }
+    },
+    "marks": {
+      "heading": "Damage marks",
+      "subtitle": "On the diagram a letter names the kind of damage and a number its size. The larger the number, the larger the damage."
+    },
+    "cta": {
+      "title": "Now try it on a real sheet",
+      "body": "Every lot in our catalogue comes with its auction sheet, and the AI assistant will read it and explain each mark in plain words.",
+      "button": "Browse Japanese cars"
     }
   }
 }

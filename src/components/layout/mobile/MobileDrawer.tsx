@@ -254,6 +254,11 @@ export default function MobileDrawer({ open, onClose }: Props) {
   const FEATURED = [
     { key: "about", labelKey: "nav.about" as const, href: "/about" },
     { key: "posts", labelKey: "nav.posts" as const, href: "/posts" },
+    {
+      key: "auctionSheet",
+      labelKey: "nav.auctionSheet" as const,
+      href: "/auction-sheet",
+    },
     { key: "terms", labelKey: "nav.terms" as const, href: "/terms" },
   ];
 
