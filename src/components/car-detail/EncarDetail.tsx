@@ -292,14 +292,6 @@ export default async function EncarDetail({
           <div className="pt-2 lg:p-0">
             <CarGallery images={images} alt={title} stripColumns={8} />
           </div>
-          {/* Options live under the gallery on desktop; on mobile they render
-              in the info column instead, so the price stays next to the
-              photos. */}
-          {encar && (
-            <div className="hidden lg:mt-6 lg:block">
-              <KoreaOptionsPanel options={encar.options} />
-            </div>
-          )}
         </div>
 
         {/* Info column. `px-4` is the mobile gutter the full-bleed gallery
@@ -377,15 +369,21 @@ export default async function EncarDetail({
               />
             )}
           </div>
-
-          {/* Mobile-only options placement (desktop shows them under the gallery) */}
-          {encar && (
-            <div className="lg:hidden">
-              <KoreaOptionsPanel options={encar.options} />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Standard options — full width under both columns, at every width.
+          The gallery and the info column end within a few dozen pixels of each
+          other, so hanging the panel under the gallery alone left a tall blank
+          beside it. One copy now serves the phone too, where "under both
+          columns" is simply the end of the page. `px-4` is the mobile gutter
+          (the article is `px-0` below `lg`); the info column's own bottom
+          padding is the gap above it there. */}
+      {encar && (
+        <div className="px-4 lg:mt-8 lg:px-0">
+          <KoreaOptionsPanel options={encar.options} />
+        </div>
+      )}
 
       {/* Mobile sticky price bar — the price plus the actions the title band
           hides below `lg`. `md:pr-24` keeps the controls clear of the AI chat

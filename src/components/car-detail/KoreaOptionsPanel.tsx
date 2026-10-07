@@ -4,23 +4,29 @@ import {
   localizeKoreaOptionName,
 } from "@/lib/koreaOptionNames";
 import type { KoreaOptionGroup } from "@/types/korea";
+import { cn } from "@/utils";
 
 type Props = {
   options?: KoreaOptionGroup[];
 };
 
 /**
- * Grouped standard-option checklist for the Korea detail page, shown beneath
- * the gallery (desktop) / at the end of the info column (mobile).
+ * Grouped standard-option checklist for the Korea detail page, shown full
+ * width under the gallery and the info column.
  *
- * One card, and nothing inside it is a card: each Encar category is a band
- * under a hairline — icon, localized label, item count, then its check-marked
- * list — so a 30+ option car stays scannable without boxes nested in a box.
+ * One card, and nothing inside it is a card: each Encar category is a group —
+ * icon, localized label, item count, then its check-marked list — so a 30+
+ * option car stays scannable without boxes nested in a box.
  *
- * The lists go two-up by the panel's own width (a container query), not the
- * viewport's: the same panel sits in a ~695px column on desktop and a ~360px
- * one on a phone, and only the first has room for two columns of names. Names
- * arrive as canonical English and localize via the shared dictionary.
+ * How the groups sit follows the panel's own width (container queries), not
+ * the viewport's — it runs from ~320px on a phone to ~1190px on a desktop:
+ *
+ * - narrow: bands under hairlines, one column of names;
+ * - wider: the same bands with two, then three, columns of names;
+ * - widest: the categories stand side by side, a column each, and the
+ *   hairlines go — the panel is a third of the height it is as bands.
+ *
+ * Names arrive as canonical English and localize via the shared dictionary.
  */
 export default async function KoreaOptionsPanel({ options }: Props) {
   if (!options || options.length === 0) return null;
@@ -29,6 +35,10 @@ export default async function KoreaOptionsPanel({ options }: Props) {
   const locale = await getLocale();
 
   const total = options.reduce((n, group) => n + group.items.length, 0);
+  // Side by side only suits three or four categories — Encar's usual set. One
+  // or two would each stretch over half the page, and five would be too narrow
+  // for the names; those stay bands and take a fourth column of names instead.
+  const sideBySide = options.length === 3 || options.length === 4;
 
   return (
     <section className="@container rounded-2xl border border-neutral-200 p-5 dark:border-neutral-800">
@@ -39,9 +49,18 @@ export default async function KoreaOptionsPanel({ options }: Props) {
         </span>
       </h2>
 
-      <div className="mt-1 divide-y divide-neutral-100 dark:divide-neutral-800">
+      <div
+        className={cn(
+          "mt-1 divide-y divide-neutral-100 dark:divide-neutral-800",
+          sideBySide &&
+            "@6xl:mt-4 @6xl:grid @6xl:auto-cols-fr @6xl:grid-flow-col @6xl:gap-x-8 @6xl:divide-y-0",
+        )}
+      >
         {options.map((group) => (
-          <div key={group.category} className="py-4 last:pb-0">
+          <div
+            key={group.category}
+            className={cn("py-4 last:pb-0", sideBySide && "@6xl:py-0")}
+          >
             <h3 className="flex items-center gap-2 text-[13px] font-semibold text-neutral-900 dark:text-neutral-100">
               <span className="text-neutral-400 dark:text-neutral-500">
                 <CategoryIcon category={group.category} />
@@ -56,7 +75,12 @@ export default async function KoreaOptionsPanel({ options }: Props) {
                 last one back, so a column break never opens on a margin. The
                 check and its gap are as wide as the heading icon and its gap,
                 which lines the names up under the category label. */}
-            <ul className="-mb-2 mt-3 columns-1 gap-x-8 @md:columns-2">
+            <ul
+              className={cn(
+                "-mb-2 mt-3 columns-1 gap-x-8 @md:columns-2 @3xl:columns-3",
+                sideBySide ? "@6xl:columns-1" : "@6xl:columns-4",
+              )}
+            >
               {group.items.map((item) => (
                 <li
                   key={item}
