@@ -6,7 +6,7 @@ import { Badge, Button, Drawer, Dropdown } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import Logo from "@/components/svg/logo.svg";
+import Logo from "@/components/layout/Logo";
 import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
 import { cn } from "@/utils";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";

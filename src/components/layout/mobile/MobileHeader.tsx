@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import Logo from "@/components/svg/logo.svg";
+import Logo from "@/components/layout/Logo";
 import { useCompare } from "@/hooks/useCompare";
 import { cn } from "@/utils";
 import MobileDrawer from "./MobileDrawer";
