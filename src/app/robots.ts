@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -31,16 +32,52 @@ const CATALOGUE_WALKERS = [
 ];
 
 /**
- * Never worth crawling: `/api` is the proxy to the backend (a crawled API URL is
- * a pure AJES call with no page behind it) and the rest need a session, so a
- * crawler only ever reaches a redirect.
+ * Never worth crawling: `/dashboard` only ever hands a crawler a redirect to
+ * the login form, `/auth` is that form, and the wishlist is per-visitor state
+ * with nothing on it to index.
+ *
+ * `/garage` is not here on purpose. It is the public in-stock catalogue, and
+ * its pages are served from our own database, so they cost no AJES call.
  */
-const PRIVATE_PATHS = ["/api/", "/dashboard/", "/wishlist", "/auth/", "/garage/"];
+const PRIVATE_PATHS = ["/dashboard/", "/wishlist", "/auth/"];
+
+/**
+ * Every page is served under a locale prefix, so a bare `/auth/` never matches
+ * `/mn/auth/login` — each path has to be spelled out per locale. The bare forms
+ * stay for the unprefixed URLs that redirect into them. `/api` is the proxy to
+ * the backend (a crawled API URL is a pure AJES call with no page behind it)
+ * and lives outside the locale segment.
+ */
+const DISALLOW = [
+  "/api/",
+  ...PRIVATE_PATHS,
+  ...routing.locales.flatMap((locale) =>
+    PRIVATE_PATHS.map((path) => `/${locale}${path}`),
+  ),
+];
+
+/**
+ * Seconds between Bingbot requests, which caps it at 8,640 a day. With ~60% of
+ * those landing on Japan lots that is ~5,000 AJES calls — inside the 6,000 set
+ * aside for bots, and spread over the day instead of spent by 07:00. Raise it
+ * to 15 if the allowance still runs out.
+ *
+ * Google ignores `Crawl-delay`, and at ~80 requests a day does not need one.
+ */
+const BING_CRAWL_DELAY = 10;
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: PRIVATE_PATHS },
+      { userAgent: "*", allow: "/", disallow: DISALLOW },
+      // A crawler with a group of its own never reads `*`, so without the
+      // repeat Bing would be free of every ban above.
+      {
+        userAgent: "bingbot",
+        allow: "/",
+        disallow: DISALLOW,
+        crawlDelay: BING_CRAWL_DELAY,
+      },
       { userAgent: CATALOGUE_WALKERS, disallow: "/" },
     ],
     host: SITE_URL,
