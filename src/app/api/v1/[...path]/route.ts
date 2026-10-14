@@ -26,6 +26,8 @@ const CLIENT_ROUTES: ReadonlyArray<readonly [method: string, pattern: string]> =
   ["GET", "korea/models"],
   ["GET", "korea/*/inspection"],
   ["GET", "korea/*/insurance"],
+  ["GET", "china"],
+  ["GET", "china/models"],
   ["POST", "ai/evaluation/intro"],
   ["POST", "ai/evaluation/chat"],
   ["POST", "auth/register"],
@@ -71,7 +73,8 @@ function isClientRoute(method: string, path: string[]): boolean {
 
 /**
  * The two catalogues whose reads spend an upstream quota (AJES, Encar), and so
- * the two a scraper is after.
+ * the two a scraper is after. `china` is not one: it is read from the API's own
+ * mirror of the AJES table, so a walk through it costs no upstream call.
  */
 const GATED_SECTIONS = new Set(["japan", "korea"]);
 

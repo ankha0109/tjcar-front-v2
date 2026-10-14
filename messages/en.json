@@ -41,6 +41,32 @@
       "other": "Other"
     }
   },
+  "china": {
+    "metadata": {
+      "title": "Chinese car market",
+      "description": "Browse and order cars listed by dealers in China. Real dealer listings, priced in yuan."
+    },
+    "price": {
+      "label": "Price (¥ CNY)",
+      "fromPlaceholder": "Min",
+      "toPlaceholder": "Max"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "yearDesc": "Year: newest first",
+      "yearAsc": "Year: oldest first",
+      "mileageAsc": "Mileage: low to high",
+      "mileageDesc": "Mileage: high to low"
+    },
+    "filters": {
+      "modelNeedsBrand": "Pick a make first",
+      "transmission": "Transmission",
+      "drive": "Drivetrain",
+      "color": "Color"
+    }
+  },
   "compare": {
     "title": "Compare cars",
     "empty": {
@@ -145,6 +171,7 @@
     "nav": {
       "japan": "Japan cars",
       "korea": "Korea cars",
+      "china": "China cars",
       "about": "About us",
       "ready": "In-stock cars",
       "report": "Accident report",
@@ -772,6 +799,7 @@
       "mntPriceLabel": "MNT estimate",
       "avgPriceLabel": "Average price",
       "koreaPriceLabel": "Price in Korea",
+      "chinaPriceLabel": "Price in China",
       "lotLabel": "Lot",
       "wishlist": "Save",
       "compare": "Compare",
@@ -1454,6 +1482,10 @@
       "facebookLabel": "Facebook",
       "facebookHint": "Open our Facebook page",
       "phoneHint": "Call us"
+    },
+    "china": {
+      "priceLabel": "Price in China",
+      "priceNote": "The dealer's asking price in China. Shipping, customs duties and other costs are not included."
     },
     "encar": {
       "priceLabel": "Price",

@@ -15,6 +15,9 @@ const COLOR_SWATCH: Record<string, ColorSwatch> = {
   шар: { bg: "#e7bc1a" },
   бор: { bg: "#6e4a2c" },
   ягаан: { bg: "#e08aa5" },
+  // China cards print the `carDetail.colors.*` label itself, so its beige
+  // (the "Brown-Champagne" bucket) has to resolve in every locale.
+  шаргал: { bg: "#d9c7a7" },
   // English
   white: { bg: "#ffffff", ring: true },
   black: { bg: "#161616" },
@@ -37,6 +40,11 @@ const COLOR_SWATCH: Record<string, ColorSwatch> = {
   зеленый: { bg: "#2c7a4b" },
   желтый: { bg: "#e7bc1a" },
   коричневый: { bg: "#6e4a2c" },
+  // The `carDetail.colors.*` spellings, which China cards print verbatim.
+  чёрный: { bg: "#161616" },
+  зелёный: { bg: "#2c7a4b" },
+  жёлтый: { bg: "#e7bc1a" },
+  бежевый: { bg: "#d9c7a7" },
 };
 
 /**

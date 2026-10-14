@@ -41,6 +41,32 @@
       "other": "Прочее"
     }
   },
+  "china": {
+    "metadata": {
+      "title": "Продажа авто из Китая",
+      "description": "Подберите и закажите автомобиль у дилеров Китая. Актуальные объявления с ценами в юанях."
+    },
+    "price": {
+      "label": "Цена (¥ юань)",
+      "fromPlaceholder": "От",
+      "toPlaceholder": "До"
+    },
+    "sort": {
+      "newest": "Сначала новые",
+      "priceAsc": "Цена: по возрастанию",
+      "priceDesc": "Цена: по убыванию",
+      "yearDesc": "Год: сначала новые",
+      "yearAsc": "Год: сначала старые",
+      "mileageAsc": "Пробег: по возрастанию",
+      "mileageDesc": "Пробег: по убыванию"
+    },
+    "filters": {
+      "modelNeedsBrand": "Сначала выберите марку",
+      "transmission": "Коробка передач",
+      "drive": "Привод",
+      "color": "Цвет"
+    }
+  },
   "compare": {
     "title": "Сравнение авто",
     "empty": {
@@ -145,6 +171,7 @@
     "nav": {
       "japan": "Авто из Японии",
       "korea": "Авто из Кореи",
+      "china": "Авто из Китая",
       "about": "О нас",
       "ready": "В наличии",
       "report": "Проверка ДТП",
@@ -772,6 +799,7 @@
       "mntPriceLabel": "Оценка MNT",
       "avgPriceLabel": "Средняя цена",
       "koreaPriceLabel": "Цена в Корее",
+      "chinaPriceLabel": "Цена в Китае",
       "lotLabel": "Лот",
       "wishlist": "Сохранить",
       "compare": "Сравнить",
@@ -1466,6 +1494,10 @@
       "facebookLabel": "Facebook",
       "facebookHint": "Перейти на страницу Facebook",
       "phoneHint": "Позвонить"
+    },
+    "china": {
+      "priceLabel": "Цена в Китае",
+      "priceNote": "Цена дилера в Китае. Доставка, таможенные пошлины и прочие расходы не включены."
     },
     "encar": {
       "priceLabel": "Цена",

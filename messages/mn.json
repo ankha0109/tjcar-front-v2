@@ -41,6 +41,32 @@
       "other": "Бусад"
     }
   },
+  "china": {
+    "metadata": {
+      "title": "Хятад машины худалдаа",
+      "description": "Хятадын зах зээлд зарагдаж буй машинуудыг шүүж үзээд захиалаарай. Хятадын дилерүүдийн бодит зарууд, үнэ нь юаниар."
+    },
+    "price": {
+      "label": "Үнэ (¥ юань)",
+      "fromPlaceholder": "Доод",
+      "toPlaceholder": "Дээд"
+    },
+    "sort": {
+      "newest": "Шинэ зар эхэлж",
+      "priceAsc": "Үнэ: багаас",
+      "priceDesc": "Үнэ: ихээс",
+      "yearDesc": "Он: шинээс",
+      "yearAsc": "Он: хуучнаас",
+      "mileageAsc": "Гүйлт: багаас",
+      "mileageDesc": "Гүйлт: ихээс"
+    },
+    "filters": {
+      "modelNeedsBrand": "Эхлээд үйлдвэрлэгч сонгоно",
+      "transmission": "Хурдны хайрцаг",
+      "drive": "Хөтлөгч",
+      "color": "Өнгө"
+    }
+  },
   "compare": {
     "title": "Машин харьцуулах",
     "empty": {
@@ -145,6 +171,7 @@
     "nav": {
       "japan": "Япон машин",
       "korea": "Солонгос машин",
+      "china": "Хятад машин",
       "about": "Бидний тухай",
       "ready": "Бэлэн машин",
       "report": "Осол аваар шалгах",
@@ -772,6 +799,7 @@
       "mntPriceLabel": "MNT тооцоо",
       "avgPriceLabel": "Дундаж үнэ",
       "koreaPriceLabel": "Солонгос дахь үнэ",
+      "chinaPriceLabel": "Хятад дахь үнэ",
       "lotLabel": "Лот",
       "wishlist": "Хадгалах",
       "compare": "Харьцуулах",
@@ -1451,6 +1479,10 @@
       "facebookLabel": "Facebook",
       "facebookHint": "Facebook хуудас руу очих",
       "phoneHint": "Утсаар холбогдох"
+    },
+    "china": {
+      "priceLabel": "Хятад дахь үнэ",
+      "priceNote": "Хятад дахь дилерийн зарын үнэ. Тээвэр, гаалийн татвар болон бусад зардал ороогүй."
     },
     "encar": {
       "priceLabel": "Үнэ",

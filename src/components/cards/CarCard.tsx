@@ -234,14 +234,15 @@ export default function CarCard({
         </div>
 
         {/* Price — stacked below `sm`, where a nine-digit MNT figure and the
-            label together overflow the two-column card. Korea keeps the stack at
-            every width: "Солонгос дахь үнэ" is half again as long as the auction
-            caption and never shares a row with the figure. */}
+            label together overflow the two-column card. Korea and China keep
+            the stack at every width: "Солонгос дахь үнэ" is half again as long
+            as the auction caption and never shares a row with the figure. */}
         {!hidePrice && (
           <div
             className={cn(
               "flex flex-col items-start gap-0.5 border-t border-dashed border-neutral-200 pt-2.5 sm:pt-3 dark:border-neutral-800",
               car.source !== "korea" &&
+                car.source !== "china" &&
                 "sm:flex-row sm:items-center sm:justify-between sm:gap-2",
             )}
           >
