@@ -4,7 +4,7 @@ import CarGallery from "./CarGallery";
 import CarActionButtons from "./CarActionButtons";
 import CarBreadcrumb, { type Crumb } from "./CarBreadcrumb";
 import KoreaDetailExtras from "./KoreaDetailExtras";
-import KoreaLandedPriceCard from "./KoreaLandedPriceCard";
+import ListingLandedPriceCard from "./ListingLandedPriceCard";
 import KoreaOptionsPanel from "./KoreaOptionsPanel";
 import OrderInquiry from "./OrderInquiry";
 import { formatMnt } from "@/lib/bidConfig";
@@ -305,9 +305,17 @@ export default async function EncarDetail({
               it only said the same number twice; the new-car price it used to
               carry moved into this card's footnotes. */}
           {landedCost && (
-            <KoreaLandedPriceCard
+            <ListingLandedPriceCard
               result={landedCost.result}
-              newPriceKrw={encar?.newPriceKrw}
+              newPrice={
+                encar?.newPriceKrw
+                  ? {
+                      label: t("encar.newPriceLabel"),
+                      amount: encar.newPriceKrw,
+                      currency: "KRW",
+                    }
+                  : null
+              }
             />
           )}
 

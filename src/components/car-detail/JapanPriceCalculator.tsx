@@ -180,7 +180,7 @@ export default function JapanPriceCalculator({
             the same "Үйлдвэрлэсэн сар мэдэгдэхгүй" notice and it reads as a
             fault in the quote rather than the caveat it is. The API still sends
             them — map over `cost.verification.warnings` here to bring the list
-            back. KoreaLandedPriceCard withholds them for its own reason. */}
+            back. ListingLandedPriceCard withholds them for its own reason. */}
 
         {/* `mt-auto` pins the disclaimer to the bottom of the card, so the card
             can stretch to the chart's height without a gap under the total. */}

@@ -8,6 +8,7 @@ export const CURRENCY_SUFFIX: Record<CostLine["currency"], string> = {
   MNT: "₮",
   KRW: "₩",
   JPY: "¥",
+  CNY: "¥",
 };
 
 /** What an amount reads as before there is one. */

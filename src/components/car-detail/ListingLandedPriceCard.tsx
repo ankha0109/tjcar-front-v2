@@ -13,11 +13,11 @@ type Props = {
    */
   result: VehicleCostResult | null;
   /**
-   * Encar's factory (new-car) KRW price. Not a cost component — it is what the
-   * same car sold for new in Korea, so it renders as a footnote under the
-   * breakdown rather than as a row of it.
+   * The factory (new-car) price in the listing's own currency. Not a cost
+   * component — it is what the same car sold for new at home, so it renders as
+   * a footnote under the breakdown rather than as a row of it.
    */
-  newPriceKrw?: number | null;
+  newPrice?: { label: string; amount: number; currency: "KRW" | "CNY" } | null;
 };
 
 type Row = {
@@ -31,9 +31,9 @@ type Row = {
 };
 
 /**
- * The landed price of a Korean listing — the Encar asking price plus shipping,
- * every Mongolian import tax and the brokerage fee the page asks the
- * calculator to add.
+ * The landed price of a fixed-price listing (Encar in Korea, a dealer in
+ * China) — the asking price plus the costs abroad, shipping, every Mongolian
+ * import tax and any fee the page asks the calculator to add.
  *
  * The total leads. It is the only price the page shows, so it reads first and
  * the rows under it answer "made up of what?" rather than building up to it.
@@ -55,9 +55,8 @@ type Row = {
  * only warning it ever carried said exactly that — a fact about our tooling,
  * not about this price. Verification belongs in its own section.
  */
-export default function KoreaLandedPriceCard({ result, newPriceKrw }: Props) {
+export default function ListingLandedPriceCard({ result, newPrice }: Props) {
   const t = useTranslations("carDetail.koreaLanded");
-  const tEncar = useTranslations("carDetail.encar");
   const [showCalculation, setShowCalculation] = useState(false);
   const rowsId = useId();
 
@@ -160,12 +159,12 @@ export default function KoreaLandedPriceCard({ result, newPriceKrw }: Props) {
 
       {/* The new-car reference price. It sits past a rule of its own so it does
           not read as a row that was added into the total. */}
-      {newPriceKrw ? (
+      {newPrice ? (
         <div className="flex items-baseline justify-between gap-4 border-t border-neutral-200 bg-neutral-50 px-5 py-3 text-[12px] text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-400">
-          <span>{tEncar("newPriceLabel")}</span>
+          <span>{newPrice.label}</span>
           <span className="shrink-0 font-medium">
-            {new Intl.NumberFormat("en-US").format(newPriceKrw)}
-            {CURRENCY_SUFFIX.KRW}
+            {new Intl.NumberFormat("en-US").format(newPrice.amount)}
+            {CURRENCY_SUFFIX[newPrice.currency]}
           </span>
         </div>
       ) : null}

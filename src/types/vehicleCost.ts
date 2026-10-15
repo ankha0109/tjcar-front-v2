@@ -1,11 +1,11 @@
 /**
  * `POST /v1/vehicle-cost/calculate` — the landed-cost calculator that prices a
- * Korean or Japanese import (backend `App\Services\VehicleCost`).
+ * Korean, Japanese or Chinese import (backend `App\Services\VehicleCost`).
  *
  * Contract: `docs/frontend/vehicle-cost-integration.md` in the API repo.
  */
 
-export type VehicleCountry = "JAPAN" | "KOREA";
+export type VehicleCountry = "JAPAN" | "KOREA" | "CHINA";
 
 /**
  * The excise-tax classes the backend recognises. Encar's `fuel_type` uses its
@@ -35,7 +35,8 @@ export type CalculateVehicleCostRequest = {
   country: VehicleCountry;
   /**
    * Required for Korea. Japan may omit it: the backend reads the excise class
-   * off `chassis` against its hybrid table.
+   * off `chassis` against its hybrid table. So may a China request naming its
+   * listing: the backend maps the mirror's own fuel type.
    */
   powertrain?: Powertrain;
 
@@ -43,6 +44,14 @@ export type CalculateVehicleCostRequest = {
   koreaListingId?: number;
   purchasePriceKRW?: number;
   domesticCostKRW?: number;
+
+  /**
+   * China — the AJES id `/china/{id}` speaks. The backend prefills price,
+   * year, displacement and `powertrain` from its own mirror.
+   */
+  chinaListingId?: string;
+  purchasePriceCNY?: number;
+  domesticCostCNY?: number;
 
   /** Japan — `auctionName` must be a house the backend's FOB table lists. */
   purchasePriceJPY?: number;
@@ -76,7 +85,7 @@ export type CostLine = {
   code: string;
   label: string;
   amount: number;
-  currency: "MNT" | "KRW" | "JPY";
+  currency: "MNT" | "KRW" | "JPY" | "CNY";
   /** Ready-made tooltip text, e.g. "1,300 USD × 3,594₮". */
   hint?: string;
 };

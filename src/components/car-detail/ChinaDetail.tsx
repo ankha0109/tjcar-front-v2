@@ -4,6 +4,7 @@ import CarActionButtons from "./CarActionButtons";
 import CarBreadcrumb, { type Crumb } from "./CarBreadcrumb";
 import CarGallery from "./CarGallery";
 import ChinaSpecSheet from "./ChinaSpecSheet";
+import ListingLandedPriceCard from "./ListingLandedPriceCard";
 import OrderInquiry from "./OrderInquiry";
 import PriceTile from "./PriceTile";
 import {
@@ -30,13 +31,18 @@ import {
 } from "@/types/china";
 import { cn } from "@/utils";
 import { getColorSwatch } from "@/utils/carColor";
+import type { VehicleCostResult } from "@/types/vehicleCost";
 import {
   formatEngineWithPower,
   formatMileage,
   formatTransmission,
 } from "@/utils/carFormat";
 
-type Props = { listing: ChinaListing };
+type Props = {
+  listing: ChinaListing;
+  /** What the calculator priced this listing at, landed in Mongolia. */
+  landedCost: VehicleCostResult;
+};
 
 function formatCny(value: number) {
   return `¥${new Intl.NumberFormat("en-US").format(value)}`;
@@ -51,14 +57,18 @@ function formatCny(value: number) {
  * facts, completed from the upstream's full row with every photo, the VIN,
  * the headline facts of the spec sheet and the sheet itself. When that read
  * fails the extras are simply empty and the page shows what the mirror holds.
- * There is no landed-cost card yet (shipping and customs from China have no
- * pricing rule), so the price tile says plainly that they are not included.
+ *
+ * The price shown is the landed one — the dealer's price plus the costs inside
+ * China and every Mongolian import tax, priced server-side the way TJ CAR's
+ * calculator prices its China tab. When the calculator cannot price a listing
+ * (no displacement on a petrol car, no rate), the yuan asking price stands in,
+ * marked as excluding all of that.
  *
  * It does not reuse `EncarDetail`, for the reason `GarageCarDetail` gives: that
  * component's landed-price card, options panel and condition reports are all
  * Encar-only, and its breadcrumb is `/korea`'s.
  */
-export default async function ChinaDetail({ listing }: Props) {
+export default async function ChinaDetail({ listing, landedCost }: Props) {
   const t = await getTranslations("carDetail");
   const tFmt = await getTranslations("car.card");
   // Reuse the site nav's own label for this section rather than a second
@@ -77,6 +87,7 @@ export default async function ChinaDetail({ listing }: Props) {
   const title = carTitle(car);
   const priceMnt = listing.price_mnt ?? null;
   const priceCny = listing.price_cny ?? null;
+  const landed = landedCost.ok ? landedCost.cost.total : null;
 
   // The snapshot keeps the card-size thumbnail the API already sized, not the
   // full-size first photo, and the yuan price beside the tugrik one.
@@ -232,33 +243,42 @@ export default async function ChinaDetail({ listing }: Props) {
             forces onto the children; on desktop the article's own `lg:px-6`
             already provides it. */}
         <div className="flex flex-col gap-5 px-4 py-5 lg:px-0 lg:py-0">
-          <div className="flex flex-col gap-2">
-            {/* The tugrik figure leads, as on every other listing; the yuan
-                price it was converted from rides the caption line. Without a
-                configured rate the API sends no tugrik price, and the yuan one
-                takes the number's place. */}
-            <PriceTile
-              label={t("china.priceLabel")}
-              amount={priceMnt}
-              fallback={priceCny ? formatCny(priceCny) : "-"}
-              action={
-                priceMnt != null && priceCny ? (
-                  <span className="shrink-0 text-[12px] font-semibold text-neutral-500 dark:text-neutral-400">
-                    {formatCny(priceCny)}
-                  </span>
-                ) : undefined
-              }
-            />
-            <p className="px-1 text-[12px] leading-snug text-neutral-500 dark:text-neutral-400">
-              {t("china.priceNote")}
-              {listing.new_price_cny ? (
-                <>
-                  <br />
-                  {t("china.newPriceLabel")}: {formatCny(listing.new_price_cny)}
-                </>
-              ) : null}
-            </p>
-          </div>
+          {/* The asking price, only when there is no landed one to show: the
+              landed card states it as its first row anyway. The tugrik figure
+              leads; the yuan price it was converted from rides the caption. */}
+          {!landed && (
+            <div className="flex flex-col gap-2">
+              <PriceTile
+                label={t("china.priceLabel")}
+                amount={priceMnt}
+                fallback={priceCny ? formatCny(priceCny) : "-"}
+                action={
+                  priceMnt != null && priceCny ? (
+                    <span className="shrink-0 text-[12px] font-semibold text-neutral-500 dark:text-neutral-400">
+                      {formatCny(priceCny)}
+                    </span>
+                  ) : undefined
+                }
+              />
+              <p className="px-1 text-[12px] leading-snug text-neutral-500 dark:text-neutral-400">
+                {t("china.priceNote")}
+              </p>
+            </div>
+          )}
+
+          {/* Landed cost — or, when it could not be priced, why not. */}
+          <ListingLandedPriceCard
+            result={landedCost}
+            newPrice={
+              listing.new_price_cny
+                ? {
+                    label: t("china.newPriceLabel"),
+                    amount: listing.new_price_cny,
+                    currency: "CNY",
+                  }
+                : null
+            }
+          />
 
           {/* Specs — two columns, as on `/garage`: a third column truncates
               the city ("Kunming Yunnan") and the body class ("Medium and
@@ -315,14 +335,16 @@ export default async function ChinaDetail({ listing }: Props) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-col">
             <span className="text-[11px] font-semibold uppercase text-neutral-400">
-              {t("china.priceLabel")}
+              {landed ? landed.label : t("china.priceLabel")}
             </span>
             <span className="truncate text-base font-bold text-neutral-900 dark:text-neutral-100">
-              {priceMnt != null
-                ? formatMnt(priceMnt)
-                : priceCny
-                  ? formatCny(priceCny)
-                  : "-"}
+              {landed
+                ? formatMnt(landed.amount)
+                : priceMnt != null
+                  ? formatMnt(priceMnt)
+                  : priceCny
+                    ? formatCny(priceCny)
+                    : "-"}
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-2">
