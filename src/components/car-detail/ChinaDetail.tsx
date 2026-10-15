@@ -3,13 +3,18 @@ import { getTranslations } from "next-intl/server";
 import CarActionButtons from "./CarActionButtons";
 import CarBreadcrumb, { type Crumb } from "./CarBreadcrumb";
 import CarGallery from "./CarGallery";
+import ChinaSpecSheet from "./ChinaSpecSheet";
 import OrderInquiry from "./OrderInquiry";
 import PriceTile from "./PriceTile";
 import {
+  ChassisIcon,
   ColorIcon,
   DrivetrainIcon,
   EngineIcon,
+  FuelIcon,
   MileageIcon,
+  RegistrationIcon,
+  SeatIcon,
   TransmissionIcon,
   YearIcon,
 } from "@/components/icons/CarSpecIcons";
@@ -23,6 +28,7 @@ import {
   chinaColorSwatchName,
   type ChinaListing,
 } from "@/types/china";
+import { cn } from "@/utils";
 import { getColorSwatch } from "@/utils/carColor";
 import {
   formatEngineWithPower,
@@ -36,15 +42,20 @@ function formatCny(value: number) {
   return `¥${new Intl.NumberFormat("en-US").format(value)}`;
 }
 
+/** `carDetail.fuel.*` keys — the backend names fuels the way /korea does. */
+const FUEL_KEYS = new Set(["petrol", "diesel", "hybrid", "electric", "hydrogen"]);
+
 /**
  * Detail page for a China dealer listing (`GET /china/{id}`, route
  * `/china/{id}`).
  *
  * The Korea page's shell — title band, gallery left, a column of cards right,
- * the mobile sticky bar — with only what the mirror knows: the yuan asking
- * price and its tugrik conversion, the spec grid and the order inquiry. There
- * is no landed-cost card yet (shipping and customs from China have no pricing
- * rule), so the price tile says plainly that they are not included.
+ * the mobile sticky bar — over the API's detail row: the mirror's price and
+ * facts, completed from the upstream's full row with every photo, the VIN,
+ * the headline facts of the spec sheet and the sheet itself. When that read
+ * fails the extras are simply empty and the page shows what the mirror holds.
+ * There is no landed-cost card yet (shipping and customs from China have no
+ * pricing rule), so the price tile says plainly that they are not included.
  *
  * It does not reuse `EncarDetail`, for the reason `GarageCarDetail` gives: that
  * component's landed-price card, options panel and condition reports are all
@@ -99,6 +110,7 @@ export default async function ChinaDetail({ listing }: Props) {
 
   const images = parseImages(car.IMAGES);
   const color = listing.color || undefined;
+  const fuelType = listing.fuel_type || undefined;
 
   // Brand, model and grade are in the title band, so this grid holds only what
   // the title cannot say. Empty cells are dropped rather than shown as a dash:
@@ -107,6 +119,8 @@ export default async function ChinaDetail({ listing }: Props) {
     label: string;
     value: string | undefined;
     icon?: ReactNode;
+    /** Spans both columns. */
+    wide?: boolean;
   }> = [
       { label: t("specs.year"), value: car.YEAR || undefined, icon: <YearIcon /> },
       {
@@ -123,6 +137,15 @@ export default async function ChinaDetail({ listing }: Props) {
         icon: <EngineIcon />,
       },
       {
+        label: t("specs.fuel"),
+        value: fuelType
+          ? FUEL_KEYS.has(fuelType)
+            ? t(`fuel.${fuelType}`)
+            : fuelType
+          : undefined,
+        icon: <FuelIcon />,
+      },
+      {
         label: t("specs.transmission"),
         value: formatTransmission(listing.transmission ?? undefined, tFmt),
         icon: <TransmissionIcon />,
@@ -133,14 +156,31 @@ export default async function ChinaDetail({ listing }: Props) {
         icon: <DrivetrainIcon />,
       },
       {
+        label: t("specs.bodyType"),
+        value: listing.body_type || undefined,
+        icon: <ChassisIcon />,
+      },
+      {
         label: t("specs.color"),
         value: color ? chinaColorLabel(color, t) : undefined,
         icon: (
           <ColorIcon swatch={getColorSwatch(chinaColorSwatchName(color ?? ""))} />
         ),
       },
+      {
+        label: t("specs.seats"),
+        value: listing.seats ? String(listing.seats) : undefined,
+        icon: <SeatIcon />,
+      },
+      {
+        label: t("specs.regMonth"),
+        value: listing.first_registered?.replaceAll("-", ".") || undefined,
+        icon: <RegistrationIcon />,
+      },
       // No location glyph exists yet; the grid renders a spacer in its place.
       { label: t("specs.location"), value: listing.city || undefined },
+      // Seventeen characters do not fit half the card on a phone.
+      { label: t("china.vin"), value: listing.vin || undefined, wide: true },
     ].filter((spec) => spec.value);
 
   return (
@@ -182,9 +222,15 @@ export default async function ChinaDetail({ listing }: Props) {
 
       <div className="lg:grid lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-10">
         {/* Gallery — full-bleed on mobile (no side padding). The AJES host
-            resizes on `&h=`, so the strip takes the ~4 KB thumb variant. */}
+            resizes on `&h=`, so the strip takes the ~4 KB thumb variant; eight
+            columns because a full listing runs to 40-odd photos. */}
         <div className="pt-2 lg:p-0">
-          <CarGallery images={images} alt={title} stripSize="thumb" />
+          <CarGallery
+            images={images}
+            alt={title}
+            stripSize="thumb"
+            stripColumns={8}
+          />
         </div>
 
         {/* Info column. `px-4` is the mobile gutter the full-bleed gallery
@@ -210,15 +256,28 @@ export default async function ChinaDetail({ listing }: Props) {
             />
             <p className="px-1 text-[12px] leading-snug text-neutral-500 dark:text-neutral-400">
               {t("china.priceNote")}
+              {listing.new_price_cny ? (
+                <>
+                  <br />
+                  {t("china.newPriceLabel")}: {formatCny(listing.new_price_cny)}
+                </>
+              ) : null}
             </p>
           </div>
 
-          {/* Specs — two columns, as on `/garage`: seven facts at most, and a
-              third column truncates the city ("Kunming Yunnan"). */}
+          {/* Specs — two columns, as on `/garage`: a third column truncates
+              the city ("Kunming Yunnan") and the body class ("Medium and
+              large SUV"). */}
           <section className="rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
             <div className="grid grid-cols-2 gap-x-3 gap-y-4">
-              {specs.map(({ label, value, icon }) => (
-                <div key={label} className="flex items-center gap-1.25">
+              {specs.map(({ label, value, icon, wide }) => (
+                <div
+                  key={label}
+                  className={cn(
+                    "flex items-center gap-1.25",
+                    wide && "col-span-2",
+                  )}
+                >
                   {icon ? (
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-neutral-0 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
                       {icon}
@@ -245,6 +304,13 @@ export default async function ChinaDetail({ listing }: Props) {
               the phone. */}
           <OrderInquiry carTitle={title} />
         </div>
+      </div>
+
+      {/* The full spec sheet — full width under both columns, as Korea's
+          options panel sits. `px-4` is the mobile gutter (the article is
+          `px-0` below `lg`). */}
+      <div className="px-4 lg:mt-8 lg:px-0">
+        <ChinaSpecSheet specs={listing.specs} options={listing.options} />
       </div>
 
       {/* Mobile sticky bar — the price plus the actions the title band hides

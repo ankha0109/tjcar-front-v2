@@ -1485,7 +1485,15 @@
     },
     "china": {
       "priceLabel": "Price in China",
-      "priceNote": "The dealer's asking price in China. Shipping, customs duties and other costs are not included."
+      "priceNote": "The dealer's asking price in China. Shipping, customs duties and other costs are not included.",
+      "newPriceLabel": "New car price (China)",
+      "vin": "VIN",
+      "options": "Key options",
+      "specsNote": "As listed at the source, in English",
+      "specsGeneral": "General",
+      "specsOther": "Other",
+      "standard": "Standard",
+      "optional": "Optional"
     },
     "encar": {
       "priceLabel": "Price",

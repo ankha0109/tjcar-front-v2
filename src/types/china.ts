@@ -38,6 +38,29 @@ export type ChinaListing = {
   /** Server-computed MNT price (CNY × config rate); absent while no rate is set. */
   price_mnt?: number | null;
   first_seen_at?: string | null;
+
+  // Detail only — read from the upstream's full row, so every one of these is
+  // null or empty when that read failed and the page fell back to the mirror.
+  vin?: string | null;
+  /** English body class from the spec sheet ("Compact SUV"). */
+  body_type?: string | null;
+  /** petrol / diesel / hybrid / electric / hydrogen — the `carDetail.fuel.*` keys. */
+  fuel_type?: string | null;
+  seats?: number | null;
+  /** First registration, `2022-10-01` (or `2022-10`). */
+  first_registered?: string | null;
+  /** New-car (manufacturer's guide) price in yuan. */
+  new_price_cny?: number | null;
+  /** The che168 spec sheet, in the upstream's English. */
+  specs?: ChinaSpecSection[];
+  /** Highlighted equipment, English names. */
+  options?: string[];
+};
+
+/** One section of the detail spec sheet; `title` is null for the untitled ones. */
+export type ChinaSpecSection = {
+  title: string | null;
+  items: Array<{ label: string; value: string }>;
 };
 
 /** One row of `GET /china/brands` or `/china/models?brand_id=` (`data[]`). */
