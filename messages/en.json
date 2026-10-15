@@ -64,7 +64,16 @@
       "modelNeedsBrand": "Pick a make first",
       "transmission": "Transmission",
       "drive": "Drivetrain",
-      "color": "Color"
+      "color": "Color",
+      "fuel": "Fuel type"
+    },
+    "fuels": {
+      "petrol": "Gasoline",
+      "diesel": "Diesel",
+      "electric": "Electric",
+      "range-extender": "Range extender",
+      "plug-in-hybrid": "Plug-in hybrid",
+      "hybrid": "Hybrid"
     }
   },
   "compare": {

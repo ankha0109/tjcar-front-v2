@@ -11,6 +11,7 @@ import FilterShell, {
 import {
   CHINA_COLORS,
   CHINA_DRIVES,
+  CHINA_FUELS,
   CHINA_TRANSMISSIONS,
   CNY_PRICE_STEPS,
   EMPTY_CHINA_FILTERS,
@@ -20,9 +21,10 @@ import {
   type ChinaColor,
   type ChinaDrive,
   type ChinaFilterValues,
+  type ChinaFuel,
   type ChinaTransmission,
 } from "@/types/china";
-import { MILEAGE_STEPS, YEAR_OPTIONS } from "@/types/filters";
+import { ENG_V_STEPS, MILEAGE_STEPS, YEAR_OPTIONS } from "@/types/filters";
 import {
   useChinaModels,
   type ChinaInitialModels,
@@ -40,6 +42,7 @@ type Props = {
 
 const formatNumber = (n: number) => new Intl.NumberFormat("en-US").format(n);
 const formatCny = (n: number) => `¥${formatNumber(n)}`;
+const formatCc = (n: number) => `${formatNumber(n)} cc`;
 
 /** Catalog entries render with their listing count, the way Korea's models do. */
 const entryLabel = (e: ChinaCatalogEntry) =>
@@ -49,8 +52,9 @@ const entryLabel = (e: ChinaCatalogEntry) =>
  * China's filter sidebar. Layout, pills and the mobile drawer all come from the
  * shared `FilterShell`, as on `/korea`; the fields are the mirror's own —
  * brand and model ids from `/china/brands` and `/china/models`, yuan prices, a
- * mileage range (the local table has both bounds, unlike Encar), and the
- * drivetrain and colour buckets AJES files every listing under.
+ * mileage range (the local table has both bounds, unlike Encar), AutoHome's
+ * six fuel types, a displacement range, and the drivetrain and colour buckets
+ * AJES files every listing under.
  */
 export default function ChinaFilters({
   value,
@@ -155,6 +159,27 @@ export default function ChinaFilters({
         (m) => m > 0 && (value.mileageFrom == null || m >= value.mileageFrom),
       ).map((m) => ({ value: m, label: formatNumber(m) })),
     [value.mileageFrom],
+  );
+
+  const engineFromOptions = useMemo(
+    () =>
+      ENG_V_STEPS.filter(
+        (cc) => value.engineTo == null || cc <= value.engineTo,
+      ).map((cc) => ({ value: cc, label: formatCc(cc) })),
+    [value.engineTo],
+  );
+
+  const engineToOptions = useMemo(
+    () =>
+      ENG_V_STEPS.filter(
+        (cc) => value.engineFrom == null || cc >= value.engineFrom,
+      ).map((cc) => ({ value: cc, label: formatCc(cc) })),
+    [value.engineFrom],
+  );
+
+  const fuelOptions = useMemo(
+    () => CHINA_FUELS.map((f) => ({ value: f, label: tc(`fuels.${f}`) })),
+    [tc],
   );
 
   const selectedBrand = brands.find((b) => b.id === value.brandId);
@@ -361,6 +386,74 @@ export default function ChinaFilters({
       },
     },
     {
+      key: "fuel",
+      label: tc("filters.fuel"),
+      active: !!value.fuel,
+      summary: value.fuel ? tc(`fuels.${value.fuel}`) : null,
+      clear: () => set("fuel", null),
+      control: (
+        <Select<ChinaFuel>
+          placeholder={tc("filters.fuel")}
+          allowClear
+          options={fuelOptions}
+          value={value.fuel ?? undefined}
+          onChange={(v) => set("fuel", v ?? null)}
+          variant="filled"
+          style={{ width: "100%" }}
+        />
+      ),
+      mobile: {
+        type: "single",
+        options: fuelOptions.map((o) => ({ ...o, searchText: o.label })),
+        value: value.fuel,
+        onSelect: (v) => set("fuel", v as ChinaFuel | null),
+      },
+    },
+    {
+      key: "engine",
+      label: t("engV.label"),
+      active: value.engineFrom != null || value.engineTo != null,
+      summary: rangeSummary(value.engineFrom, value.engineTo, formatCc),
+      clear: () => onChange({ ...value, engineFrom: null, engineTo: null }),
+      control: (
+        <RangePair>
+          <Select
+            placeholder={t("engV.fromPlaceholder")}
+            allowClear
+            options={engineFromOptions}
+            value={value.engineFrom ?? undefined}
+            onChange={(v) => set("engineFrom", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+          <Select
+            placeholder={t("engV.toPlaceholder")}
+            allowClear
+            options={engineToOptions}
+            value={value.engineTo ?? undefined}
+            onChange={(v) => set("engineTo", v ?? null)}
+            variant="filled"
+            style={{ width: "100%" }}
+          />
+        </RangePair>
+      ),
+      mobile: {
+        type: "range",
+        from: {
+          options: engineFromOptions,
+          value: value.engineFrom,
+          onChange: (v) => set("engineFrom", v),
+          placeholder: t("engV.fromPlaceholder"),
+        },
+        to: {
+          options: engineToOptions,
+          value: value.engineTo,
+          onChange: (v) => set("engineTo", v),
+          placeholder: t("engV.toPlaceholder"),
+        },
+      },
+    },
+    {
       key: "transmission",
       label: tc("filters.transmission"),
       active: !!value.transmission,
@@ -458,6 +551,7 @@ export function ChinaFilterChips({
   initialModels,
 }: Props) {
   const t = useTranslations("featured.filters");
+  const tc = useTranslations("china");
   const tColor = useTranslations("carDetail");
   const tCard = useTranslations("car.card");
   // Served from the react-query cache the filter select already filled.
@@ -511,6 +605,21 @@ export function ChinaFilterChips({
         to: value.mileageTo != null ? formatNumber(value.mileageTo) : "…",
       }),
       onRemove: () => onChange({ ...value, mileageFrom: null, mileageTo: null }),
+    });
+  if (value.fuel)
+    chips.push({
+      key: "fuel",
+      label: tc(`fuels.${value.fuel}`),
+      onRemove: () => set("fuel", null),
+    });
+  if (value.engineFrom != null || value.engineTo != null)
+    chips.push({
+      key: "engine",
+      label: t("chips.engV", {
+        from: value.engineFrom != null ? formatCc(value.engineFrom) : "…",
+        to: value.engineTo != null ? formatCc(value.engineTo) : "…",
+      }),
+      onRemove: () => onChange({ ...value, engineFrom: null, engineTo: null }),
     });
   if (value.transmission)
     chips.push({

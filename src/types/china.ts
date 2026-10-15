@@ -22,6 +22,11 @@ export type ChinaListing = {
   engine_cc?: number | null;
   /** Horsepower. */
   power?: number | null;
+  /**
+   * One of AutoHome's six fuel types. List rows carry the type the API derives
+   * from the trim; a detail row carries the spec sheet's own when it has one.
+   */
+  fuel_type?: ChinaFuel | null;
   transmission?: ChinaTransmission | null;
   drive?: ChinaDrive | null;
   /** One of the eight AJES colour buckets (CHINA_COLORS). */
@@ -44,8 +49,6 @@ export type ChinaListing = {
   vin?: string | null;
   /** English body class from the spec sheet ("Compact SUV"). */
   body_type?: string | null;
-  /** petrol / diesel / hybrid / electric / hydrogen — the `carDetail.fuel.*` keys. */
-  fuel_type?: string | null;
   seats?: number | null;
   /** First registration, `2022-10-01` (or `2022-10`). */
   first_registered?: string | null;
@@ -74,6 +77,20 @@ export type ChinaCatalogEntry = {
 /** `transmission` values the backend accepts (ChinaListingService::TRANSMISSIONS). */
 export const CHINA_TRANSMISSIONS = ["auto", "manual"] as const;
 export type ChinaTransmission = (typeof CHINA_TRANSMISSIONS)[number];
+
+/**
+ * `fuel` values the backend accepts (App\Enums\ChinaFuelType) — the six
+ * buttons of AutoHome's own fuel filter, in its order. Labels via `china.fuels.*`.
+ */
+export const CHINA_FUELS = [
+  "petrol",
+  "diesel",
+  "electric",
+  "range-extender",
+  "plug-in-hybrid",
+  "hybrid",
+] as const;
+export type ChinaFuel = (typeof CHINA_FUELS)[number];
 
 /** `drive` values the backend accepts (ChinaListingService::DRIVES). */
 export const CHINA_DRIVES = ["fwd", "rwd", "awd"] as const;
@@ -175,6 +192,10 @@ export type ChinaFilterValues = {
   priceTo: number | null;
   mileageFrom: number | null;
   mileageTo: number | null;
+  /** Displacement bounds in cc; an electric car has none, so any bound leaves it out. */
+  engineFrom: number | null;
+  engineTo: number | null;
+  fuel: ChinaFuel | null;
   transmission: ChinaTransmission | null;
   drive: ChinaDrive | null;
   color: ChinaColor | null;
@@ -195,6 +216,9 @@ export const EMPTY_CHINA_FILTERS: ChinaFilterValues = {
   priceTo: null,
   mileageFrom: null,
   mileageTo: null,
+  engineFrom: null,
+  engineTo: null,
+  fuel: null,
   transmission: null,
   drive: null,
   color: null,
@@ -212,6 +236,9 @@ export function isChinaFiltersEmpty(f: ChinaFilterValues): boolean {
     f.priceTo == null &&
     f.mileageFrom == null &&
     f.mileageTo == null &&
+    f.engineFrom == null &&
+    f.engineTo == null &&
+    !f.fuel &&
     !f.transmission &&
     !f.drive &&
     !f.color
@@ -234,6 +261,9 @@ export function chinaFiltersToQuery(
   if (f.priceTo != null) q.max_price = f.priceTo;
   if (f.mileageFrom != null) q.min_mileage = f.mileageFrom;
   if (f.mileageTo != null) q.max_mileage = f.mileageTo;
+  if (f.engineFrom != null) q.min_engine_cc = f.engineFrom;
+  if (f.engineTo != null) q.max_engine_cc = f.engineTo;
+  if (f.fuel) q.fuel = f.fuel;
   if (f.transmission) q.transmission = f.transmission;
   if (f.drive) q.drive = f.drive;
   if (f.color) q.color = f.color;
@@ -290,6 +320,9 @@ export function queryToChinaFilters(p: SearchParamRecord): ChinaFilterValues {
     priceTo: pickInt(p, "max_price", 0),
     mileageFrom: pickInt(p, "min_mileage", 0),
     mileageTo: pickInt(p, "max_mileage", 0),
+    engineFrom: pickInt(p, "min_engine_cc", 0, 20_000),
+    engineTo: pickInt(p, "max_engine_cc", 0, 20_000),
+    fuel: pickOneOf(p, "fuel", CHINA_FUELS),
     transmission: pickOneOf(p, "transmission", CHINA_TRANSMISSIONS),
     drive: pickOneOf(p, "drive", CHINA_DRIVES),
     color: pickOneOf(p, "color", CHINA_COLORS),

@@ -64,7 +64,16 @@
       "modelNeedsBrand": "Сначала выберите марку",
       "transmission": "Коробка передач",
       "drive": "Привод",
-      "color": "Цвет"
+      "color": "Цвет",
+      "fuel": "Тип топлива"
+    },
+    "fuels": {
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "electric": "Электро",
+      "range-extender": "Range extender (EREV)",
+      "plug-in-hybrid": "Подключаемый гибрид (PHEV)",
+      "hybrid": "Гибрид"
     }
   },
   "compare": {

@@ -42,9 +42,6 @@ function formatCny(value: number) {
   return `¥${new Intl.NumberFormat("en-US").format(value)}`;
 }
 
-/** `carDetail.fuel.*` keys — the backend names fuels the way /korea does. */
-const FUEL_KEYS = new Set(["petrol", "diesel", "hybrid", "electric", "hydrogen"]);
-
 /**
  * Detail page for a China dealer listing (`GET /china/{id}`, route
  * `/china/{id}`).
@@ -67,6 +64,7 @@ export default async function ChinaDetail({ listing }: Props) {
   // Reuse the site nav's own label for this section rather than a second
   // translation of the same thing.
   const tNav = await getTranslations("header.nav");
+  const tChina = await getTranslations("china");
 
   // The phone shell renders the title in its sticky header
   // (`@mobileHeader/china/[id]`), so the in-page trail + title are for the
@@ -138,11 +136,8 @@ export default async function ChinaDetail({ listing }: Props) {
       },
       {
         label: t("specs.fuel"),
-        value: fuelType
-          ? FUEL_KEYS.has(fuelType)
-            ? t(`fuel.${fuelType}`)
-            : fuelType
-          : undefined,
+        // AutoHome's six types, which the API only ever sends.
+        value: fuelType ? tChina(`fuels.${fuelType}`) : undefined,
         icon: <FuelIcon />,
       },
       {

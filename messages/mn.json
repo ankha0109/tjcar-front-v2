@@ -64,7 +64,16 @@
       "modelNeedsBrand": "Эхлээд үйлдвэрлэгч сонгоно",
       "transmission": "Хурдны хайрцаг",
       "drive": "Хөтлөгч",
-      "color": "Өнгө"
+      "color": "Өнгө",
+      "fuel": "Шатахуун"
+    },
+    "fuels": {
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "electric": "Цахилгаан",
+      "range-extender": "Range extender (EREV)",
+      "plug-in-hybrid": "Plug-in hybrid (PHEV)",
+      "hybrid": "Хайбрид"
     }
   },
   "compare": {
