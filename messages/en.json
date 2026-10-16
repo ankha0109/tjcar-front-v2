@@ -946,26 +946,33 @@
   "homeServices": {
     "eyebrow": "Services",
     "heading": "Featured services",
+    "deliveryLabel": "Delivery time",
+    "deliveryDays": "{range} days",
     "items": {
       "japan": {
-        "title": "Order a car from Japan",
-        "description": "We buy the car you want at Japanese auctions and hand it over to you in 45–60 days.",
-        "cta": "Order from Japan"
+        "kicker": "Auctions",
+        "title": "Japan cars",
+        "description": "We buy the car you want at Japanese auctions and hand it over to you."
       },
       "korea": {
-        "title": "Order a car from Korea",
-        "description": "We buy the car you want on the Korean market and hand it over to you in 10–14 days.",
-        "cta": "Order from Korea"
+        "kicker": "Direct purchase",
+        "title": "Korea cars",
+        "description": "We buy the car you want on the Korean market and hand it over to you."
+      },
+      "china": {
+        "kicker": "Direct purchase",
+        "title": "China cars",
+        "description": "We buy the car you want on the Chinese market and hand it over to you."
       },
       "report": {
-        "title": "Check a car's history (Report)",
-        "description": "Check accidents, mileage, auction grade and past history in a PDF report.",
-        "cta": "Check a report"
+        "kicker": "Report service",
+        "title": "Accident report",
+        "description": "Check accidents, mileage, auction grade and past history in a PDF report."
       },
       "garage": {
-        "title": "TJ Garage — cars in stock",
-        "description": "Browse inspected cars that are already in Mongolia and ready to go.",
-        "cta": "View cars in stock"
+        "kicker": "TJ Garage",
+        "title": "In-stock cars",
+        "description": "Browse inspected cars that are already in Mongolia and ready to go."
       }
     }
   },
