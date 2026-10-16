@@ -1,105 +1,45 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { ChinaIcon, JapanIcon, KoreaIcon, UsaIcon } from "@/components/icons";
 import { formatRate } from "@/lib/exchangeRates";
 import { useRates } from "@/providers/RatesProvider";
 import { cn } from "@/utils";
-import type { SVGProps } from "react";
-
-type IconProps = SVGProps<SVGSVGElement>;
-
-const DollarIcon = (props: IconProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.4"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    {...props}
-  >
-    <line x1="12" y1="2" x2="12" y2="22" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-  </svg>
-);
-
-const YenIcon = (props: IconProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    {...props}
-  >
-    <path d="M6 3l6 9 6-9" />
-    <line x1="12" y1="12" x2="12" y2="21" />
-    <line x1="5" y1="14" x2="19" y2="14" />
-    <line x1="5" y1="18" x2="19" y2="18" />
-  </svg>
-);
-
-const WonIcon = (props: IconProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    {...props}
-  >
-    <path d="M3 4.5L6.8 18 12 8.5 17.2 18 21 4.5" />
-    <line x1="2.5" y1="11" x2="21.5" y2="11" />
-    <line x1="2.5" y1="14.5" x2="21.5" y2="14.5" />
-  </svg>
-);
 
 /**
  * `code` doubles as the {@link Rates} key and — lower-cased — the
  * `header.topbar.rates.*` message key.
+ *
+ * Flags rather than currency signs: the yen and the yuan share `¥`, so the
+ * signs left JPY and CNY telling themselves apart by colour alone. The flags
+ * are the same artwork as the market links in the nav.
  */
 const CURRENCIES = [
-  {
-    code: "USD",
-    Icon: DollarIcon,
-    tone: "text-emerald-600 dark:text-emerald-400",
-    darkTone: "text-emerald-400",
-  },
-  {
-    code: "JPY",
-    Icon: YenIcon,
-    tone: "text-rose-500 dark:text-rose-400",
-    darkTone: "text-rose-400",
-  },
-  {
-    code: "KRW",
-    Icon: WonIcon,
-    tone: "text-sky-600 dark:text-sky-400",
-    darkTone: "text-sky-400",
-  },
+  { code: "USD", Flag: UsaIcon },
+  { code: "JPY", Flag: JapanIcon },
+  { code: "KRW", Flag: KoreaIcon },
+  { code: "CNY", Flag: ChinaIcon },
 ] as const;
 
 type Props = {
   /**
-   * `menu` is the light-or-dark card in the desktop menu and the mobile drawer;
-   * `footer` is the row inside the footer's permanently dark brand column.
+   * `menu` is the light-or-dark card in the tablet menu and the mobile drawer;
+   * `footer` is the row inside the footer's permanently dark brand column;
+   * `strip` is one inline row in the desktop header's permanently dark top
+   * strip, its label shown only from `xl` up, where the strip has room for it.
    */
-  variant: "menu" | "footer";
+  variant: "menu" | "footer" | "strip";
   className?: string;
 };
 
 /**
- * The site's USD / JPY / KRW → MNT rates, live from `GET /config`.
+ * The site's USD / JPY / KRW / CNY → MNT rates, live from `GET /config`.
  *
- * The three consumers each used to carry their own copy of the markup and of
- * the currency icons. A currency whose rate is 0 — what `getConfig` returns
- * when the API call fails — is dropped, and with nothing left to show the whole
- * block disappears rather than leaving a labelled empty box.
+ * Every consumer prints the same row — flag, code, rate — and differs only in
+ * its frame. A currency whose rate is 0 — what `getConfig` returns when the
+ * API call fails, or when a backend has no row for it yet — is dropped, and
+ * with nothing left to show the whole block disappears rather than leaving a
+ * labelled empty box.
  */
 export default function ExchangeRateList({ variant, className }: Props) {
   const t = useTranslations("header.topbar.rates");
@@ -108,14 +48,56 @@ export default function ExchangeRateList({ variant, className }: Props) {
   const shown = CURRENCIES.filter(({ code }) => rates[code] > 0);
   if (shown.length === 0) return null;
 
-  const footer = variant === "footer";
+  const strip = variant === "strip";
+  // The strip and the footer both sit on a permanently dark surface.
+  const onDark = strip || variant === "footer";
+
+  const items = shown.map(({ code, Flag }, i) => (
+    <span
+      key={code}
+      className={cn(
+        "items-center gap-1.5 text-[12px]",
+        // A desktop shell in a phone-narrow window keeps only the first two
+        // rates in the strip; all four overrun it below `sm`.
+        strip && i >= 2 ? "hidden sm:flex" : "flex",
+      )}
+    >
+      <Flag aria-hidden className="h-4 w-4 shrink-0" />
+      <span
+        className={
+          onDark ? "text-neutral-400" : "text-neutral-500 dark:text-neutral-400"
+        }
+      >
+        {t(code.toLowerCase())}
+      </span>
+      <span
+        className={cn(
+          "font-semibold",
+          onDark ? "text-white" : "text-neutral-900 dark:text-neutral-100",
+        )}
+      >
+        {formatRate(rates[code])}₮
+      </span>
+    </span>
+  ));
+
+  if (strip) {
+    return (
+      <div className={cn("flex items-center gap-4", className)}>
+        <span className="hidden text-[12px] text-neutral-400 xl:inline">
+          {t("label")}
+        </span>
+        {items}
+      </div>
+    );
+  }
 
   return (
     <div className={className}>
       <div
         className={cn(
           "font-semibold uppercase",
-          footer
+          onDark
             ? "mb-2 text-[11px] text-neutral-500"
             : "mb-1.5 text-[10.5px] text-neutral-400 dark:text-neutral-500",
         )}
@@ -123,29 +105,7 @@ export default function ExchangeRateList({ variant, className }: Props) {
         {t("label")}
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-        {shown.map(({ code, Icon, tone, darkTone }) => (
-          <div key={code} className="flex items-center gap-1.5">
-            <Icon className={cn("h-3.5 w-3.5", footer ? darkTone : tone)} />
-            <span
-              className={cn(
-                "text-[12px] font-semibold",
-                footer
-                  ? "text-white"
-                  : "text-neutral-900 dark:text-neutral-100",
-              )}
-            >
-              {t(code.toLowerCase())} {formatRate(rates[code])}
-            </span>
-            <span
-              className={cn(
-                "text-[11px]",
-                footer ? "text-neutral-500" : "text-neutral-400",
-              )}
-            >
-              ₮
-            </span>
-          </div>
-        ))}
+        {items}
       </div>
     </div>
   );

@@ -13,6 +13,8 @@ export type SiteConfig = {
    * by an admin, so it can sit still for a while.
    */
   KRW: number;
+  /** CNY → MNT exchange rate. */
+  CNY: number;
   /** List price of one vehicle history report, MNT. */
   reportPrice: number;
   /** Promo price, MNT. 0 means "no promo running". */
@@ -30,6 +32,7 @@ const EMPTY_CONFIG: SiteConfig = {
   JPY: 0,
   USD: 0,
   KRW: 0,
+  CNY: 0,
   reportPrice: 0,
   reportDiscountPrice: 0,
   reportDiscountEndDate: "",
@@ -60,6 +63,7 @@ export const getConfig = cache(async (): Promise<SiteConfig> => {
       JPY: Number(data?.JPY) || 0,
       USD: Number(data?.USD) || 0,
       KRW: Number(data?.KRW) || 0,
+      CNY: Number(data?.CNY) || 0,
       reportPrice: Number(data?.["report-price"]) || 0,
       reportDiscountPrice: Number(data?.["report-discount-price"]) || 0,
       reportDiscountEndDate: data?.["report-discount-end-date"] ?? "",

@@ -37,7 +37,13 @@ const MoonIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default function ThemeToggle({ theme }: { theme: Theme }) {
+export default function ThemeToggle({
+  theme,
+  className,
+}: {
+  theme: Theme;
+  className?: string;
+}) {
   const t = useTranslations("header.theme");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -61,6 +67,7 @@ export default function ThemeToggle({ theme }: { theme: Theme }) {
       title={theme === "dark" ? t("switchToLight") : t("switchToDark")}
       className={cn(
         "text-neutral-700! dark:text-neutral-200!",
+        className,
         isPending && "opacity-60!",
       )}
     >

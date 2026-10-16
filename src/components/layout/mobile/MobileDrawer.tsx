@@ -4,8 +4,15 @@ import { Button, Drawer, Switch } from "antd";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
+import {
+  CarIcon,
+  ChinaIcon,
+  JapanIcon,
+  KoreaIcon,
+  ShieldIcon,
+} from "@/components/icons";
 import ExchangeRateList from "@/components/layout/ExchangeRateList";
+import NewBadge from "@/components/ui/NewBadge";
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_RAW } from "@/lib/contact";
 import { useCompare } from "@/hooks/useCompare";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
@@ -238,9 +245,17 @@ export default function MobileDrawer({ open, onClose }: Props) {
     label: string;
     href: string;
     Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    isNew?: boolean;
   }[] = [
     { key: "japan", label: t("nav.japan"), href: "/japan", Icon: JapanIcon },
     { key: "korea", label: t("nav.korea"), href: "/korea", Icon: KoreaIcon },
+    {
+      key: "china",
+      label: t("nav.china"),
+      href: "/china",
+      Icon: ChinaIcon,
+      isNew: true,
+    },
     { key: "ready", label: t("nav.ready"), href: "/garage", Icon: CarIcon },
     {
       key: "report",
@@ -342,6 +357,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
                 }
               >
                 {item.label}
+                {item.isNew ? <NewBadge>{t("nav2.new")}</NewBadge> : null}
               </DrawerLink>
             ))}
           </DrawerSection>

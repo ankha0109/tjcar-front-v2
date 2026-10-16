@@ -188,6 +188,11 @@
       "terms": "Terms of service",
       "auctionSheet": "Auction sheet guide"
     },
+    "navShort": {
+      "japan": "Japan",
+      "korea": "Korea",
+      "china": "China"
+    },
     "phone": "+976 7511-5888",
     "hours": "Mon–Sat · 07:30–17:30",
     "regionsBadge": {
@@ -242,7 +247,8 @@
         "updated": "Last updated: {time}",
         "usd": "USD",
         "jpy": "JPY",
-        "krw": "KRW"
+        "krw": "KRW",
+        "cny": "CNY"
       },
       "phone": {
         "label": "Phone",
@@ -307,6 +313,7 @@
       "heading": "Cars",
       "japan": "Japan cars",
       "korea": "Korea cars",
+      "china": "China cars",
       "ready": "In-stock cars",
       "report": "Accident report"
     },

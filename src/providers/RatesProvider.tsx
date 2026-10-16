@@ -7,16 +7,17 @@ export type Rates = {
   USD: number;
   JPY: number;
   KRW: number;
+  CNY: number;
 };
 
-const EMPTY_RATES: Rates = { USD: 0, JPY: 0, KRW: 0 };
+const EMPTY_RATES: Rates = { USD: 0, JPY: 0, KRW: 0, CNY: 0 };
 
 const RatesContext = createContext<Rates>(EMPTY_RATES);
 
 /**
  * Carries the live rates from the locale layout to every client component that
- * prints them — the desktop footer, the desktop menu card and the mobile
- * drawer.
+ * prints them — the desktop header's top strip, the desktop footer, the tablet
+ * menu card and the mobile drawer.
  *
  * A context rather than props because `MobileDrawer` sits inside
  * `MobileHeader`, which is rendered from every file under the `@mobileHeader`

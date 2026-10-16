@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { cn } from "@/utils";
 
 type Locale = (typeof routing.locales)[number];
 
@@ -15,7 +14,11 @@ const FLAGS: Record<Locale, string> = {
   ru: "🇷🇺",
 };
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({
+  className,
+}: {
+  className?: string;
+}) {
   const t = useTranslations("common.language");
   const locale = useLocale() as Locale;
   const router = useRouter();
@@ -49,14 +52,7 @@ export default function LanguageSwitcher() {
         selectedKeys: [locale],
       }}
     >
-      <Button
-        type="text"
-        aria-label={t("label")}
-        // className={cn(
-        //   "rounded-full! text-[13px]! font-medium! text-neutral-700! dark:text-neutral-300!",
-        //   "hover:bg-neutral-100! dark:hover:bg-neutral-900!",
-        // )}
-      >
+      <Button type="text" aria-label={t("label")} className={className}>
         <span aria-hidden>{FLAGS[locale]}</span>
         <span className="uppercase">{locale}</span>
       </Button>

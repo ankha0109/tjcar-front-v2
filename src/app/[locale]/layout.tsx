@@ -115,11 +115,13 @@ export default async function LocaleLayout({
       // media query — a `@media` rule would guess wrong for a phone in a wide
       // window and vice versa. `globals.css` carries the desktop value as a
       // fallback. Mobile is exactly `h-14`: that height sits on the bordered
-      // element itself, so `border-box` folds the border into it. Desktop's
-      // `h-16` is on an inner row, so the header's own border adds a pixel.
+      // element itself, so `border-box` folds the border into it. Desktop
+      // stacks two inner rows — the `h-9` top strip and the `h-16` nav row —
+      // and the header's own border adds a pixel under them.
       style={
         {
-          "--header-h": device === "mobile" ? "3.5rem" : "calc(4rem + 1px)",
+          "--header-h":
+            device === "mobile" ? "3.5rem" : "calc(6.25rem + 1px)",
         } as React.CSSProperties
       }
     >
@@ -133,7 +135,12 @@ export default async function LocaleLayout({
                   props. `getConfig` is cached for an hour, so this costs the
                   page nothing on a warm cache. */}
               <RatesProvider
-                rates={{ USD: config.USD, JPY: config.JPY, KRW: config.KRW }}
+                rates={{
+                  USD: config.USD,
+                  JPY: config.JPY,
+                  KRW: config.KRW,
+                  CNY: config.CNY,
+                }}
               >
                 <AppShell theme={theme} mobileHeader={mobileHeader}>
                   {children}

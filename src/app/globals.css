@@ -35,7 +35,7 @@
    * value is never missing. Everything that has to clear the header — the shells'
    * top padding, sticky filter rails, anchor offsets — reads it from here.
    */
-  --header-h: calc(4rem + 1px);
+  --header-h: calc(6.25rem + 1px);
 }
 
 html {

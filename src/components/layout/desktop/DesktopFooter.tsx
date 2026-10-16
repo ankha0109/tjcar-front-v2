@@ -51,6 +51,7 @@ const SOCIAL_LINKS: ReadonlyArray<{
 const CARS_LINKS = [
   { href: "/japan", key: "japan" as const },
   { href: "/korea", key: "korea" as const },
+  { href: "/china", key: "china" as const },
   { href: "/garage", key: "ready" as const },
   { href: "/report", key: "report" as const },
 ] as const;

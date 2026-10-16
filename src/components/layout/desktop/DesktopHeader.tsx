@@ -7,12 +7,20 @@ import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import Logo from "@/components/layout/Logo";
-import { CarIcon, JapanIcon, KoreaIcon, ShieldIcon } from "@/components/icons";
+import {
+  CarIcon,
+  ChinaIcon,
+  JapanIcon,
+  KoreaIcon,
+  ShieldIcon,
+} from "@/components/icons";
 import { cn } from "@/utils";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import type { Theme } from "@/lib/theme";
+import { CONTACT_PHONES } from "@/lib/contact";
 import BrandButton from "@/components/ui/BrandButton";
+import NewBadge from "@/components/ui/NewBadge";
 import CompareDropdown from "@/components/layout/desktop/CompareDropdown";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -251,31 +259,74 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
     return pathname === base;
   };
 
+  // The top strip's links on lg+, the drawer's "discover" section below that.
+  // `strip` hides About in the strip under xl, where the strip runs out of
+  // room before the rates do; the drawer always lists all three.
   const FEATURED = [
     {
-      key: "about",
-      labelKey: "nav.about" as const,
-      href: "/about",
+      key: "auctionSheet",
+      labelKey: "nav.auctionSheet" as const,
+      href: "/auction-sheet",
+      strip: "",
     },
     {
       key: "posts",
       labelKey: "nav.posts" as const,
       href: "/posts",
+      strip: "",
+    },
+    {
+      key: "about",
+      labelKey: "nav.about" as const,
+      href: "/about",
+      strip: "hidden xl:inline-flex",
     },
   ];
 
+  // The markets. The drawer prints `label`; the nav row prints `short`, which
+  // leans on the flag beside it for the "cars from …" — all five full names
+  // do not fit the row between 1024 and 1279px.
   const MAIN_NAV: {
     key: string;
     label: string;
+    short: string;
     href: string;
     Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    isNew?: boolean;
   }[] = [
-    { key: "japan", label: t("nav.japan"), href: "/japan", Icon: JapanIcon },
-    { key: "korea", label: t("nav.korea"), href: "/korea", Icon: KoreaIcon },
-    { key: "ready", label: t("nav.ready"), href: "/garage", Icon: CarIcon },
+    {
+      key: "japan",
+      label: t("nav.japan"),
+      short: t("navShort.japan"),
+      href: "/japan",
+      Icon: JapanIcon,
+    },
+    {
+      key: "korea",
+      label: t("nav.korea"),
+      short: t("navShort.korea"),
+      href: "/korea",
+      Icon: KoreaIcon,
+    },
+    {
+      key: "china",
+      label: t("nav.china"),
+      short: t("navShort.china"),
+      href: "/china",
+      Icon: ChinaIcon,
+      isNew: true,
+    },
+    {
+      key: "ready",
+      label: t("nav.ready"),
+      short: t("nav.ready"),
+      href: "/garage",
+      Icon: CarIcon,
+    },
     {
       key: "report",
       label: t("nav.report"),
+      short: t("nav.report"),
       href: "/report",
       Icon: ShieldIcon,
     },
@@ -284,10 +335,13 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
   return (
     <>
       {/*
-        Fixed, never hidden: on a desktop viewport the nav is worth its 65px and
-        there is no vertical space to reclaim. The background swap is driven by
-        `<html data-scrolled>` (see `ScrollState`) instead of React state, so
-        scrolling no longer re-renders this tree.
+        Fixed, never hidden, top strip included: on a desktop viewport the
+        header is worth its 101px, and collapsing the strip on scroll would
+        shift every sticky filter rail that sits at `top-(--header-h)`. The
+        background swap is driven by `<html data-scrolled>` (see `ScrollState`)
+        instead of React state, so scrolling no longer re-renders this tree.
+        Both rows' heights are summed into `--header-h` in the locale layout —
+        change one, change it there too.
       */}
       <header
         data-app-chrome
@@ -297,6 +351,52 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
           "scrolled:border-neutral-200 scrolled:bg-white/35 dark:scrolled:border-neutral-800 dark:scrolled:bg-neutral-950/95",
         )}
       >
+        {/*
+          Row 0 — top strip (h-9), dark in both themes: rates on the left;
+          guides, phone, language and theme on the right. The inset shadow
+          draws the dark theme's divider without adding a pixel of height.
+        */}
+        <div className="bg-neutral-950 text-[12px] text-neutral-300 dark:bg-black dark:shadow-[inset_0_-1px_0_var(--color-neutral-800)]">
+          <div className="mx-auto flex h-9 w-full max-w-7xl items-center gap-4 px-4 lg:px-6">
+            <ExchangeRateList variant="strip" className="min-w-0" />
+            <div className="flex-1" />
+            <nav
+              aria-label={t("nav2.discover")}
+              className="hidden items-center gap-4 lg:flex"
+            >
+              {FEATURED.map((item) => (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className={cn(
+                    "inline-flex items-center text-neutral-300 transition-colors hover:text-white",
+                    item.strip,
+                  )}
+                >
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+            </nav>
+            <span
+              aria-hidden="true"
+              className="hidden h-3.5 w-px bg-neutral-700 lg:block"
+            />
+            <a
+              href={`tel:${CONTACT_PHONES[0].raw}`}
+              title={t("topbar.phone.aria")}
+              className="hidden shrink-0 items-center gap-1.5 font-medium text-neutral-200 transition-colors hover:text-white md:inline-flex"
+            >
+              <PhoneIcon className="h-3.5 w-3.5" />
+              {CONTACT_PHONES[0].display}
+            </a>
+            <LanguageSwitcher className="h-7! px-2! text-[12px]! text-neutral-200! hover:bg-white/10! hover:text-white!" />
+            <ThemeToggle
+              theme={theme}
+              className="h-7! w-7! min-w-7! text-neutral-200! hover:bg-white/10! hover:text-white! dark:text-neutral-200!"
+            />
+          </div>
+        </div>
+
         {/* Row 1 — primary (h-16) */}
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-1.5 px-4 md:gap-2 lg:px-6">
           {/* Logo */}
@@ -324,7 +424,8 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                       active ? "" : "text-neutral-500 dark:text-neutral-400",
                     )}
                   />
-                  <span>{item.label}</span>
+                  <span>{item.short}</span>
+                  {item.isNew ? <NewBadge>{t("nav2.new")}</NewBadge> : null}
                 </NavLink>
               );
             })}
@@ -350,13 +451,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
           {/* Compare */}
           <CompareDropdown />
 
-          {/* Language */}
-          <LanguageSwitcher />
-
-          {/* Theme */}
-          <ThemeToggle theme={theme} />
-
-          {/* User block */}
+          {/* User block — language and theme live in the top strip */}
           {session && user ? (
             <Dropdown
               trigger={["click"]}
@@ -428,7 +523,10 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
               <Link href="/auth/login" className="hidden md:inline-flex">
                 <Button type="text">{t("auth.signIn")}</Button>
               </Link>
-              <Link href="/auth/register" className="hidden md:inline-flex">
+              {/* xl+ only: with five markets in the nav row, 1024–1279px has
+                  room for one auth button, and sign-in is the one people
+                  come back for. */}
+              <Link href="/auth/register" className="hidden xl:inline-flex">
                 <BrandButton>{t("auth.signUp")}</BrandButton>
               </Link>
             </>
@@ -563,6 +661,7 @@ export default function DesktopHeader({ theme }: { theme: Theme }) {
                   }
                 >
                   {item.label}
+                  {item.isNew ? <NewBadge>{t("nav2.new")}</NewBadge> : null}
                 </DrawerLink>
               ))}
             </DrawerSection>
